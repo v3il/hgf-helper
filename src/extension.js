@@ -37,7 +37,7 @@ async function processRound({ twitchService, streamService }) {
 }
 
 function sendMessage(twitchService, messages) {
-    const delay = config.intervalBetweenCommands + Math.random() * 1000 + 500;
+    const delay = config.intervalBetweenCommands + Math.random() * 1000 + 1000;
     const message = messages.shift();
 
     setTimeout(() => {
