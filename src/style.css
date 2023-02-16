@@ -6,8 +6,6 @@
 
 .haf-container {
   position: fixed;
-  bottom: 20px;
+  top: 0;
   left: -10000px;
-  /*border: 5px solid red;*/
-  z-index: 10000;
 }

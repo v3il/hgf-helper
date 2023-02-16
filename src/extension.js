@@ -30,10 +30,10 @@ async function processRound({ twitchService, streamService }) {
     const isBanPhase = await streamService.isBanPhase();
 
     if (!isBanPhase) {
-        // sendMessage(twitchService, config.commands);
+        sendMessage(twitchService, config.commands);
     }
 
-    console.error('is ban', isBanPhase);
+    console.error('Is ban', isBanPhase);
 }
 
 function sendMessage(twitchService, messages) {
@@ -58,7 +58,7 @@ function mountAppContainer() {
 
 function getElements() {
     const playerEl = document.querySelector(".persistent-player");
-    const chatInputEl = document.querySelector('textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]')
+    const chatInputEl = document.querySelector('[data-a-target="chat-input"]');
     const sendMessageButtonEl = document.querySelector('[data-a-target="chat-send-button"]');
 
     return { playerEl, chatInputEl, sendMessageButtonEl };
