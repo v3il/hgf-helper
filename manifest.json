@@ -6,11 +6,15 @@
 
   "content_scripts": [
     {
-      "js": ["dist/extension.js"],
-      "css" : ["dist/extension.css"],
+      "js": ["dist/bootstrap.js"],
       "matches": ["https://www.twitch.tv/hitsquadgodfather"],
       "run_at": "document_end",
       "all_frames": true
     }
-  ]
+  ],
+
+  "web_accessible_resources": [{
+    "resources": ["dist/extension.js", "dist/extension.css"],
+    "matches": ["https://www.twitch.tv/*"]
+  }]
 }

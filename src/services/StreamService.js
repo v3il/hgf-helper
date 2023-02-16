@@ -4,18 +4,32 @@ import {chunk} from "lodash";
 
 const checks = [
     {
-        "x": 640,
-        "y": 497,
-        "hex": "#11a304",
-        "xp": 49.11742133537989,
-        "yp": 67.80354706684857
+        "x": 301,
+        "y": 197,
+        "hex": "#9835f1",
+        "xp": 22.5130890052356,
+        "yp": 26.162018592297475
     },
     {
-        "x": 1030,
-        "y": 496,
-        "hex": "#11a403",
-        "xp": 79.04834996162703,
-        "yp": 67.66712141882674
+        "x": 1014,
+        "y": 192,
+        "hex": "#9a34ef",
+        "xp": 75.84143605086014,
+        "yp": 25.49800796812749
+    },
+    {
+        "x": 1000,
+        "y": 490,
+        "hex": "#9835ef",
+        "xp": 74.79431563201196,
+        "yp": 65.07304116865869
+    },
+    {
+        "x": 374,
+        "y": 474,
+        "hex": "#9835ef",
+        "xp": 27.973074046372474,
+        "yp": 62.94820717131474
     }
 ]
 
@@ -103,7 +117,7 @@ export class StreamService {
 
         const { width, height } = canvas;
 
-        const isNormal = checks.every(({ x, xp, y, yp, hex }) => {
+        return checks.every(({ x, xp, y, yp, hex }) => {
             const nx = Math.floor(xp * width / 100)
             const ny = Math.floor(yp * height / 100)
 
@@ -117,11 +131,8 @@ export class StreamService {
             console.log(hexColorDelta(nhex.slice(1), hex.slice(1)))
             console.log(hexColorDelta(nhex.slice(1), hex.slice(1)))
 
-            return hexColorDelta(nhex.slice(1), hex.slice(1)) > 0.75;
-        })
-
-
-        return !isNormal;
+            return hexColorDelta(nhex.slice(1), hex.slice(1)) > 0.85;
+        });
     }
 
     #getPlayerEl() {
