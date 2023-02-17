@@ -3,6 +3,7 @@ import './style.css'
 import { config } from './config';
 import { TwitchService, StreamService } from "./services";
 import { promisifiedSetTimeout } from "./utils/promisifiedSetTimeout";
+import { getFormattedDate } from "./utils/getFormattedDate";
 
 const intervalId = setInterval(() => {
     const { playerEl, chatInputEl, sendMessageButtonEl } = getElements();
@@ -32,7 +33,7 @@ async function processRound({ twitchService, streamService }) {
 
     const isBanPhase = await streamService.isBanPhase();
 
-    console.error('Is ban', isBanPhase);
+    console.error('Is ban: ', isBanPhase, ' | ', getFormattedDate());
 
     if (isBanPhase) {
         return;
