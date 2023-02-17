@@ -2,13 +2,14 @@ import './style.css'
 
 import { config } from './config';
 import { TwitchService, StreamService } from "./services";
+import { promisifiedSetTimeout } from "./utils/promisifiedSetTimeout";
 
 const intervalId = setInterval(() => {
     const { playerEl, chatInputEl, sendMessageButtonEl } = getElements();
 
     if (playerEl && chatInputEl && sendMessageButtonEl) {
         clearInterval(intervalId);
-        runApp()
+        setTimeout(() => runApp(), 2000);
     }
 }, 1000);
 
@@ -27,26 +28,21 @@ function runApp() {
 }
 
 async function processRound({ twitchService, streamService }) {
+    console.clear();
+
     const isBanPhase = await streamService.isBanPhase();
 
-    if (!isBanPhase) {
-        sendMessage(twitchService, config.commands);
+    console.error('Is ban', isBanPhase);
+
+    if (isBanPhase) {
+        return;
     }
 
-    console.error('Is ban', isBanPhase);
-}
-
-function sendMessage(twitchService, messages) {
-    const delay = config.intervalBetweenCommands + Math.random() * 1000 + 1000;
-    const message = messages.shift();
-
-    setTimeout(() => {
-        twitchService.sendMessage(message);
-
-        if (messages.length) {
-            sendMessage(twitchService, messages);
-        }
-    }, delay)
+    for (const command of config.commands) {
+        const delay = config.intervalBetweenCommands + Math.random() * 1000 + 1000;
+        await promisifiedSetTimeout(delay);
+        twitchService.sendMessage(command);
+    }
 }
 
 function mountAppContainer() {

@@ -20,16 +20,28 @@ export class StreamService {
         const canvas = this.#canvasEl;
         const { width, height } = canvas;
 
-        return banPhaseChecks.every(({ xPercent, yPercent, color }) => {
+        const checks = banPhaseChecks.map(({ xPercent, yPercent, color }) => {
             const x = Math.floor(xPercent * width / 100)
             const y = Math.floor(yPercent * height / 100)
 
-            const context = canvas.getContext('2d');
+            const context = canvas.getContext('2d', { willReadFrequently: true });
             const [r, g, b] = context.getImageData(x, y, 1, 1).data;
             const pixelHexColor = ColorService.rgbToHex(r, g, b);
 
-            return ColorService.getColorsSimilarity(color, pixelHexColor) > 0.85;
+            return {
+                expected: color,
+                actual: pixelHexColor,
+                similarity: ColorService.getColorsSimilarity(color, pixelHexColor)
+            }
         });
+
+        console.table(checks);
+
+        const successfulChecks = checks.filter(({ similarity }) => similarity >= 0.85);
+
+        console.error('Successful checks', successfulChecks.length);
+
+        return successfulChecks.length / banPhaseChecks.length >= 0.8;
     }
 
     async #makeScreenshot() {
@@ -42,14 +54,14 @@ export class StreamService {
     }
 
     #listenEvents() {
-        document.body.addEventListener('click', ({ target }) => {
+        document.body.addEventListener('click', ({ target, pageX, pageY }) => {
             const canvasEl = this.#canvasEl;
 
             function getPosition(element) {
                 let left = 0;
                 let top = 0;
 
-                if (obj.offsetParent) {
+                if (element.offsetParent) {
                     do {
                         left += element.offsetLeft;
                         top += element.offsetTop;
@@ -65,11 +77,11 @@ export class StreamService {
                 const { width, height } = canvasEl;
 
                 const { left, top } = getPosition(canvasEl);
-                const x = e.pageX - left;
-                const y = e.pageY - top;
-                const context = ca.getContext('2d');
+                const x = pageX - left;
+                const y = pageY - top;
+                const context = canvasEl.getContext('2d');
                 const [r, g, b] = context.getImageData(x, y, 1, 1).data;
-                const color = `#${ColorService.rgbToHex(r, g, b)}`;
+                const color = ColorService.rgbToHex(r, g, b);
 
                 console.log({
                     color,

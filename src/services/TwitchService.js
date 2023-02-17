@@ -5,15 +5,12 @@ export class TwitchService {
     constructor({ chatInputEl, sendMessageButtonEl }) {
         this.#chatInputEl = chatInputEl
         this.#sendMessageButtonEl = sendMessageButtonEl
-
-        console.error(this.#chatInputEl, this.#sendMessageButtonEl);
     }
 
     sendMessage(message) {
         try {
             this.#typeMessage(message);
             this.#sendMessage();
-            console.error(message)
         } catch (e) {
             console.error(e)
         }
