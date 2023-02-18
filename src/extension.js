@@ -29,7 +29,7 @@ function runApp() {
 }
 
 async function processRound({ twitchService, streamService }) {
-    console.clear();
+    console.log('\n\n---------------------------------\n\n');
 
     const isBanPhase = await streamService.isBanPhase();
 

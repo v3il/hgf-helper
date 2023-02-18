@@ -39,9 +39,9 @@ export class StreamService {
 
         const successfulChecks = checks.filter(({ similarity }) => similarity >= 0.85);
 
-        console.error('Successful checks', successfulChecks.length);
+        console.log('Successful checks:', successfulChecks.length, '/', banPhaseChecks.length);
 
-        return successfulChecks.length / banPhaseChecks.length >= 0.8;
+        return successfulChecks.length / banPhaseChecks.length >= 0.7;
     }
 
     async #makeScreenshot() {
