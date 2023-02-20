@@ -20,7 +20,7 @@ export class StreamService {
         const canvas = this.#canvasEl;
         const { width, height } = canvas;
 
-        const checks = banPhaseChecks.map(({ xPercent, yPercent, color }) => {
+        const checksResults = banPhaseChecks.map(({ xPercent, yPercent, color }) => {
             const x = Math.floor(xPercent * width / 100)
             const y = Math.floor(yPercent * height / 100)
 
@@ -35,9 +35,11 @@ export class StreamService {
             }
         });
 
-        console.table(checks);
+        console.table(checksResults);
 
-        const successfulChecks = checks.filter(({ similarity }) => similarity >= 0.85);
+        const successfulChecks = checksResults.filter(({ similarity, actual }) => {
+            return actual === '000000' ? true : similarity >= 0.85;
+        });
 
         console.log('Successful checks:', successfulChecks.length, '/', banPhaseChecks.length);
 
