@@ -1,0 +1,17 @@
+.controls {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+}
+
+.controls_button {
+    padding: 16px 24px;
+    background-color: lightgreen;
+    width: 100%;
+    cursor: pointer;
+}
+
+.controls_button:not(:last-child) {
+    margin-bottom: 16px;
+}
