@@ -1,0 +1,23 @@
+.haf-extension-container {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 50px;
+    z-index: 100000;
+    background: #121212;
+    padding: 16px;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 3px;
+    color: white;
+}
+
+.haf-extension-container--ban-phase {
+    border-color: lightcoral;
+}
+
+.haf-extension-container--no-ban-phase {
+    border-color: lightgreen;
+}

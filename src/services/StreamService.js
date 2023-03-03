@@ -44,7 +44,11 @@ export class StreamService {
 
         console.log('Successful checks:', successfulChecks.length, '/', banPhaseChecks.length);
 
-        return successfulChecks.length / banPhaseChecks.length >= 0.7;
+        return {
+            successfulChecks: successfulChecks.length,
+            totalChecks: banPhaseChecks.length,
+            isBan: successfulChecks.length / banPhaseChecks.length >= 0.7
+        };
     }
 
     async #makeScreenshot() {
@@ -55,6 +59,14 @@ export class StreamService {
         this.#canvasEl = canvasEl;
         this.#canvasContainerEl.appendChild(canvasEl);
     }
+
+    // async function isStreamOnline(){
+    //     let response = await fetch(location.origin);
+    //     if( (await response.text()).includes('isLiveBroadcast') )
+    //         console.log(hitsquadbrawlers is live);
+    // else
+    //     console.log(hitsquadbrawlers is not live);
+    // }
 
     // #listenEvents() {
     //     document.body.addEventListener('click', ({ target, pageX, pageY }) => {

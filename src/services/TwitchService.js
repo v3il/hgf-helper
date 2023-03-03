@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 export class TwitchService {
     _chatInputEl;
     _sendMessageButtonEl;

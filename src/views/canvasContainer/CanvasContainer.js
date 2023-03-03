@@ -8,7 +8,6 @@ export class CanvasContainer {
     #el;
 
     constructor() {
-        // eslint-disable-next-line no-underscore-dangle
         this.#el = this._createElement();
     }
 
@@ -21,7 +20,6 @@ export class CanvasContainer {
         return this.el;
     }
 
-    // eslint-disable-next-line no-underscore-dangle
     _createElement() {
         const containerEl = document.createElement('div');
         containerEl.classList.add('haf-container');

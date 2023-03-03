@@ -27,6 +27,7 @@ module.exports = {
         'import/no-unresolved': 'off',
         'lines-between-class-members': 'off',
         'no-await-in-loop': 'off',
+        'no-underscore-dangle': 'off',
         'no-plusplus': 'off',
         'import/prefer-default-export': ["off", "any"],
         "import/no-extraneous-dependencies": ["error", { devDependencies: ["**/*.config.js"] }]
