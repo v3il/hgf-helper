@@ -1,5 +1,6 @@
+/* eslint-disable no-undef */
 const distFolderPath = 'dist';
-const body = document.body;
+const { body } = document;
 
 const script = document.createElement('script');
 script.type = 'text/javascript';

@@ -1,5 +1,3 @@
-export const promisifiedSetTimeout = (timeout) => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, timeout);
-    });
-}
+export const promisifiedSetTimeout = (timeout) => new Promise((resolve) => {
+    setTimeout(resolve, timeout);
+});

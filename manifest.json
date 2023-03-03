@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Hitsquadgodfather Auto Farm",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Hitsquadgodfather Auto Farm",
 
   "content_scripts": [
     {
       "js": ["dist/bootstrap.js"],
       "matches": ["https://www.twitch.tv/hitsquadgodfather", "https://www.twitch.tv/hitsquadbrawlers"],
-      "run_at": "document_end",
+      "run_at": "document_idle",
       "all_frames": true
     }
   ],

@@ -1,22 +1,24 @@
+/* eslint-disable no-underscore-dangle */
 export class TwitchService {
-    #chatInputEl;
-    #sendMessageButtonEl;
+    _chatInputEl;
+    _sendMessageButtonEl;
 
     constructor({ chatInputEl, sendMessageButtonEl }) {
-        this.#chatInputEl = chatInputEl
-        this.#sendMessageButtonEl = sendMessageButtonEl
+        this._chatInputEl = chatInputEl;
+        this._sendMessageButtonEl = sendMessageButtonEl;
     }
 
     sendMessage(message) {
         try {
-            this.#typeMessage(message);
-            this.#sendMessage();
+            this._typeMessage(message);
+            this._sendMessage();
         } catch (e) {
-            console.error(e)
+            console.error(e);
         }
     }
 
-    #getReactInstance(element) {
+    _getReactInstance(element) {
+        // eslint-disable-next-line no-restricted-syntax
         for (const key in element) {
             if (key.startsWith('__reactInternalInstance$')) {
                 return element[key];
@@ -26,12 +28,14 @@ export class TwitchService {
         return null;
     }
 
-    #searchReactParents(node, predicate, maxDepth = 15, depth = 0) {
+    _searchReactParents(node, predicate, maxDepth = 15, depth = 0) {
         try {
             if (predicate(node)) {
                 return node;
             }
-        } catch (_) {}
+        } catch (e) {
+            console.error(e);
+        }
 
         if (!node || depth > maxDepth) {
             return null;
@@ -40,26 +44,26 @@ export class TwitchService {
         const { return: parent } = node;
 
         if (parent) {
-            return this.#searchReactParents(parent, predicate, maxDepth, depth + 1);
+            return this._searchReactParents(parent, predicate, maxDepth, depth + 1);
         }
 
         return null;
     }
 
-    #getChatInput() {
+    _getChatInput() {
         try {
-            return this.#searchReactParents(
-                this.#getReactInstance(this.#chatInputEl),
+            return this._searchReactParents(
+                this._getReactInstance(this._chatInputEl),
                 (n) => n.memoizedProps && n.memoizedProps.componentType != null && n.memoizedProps.value != null
             );
         } catch (_) {
-            console.error(_)
-            return null
+            console.error(_);
+            return null;
         }
     }
 
-    #typeMessage(message) {
-        const chatInput = this.#getChatInput(this.#chatInputEl);
+    _typeMessage(message) {
+        const chatInput = this._getChatInput(this._chatInputEl);
 
         if (chatInput == null) {
             return;
@@ -70,7 +74,7 @@ export class TwitchService {
         chatInput.memoizedProps.onValueUpdate(message);
     }
 
-    #sendMessage() {
-        this.#sendMessageButtonEl.click();
+    _sendMessage() {
+        this._sendMessageButtonEl.click();
     }
 }

@@ -49,4 +49,4 @@ export const banPhaseChecks = [
         xPercent: 3.8970588235294117,
         yPercent: 10.980392156862745
     }
-]
+];

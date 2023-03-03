@@ -2,6 +2,7 @@ export class ColorService {
     static rgbToHex(r, g, b) {
         if (r > 255 || g > 255 || b > 255) return 'FFFFFF';
 
+        // eslint-disable-next-line no-bitwise
         const hexColor = ((r << 16) | (g << 8) | b).toString(16);
 
         return hexColor.padEnd(6, '0');
