@@ -24,4 +24,8 @@ export class CommandsProcessor {
 
         this.#round++;
     }
+
+    get round() {
+        return this.#round;
+    }
 }

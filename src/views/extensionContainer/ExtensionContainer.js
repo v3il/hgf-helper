@@ -36,6 +36,7 @@ export class ExtensionContainer {
         this.#nextRoundTime = Date.now() + config.intervalBetweenRounds;
         this._renderCheckResult(successfulChecks, totalChecks);
         this._toggleStatusClass(isBan);
+        this._renderRound();
 
         if (isBan || !this.#shouldProcessCommands) {
             return;
@@ -51,6 +52,10 @@ export class ExtensionContainer {
     mount(rootEl) {
         rootEl.appendChild(this.el);
         return this.el;
+    }
+
+    _renderRound() {
+        this.el.querySelector('[data-round]').textContent = `[${this.#commandsProcessor.round}]`;
     }
 
     _toggleStatusClass(isBan) {
