@@ -1,30 +1,35 @@
-import { CommandsProcessor, StreamService, TwitchService } from './services';
+import {
+    CommandsProcessor, StreamService, TwitchService, QuizService
+} from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 
-function getElements() {
-    const playerEl = document.querySelector('.persistent-player');
+function getTwitchElements() {
+    const mediaPlayerEl = document.querySelector('.persistent-player');
     const chatInputEl = document.querySelector('[data-a-target="chat-input"]');
     const sendMessageButtonEl = document.querySelector('[data-a-target="chat-send-button"]');
+    const chatContainerEl = document.querySelector('.chat-scrollable-area__message-container');
 
-    return { playerEl, chatInputEl, sendMessageButtonEl };
+    return [mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerEl];
 }
 
-function runApp() {
+function runApp([mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerEl]) {
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
-    const { playerEl, chatInputEl, sendMessageButtonEl } = getElements();
 
     const twitchService = new TwitchService({ chatInputEl, sendMessageButtonEl });
-    const streamService = new StreamService({ canvasContainerEl, playerEl });
+    const streamService = new StreamService({ canvasContainerEl, mediaPlayerEl });
     const commandsProcessor = new CommandsProcessor({ twitchService });
+
+    new QuizService({ chatContainerEl, streamService, twitchService }).start();
 
     ExtensionContainer.create({ commandsProcessor, streamService }).mount(document.body);
 }
 
 const intervalId = setInterval(() => {
-    const { playerEl, chatInputEl, sendMessageButtonEl } = getElements();
+    const twitchElements = getTwitchElements();
+    const isAllElementsExist = twitchElements.every((element) => element !== null);
 
-    if (playerEl && chatInputEl && sendMessageButtonEl) {
+    if (isAllElementsExist) {
         clearInterval(intervalId);
-        setTimeout(() => runApp(), 2000);
+        setTimeout(() => runApp(twitchElements), 2000);
     }
 }, 1000);

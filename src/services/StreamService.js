@@ -4,12 +4,12 @@ import { banPhaseChecks } from '../banPhaseChecks';
 
 export class StreamService {
     #canvasContainerEl;
-    #playerEl;
+    #mediaPlayerEl;
     #canvasEl;
 
-    constructor({ canvasContainerEl, playerEl }) {
+    constructor({ canvasContainerEl, mediaPlayerEl }) {
         this.#canvasContainerEl = canvasContainerEl;
-        this.#playerEl = playerEl;
+        this.#mediaPlayerEl = mediaPlayerEl;
 
         // this.#listenEvents();
     }
@@ -54,7 +54,7 @@ export class StreamService {
     async #makeScreenshot() {
         this.#canvasContainerEl.innerHTML = '';
 
-        const canvasEl = await html2canvas(this.#playerEl);
+        const canvasEl = await html2canvas(this.#mediaPlayerEl);
 
         this.#canvasEl = canvasEl;
         this.#canvasContainerEl.appendChild(canvasEl);
