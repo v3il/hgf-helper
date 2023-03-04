@@ -29,6 +29,6 @@ module.exports = {
         'no-underscore-dangle': 'off',
         'no-plusplus': 'off',
         'import/prefer-default-export': ["off", "any"],
-        "import/no-extraneous-dependencies": ["error", { devDependencies: ["**/*.config.js"] }]
+        "import/no-extraneous-dependencies": ["off"]
     }
 };

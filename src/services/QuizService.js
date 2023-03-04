@@ -53,7 +53,7 @@ export class QuizService {
 
         if (isCorrectUser && isCorrectAnswer) {
             this._pause();
-            // this._sendAnswer(message);
+            this._sendAnswer(message);
         }
     }
 
@@ -68,7 +68,7 @@ export class QuizService {
 
         const delay = Math.random() * 500 + 1000;
         await promisifiedSetTimeout(delay);
-        this.#twitchService.sendMessage(answer);
+        // this.#twitchService.sendMessage(answer);
     }
 
     _pause() {
