@@ -1,6 +1,7 @@
 import './style.css';
 import template from './template.html?raw';
 import { config } from '../../consts/config';
+import { promisifiedSetTimeout } from '../../utils/promisifiedSetTimeout';
 
 export class ExtensionContainer {
     static create({ commandsProcessor, streamService }) {
@@ -8,6 +9,7 @@ export class ExtensionContainer {
     }
 
     #el;
+    #timerEl;
     #commandsProcessor;
     #streamService;
     #nextRoundTime;
@@ -18,31 +20,43 @@ export class ExtensionContainer {
         this.#commandsProcessor = commandsProcessor;
         this.#streamService = streamService;
 
-        setInterval(() => {
-            this._processRound();
-        }, config.intervalBetweenRounds);
+        this.#timerEl = this.el.querySelector('[data-timer]');
+
+        setInterval(() => this._processRound(), config.intervalBetweenRounds);
 
         this._processRound();
-        this._renderClock();
+        this._renderTimer();
+        this._listenEvents();
+    }
 
-        this.el.querySelector('[data-toggle-messages]').addEventListener('change', ({ target }) => {
+    _listenEvents() {
+        const toggleMessagesEl = this.el.querySelector('[data-toggle-messages]');
+
+        toggleMessagesEl.addEventListener('change', ({ target }) => {
             this.#shouldProcessCommands = target.checked;
         });
     }
 
     async _processRound() {
+        const isStreamOnline = await this.#streamService.isStreamOnline();
+
+        if (!isStreamOnline) {
+            await promisifiedSetTimeout(30 * 1000);
+            return window.location.reload();
+        }
+
         const { successfulChecks, totalChecks, isBan } = await this.#streamService.isBanPhase();
 
         this.#nextRoundTime = Date.now() + config.intervalBetweenRounds;
-        this._renderCheckResult(successfulChecks, totalChecks);
+        this._renderChecksResult(successfulChecks, totalChecks);
         this._toggleStatusClass(isBan);
         this._renderRound();
 
         if (isBan || !this.#shouldProcessCommands) {
-            return;
+            return null;
         }
 
-        this.#commandsProcessor.processCommandsQueue();
+        return this.#commandsProcessor.processCommandsQueue();
     }
 
     get el() {
@@ -55,7 +69,8 @@ export class ExtensionContainer {
     }
 
     _renderRound() {
-        this.el.querySelector('[data-round]').textContent = `[${this.#commandsProcessor.round}]`;
+        const content = `[${this.#commandsProcessor.round} -> ${this.#commandsProcessor.round + 1}]`;
+        this.el.querySelector('[data-round]').textContent = content;
     }
 
     _toggleStatusClass(isBan) {
@@ -70,21 +85,12 @@ export class ExtensionContainer {
         return containerEl.firstChild;
     }
 
-    _renderClock() {
-        const el = this.el.querySelector('[data-clock]');
+    _renderTimer() {
+        this._updateTimer();
+        setInterval(() => this._updateTimer(), 1000);
+    }
 
-        setInterval(() => {
-            if (!this.#nextRoundTime) {
-                return;
-            }
-
-            const diff1 = Math.ceil((this.#nextRoundTime - Date.now()) / 1000);
-            const minutes1 = Math.floor(diff1 / 60);
-            const seconds1 = diff1 % 60;
-
-            el.textContent = `${this._formatNumber(minutes1)}:${this._formatNumber(seconds1)}`;
-        }, 1000);
-
+    _updateTimer() {
         if (!this.#nextRoundTime) {
             return;
         }
@@ -93,14 +99,14 @@ export class ExtensionContainer {
         const minutes = Math.floor(diff / 60);
         const seconds = diff % 60;
 
-        el.textContent = `${this._formatNumber(minutes)}:${this._formatNumber(seconds)}`;
+        this.#timerEl.textContent = `${this._formatNumber(minutes)}:${this._formatNumber(seconds)}`;
     }
 
     _formatNumber(n) {
         return n < 10 ? `0${n}` : n;
     }
 
-    _renderCheckResult(successfulChecks, totalChecks) {
+    _renderChecksResult(successfulChecks, totalChecks) {
         const successfulChecksEl = this.el.querySelector('[data-successful-checks]');
         const totalChecksEl = this.el.querySelector('[data-total-checks]');
 

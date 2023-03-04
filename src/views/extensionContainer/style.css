@@ -21,3 +21,7 @@
 .haf-extension-container--no-ban-phase {
     border-color: lightgreen;
 }
+
+.mr-4 {
+    margin-right: 16px;
+}

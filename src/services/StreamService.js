@@ -60,13 +60,12 @@ export class StreamService {
         this.#canvasContainerEl.appendChild(canvasEl);
     }
 
-    // async function isStreamOnline(){
-    //     let response = await fetch(location.origin);
-    //     if( (await response.text()).includes('isLiveBroadcast') )
-    //         console.log(hitsquadbrawlers is live);
-    // else
-    //     console.log(hitsquadbrawlers is not live);
-    // }
+    async isStreamOnline() {
+        const response = await fetch(window.location.href);
+        const pageHTML = await response.text();
+
+        return pageHTML.includes('isLiveBroadcast');
+    }
 
     // #listenEvents() {
     //     document.body.addEventListener('click', ({ target, pageX, pageY }) => {

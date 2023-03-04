@@ -4,7 +4,7 @@ import { config } from '../consts/config';
 
 export class CommandsProcessor {
     #twitchService;
-    #round = 0;
+    #round = 1;
 
     constructor({ twitchService }) {
         this.#twitchService = twitchService;
@@ -12,8 +12,6 @@ export class CommandsProcessor {
 
     async processCommandsQueue() {
         const commands = this.#round % 5 === 0 ? Commands.getAll() : Commands.getCommon();
-
-        console.log(this.#round, commands);
 
         // eslint-disable-next-line no-restricted-syntax
         for (const command of commands) {
