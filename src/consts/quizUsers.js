@@ -3,5 +3,9 @@ export const quizUsers = [
     'h3iiboss',
     'johnnyquizz',
     'tvvietch',
-    'valiriaz'
+    'valiriaz',
+    'ivanpetrov32',
+    'senechal',
+    'skyyyyyyyyyyy',
+    'andy_square'
 ];

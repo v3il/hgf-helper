@@ -51,6 +51,8 @@ export class QuizService {
         const isCorrectUser = quizUsers.includes(userName);
         const isCorrectAnswer = quizAnswers.includes(message);
 
+        // console.error(userName, message, isCorrectUser && isCorrectAnswer);
+
         if (isCorrectUser && isCorrectAnswer) {
             this._pause();
             this._sendAnswer(message);
@@ -66,7 +68,7 @@ export class QuizService {
 
         console.error('Send', answer);
 
-        const delay = Math.random() * 500 + 1000;
+        const delay = Math.random() * 500 + 2250;
         await promisifiedSetTimeout(delay);
         // this.#twitchService.sendMessage(answer);
     }
@@ -76,7 +78,7 @@ export class QuizService {
 
         setTimeout(() => {
             this.#isPaused = false;
-        }, 50 * 1000);
+        }, 40 * 1000);
     }
 
     start() {
@@ -84,5 +86,9 @@ export class QuizService {
             childList: true,
             subtree: true
         });
+    }
+
+    stop() {
+        this.#observer.unobserve(this.#chatContainerEl);
     }
 }

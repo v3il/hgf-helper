@@ -19,9 +19,13 @@ function runApp([mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerE
     const streamService = new StreamService({ canvasContainerEl, mediaPlayerEl });
     const commandsProcessor = new CommandsProcessor({ twitchService });
 
-    new QuizService({ chatContainerEl, streamService, twitchService }).start();
+    const quizService = new QuizService({
+        chatContainerEl,
+        streamService,
+        twitchService
+    });
 
-    ExtensionContainer.create({ commandsProcessor, streamService }).mount(document.body);
+    ExtensionContainer.create({ commandsProcessor, streamService, quizService }).mount(document.body);
 }
 
 const intervalId = setInterval(() => {

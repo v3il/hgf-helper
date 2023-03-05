@@ -12,11 +12,11 @@ export class CommandsProcessor {
     }
 
     async processCommandsQueue() {
-        const commands = this.#round % 5 === 0 ? Commands.getAll() : Commands.getCommon();
+        const commands = (this.#round % 5 === 0 || this.#round === 1) ? Commands.getAll() : Commands.getCommon();
 
         // eslint-disable-next-line no-restricted-syntax
         for (const command of shuffle(commands)) {
-            const delay = config.intervalBetweenCommands + Math.random() * 1000 + 1000;
+            const delay = config.intervalBetweenCommands + Math.random() * 1000;
             await promisifiedSetTimeout(delay);
             this.#twitchService.sendMessage(command);
         }

@@ -15,6 +15,8 @@ export class StreamService {
     }
 
     async isBanPhase() {
+        console.time('ban');
+
         await this.#makeScreenshot();
 
         const canvas = this.#canvasEl;
@@ -44,6 +46,8 @@ export class StreamService {
 
         console.log('Successful checks:', successfulChecks.length, '/', banPhaseChecks.length);
 
+        console.timeEnd('ban');
+
         return {
             successfulChecks: successfulChecks.length,
             totalChecks: banPhaseChecks.length,
@@ -60,12 +64,12 @@ export class StreamService {
         this.#canvasContainerEl.appendChild(canvasEl);
     }
 
-    async isStreamOnline() {
-        const response = await fetch(window.location.href);
-        const pageHTML = await response.text();
-
-        return pageHTML.includes('isLiveBroadcast');
-    }
+    // async isStreamOnline() {
+    //     const response = await fetch(window.location.href);
+    //     const pageHTML = await response.text();
+    //
+    //     return pageHTML.includes('isLiveBroadcast');
+    // }
 
     // #listenEvents() {
     //     document.body.addEventListener('click', ({ target, pageX, pageY }) => {

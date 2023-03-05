@@ -1,24 +1,25 @@
 import './style.css';
 import template from './template.html?raw';
 import { config } from '../../consts/config';
-import { promisifiedSetTimeout } from '../../utils/promisifiedSetTimeout';
 
 export class ExtensionContainer {
-    static create({ commandsProcessor, streamService }) {
-        return new ExtensionContainer({ commandsProcessor, streamService });
+    static create({ commandsProcessor, streamService, quizService }) {
+        return new ExtensionContainer({ commandsProcessor, streamService, quizService });
     }
 
     #el;
     #timerEl;
     #commandsProcessor;
     #streamService;
+    #quizService;
     #nextRoundTime;
     #shouldProcessCommands = true;
 
-    constructor({ commandsProcessor, streamService }) {
+    constructor({ commandsProcessor, streamService, quizService }) {
         this.#el = this._createElement();
         this.#commandsProcessor = commandsProcessor;
         this.#streamService = streamService;
+        this.#quizService = quizService;
 
         this.#timerEl = this.el.querySelector('[data-timer]');
 
@@ -27,6 +28,8 @@ export class ExtensionContainer {
         this._processRound();
         this._renderTimer();
         this._listenEvents();
+
+        this.#quizService.start();
     }
 
     _listenEvents() {
@@ -35,16 +38,19 @@ export class ExtensionContainer {
         toggleMessagesEl.addEventListener('change', ({ target }) => {
             this.#shouldProcessCommands = target.checked;
         });
+
+        const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
+
+        toggleQuizEl.addEventListener('change', ({ target }) => {
+            if (target.checked) {
+                return this.#quizService.start();
+            }
+
+            return this.#quizService.stop();
+        });
     }
 
     async _processRound() {
-        const isStreamOnline = await this.#streamService.isStreamOnline();
-
-        if (!isStreamOnline) {
-            await promisifiedSetTimeout(30 * 1000);
-            return window.location.reload();
-        }
-
         const { successfulChecks, totalChecks, isBan } = await this.#streamService.isBanPhase();
 
         this.#nextRoundTime = Date.now() + config.intervalBetweenRounds;
