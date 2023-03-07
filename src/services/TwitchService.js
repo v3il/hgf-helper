@@ -1,3 +1,5 @@
+import { config } from '../consts/config';
+
 export class TwitchService {
     _chatInputEl;
     _sendMessageButtonEl;
@@ -8,6 +10,10 @@ export class TwitchService {
     }
 
     sendMessage(message) {
+        if (!config.allowMessages) {
+            return;
+        }
+
         try {
             this._typeMessage(message);
             this._sendMessage();
