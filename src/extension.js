@@ -1,5 +1,5 @@
 import {
-    CommandsProcessor, StreamService, TwitchService, QuizService
+    CommandsProcessor, StreamService, TwitchChatService, QuizService
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 
@@ -15,7 +15,7 @@ function getTwitchElements() {
 function runApp([mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerEl]) {
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
 
-    const twitchService = new TwitchService({ chatInputEl, sendMessageButtonEl });
+    const twitchService = new TwitchChatService({ chatInputEl, sendMessageButtonEl });
     const streamService = new StreamService({ canvasContainerEl, mediaPlayerEl });
     const commandsProcessor = new CommandsProcessor({ twitchService });
 

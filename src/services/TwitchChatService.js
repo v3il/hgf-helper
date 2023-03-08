@@ -1,6 +1,6 @@
 import { config } from '../consts/config';
 
-export class TwitchService {
+export class TwitchChatService {
     _chatInputEl;
     _sendMessageButtonEl;
 
