@@ -135,6 +135,6 @@ export class QuizService {
     }
 
     stop() {
-        this.#observer.unobserve(this.#chatContainerEl);
+        this.#observer.disconnect();
     }
 }
