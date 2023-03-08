@@ -1,17 +1,18 @@
-import { config } from '../consts/config';
-
 export class TwitchChatService {
     _chatInputEl;
     _sendMessageButtonEl;
+    #streamService;
 
-    constructor({ chatInputEl, sendMessageButtonEl }) {
+    constructor({ chatInputEl, sendMessageButtonEl, streamService }) {
         this._chatInputEl = chatInputEl;
         this._sendMessageButtonEl = sendMessageButtonEl;
+        this.#streamService = streamService;
     }
 
     sendMessage(message) {
-        if (!config.allowMessages) {
-            return;
+        if (this.#streamService.isBanPhase) {
+            console.error('Skip', message);
+            return false;
         }
 
         try {
@@ -19,7 +20,10 @@ export class TwitchChatService {
             this._sendMessage();
         } catch (e) {
             console.error(e);
+            return false;
         }
+
+        return true;
     }
 
     _getReactInstance(element) {

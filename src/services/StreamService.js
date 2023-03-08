@@ -7,16 +7,20 @@ export class StreamService {
     #mediaPlayerEl;
     #canvasEl;
 
+    _lastCheckData;
+
     constructor({ canvasContainerEl, mediaPlayerEl }) {
         this.#canvasContainerEl = canvasContainerEl;
         this.#mediaPlayerEl = mediaPlayerEl;
 
+        setInterval(() => {
+            this.checkBanPhase();
+        }, 25000);
+
         // this.#listenEvents();
     }
 
-    async isBanPhase() {
-        console.time('ban');
-
+    async checkBanPhase() {
         await this.#makeScreenshot();
 
         const canvas = this.#canvasEl;
@@ -46,13 +50,60 @@ export class StreamService {
 
         console.log('Successful checks:', successfulChecks.length, '/', banPhaseChecks.length);
 
-        console.timeEnd('ban');
-
-        return {
+        this._lastCheckData = {
             successfulChecks: successfulChecks.length,
             totalChecks: banPhaseChecks.length,
             isBan: successfulChecks.length / banPhaseChecks.length >= 0.7
         };
+
+        console.error(this._lastCheckData);
+    }
+
+    get isBanPhase() {
+        return this._lastCheckData.isBan;
+
+        // console.time('ban');
+        //
+        // await this.#makeScreenshot();
+        //
+        // const canvas = this.#canvasEl;
+        // const { width, height } = canvas;
+        //
+        // const checksResults = banPhaseChecks.map(({ xPercent, yPercent, color }) => {
+        //     const x = Math.floor((xPercent * width) / 100);
+        //     const y = Math.floor((yPercent * height) / 100);
+        //
+        //     const context = canvas.getContext('2d', { willReadFrequently: true });
+        //     const [r, g, b] = context.getImageData(x, y, 1, 1).data;
+        //     const pixelHexColor = ColorService.rgbToHex(r, g, b);
+        //
+        //     return {
+        //         expected: color,
+        //         actual: pixelHexColor,
+        //         similarity: ColorService.getColorsSimilarity(color, pixelHexColor)
+        //     };
+        // });
+        //
+        // console.table(checksResults);
+        //
+        // const successfulChecks = checksResults.filter(({ similarity, actual }) => {
+        //     const isBlack = actual === '000000';
+        //     return isBlack ? true : similarity >= 0.85;
+        // });
+        //
+        // console.log('Successful checks:', successfulChecks.length, '/', banPhaseChecks.length);
+        //
+        // console.timeEnd('ban');
+        //
+        // return {
+        //     successfulChecks: successfulChecks.length,
+        //     totalChecks: banPhaseChecks.length,
+        //     isBan: successfulChecks.length / banPhaseChecks.length >= 0.7
+        // };
+    }
+
+    get lastCheckData() {
+        return this._lastCheckData;
     }
 
     async #makeScreenshot() {

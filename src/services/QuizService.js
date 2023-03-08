@@ -1,14 +1,10 @@
-import { pick, sample } from 'lodash';
-import { quizUsers } from '../consts/quizUsers';
-import { quizAnswers } from '../consts/quizAnswers';
-import { promisifiedSetTimeout } from '../utils/promisifiedSetTimeout';
-import { MessageTemplates } from '../consts';
+import { sample } from 'lodash';
+import { quizAnswers, MessageTemplates, selfUsernames } from '../consts';
 
 export class QuizService {
     #chatContainerEl;
     #observer;
-    #twitchService;
-    #streamService;
+    #twitchChatService;
 
     #isPaused = true;
 
@@ -23,11 +19,10 @@ export class QuizService {
         '!answer4': new Set()
     };
 
-    constructor({ chatContainerEl, twitchService, streamService }) {
+    constructor({ chatContainerEl, twitchChatService }) {
         this.#chatContainerEl = chatContainerEl;
         this.#observer = this._createObserver();
-        this.#twitchService = twitchService;
-        this.#streamService = streamService;
+        this.#twitchChatService = twitchChatService;
     }
 
     _createObserver() {
@@ -41,14 +36,6 @@ export class QuizService {
     }
 
     async _processAddedElement(addedElement) {
-        // if (!(addedElement instanceof HTMLElement)) {
-        //     return;
-        // }
-
-        // if (this.#isPaused) {
-        //     return;
-        // }
-
         const isMessage = addedElement.classList && addedElement.classList.contains('chat-line__message');
 
         if (!isMessage) {
@@ -80,11 +67,10 @@ export class QuizService {
             return;
         }
 
-        const isMe = userName === 'veil_94';
+        const isMe = selfUsernames.includes(userName);
         const isCorrectAnswer = quizAnswers.includes(message);
 
         if (!isCorrectAnswer || isMe) {
-            // console.error(2);
             return;
         }
 
@@ -99,40 +85,11 @@ export class QuizService {
             this.#isPaused = true;
             clearTimeout(this.#fallbackTimeoutId);
         }
-
-        // console.log(this.#answers);
-        // console.log(this._getCorrectAnswer());
-        // console.error();
-
-        // console.error(userName, message, isCorrectUser && isCorrectAnswer);
-
-        // if (isCorrectUser && isCorrectAnswer) {
-        // this._pause();
-        // this._sendAnswer(message);
-        // }
     }
 
     _sendAnswer(answer) {
-        // const { isBan } = await this.#streamService.isBanPhase();
-        //
-        // if (isBan) {
-        //     return;
-        // }
-
-        // console.error('Send', answer);
-
-        // const delay = Math.random() * 500 + 2250;
-        // await promisifiedSetTimeout(delay);
-        // this.#twitchService.sendMessage(answer);
+        this.#twitchChatService.sendMessage(answer);
     }
-
-    // _pause() {
-    //     this.#isPaused = true;
-    //
-    //     setTimeout(() => {
-    //         this.#isPaused = false;
-    //     }, 40 * 1000);
-    // }
 
     _getDesiredAnswerPosition() {
         return sample([2, 3, 4]);
@@ -174,10 +131,7 @@ export class QuizService {
     }
 
     start() {
-        this.#observer.observe(this.#chatContainerEl, {
-            childList: true
-            // subtree: true
-        });
+        this.#observer.observe(this.#chatContainerEl, { childList: true });
     }
 
     stop() {

@@ -1,6 +1,6 @@
 import './style.css';
 import template from './template.html?raw';
-import { config } from '../../consts/config';
+import { config } from '../../consts';
 
 export class ExtensionContainer {
     static create({ commandsProcessor, streamService, quizService }) {
@@ -51,7 +51,7 @@ export class ExtensionContainer {
     }
 
     async _processRound() {
-        const { successfulChecks, totalChecks, isBan } = await this.#streamService.isBanPhase();
+        const { successfulChecks, totalChecks, isBan } = this.#streamService.lastCheckData;
 
         this.#nextRoundTime = Date.now() + config.intervalBetweenRounds;
         this._renderChecksResult(successfulChecks, totalChecks);

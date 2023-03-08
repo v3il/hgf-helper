@@ -12,18 +12,15 @@ function getTwitchElements() {
     return [mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerEl];
 }
 
-function runApp([mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerEl]) {
+async function runApp([mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerEl]) {
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
 
-    const twitchService = new TwitchChatService({ chatInputEl, sendMessageButtonEl });
     const streamService = new StreamService({ canvasContainerEl, mediaPlayerEl });
-    const commandsProcessor = new CommandsProcessor({ twitchService });
+    await streamService.checkBanPhase();
 
-    const quizService = new QuizService({
-        chatContainerEl,
-        streamService,
-        twitchService
-    });
+    const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamService });
+    const commandsProcessor = new CommandsProcessor({ twitchService: twitchChatService });
+    const quizService = new QuizService({ chatContainerEl, twitchChatService });
 
     ExtensionContainer.create({ commandsProcessor, streamService, quizService }).mount(document.body);
 }
