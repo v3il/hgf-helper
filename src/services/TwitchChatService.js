@@ -10,7 +10,7 @@ export class TwitchChatService {
     }
 
     sendMessage(message) {
-        if (this.#streamService.isBanPhase || 1) {
+        if (this.#streamService.isBanPhase) {
             return false;
         }
 

@@ -1,7 +1,6 @@
 import { shuffle } from 'lodash';
-import { Commands } from '../consts/Commands';
+import { Commands, config } from '../consts';
 import { promisifiedSetTimeout } from '../utils/promisifiedSetTimeout';
-import { config } from '../consts/config';
 
 export class CommandsProcessor {
     #twitchService;
@@ -16,9 +15,10 @@ export class CommandsProcessor {
 
         // eslint-disable-next-line no-restricted-syntax
         for (const command of shuffle(commands)) {
+            // this.#twitchService.sendMessage(command);
+
             const delay = config.intervalBetweenCommands + Math.random() * 1000;
             await promisifiedSetTimeout(delay);
-            this.#twitchService.sendMessage(command);
         }
 
         this.#round++;

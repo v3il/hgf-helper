@@ -3,8 +3,12 @@ import template from './template.html?raw';
 import { config } from '../../consts';
 
 export class ExtensionContainer {
-    static create({ commandsProcessor, streamService, quizService }) {
-        return new ExtensionContainer({ commandsProcessor, streamService, quizService });
+    static create({
+        commandsProcessor, streamService, quizService, twitchChatService
+    }) {
+        return new ExtensionContainer({
+            commandsProcessor, streamService, quizService, twitchChatService
+        });
     }
 
     #el;
@@ -12,14 +16,18 @@ export class ExtensionContainer {
     #commandsProcessor;
     #streamService;
     #quizService;
+    _twitchChatService;
     #nextRoundTime;
     #shouldProcessCommands = true;
 
-    constructor({ commandsProcessor, streamService, quizService }) {
+    constructor({
+        commandsProcessor, streamService, quizService, twitchChatService
+    }) {
         this.#el = this._createElement();
         this.#commandsProcessor = commandsProcessor;
         this.#streamService = streamService;
         this.#quizService = quizService;
+        this._twitchChatService = twitchChatService;
 
         this.#timerEl = this.el.querySelector('[data-timer]');
 
@@ -52,6 +60,14 @@ export class ExtensionContainer {
 
         this.#streamService.events.on('check', () => {
             this._renderChecksResult();
+        });
+
+        this.el.addEventListener('click', ({ target }) => {
+            const { command } = target.dataset;
+
+            if (command) {
+                this._twitchChatService.sendMessage(command);
+            }
         });
     }
 

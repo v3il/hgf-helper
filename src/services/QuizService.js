@@ -12,17 +12,16 @@ export class QuizService {
 
     #desiredAnswerPosition;
 
-    #answers = {
-        '!answer1': new Set(),
-        '!answer2': new Set(),
-        '!answer3': new Set(),
-        '!answer4': new Set()
-    };
+    #answers = {};
 
     constructor({ chatContainerEl, twitchChatService }) {
         this.#chatContainerEl = chatContainerEl;
         this.#observer = this._createObserver();
         this.#twitchChatService = twitchChatService;
+
+        quizAnswers.forEach((answer) => {
+            this.#answers[answer] = new Set();
+        });
     }
 
     _createObserver() {
@@ -107,7 +106,7 @@ export class QuizService {
                 this.#isPaused = true;
                 this._sendAnswer(answer);
             }
-        }, 52500);
+        }, 50000);
     }
 
     _getCorrectAnswer() {
