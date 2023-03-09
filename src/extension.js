@@ -2,6 +2,7 @@ import {
     CommandsProcessor, StreamService, TwitchChatService, QuizService
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
+import { EventEmitter } from './EventsEmitter';
 
 function getTwitchElements() {
     const mediaPlayerEl = document.querySelector('.persistent-player');
@@ -15,7 +16,12 @@ function getTwitchElements() {
 async function runApp([mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerEl]) {
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
 
-    const streamService = new StreamService({ canvasContainerEl, mediaPlayerEl });
+    const streamService = new StreamService({
+        canvasContainerEl,
+        mediaPlayerEl,
+        events: EventEmitter.create()
+    });
+
     await streamService.checkBanPhase();
 
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamService });
@@ -31,6 +37,6 @@ const intervalId = setInterval(() => {
 
     if (isAllElementsExist) {
         clearInterval(intervalId);
-        setTimeout(() => runApp(twitchElements), 2000);
+        setTimeout(() => runApp(twitchElements), 5000);
     }
 }, 1000);

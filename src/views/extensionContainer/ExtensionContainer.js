@@ -28,6 +28,7 @@ export class ExtensionContainer {
         this._processRound();
         this._renderTimer();
         this._listenEvents();
+        this._renderChecksResult();
 
         this.#quizService.start();
     }
@@ -48,13 +49,16 @@ export class ExtensionContainer {
 
             return this.#quizService.stop();
         });
+
+        this.#streamService.events.on('check', () => {
+            this._renderChecksResult();
+        });
     }
 
     async _processRound() {
-        const { successfulChecks, totalChecks, isBan } = this.#streamService.lastCheckData;
+        const isBan = this.#streamService.isBanPhase;
 
         this.#nextRoundTime = Date.now() + config.intervalBetweenRounds;
-        this._renderChecksResult(successfulChecks, totalChecks);
         this._toggleStatusClass(isBan);
         this._renderRound();
 
@@ -75,8 +79,7 @@ export class ExtensionContainer {
     }
 
     _renderRound() {
-        const content = `[${this.#commandsProcessor.round} -> ${this.#commandsProcessor.round + 1}]`;
-        this.el.querySelector('[data-round]').textContent = content;
+        this.el.querySelector('[data-round]').textContent = `[${this.#commandsProcessor.round}]`;
     }
 
     _toggleStatusClass(isBan) {
@@ -105,16 +108,18 @@ export class ExtensionContainer {
         const minutes = Math.floor(diff / 60);
         const seconds = diff % 60;
 
-        this.#timerEl.textContent = `${this._formatNumber(minutes)}:${this._formatNumber(seconds)}`;
+        this.#timerEl.textContent = `(${this._formatNumber(minutes)}:${this._formatNumber(seconds)})`;
     }
 
     _formatNumber(n) {
         return n < 10 ? `0${n}` : n;
     }
 
-    _renderChecksResult(successfulChecks, totalChecks) {
+    _renderChecksResult() {
         const successfulChecksEl = this.el.querySelector('[data-successful-checks]');
         const totalChecksEl = this.el.querySelector('[data-total-checks]');
+
+        const { successfulChecks, totalChecks } = this.#streamService.lastCheckData;
 
         successfulChecksEl.textContent = successfulChecks;
         totalChecksEl.textContent = totalChecks;

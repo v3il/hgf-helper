@@ -10,8 +10,7 @@ export class TwitchChatService {
     }
 
     sendMessage(message) {
-        if (this.#streamService.isBanPhase) {
-            console.error('Skip', message);
+        if (this.#streamService.isBanPhase || 1) {
             return false;
         }
 

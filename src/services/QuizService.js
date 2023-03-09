@@ -58,12 +58,9 @@ export class QuizService {
 
             this._resetState();
             this._registerFallback();
-
-            console.log('new question', this.#desiredAnswerPosition);
         }
 
         if (this.#isPaused) {
-            // console.error(1);
             return;
         }
 
@@ -110,7 +107,7 @@ export class QuizService {
                 this.#isPaused = true;
                 this._sendAnswer(answer);
             }
-        }, 45000);
+        }, 52500);
     }
 
     _getCorrectAnswer() {
