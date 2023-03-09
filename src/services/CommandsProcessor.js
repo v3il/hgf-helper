@@ -15,7 +15,7 @@ export class CommandsProcessor {
 
         // eslint-disable-next-line no-restricted-syntax
         for (const command of shuffle(commands)) {
-            // this.#twitchService.sendMessage(command);
+            this.#twitchService.sendMessage(command);
 
             const delay = config.intervalBetweenCommands + Math.random() * 1000;
             await promisifiedSetTimeout(delay);
