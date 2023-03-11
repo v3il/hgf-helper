@@ -69,6 +69,15 @@ export class ExtensionContainer {
                 this._twitchChatService.sendMessage(command);
             }
         });
+
+        window.document.addEventListener('keydown', (e) => {
+            const isAnswerKey = ['1', '2', '3', '4'].includes(e.key);
+
+            if (isAnswerKey) {
+                console.error('Send', `!answer${e.key}`);
+                this._twitchChatService.sendMessage(`!answer${e.key}`);
+            }
+        });
     }
 
     async _processRound() {

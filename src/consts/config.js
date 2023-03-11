@@ -1,4 +1,4 @@
 export const config = Object.freeze({
-    intervalBetweenRounds: 5 * 60 * 1000,
+    intervalBetweenRounds: 6 * 60 * 1000,
     intervalBetweenCommands: 10000
 });
