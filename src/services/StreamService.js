@@ -73,7 +73,20 @@ export class StreamService {
     async #makeScreenshot() {
         this.#canvasContainerEl.innerHTML = '';
 
-        const canvasEl = await html2canvas(this.#mediaPlayerEl);
+        const canvasEl = await html2canvas(this.#mediaPlayerEl, { removeContainer: false });
+
+        document.querySelectorAll('.html2canvas-container').forEach((el) => {
+            const iframe = el.contentWindow;
+
+            if (el) {
+                // eslint-disable-next-line no-param-reassign
+                el.src = 'about:blank';
+                iframe.document.write('');
+                iframe.document.clear();
+                iframe.close();
+                el.remove();
+            }
+        });
 
         this.#canvasEl = canvasEl;
         this.#canvasContainerEl.appendChild(canvasEl);
