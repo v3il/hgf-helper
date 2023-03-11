@@ -98,6 +98,8 @@ export class QuizService {
     _registerFallback() {
         const delay = 47 + Math.floor(Math.random() * 6);
 
+        console.error(delay * 1000);
+
         this.#fallbackTimeoutId = setTimeout(() => {
             const { answer, count } = this._getCorrectAnswer();
 
@@ -108,7 +110,7 @@ export class QuizService {
                 this.#isPaused = true;
                 this._sendAnswer(answer);
             }
-        }, delay);
+        }, delay * 1000);
     }
 
     _getCorrectAnswer() {
