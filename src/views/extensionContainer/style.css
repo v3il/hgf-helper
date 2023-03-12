@@ -38,19 +38,6 @@
     display: inline-block;
 }
 
-.haf-extension-container__answers {
-    display: flex;
-    gap: 8px;
-}
-
-.haf-extension-container__answer-button {
-    text-align: center;
-    border: 1px solid white;
-    border-radius: 2px;
-    padding: 2px 5px;
-    font-size: 12px;
-}
-
 .mr-2 {
     margin-right: 8px;
 }

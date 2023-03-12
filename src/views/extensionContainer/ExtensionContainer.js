@@ -62,14 +62,6 @@ export class ExtensionContainer {
             this._renderChecksResult();
         });
 
-        this.el.addEventListener('click', ({ target }) => {
-            const { command } = target.dataset;
-
-            if (command) {
-                this._twitchChatService.sendMessage(command);
-            }
-        });
-
         window.document.addEventListener('keydown', (e) => {
             const isAnswerKey = ['1', '2', '3', '4'].includes(e.key);
 

@@ -10,7 +10,7 @@ export class TwitchChatService {
     }
 
     sendMessage(message) {
-        if (this.#streamStatusService.isBanPhase || 1) {
+        if (this.#streamStatusService.isBanPhase) {
             return false;
         }
 
@@ -26,7 +26,6 @@ export class TwitchChatService {
     }
 
     _getReactInstance(element) {
-        // eslint-disable-next-line no-restricted-syntax
         for (const key in element) {
             if (key.startsWith('__reactInternalInstance$')) {
                 return element[key];
