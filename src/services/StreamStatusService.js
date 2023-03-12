@@ -1,20 +1,22 @@
-import html2canvas from 'html2canvas';
 import { ColorService } from './ColorService';
 import { banPhaseChecks } from '../banPhaseChecks';
 
-export class StreamService {
+export class StreamStatusService {
     #canvasContainerEl;
-    #mediaPlayerEl;
     #canvasEl;
+    #videoEl;
 
     _lastCheckData;
 
     events;
 
-    constructor({ canvasContainerEl, mediaPlayerEl, events }) {
+    constructor({ canvasContainerEl, events, videoEl }) {
         this.#canvasContainerEl = canvasContainerEl;
-        this.#mediaPlayerEl = mediaPlayerEl;
+        this.#videoEl = videoEl;
         this.events = events;
+
+        this.#canvasEl = this._createCanvas();
+        this.#canvasContainerEl.appendChild(this.#canvasEl);
 
         setInterval(() => {
             this.checkBanPhase();
@@ -23,8 +25,12 @@ export class StreamService {
         // this.#listenEvents();
     }
 
+    _createCanvas() {
+        return document.createElement('canvas');
+    }
+
     async checkBanPhase() {
-        await this.#makeScreenshot();
+        this.#makeScreenshot();
 
         const canvas = this.#canvasEl;
         const { width, height } = canvas;
@@ -59,6 +65,7 @@ export class StreamService {
             isBan: successfulChecks.length / banPhaseChecks.length >= 0.7
         };
 
+        this.#clearCanvas();
         this.events.emit('check');
     }
 
@@ -70,26 +77,19 @@ export class StreamService {
         return this._lastCheckData;
     }
 
-    async #makeScreenshot() {
-        this.#canvasContainerEl.innerHTML = '';
+    #makeScreenshot() {
+        this.#canvasEl.width = this.#videoEl.clientWidth;
+        this.#canvasEl.height = this.#videoEl.clientHeight;
 
-        const canvasEl = await html2canvas(this.#mediaPlayerEl, { removeContainer: false });
+        const ctx = this.#canvasEl.getContext('2d');
 
-        document.querySelectorAll('.html2canvas-container').forEach((el) => {
-            const iframe = el.contentWindow;
+        ctx.drawImage(this.#videoEl, 0, 0, this.#canvasEl.width, this.#canvasEl.height);
+    }
 
-            if (el) {
-                // eslint-disable-next-line no-param-reassign
-                el.src = 'about:blank';
-                iframe.document.write('');
-                iframe.document.clear();
-                iframe.close();
-                el.remove();
-            }
-        });
+    #clearCanvas() {
+        const ctx = this.#canvasEl.getContext('2d');
 
-        this.#canvasEl = canvasEl;
-        this.#canvasContainerEl.appendChild(canvasEl);
+        ctx.clearRect(0, 0, this.#canvasEl.width, this.#canvasEl.height);
     }
 
     // async isStreamOnline() {

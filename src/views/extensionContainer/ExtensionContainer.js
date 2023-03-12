@@ -4,28 +4,28 @@ import { config } from '../../consts';
 
 export class ExtensionContainer {
     static create({
-        commandsProcessor, streamService, quizService, twitchChatService
+        commandsProcessor, streamStatusService, quizService, twitchChatService
     }) {
         return new ExtensionContainer({
-            commandsProcessor, streamService, quizService, twitchChatService
+            commandsProcessor, streamStatusService, quizService, twitchChatService
         });
     }
 
     #el;
     #timerEl;
     #commandsProcessor;
-    #streamService;
+    #streamStatusService;
     #quizService;
     _twitchChatService;
     #nextRoundTime;
     #shouldProcessCommands = true;
 
     constructor({
-        commandsProcessor, streamService, quizService, twitchChatService
+        commandsProcessor, streamStatusService, quizService, twitchChatService
     }) {
         this.#el = this._createElement();
         this.#commandsProcessor = commandsProcessor;
-        this.#streamService = streamService;
+        this.#streamStatusService = streamStatusService;
         this.#quizService = quizService;
         this._twitchChatService = twitchChatService;
 
@@ -58,7 +58,7 @@ export class ExtensionContainer {
             return this.#quizService.stop();
         });
 
-        this.#streamService.events.on('check', () => {
+        this.#streamStatusService.events.on('check', () => {
             this._renderChecksResult();
         });
 
@@ -81,7 +81,7 @@ export class ExtensionContainer {
     }
 
     async _processRound() {
-        const isBan = this.#streamService.isBanPhase;
+        const isBan = this.#streamStatusService.isBanPhase;
 
         this.#nextRoundTime = Date.now() + config.intervalBetweenRounds;
         this._toggleStatusClass(isBan);
@@ -144,7 +144,7 @@ export class ExtensionContainer {
         const successfulChecksEl = this.el.querySelector('[data-successful-checks]');
         const totalChecksEl = this.el.querySelector('[data-total-checks]');
 
-        const { successfulChecks, totalChecks } = this.#streamService.lastCheckData;
+        const { successfulChecks, totalChecks } = this.#streamStatusService.lastCheckData;
 
         successfulChecksEl.textContent = successfulChecks;
         totalChecksEl.textContent = totalChecks;

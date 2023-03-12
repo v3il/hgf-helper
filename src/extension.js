@@ -1,36 +1,36 @@
 import {
-    CommandsProcessor, StreamService, TwitchChatService, QuizService
+    CommandsProcessor, StreamStatusService, TwitchChatService, QuizService
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 import { EventEmitter } from './EventsEmitter';
 
 function getTwitchElements() {
-    const mediaPlayerEl = document.querySelector('.persistent-player');
     const chatInputEl = document.querySelector('[data-a-target="chat-input"]');
     const sendMessageButtonEl = document.querySelector('[data-a-target="chat-send-button"]');
     const chatContainerEl = document.querySelector('.chat-scrollable-area__message-container');
+    const videoEl = document.querySelector('video');
 
-    return [mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerEl];
+    return [chatInputEl, sendMessageButtonEl, chatContainerEl, videoEl];
 }
 
-async function runApp([mediaPlayerEl, chatInputEl, sendMessageButtonEl, chatContainerEl]) {
+async function runApp([chatInputEl, sendMessageButtonEl, chatContainerEl, videoEl]) {
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
 
-    const streamService = new StreamService({
+    const streamStatusService = new StreamStatusService({
         canvasContainerEl,
-        mediaPlayerEl,
+        videoEl,
         events: EventEmitter.create()
     });
 
-    await streamService.checkBanPhase();
+    await streamStatusService.checkBanPhase();
 
-    const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamService });
+    const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
     const commandsProcessor = new CommandsProcessor({ twitchService: twitchChatService });
     const quizService = new QuizService({ chatContainerEl, twitchChatService });
 
     ExtensionContainer.create({
         commandsProcessor,
-        streamService,
+        streamStatusService,
         quizService,
         twitchChatService
     }).mount(document.body);

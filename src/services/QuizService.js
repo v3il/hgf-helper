@@ -96,7 +96,7 @@ export class QuizService {
     }
 
     _registerFallback() {
-        const delay = 47 + Math.floor(Math.random() * 6);
+        const delay = 40 + Math.floor(Math.random() * 14);
 
         console.error(delay * 1000);
 

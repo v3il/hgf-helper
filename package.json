@@ -15,7 +15,6 @@
     "vite-plugin-eslint": "^1.8.1"
   },
   "dependencies": {
-    "html2canvas": "^1.4.1",
     "lodash": "^4.17.21"
   }
 }
