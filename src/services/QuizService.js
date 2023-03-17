@@ -2,25 +2,27 @@ import { sample } from 'lodash';
 import { quizAnswers, MessageTemplates, selfUsernames } from '../consts';
 
 export class QuizService {
-    #chatContainerEl;
-    #observer;
-    #twitchChatService;
+    _chatContainerEl;
+    _observer;
+    _twitchChatService;
+    _twitchUser;
 
-    #isPaused = true;
+    _isPaused = true;
 
-    #fallbackTimeoutId;
+    _fallbackTimeoutId;
 
-    #desiredAnswerPosition;
+    _desiredAnswerPosition;
 
-    #answers = {};
+    _answers = {};
 
-    constructor({ chatContainerEl, twitchChatService }) {
-        this.#chatContainerEl = chatContainerEl;
-        this.#observer = this._createObserver();
-        this.#twitchChatService = twitchChatService;
+    constructor({ chatContainerEl, twitchChatService, twitchUser }) {
+        this._chatContainerEl = chatContainerEl;
+        this._observer = this._createObserver();
+        this._twitchChatService = twitchChatService;
+        this._twitchUser = twitchUser;
 
         quizAnswers.forEach((answer) => {
-            this.#answers[answer] = new Set();
+            this._answers[answer] = new Set();
         });
     }
 
@@ -52,14 +54,16 @@ export class QuizService {
         const message = messageEl.textContent.toLowerCase();
 
         if (message.includes(MessageTemplates.NEW_QUIZ_QUESTION)) {
-            this.#isPaused = false;
-            this.#desiredAnswerPosition = this._getDesiredAnswerPosition();
+            this._isPaused = false;
+            this._desiredAnswerPosition = this._getDesiredAnswerPosition();
+
+            console.error('Desired', this._desiredAnswerPosition);
 
             this._resetState();
             this._registerFallback();
         }
 
-        if (this.#isPaused) {
+        if (this._isPaused) {
             return;
         }
 
@@ -70,21 +74,21 @@ export class QuizService {
             return;
         }
 
-        this.#answers[message].add(userName);
+        this._answers[message].add(userName);
         const { answer, count } = this._getCorrectAnswer();
 
         console.error(answer, count);
 
-        if (count === this.#desiredAnswerPosition) {
-            console.error('send', answer);
+        if (count === this._desiredAnswerPosition) {
+            console.error('send', answer, count);
             this._sendAnswer(answer);
-            this.#isPaused = true;
-            clearTimeout(this.#fallbackTimeoutId);
+            this._isPaused = true;
+            clearTimeout(this._fallbackTimeoutId);
         }
     }
 
     _sendAnswer(answer) {
-        this.#twitchChatService.sendMessage(answer);
+        this._twitchChatService.sendMessage(answer);
     }
 
     _getDesiredAnswerPosition() {
@@ -92,7 +96,7 @@ export class QuizService {
     }
 
     _resetState() {
-        Object.values(this.#answers).forEach((set) => set.clear());
+        Object.values(this._answers).forEach((set) => set.clear());
     }
 
     _registerFallback() {
@@ -100,14 +104,14 @@ export class QuizService {
 
         console.error(delay * 1000);
 
-        this.#fallbackTimeoutId = setTimeout(() => {
+        this._fallbackTimeoutId = setTimeout(() => {
             const { answer, count } = this._getCorrectAnswer();
 
             console.error('Fallback', answer, count);
 
             if (count >= 1) {
                 console.error('send', answer);
-                this.#isPaused = true;
+                this._isPaused = true;
                 this._sendAnswer(answer);
             }
         }, delay * 1000);
@@ -118,8 +122,8 @@ export class QuizService {
         let count = 0;
 
         // eslint-disable-next-line guard-for-in,no-restricted-syntax
-        for (const command in this.#answers) {
-            const set = this.#answers[command];
+        for (const command in this._answers) {
+            const set = this._answers[command];
 
             if (set.size > count) {
                 answer = command;
@@ -131,10 +135,10 @@ export class QuizService {
     }
 
     start() {
-        this.#observer.observe(this.#chatContainerEl, { childList: true });
+        this._observer.observe(this._chatContainerEl, { childList: true });
     }
 
     stop() {
-        this.#observer.disconnect();
+        this._observer.disconnect();
     }
 }

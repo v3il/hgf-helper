@@ -1,6 +1,6 @@
 import './style.css';
 import template from './template.html?raw';
-import { config } from '../../consts';
+import { INTERVAL_BETWEEN_ROUNDS } from '../../../appConfig';
 
 export class ExtensionContainer {
     static create({
@@ -11,54 +11,54 @@ export class ExtensionContainer {
         });
     }
 
-    #el;
-    #timerEl;
-    #commandsProcessor;
-    #streamStatusService;
-    #quizService;
+    _el;
+    _timerEl;
+    _commandsProcessor;
+    _streamStatusService;
+    _quizService;
     _twitchChatService;
-    #nextRoundTime;
-    #shouldProcessCommands = true;
+    _nextRoundTime;
+    _shouldProcessCommands = true;
 
     constructor({
         commandsProcessor, streamStatusService, quizService, twitchChatService
     }) {
-        this.#el = this._createElement();
-        this.#commandsProcessor = commandsProcessor;
-        this.#streamStatusService = streamStatusService;
-        this.#quizService = quizService;
+        this._el = this._createElement();
+        this._commandsProcessor = commandsProcessor;
+        this._streamStatusService = streamStatusService;
+        this._quizService = quizService;
         this._twitchChatService = twitchChatService;
 
-        this.#timerEl = this.el.querySelector('[data-timer]');
+        this._timerEl = this.el.querySelector('[data-timer]');
 
-        setInterval(() => this._processRound(), config.intervalBetweenRounds);
+        setInterval(() => this._processRound(), INTERVAL_BETWEEN_ROUNDS);
 
         this._processRound();
         this._renderTimer();
         this._listenEvents();
         this._renderChecksResult();
 
-        this.#quizService.start();
+        this._quizService.start();
     }
 
     _listenEvents() {
         const toggleMessagesEl = this.el.querySelector('[data-toggle-messages]');
 
         toggleMessagesEl.addEventListener('change', ({ target }) => {
-            this.#shouldProcessCommands = target.checked;
+            this._shouldProcessCommands = target.checked;
         });
 
         const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
 
         toggleQuizEl.addEventListener('change', ({ target }) => {
             if (target.checked) {
-                return this.#quizService.start();
+                return this._quizService.start();
             }
 
-            return this.#quizService.stop();
+            return this._quizService.stop();
         });
 
-        this.#streamStatusService.events.on('check', () => {
+        this._streamStatusService.events.on('check', () => {
             this._renderChecksResult();
         });
 
@@ -73,21 +73,21 @@ export class ExtensionContainer {
     }
 
     async _processRound() {
-        const isBan = this.#streamStatusService.isBanPhase;
+        const isBan = this._streamStatusService.isBanPhase;
 
-        this.#nextRoundTime = Date.now() + config.intervalBetweenRounds;
+        this._nextRoundTime = Date.now() + INTERVAL_BETWEEN_ROUNDS;
         this._toggleStatusClass(isBan);
         this._renderRound();
 
-        if (isBan || !this.#shouldProcessCommands) {
+        if (isBan || !this._shouldProcessCommands) {
             return null;
         }
 
-        return this.#commandsProcessor.processCommandsQueue();
+        return this._commandsProcessor.processCommandsQueue();
     }
 
     get el() {
-        return this.#el;
+        return this._el;
     }
 
     mount(rootEl) {
@@ -96,7 +96,7 @@ export class ExtensionContainer {
     }
 
     _renderRound() {
-        this.el.querySelector('[data-round]').textContent = `[${this.#commandsProcessor.round}]`;
+        this.el.querySelector('[data-round]').textContent = `[${this._commandsProcessor.round}]`;
     }
 
     _toggleStatusClass(isBan) {
@@ -117,15 +117,15 @@ export class ExtensionContainer {
     }
 
     _updateTimer() {
-        if (!this.#nextRoundTime) {
+        if (!this._nextRoundTime) {
             return;
         }
 
-        const diff = Math.ceil((this.#nextRoundTime - Date.now()) / 1000);
+        const diff = Math.ceil((this._nextRoundTime - Date.now()) / 1000);
         const minutes = Math.floor(diff / 60);
         const seconds = diff % 60;
 
-        this.#timerEl.textContent = `(${this._formatNumber(minutes)}:${this._formatNumber(seconds)})`;
+        this._timerEl.textContent = `(${this._formatNumber(minutes)}:${this._formatNumber(seconds)})`;
     }
 
     _formatNumber(n) {
@@ -136,7 +136,7 @@ export class ExtensionContainer {
         const successfulChecksEl = this.el.querySelector('[data-successful-checks]');
         const totalChecksEl = this.el.querySelector('[data-total-checks]');
 
-        const { successfulChecks, totalChecks } = this.#streamStatusService.lastCheckData;
+        const { successfulChecks, totalChecks } = this._streamStatusService.lastCheckData;
 
         successfulChecksEl.textContent = successfulChecks;
         totalChecksEl.textContent = totalChecks;

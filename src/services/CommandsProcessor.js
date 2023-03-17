@@ -1,30 +1,31 @@
 import { shuffle } from 'lodash';
-import { Commands, config } from '../consts';
+import { Commands } from '../consts';
 import { promisifiedSetTimeout } from '../utils/promisifiedSetTimeout';
+import { INTERVAL_BETWEEN_COMMANDS } from '../../appConfig';
 
 export class CommandsProcessor {
-    #twitchService;
-    #round = 1;
+    _twitchService;
+    _round = 1;
 
     constructor({ twitchService }) {
-        this.#twitchService = twitchService;
+        this._twitchService = twitchService;
     }
 
     async processCommandsQueue() {
-        const commands = (this.#round % 5 === 0 || this.#round === 1) ? Commands.getAll() : Commands.getCommon();
+        const commands = (this._round % 5 === 0 || this._round === 1) ? Commands.getAll() : Commands.getCommon();
 
         // eslint-disable-next-line no-restricted-syntax
         for (const command of shuffle(commands)) {
-            this.#twitchService.sendMessage(command);
+            this._twitchService.sendMessage(command);
 
-            const delay = config.intervalBetweenCommands + Math.random() * 1000;
+            const delay = INTERVAL_BETWEEN_COMMANDS + Math.random() * 1000;
             await promisifiedSetTimeout(delay);
         }
 
-        this.#round++;
+        this._round++;
     }
 
     get round() {
-        return this.#round;
+        return this._round;
     }
 }

@@ -3,17 +3,28 @@ import {
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 import { EventEmitter } from './EventsEmitter';
+import { TwitchUser } from './models';
 
 function getTwitchElements() {
+    const userDropdownToggleEl = document.querySelector('[data-a-target="user-menu-toggle"]');
+
+    userDropdownToggleEl?.click();
+
     const chatInputEl = document.querySelector('[data-a-target="chat-input"]');
     const sendMessageButtonEl = document.querySelector('[data-a-target="chat-send-button"]');
     const chatContainerEl = document.querySelector('.chat-scrollable-area__message-container');
     const videoEl = document.querySelector('video');
+    const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
 
-    return [chatInputEl, sendMessageButtonEl, chatContainerEl, videoEl];
+    userDropdownToggleEl?.click();
+
+    return [chatInputEl, sendMessageButtonEl, chatContainerEl, videoEl, userNameEl];
 }
 
-async function runApp([chatInputEl, sendMessageButtonEl, chatContainerEl, videoEl]) {
+async function runApp([chatInputEl, sendMessageButtonEl, chatContainerEl, videoEl, userNameEl]) {
+    const userName = userNameEl.textContent.toLowerCase();
+    const twitchUser = new TwitchUser({ userName });
+
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
 
     const streamStatusService = new StreamStatusService({
@@ -26,7 +37,7 @@ async function runApp([chatInputEl, sendMessageButtonEl, chatContainerEl, videoE
 
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
     const commandsProcessor = new CommandsProcessor({ twitchService: twitchChatService });
-    const quizService = new QuizService({ chatContainerEl, twitchChatService });
+    const quizService = new QuizService({ chatContainerEl, twitchChatService, twitchUser });
 
     ExtensionContainer.create({
         commandsProcessor,

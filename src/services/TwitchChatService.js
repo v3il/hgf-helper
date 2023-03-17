@@ -1,16 +1,16 @@
 export class TwitchChatService {
     _chatInputEl;
     _sendMessageButtonEl;
-    #streamStatusService;
+    _streamStatusService;
 
     constructor({ chatInputEl, sendMessageButtonEl, streamStatusService }) {
         this._chatInputEl = chatInputEl;
         this._sendMessageButtonEl = sendMessageButtonEl;
-        this.#streamStatusService = streamStatusService;
+        this._streamStatusService = streamStatusService;
     }
 
     sendMessage(message) {
-        if (this.#streamStatusService.isBanPhase) {
+        if (this._streamStatusService.isBanPhase || 1) {
             return false;
         }
 
