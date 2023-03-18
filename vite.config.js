@@ -8,7 +8,8 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
-                'hgf-farm': path.resolve(__dirname, 'src/hgf-farm/hgf-farm.js')
+                'hgf-farm': path.resolve(__dirname, 'src/hgf-farm/hgf-farm.js'),
+                'hgf-store': path.resolve(__dirname, 'src/hgf-store/hgf-store.js')
             },
 
             output: {
