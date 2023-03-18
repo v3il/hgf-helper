@@ -1,7 +1,7 @@
 import { shuffle } from 'lodash';
 import { Commands } from '../consts';
 import { promisifiedSetTimeout } from '../utils/promisifiedSetTimeout';
-import { INTERVAL_BETWEEN_COMMANDS } from '../../appConfig';
+import { INTERVAL_BETWEEN_COMMANDS } from '../../../appConfig';
 
 export class CommandsProcessor {
     _twitchService;

@@ -1,4 +1,4 @@
-import { PRIMARY_USERNAME, SECONDARY_USERNAME } from '../../appConfig';
+import { PRIMARY_USERNAME, SECONDARY_USERNAME } from '../../../appConfig';
 
 export class TwitchUser {
     #userName;

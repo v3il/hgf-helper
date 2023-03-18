@@ -1,6 +1,6 @@
 import './style.css';
 import template from './template.html?raw';
-import { INTERVAL_BETWEEN_ROUNDS } from '../../../appConfig';
+import { INTERVAL_BETWEEN_ROUNDS } from '../../../../appConfig';
 
 export class ExtensionContainer {
     static create({

@@ -1,5 +1,5 @@
 import { sample } from 'lodash';
-import { quizAnswers, MessageTemplates, selfUsernames } from '../consts';
+import { quizAnswers, MessageTemplates } from '../consts';
 
 export class QuizService {
     _chatContainerEl;
@@ -67,10 +67,16 @@ export class QuizService {
             return;
         }
 
-        const isMe = selfUsernames.includes(userName);
-        const isCorrectAnswer = quizAnswers.includes(message);
+        const isMyUser = this._twitchUser.isCurrentUser(userName);
+        const isValidAnswer = quizAnswers.includes(message);
 
-        if (!isCorrectAnswer || isMe) {
+        if (isMyUser && isValidAnswer) { // answered manually
+            this._isPaused = true;
+            clearTimeout(this._fallbackTimeoutId);
+            return;
+        }
+
+        if (!isValidAnswer || isMyUser) {
             return;
         }
 

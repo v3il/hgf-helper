@@ -1,20 +1,23 @@
 {
   "manifest_version": 3,
-  "name": "Hitsquadgodfather Auto Farm",
-  "version": "1.0.1",
-  "description": "Hitsquadgodfather Auto Farm",
+  "name": "HGF Helper",
+  "version": "1.0.2",
+  "description": "HGF Helper",
 
   "content_scripts": [
     {
-      "js": ["dist/bootstrap.js"],
+      "js": ["dist/hgf-farm.js"],
+      "css": ["dist/hgf-farm.css"],
       "matches": ["https://www.twitch.tv/hitsquadgodfather", "https://www.twitch.tv/hitsquadbrawlers"],
       "run_at": "document_idle",
       "all_frames": true
     }
   ],
 
-  "web_accessible_resources": [{
-    "resources": ["dist/extension.js", "dist/extension.css"],
-    "matches": ["https://www.twitch.tv/*"]
-  }]
+  "web_accessible_resources": [
+    {
+      "resources": ["dist/hgf-farm.js", "dist/hgf-farm.css"],
+      "matches": ["https://www.twitch.tv/*"]
+    }
+  ]
 }

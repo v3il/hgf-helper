@@ -2,7 +2,7 @@ import {
     CommandsProcessor, StreamStatusService, TwitchChatService, QuizService
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
-import { EventEmitter } from './EventsEmitter';
+import { EventEmitter } from './models/EventsEmitter';
 import { TwitchUser } from './models';
 
 function getTwitchElements() {

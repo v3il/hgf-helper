@@ -1,5 +1,5 @@
 import { ColorService } from './ColorService';
-import { banPhaseChecks } from '../banPhaseChecks';
+import { banPhaseChecks } from '../consts/banPhaseChecks';
 
 export class StreamStatusService {
     #canvasContainerEl;
