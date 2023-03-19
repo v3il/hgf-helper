@@ -98,5 +98,6 @@ export const hiddenOffers = [
     'destroy all humans',
     'plateup',
     'borderlands the handsome collection',
-    'horizon zero dawn complete edition'
+    'horizon zero dawn complete edition',
+    'warsaw'
 ];
