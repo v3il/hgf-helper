@@ -6,8 +6,7 @@
 
   "content_scripts": [
     {
-      "js": ["dist/hgf-farm.js"],
-      "css": ["dist/hgf-farm.css"],
+      "js": ["dist/hgf-farm-bootstrap.js"],
       "matches": ["https://www.twitch.tv/hitsquadgodfather", "https://www.twitch.tv/hitsquadbrawlers"],
       "run_at": "document_idle",
       "all_frames": true
@@ -24,7 +23,7 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["dist/hgf-farm.js", "dist/hgf-farm.css"],
+      "resources": ["dist/hgf-farm-bootstrap.js", "dist/hgf-farm.js", "dist/hgf-farm.css"],
       "matches": ["https://www.twitch.tv/*"]
     },
 
