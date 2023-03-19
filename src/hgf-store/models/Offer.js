@@ -3,17 +3,23 @@ export class Offer {
         return new Offer(data);
     }
 
-    _name;
-    _count;
-    _price;
+    #name;
+    #count;
+    #price;
 
     constructor({ name, count, price }) {
-        this._name = name;
-        this._count = count;
-        this._price = price;
+        console.error(name, count, price);
+
+        this.#name = name;
+        this.#count = count;
+        this.#price = price;
+    }
+
+    get name() {
+        return this.#name;
     }
 
     get isSoldOut() {
-        return this._count === 'sold out';
+        return this.#count === 'sold out';
     }
 }

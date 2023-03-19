@@ -10,8 +10,6 @@ export class TwitchChatService {
     }
 
     sendMessage(message) {
-        console.error(message);
-
         if (this._streamStatusService.isBanPhase) {
             return false;
         }
