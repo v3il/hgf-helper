@@ -1,4 +1,3 @@
-import './styles.css';
 import { Offer } from './models/Offer';
 import { OfferView } from './views/offer/OfferView';
 import { StorageService } from './services';
@@ -25,6 +24,8 @@ const itemsObserver = new MutationObserver(() => {
     const offerEls = Array.from(document.querySelectorAll('.stream-store-list-item'));
 
     if (offerEls.length) {
+        itemsObserver.disconnect();
+
         offerEls.forEach((offerEl) => {
             const gameNameEl = offerEl.querySelector('.item-title');
             const countEl = offerEl.querySelector('.item-quantity-left span');
@@ -38,8 +39,6 @@ const itemsObserver = new MutationObserver(() => {
 
             new OfferView({ offer, offerEl, storageService });
         });
-
-        itemsObserver.disconnect();
     }
 });
 

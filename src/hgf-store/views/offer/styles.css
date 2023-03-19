@@ -1,0 +1,12 @@
+.hgfs-container {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 4px 8px;
+    background-color: #121212;
+    border-bottom-left-radius: 4px;
+}
+
+.hgfs-container__hide {
+    font-size: 12px;
+}

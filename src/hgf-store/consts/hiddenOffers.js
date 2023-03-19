@@ -99,5 +99,18 @@ export const hiddenOffers = [
     'plateup',
     'borderlands the handsome collection',
     'horizon zero dawn complete edition',
-    'warsaw'
+    'warsaw',
+    'pixel heroes byte and magic',
+    'banners of ruin',
+    'desolate',
+    'lucius 3',
+    'lego the hobbit',
+    'train simulator classic',
+    'clustertruck',
+    'darkest dungeon',
+    'the evil within',
+    'batman arkham city goty edition',
+    'the long dark survival edition',
+    'mortal kombat xl',
+    'a plague tale: innocence'
 ];

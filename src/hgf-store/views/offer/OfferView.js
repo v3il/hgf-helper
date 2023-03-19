@@ -1,3 +1,6 @@
+import template from './template.html?raw';
+import './styles.css';
+
 export class OfferView {
     #offer;
     #offerEl;
@@ -8,19 +11,39 @@ export class OfferView {
         this.#offerEl = offerEl;
         this.#storageService = storageService;
 
+        this.#renderContainer();
         this.#toggleOffer();
         this.#listenEvents();
     }
 
+    get #isHidden() {
+        return this.#offer.isSoldOut || this.#storageService.isOfferHidden(this.#offer.name);
+    }
+
+    #renderContainer() {
+        this.#offerEl.insertAdjacentHTML('beforeend', template);
+    }
+
     #listenEvents() {
-        this.#offerEl.addEventListener('dblclick', () => {
+        if (this.#isHidden) {
+            return;
+        }
+
+        const hideButtonEl = this.#offerEl.querySelector('[data-hide]');
+
+        hideButtonEl.addEventListener('click', () => {
+            // eslint-disable-next-line no-alert
+            if (!window.confirm('Hide?')) {
+                return;
+            }
+
             this.#storageService.hideOffer(this.#offer.name);
             this.#hideOffer();
         });
     }
 
     #toggleOffer() {
-        if (this.#offer.isSoldOut || this.#storageService.isOfferHidden(this.#offer.name)) {
+        if (this.#isHidden) {
             this.#hideOffer();
         }
     }
