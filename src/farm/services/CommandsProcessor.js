@@ -1,6 +1,6 @@
 import { shuffle } from 'lodash';
 import { Commands } from '../consts';
-import { promisifiedSetTimeout } from '../../shared/utils/promisifiedSetTimeout';
+import { promisifiedSetTimeout } from '../utils/promisifiedSetTimeout';
 import { INTERVAL_BETWEEN_COMMANDS } from '../../../appConfig';
 
 export class CommandsProcessor {

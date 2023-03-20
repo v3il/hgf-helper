@@ -112,5 +112,13 @@ export const hiddenOffers = [
     'batman arkham city goty edition',
     'the long dark survival edition',
     'mortal kombat xl',
-    'a plague tale: innocence'
+    'a plague tale: innocence',
+    'call of the sea',
+    'backbone',
+    'the walking dead season 2',
+    'fobia st dinfna hotel',
+    'everhood',
+    'lego batman the videogame',
+    'victoria 2',
+    'maid of sker'
 ];

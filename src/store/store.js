@@ -35,8 +35,7 @@ const itemsObserver = new MutationObserver(() => {
             const count = countEl.textContent.toLowerCase().trim();
             const price = itemCostEl.lastChild.textContent.trim();
 
-            const offer = Offer.create({ name, count, price });
-
+            const offer = new Offer({ name, count, price });
             new OfferView({ offer, offerEl, storageService });
         });
     }
