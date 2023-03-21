@@ -7,7 +7,7 @@
   "content_scripts": [
     {
       "js": ["dist/farmBootstrap.js"],
-      "matches": ["https://www.twitch.tv/hitsquadgodfather", "https://www.twitch.tv/hitsquadbrawlers"],
+      "matches": ["https://www.twitch.tv/hitsquadgodfather"],
       "run_at": "document_idle",
       "all_frames": true
     },

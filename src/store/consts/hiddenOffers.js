@@ -120,5 +120,7 @@ export const hiddenOffers = [
     'everhood',
     'lego batman the videogame',
     'victoria 2',
-    'maid of sker'
+    'maid of sker',
+    'turnip boy commits tax evasion',
+    'killsquad'
 ];
