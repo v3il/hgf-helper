@@ -1,6 +1,6 @@
 import { Offer } from './models/Offer';
 import { OfferView } from './views/offer/OfferView';
-import { StorageService } from './services';
+import { StorageService, JsonBinApiService } from './services';
 
 const sortDropdownObserver = new MutationObserver(() => {
     const sortDropdownEl = document.querySelector('[ng-model="vm.sortBy"]');
@@ -18,13 +18,15 @@ const sortDropdownObserver = new MutationObserver(() => {
 
 sortDropdownObserver.observe(document.body, { childList: true });
 
-const storageService = new StorageService();
+const storageService = new StorageService({ apiService: new JsonBinApiService() });
 
-const itemsObserver = new MutationObserver(() => {
+const itemsObserver = new MutationObserver(async () => {
     const offerEls = Array.from(document.querySelectorAll('.stream-store-list-item'));
 
     if (offerEls.length) {
         itemsObserver.disconnect();
+
+        await storageService.fetchHiddenOffers();
 
         offerEls.forEach((offerEl) => {
             const gameNameEl = offerEl.querySelector('.item-title');

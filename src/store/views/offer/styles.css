@@ -7,6 +7,10 @@
     border-bottom-left-radius: 4px;
 }
 
+.hgfs-container--danger {
+    background-color: darkred;
+}
+
 .hgfs-container__hide {
     font-size: 12px;
 }

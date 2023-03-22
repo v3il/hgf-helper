@@ -22,6 +22,10 @@ export class OfferView {
 
     #renderContainer() {
         this.#offerEl.insertAdjacentHTML('beforeend', template);
+
+        if (this.#offer.isDeficiency) {
+            this.#offerEl.querySelector('[data-container]').classList.add('hgfs-container--danger');
+        }
     }
 
     #listenEvents() {

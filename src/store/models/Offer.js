@@ -13,6 +13,15 @@ export class Offer {
         return this.#name;
     }
 
+    get countValue() {
+        const value = Number.parseInt(this.#count, 10);
+        return Number.isNaN(value) ? 0 : value;
+    }
+
+    get isDeficiency() {
+        return this.countValue > 0 && this.countValue < 10;
+    }
+
     get isSoldOut() {
         return this.#count === 'sold out';
     }

@@ -1,34 +1,21 @@
-import { hiddenOffers } from '../consts/hiddenOffers';
-
 export class StorageService {
+    #apiService;
     #hiddenOffers = [];
-    #storageKey = 'hgfs.offers';
 
-    constructor() {
-        this.#hiddenOffers = this.#getHiddenOffers();
+    constructor({ apiService }) {
+        this.#apiService = apiService;
     }
 
-    #getHiddenOffers() {
-        return hiddenOffers;
-
-        // const items = window.localStorage.getItem(this.#storageKey);
-        //
-        // if (items) {
-        //     this.#hiddenOffers = JSON.parse(items);
-        // }
-    }
-
-    #saveHiddenOffers() {
-        window.localStorage.setItem(this.#storageKey, JSON.stringify(this.#hiddenOffers));
+    async fetchHiddenOffers() {
+        this.#hiddenOffers = await this.#apiService.getHiddenOffers();
     }
 
     isOfferHidden(offerName) {
-        console.error(offerName);
         return this.#hiddenOffers.includes(offerName);
     }
 
     hideOffer(offerName) {
         this.#hiddenOffers.push(offerName);
-        this.#saveHiddenOffers();
+        return this.#apiService.updateHiddenOffers(this.#hiddenOffers);
     }
 }
