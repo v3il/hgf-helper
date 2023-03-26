@@ -47,8 +47,8 @@ export class QuizService {
 
             console.error('Desired', this.#desiredAnswerPosition);
 
-            this._resetState();
-            this._registerFallback();
+            this.#resetAnswers();
+            this.#registerFallback();
         }
 
         if (this.#isWaitingNextRound) {
@@ -94,11 +94,11 @@ export class QuizService {
         return sample([2, 3, 4]);
     }
 
-    _resetState() {
+    #resetAnswers() {
         Object.values(this.#answers).forEach((set) => set.clear());
     }
 
-    _registerFallback() {
+    #registerFallback() {
         const delay = 40 + Math.floor(Math.random() * 14);
 
         this.#fallbackTimeoutId = setTimeout(() => {
@@ -131,10 +131,10 @@ export class QuizService {
     }
 
     start() {
-        this.#isStopped = true;
+        this.#isStopped = false;
     }
 
     stop() {
-        this.#isStopped = false;
+        this.#isStopped = true;
     }
 }

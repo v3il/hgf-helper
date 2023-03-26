@@ -37,8 +37,6 @@ export class ExtensionContainer {
         this._renderTimer();
         this._listenEvents();
         this._renderChecksResult();
-
-        this._quizService.start();
     }
 
     _listenEvents() {
