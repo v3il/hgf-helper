@@ -13,18 +13,10 @@ export class QuizService {
     #isWaitingNextRound = true;
     #isStopped = false;
 
-    _chatContainerEl;
-    // _observer;
-    _twitchChatService;
-    _twitchUser;
+    #answers = {};
 
-    // _isPaused = true;
-
-    _fallbackTimeoutId;
-
-    _desiredAnswerPosition;
-
-    _answers = {};
+    #fallbackTimeoutId;
+    #desiredAnswerPosition;
 
     constructor({ twitchChatObserver, twitchChatService, twitchUser }) {
         this.#twitchChatObserver = twitchChatObserver;
@@ -32,7 +24,7 @@ export class QuizService {
         this.#twitchUser = twitchUser;
 
         quizAnswers.forEach((answer) => {
-            this._answers[answer] = new Set();
+            this.#answers[answer] = new Set();
         });
 
         this.#listenEvents();
@@ -51,9 +43,9 @@ export class QuizService {
     #processMessage({ userName, message }) {
         if (message.includes(MessageTemplates.NEW_QUIZ_QUESTION)) {
             this.#isWaitingNextRound = false;
-            this._desiredAnswerPosition = this._getDesiredAnswerPosition();
+            this.#desiredAnswerPosition = this.#getDesiredAnswerPosition();
 
-            console.error('Desired', this._desiredAnswerPosition);
+            console.error('Desired', this.#desiredAnswerPosition);
 
             this._resetState();
             this._registerFallback();
@@ -67,58 +59,56 @@ export class QuizService {
         const isValidAnswer = quizAnswers.includes(message);
 
         if (isMyUser && isValidAnswer) { // answered manually
-            // this.#isWaitingNextRound = true;
-            // clearTimeout(this._fallbackTimeoutId);
-            return this.#waitForNextRound();
+            return this.#completeRound();
         }
 
-        if (!isValidAnswer || isMyUser) {
+        if (!isValidAnswer) {
             return;
         }
 
-        this._answers[message].add(userName);
+        this.#answers[message].add(userName);
         const { answer, count } = this._getCorrectAnswer();
 
         console.error(answer, count);
 
-        if (count === this._desiredAnswerPosition) {
+        if (count === this.#desiredAnswerPosition) {
             console.error('send', answer, count);
-            this.#waitForNextRound();
-            this.#sendAnswer(answer);
+            this.#completeRound(answer);
         }
     }
 
-    #waitForNextRound() {
+    #completeRound(answer) {
         this.#isWaitingNextRound = true;
-        clearTimeout(this._fallbackTimeoutId);
+        clearTimeout(this.#fallbackTimeoutId);
+
+        if (answer) {
+            this.#sendAnswer(answer);
+        }
     }
 
     #sendAnswer(answer) {
         this.#twitchChatService.sendMessage(answer);
     }
 
-    _getDesiredAnswerPosition() {
+    #getDesiredAnswerPosition() {
         return sample([2, 3, 4]);
     }
 
     _resetState() {
-        Object.values(this._answers).forEach((set) => set.clear());
+        Object.values(this.#answers).forEach((set) => set.clear());
     }
 
     _registerFallback() {
         const delay = 40 + Math.floor(Math.random() * 14);
 
-        console.error(delay * 1000);
-
-        this._fallbackTimeoutId = setTimeout(() => {
+        this.#fallbackTimeoutId = setTimeout(() => {
             const { answer, count } = this._getCorrectAnswer();
 
             console.error('Fallback', answer, count);
 
             if (count >= 1) {
                 console.error('send', answer);
-                this.#isWaitingNextRound = true;
-                this.#sendAnswer(answer);
+                this.#completeRound(answer);
             }
         }, delay * 1000);
     }
@@ -128,8 +118,8 @@ export class QuizService {
         let count = 0;
 
         // eslint-disable-next-line guard-for-in,no-restricted-syntax
-        for (const command in this._answers) {
-            const set = this._answers[command];
+        for (const command in this.#answers) {
+            const set = this.#answers[command];
 
             if (set.size > count) {
                 answer = command;
