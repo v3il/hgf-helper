@@ -7,13 +7,18 @@ export class QuizService {
     }
 
     #twitchChatObserver;
+    #twitchChatService;
+    #twitchUser;
+
+    #isWaitingNextRound = true;
+    #isStopped = false;
 
     _chatContainerEl;
-    _observer;
+    // _observer;
     _twitchChatService;
     _twitchUser;
 
-    _isPaused = true;
+    // _isPaused = true;
 
     _fallbackTimeoutId;
 
@@ -23,9 +28,8 @@ export class QuizService {
 
     constructor({ twitchChatObserver, twitchChatService, twitchUser }) {
         this.#twitchChatObserver = twitchChatObserver;
-        this._observer = this._createObserver();
-        this._twitchChatService = twitchChatService;
-        this._twitchUser = twitchUser;
+        this.#twitchChatService = twitchChatService;
+        this.#twitchUser = twitchUser;
 
         quizAnswers.forEach((answer) => {
             this._answers[answer] = new Set();
@@ -35,12 +39,18 @@ export class QuizService {
     }
 
     #listenEvents() {
-        this.#twitchChatObserver.events.on('message', this.#processMessage);
+        this.#twitchChatObserver.events.on('message', ({ userName, message }) => {
+            if (this.#isStopped) {
+                return;
+            }
+
+            this.#processMessage({ userName, message });
+        });
     }
 
     #processMessage({ userName, message }) {
         if (message.includes(MessageTemplates.NEW_QUIZ_QUESTION)) {
-            this._isPaused = false;
+            this.#isWaitingNextRound = false;
             this._desiredAnswerPosition = this._getDesiredAnswerPosition();
 
             console.error('Desired', this._desiredAnswerPosition);
@@ -49,17 +59,17 @@ export class QuizService {
             this._registerFallback();
         }
 
-        if (this._isPaused) {
+        if (this.#isWaitingNextRound) {
             return;
         }
 
-        const isMyUser = this._twitchUser.isCurrentUser(userName);
+        const isMyUser = this.#twitchUser.isCurrentUser(userName);
         const isValidAnswer = quizAnswers.includes(message);
 
         if (isMyUser && isValidAnswer) { // answered manually
-            this._isPaused = true;
-            clearTimeout(this._fallbackTimeoutId);
-            return;
+            // this.#isWaitingNextRound = true;
+            // clearTimeout(this._fallbackTimeoutId);
+            return this.#waitForNextRound();
         }
 
         if (!isValidAnswer || isMyUser) {
@@ -73,81 +83,18 @@ export class QuizService {
 
         if (count === this._desiredAnswerPosition) {
             console.error('send', answer, count);
-            this._sendAnswer(answer);
-            this._isPaused = true;
-            clearTimeout(this._fallbackTimeoutId);
+            this.#waitForNextRound();
+            this.#sendAnswer(answer);
         }
     }
 
-    _createObserver() {
-        return new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((addedElement) => {
-                    this._processAddedElement(addedElement);
-                });
-            });
-        });
+    #waitForNextRound() {
+        this.#isWaitingNextRound = true;
+        clearTimeout(this._fallbackTimeoutId);
     }
 
-    async _processAddedElement(addedElement) {
-        const isMessage = addedElement.classList && addedElement.classList.contains('chat-line__message');
-
-        if (!isMessage) {
-            return;
-        }
-
-        const userNameEl = addedElement.querySelector('[data-a-target="chat-message-username"]');
-        const messageEl = addedElement.querySelector('[data-a-target="chat-message-text"]');
-
-        if (!(userNameEl && messageEl)) {
-            return;
-        }
-
-        const userName = userNameEl.textContent.toLowerCase();
-        const message = messageEl.textContent.toLowerCase();
-
-        if (message.includes(MessageTemplates.NEW_QUIZ_QUESTION)) {
-            this._isPaused = false;
-            this._desiredAnswerPosition = this._getDesiredAnswerPosition();
-
-            console.error('Desired', this._desiredAnswerPosition);
-
-            this._resetState();
-            this._registerFallback();
-        }
-
-        if (this._isPaused) {
-            return;
-        }
-
-        const isMyUser = this._twitchUser.isCurrentUser(userName);
-        const isValidAnswer = quizAnswers.includes(message);
-
-        if (isMyUser && isValidAnswer) { // answered manually
-            this._isPaused = true;
-            clearTimeout(this._fallbackTimeoutId);
-            return;
-        }
-
-        if (!isValidAnswer || isMyUser) {
-            return;
-        }
-
-        this._answers[message].add(userName);
-        const { answer, count } = this._getCorrectAnswer();
-
-        console.error(answer, count);
-
-        if (count === this._desiredAnswerPosition) {
-            console.error('send', answer, count);
-            this._sendAnswer(answer);
-            this._isPaused = true;
-            clearTimeout(this._fallbackTimeoutId);
-        }
-    }
-
-    _sendAnswer(answer) {
-        this._twitchChatService.sendMessage(answer);
+    #sendAnswer(answer) {
+        this.#twitchChatService.sendMessage(answer);
     }
 
     _getDesiredAnswerPosition() {
@@ -170,8 +117,8 @@ export class QuizService {
 
             if (count >= 1) {
                 console.error('send', answer);
-                this._isPaused = true;
-                this._sendAnswer(answer);
+                this.#isWaitingNextRound = true;
+                this.#sendAnswer(answer);
             }
         }, delay * 1000);
     }
@@ -194,10 +141,10 @@ export class QuizService {
     }
 
     start() {
-        // this._observer.observe(this._chatContainerEl, { childList: true });
+        this.#isStopped = true;
     }
 
     stop() {
-        this._observer.disconnect();
+        this.#isStopped = false;
     }
 }
