@@ -39,7 +39,7 @@ async function runApp([chatInputEl, sendMessageButtonEl, chatContainerEl, videoE
 
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
     const commandsProcessor = new CommandsProcessor({ twitchService: twitchChatService });
-    const quizService = new QuizService({ twitchChatObserver, twitchChatService, twitchUser });
+    const quizService = QuizService.create({ twitchChatObserver, twitchChatService, twitchUser });
 
     ExtensionContainer.create({
         commandsProcessor,

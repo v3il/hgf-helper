@@ -27,21 +27,56 @@ export class QuizService {
         this._twitchChatService = twitchChatService;
         this._twitchUser = twitchUser;
 
-        this.#listenEvents();
-
         quizAnswers.forEach((answer) => {
             this._answers[answer] = new Set();
         });
+
+        this.#listenEvents();
     }
 
     #listenEvents() {
-        this.#twitchChatObserver.events.on('message', ({ userName, message }) => {
-            console.error(userName, message);
-        });
+        this.#twitchChatObserver.events.on('message', this.#processMessage);
     }
 
     #processMessage({ userName, message }) {
+        if (message.includes(MessageTemplates.NEW_QUIZ_QUESTION)) {
+            this._isPaused = false;
+            this._desiredAnswerPosition = this._getDesiredAnswerPosition();
 
+            console.error('Desired', this._desiredAnswerPosition);
+
+            this._resetState();
+            this._registerFallback();
+        }
+
+        if (this._isPaused) {
+            return;
+        }
+
+        const isMyUser = this._twitchUser.isCurrentUser(userName);
+        const isValidAnswer = quizAnswers.includes(message);
+
+        if (isMyUser && isValidAnswer) { // answered manually
+            this._isPaused = true;
+            clearTimeout(this._fallbackTimeoutId);
+            return;
+        }
+
+        if (!isValidAnswer || isMyUser) {
+            return;
+        }
+
+        this._answers[message].add(userName);
+        const { answer, count } = this._getCorrectAnswer();
+
+        console.error(answer, count);
+
+        if (count === this._desiredAnswerPosition) {
+            console.error('send', answer, count);
+            this._sendAnswer(answer);
+            this._isPaused = true;
+            clearTimeout(this._fallbackTimeoutId);
+        }
     }
 
     _createObserver() {
