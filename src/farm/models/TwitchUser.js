@@ -1,6 +1,10 @@
 import { PRIMARY_USERNAME, SECONDARY_USERNAME } from '../../../appConfig';
 
 export class TwitchUser {
+    static create({ userName }) {
+        return new TwitchUser({ userName });
+    }
+
     #userName;
 
     constructor({ userName }) {

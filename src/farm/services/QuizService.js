@@ -2,6 +2,12 @@ import { sample } from 'lodash';
 import { quizAnswers, MessageTemplates } from '../consts';
 
 export class QuizService {
+    static create({ twitchChatObserver, twitchChatService, twitchUser }) {
+        return new QuizService({ twitchChatObserver, twitchChatService, twitchUser });
+    }
+
+    #twitchChatObserver;
+
     _chatContainerEl;
     _observer;
     _twitchChatService;
@@ -15,15 +21,27 @@ export class QuizService {
 
     _answers = {};
 
-    constructor({ chatContainerEl, twitchChatService, twitchUser }) {
-        this._chatContainerEl = chatContainerEl;
+    constructor({ twitchChatObserver, twitchChatService, twitchUser }) {
+        this.#twitchChatObserver = twitchChatObserver;
         this._observer = this._createObserver();
         this._twitchChatService = twitchChatService;
         this._twitchUser = twitchUser;
 
+        this.#listenEvents();
+
         quizAnswers.forEach((answer) => {
             this._answers[answer] = new Set();
         });
+    }
+
+    #listenEvents() {
+        this.#twitchChatObserver.events.on('message', ({ userName, message }) => {
+            console.error(userName, message);
+        });
+    }
+
+    #processMessage({ userName, message }) {
+
     }
 
     _createObserver() {
@@ -141,7 +159,7 @@ export class QuizService {
     }
 
     start() {
-        this._observer.observe(this._chatContainerEl, { childList: true });
+        // this._observer.observe(this._chatContainerEl, { childList: true });
     }
 
     stop() {
