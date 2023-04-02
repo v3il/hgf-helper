@@ -32,11 +32,9 @@ export class QuizService {
 
     #listenEvents() {
         this.#twitchChatObserver.events.on('message', ({ userName, message }) => {
-            if (this.#isStopped) {
-                return;
+            if (!this.#isStopped) {
+                this.#processMessage({ userName, message });
             }
-
-            this.#processMessage({ userName, message });
         });
     }
 

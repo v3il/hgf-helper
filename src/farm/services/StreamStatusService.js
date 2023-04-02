@@ -1,21 +1,27 @@
 import { ColorService } from './ColorService';
 import { banPhaseChecks } from '../consts/banPhaseChecks';
+import { EventEmitter } from '../models/EventsEmitter';
 
 export class StreamStatusService {
+    static create({ canvasContainerEl }) {
+        return new StreamStatusService({
+            canvasContainerEl,
+            events: EventEmitter.create()
+        });
+    }
+
     #canvasContainerEl;
     #canvasEl;
-    #videoEl;
 
-    _lastCheckData;
+    #lastCheckData;
 
     events;
 
     constructor({ canvasContainerEl, events, videoEl }) {
         this.#canvasContainerEl = canvasContainerEl;
-        this.#videoEl = videoEl;
         this.events = events;
 
-        this.#canvasEl = this._createCanvas();
+        this.#canvasEl = this.#createCanvas();
         this.#canvasContainerEl.appendChild(this.#canvasEl);
 
         setInterval(() => {
@@ -25,8 +31,20 @@ export class StreamStatusService {
         // this.#listenEvents();
     }
 
-    _createCanvas() {
+    #createCanvas() {
         return document.createElement('canvas');
+    }
+
+    #getActiveVideoEl() {
+        const [mainVideoEl, alternativeVideoEl] = document.querySelectorAll('video');
+
+        console.error(mainVideoEl, alternativeVideoEl);
+
+        if (!alternativeVideoEl || alternativeVideoEl.paused) {
+            return mainVideoEl;
+        }
+
+        return alternativeVideoEl;
     }
 
     async checkBanPhase() {
@@ -59,7 +77,7 @@ export class StreamStatusService {
 
         console.log('Successful checks:', successfulChecks.length, '/', banPhaseChecks.length);
 
-        this._lastCheckData = {
+        this.#lastCheckData = {
             successfulChecks: successfulChecks.length,
             totalChecks: banPhaseChecks.length,
             isBan: successfulChecks.length / banPhaseChecks.length >= 0.7
@@ -70,20 +88,24 @@ export class StreamStatusService {
     }
 
     get isBanPhase() {
-        return this._lastCheckData.isBan;
+        return this.#lastCheckData.isBan;
     }
 
     get lastCheckData() {
-        return this._lastCheckData;
+        return this.#lastCheckData;
     }
 
     #makeScreenshot() {
-        this.#canvasEl.width = this.#videoEl.clientWidth;
-        this.#canvasEl.height = this.#videoEl.clientHeight;
+        const videoEl = this.#getActiveVideoEl();
+
+        console.error(videoEl);
+
+        this.#canvasEl.width = videoEl.clientWidth;
+        this.#canvasEl.height = videoEl.clientHeight;
 
         const ctx = this.#canvasEl.getContext('2d');
 
-        ctx.drawImage(this.#videoEl, 0, 0, this.#canvasEl.width, this.#canvasEl.height);
+        ctx.drawImage(videoEl, 0, 0, this.#canvasEl.width, this.#canvasEl.height);
     }
 
     #clearCanvas() {

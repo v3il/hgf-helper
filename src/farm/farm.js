@@ -18,22 +18,25 @@ function getTwitchElements() {
 
     userDropdownToggleEl?.click();
 
-    return [chatInputEl, sendMessageButtonEl, chatContainerEl, videoEl, userNameEl];
+    return {
+        chatInputEl,
+        sendMessageButtonEl,
+        chatContainerEl,
+        videoEl,
+        userNameEl
+    };
 }
 
-async function runApp([chatInputEl, sendMessageButtonEl, chatContainerEl, videoEl, userNameEl]) {
+async function runApp({
+    chatInputEl, sendMessageButtonEl, chatContainerEl, userNameEl
+}) {
     const userName = userNameEl.textContent.toLowerCase();
 
     const twitchUser = TwitchUser.create({ userName });
     const twitchChatObserver = TwitchChatObserver.create(chatContainerEl);
 
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
-
-    const streamStatusService = new StreamStatusService({
-        canvasContainerEl,
-        videoEl,
-        events: EventEmitter.create()
-    });
+    const streamStatusService = StreamStatusService.create({ canvasContainerEl });
 
     await streamStatusService.checkBanPhase();
 
@@ -49,11 +52,14 @@ async function runApp([chatInputEl, sendMessageButtonEl, chatContainerEl, videoE
     }).mount(document.body);
 }
 
+function isElementsExist(elements) {
+    return Object.values(elements).every((element) => element !== null);
+}
+
 const intervalId = setInterval(() => {
     const twitchElements = getTwitchElements();
-    const isAllElementsExist = twitchElements.every((element) => element !== null);
 
-    if (isAllElementsExist) {
+    if (isElementsExist(twitchElements)) {
         clearInterval(intervalId);
         setTimeout(() => runApp(twitchElements), 5000);
     }
