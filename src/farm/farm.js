@@ -1,5 +1,11 @@
 import {
-    CommandsProcessor, StreamStatusService, TwitchChatService, QuizService, TwitchChatObserver
+    CommandsProcessor,
+    StreamStatusService,
+    TwitchChatService,
+    QuizService,
+    TwitchChatObserver,
+    MiniGamesRunner,
+    HitsquadGameRunner
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 import { EventEmitter } from './models/EventsEmitter';
@@ -41,6 +47,9 @@ async function runApp({
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
     const commandsProcessor = new CommandsProcessor({ twitchService: twitchChatService });
     const quizService = QuizService.create({ twitchChatObserver, twitchChatService, twitchUser });
+
+    MiniGamesRunner.create({ twitchChatObserver, twitchChatService, streamStatusService });
+    HitsquadGameRunner.create({ twitchChatObserver, twitchChatService, streamStatusService });
 
     ExtensionContainer.create({
         commandsProcessor,
