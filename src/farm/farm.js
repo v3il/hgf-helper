@@ -38,8 +38,6 @@ async function runApp({
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
     const streamStatusService = StreamStatusService.create({ canvasContainerEl });
 
-    await streamStatusService.checkBanPhase();
-
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
     const commandsProcessor = new CommandsProcessor({ twitchService: twitchChatService });
     const quizService = QuizService.create({ twitchChatObserver, twitchChatService, twitchUser });

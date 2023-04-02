@@ -12,17 +12,19 @@ export class StreamStatusService {
 
     #canvasContainerEl;
     #canvasEl;
-
     #lastCheckData;
+    #events;
 
-    events;
-
-    constructor({ canvasContainerEl, events, videoEl }) {
+    constructor({ canvasContainerEl, events }) {
         this.#canvasContainerEl = canvasContainerEl;
-        this.events = events;
+        this.#events = events;
 
         this.#canvasEl = this.#createCanvas();
         this.#canvasContainerEl.appendChild(this.#canvasEl);
+
+        console.time('a');
+        this.checkBanPhase();
+        console.timeEnd('a');
 
         setInterval(() => {
             this.checkBanPhase();
@@ -31,24 +33,42 @@ export class StreamStatusService {
         // this.#listenEvents();
     }
 
+    get events() {
+        return this.#events;
+    }
+
     #createCanvas() {
         return document.createElement('canvas');
     }
 
     #getActiveVideoEl() {
+        const isAdsPhase = this.#isAdsPhase();
         const [mainVideoEl, alternativeVideoEl] = document.querySelectorAll('video');
 
-        console.error(mainVideoEl, alternativeVideoEl);
-
-        if (!alternativeVideoEl || alternativeVideoEl.paused) {
-            return mainVideoEl;
+        if (isAdsPhase && !alternativeVideoEl) {
+            return null;
         }
 
-        return alternativeVideoEl;
+        return isAdsPhase ? alternativeVideoEl : mainVideoEl;
     }
 
-    async checkBanPhase() {
-        this.#makeScreenshot();
+    #isAdsPhase() {
+        return document.querySelector('[data-a-target="video-ad-countdown"]') !== null;
+    }
+
+    checkBanPhase() {
+        const isSuccess = this.#makeScreenshot();
+
+        if (!isSuccess) {
+            this.#lastCheckData = {
+                successfulChecks: 0,
+                totalChecks: 0,
+                isBan: true
+            };
+
+            this.#clearCanvas();
+            return this.#events.emit('check');
+        }
 
         const canvas = this.#canvasEl;
         const { width, height } = canvas;
@@ -68,14 +88,10 @@ export class StreamStatusService {
             };
         });
 
-        console.table(checksResults);
-
         const successfulChecks = checksResults.filter(({ similarity, actual }) => {
             const isBlack = actual === '000000';
             return isBlack ? true : similarity >= 0.85;
         });
-
-        console.log('Successful checks:', successfulChecks.length, '/', banPhaseChecks.length);
 
         this.#lastCheckData = {
             successfulChecks: successfulChecks.length,
@@ -83,8 +99,10 @@ export class StreamStatusService {
             isBan: successfulChecks.length / banPhaseChecks.length >= 0.7
         };
 
+        console.log(this.#lastCheckData);
+
         this.#clearCanvas();
-        this.events.emit('check');
+        this.#events.emit('check');
     }
 
     get isBanPhase() {
@@ -98,7 +116,9 @@ export class StreamStatusService {
     #makeScreenshot() {
         const videoEl = this.#getActiveVideoEl();
 
-        console.error(videoEl);
+        if (!videoEl) {
+            return false;
+        }
 
         this.#canvasEl.width = videoEl.clientWidth;
         this.#canvasEl.height = videoEl.clientHeight;
@@ -106,6 +126,8 @@ export class StreamStatusService {
         const ctx = this.#canvasEl.getContext('2d');
 
         ctx.drawImage(videoEl, 0, 0, this.#canvasEl.width, this.#canvasEl.height);
+
+        return true;
     }
 
     #clearCanvas() {
