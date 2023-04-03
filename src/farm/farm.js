@@ -4,12 +4,11 @@ import {
     TwitchChatService,
     QuizService,
     TwitchChatObserver,
-    MiniGamesRunner,
-    HitsquadGameRunner
+    GameRunner, WaiterService
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
-import { EventEmitter } from './models/EventsEmitter';
 import { TwitchUser } from './models';
+import { Commands, MessageTemplates } from './consts';
 
 function getTwitchElements() {
     const userDropdownToggleEl = document.querySelector('[data-a-target="user-menu-toggle"]');
@@ -39,6 +38,8 @@ async function runApp({
     const userName = userNameEl.textContent.toLowerCase();
 
     const twitchUser = TwitchUser.create({ userName });
+    const waiterService = WaiterService.create({ twitchUser });
+
     const twitchChatObserver = TwitchChatObserver.create(chatContainerEl);
 
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
@@ -48,8 +49,25 @@ async function runApp({
     const commandsProcessor = new CommandsProcessor({ twitchService: twitchChatService });
     const quizService = QuizService.create({ twitchChatObserver, twitchChatService, twitchUser });
 
-    MiniGamesRunner.create({ twitchChatObserver, twitchChatService, streamStatusService });
-    HitsquadGameRunner.create({ twitchChatObserver, twitchChatService, streamStatusService });
+    GameRunner.create({
+        twitchChatObserver,
+        twitchChatService,
+        streamStatusService,
+        waiterService,
+        messagePattern: MessageTemplates.MINI_GAME_REWARD,
+        responseDelay: 10000,
+        commands: [Commands.BATTLEROYALE, Commands.GAUNTLET]
+    });
+
+    GameRunner.create({
+        twitchChatObserver,
+        twitchChatService,
+        streamStatusService,
+        waiterService,
+        messagePattern: MessageTemplates.HITSQUAD_REWARD,
+        responseDelay: 30000,
+        commands: [Commands.HITSQUAD]
+    });
 
     ExtensionContainer.create({
         commandsProcessor,
@@ -68,6 +86,6 @@ const intervalId = setInterval(() => {
 
     if (isElementsExist(twitchElements)) {
         clearInterval(intervalId);
-        setTimeout(() => runApp(twitchElements), 5000);
+        setTimeout(() => runApp(twitchElements), 3000);
     }
 }, 1000);
