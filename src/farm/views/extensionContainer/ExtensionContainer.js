@@ -21,17 +21,14 @@ export class ExtensionContainer {
 
         this.#listenEvents();
         this.#renderChecksResult();
+        this.#toggleStatusClass(this.#streamStatusService.isBanPhase);
     }
 
     #listenEvents() {
         const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
 
         toggleQuizEl.addEventListener('change', ({ target }) => {
-            if (target.checked) {
-                return this.#quizService.start();
-            }
-
-            return this.#quizService.stop();
+            target.checked ? this.#quizService.start() : this.#quizService.stop();
         });
 
         this.#streamStatusService.events.on('check', () => {
@@ -43,7 +40,6 @@ export class ExtensionContainer {
             const isAnswerKey = ['1', '2', '3', '4'].includes(e.key);
 
             if (isAnswerKey) {
-                console.error('Send', `!answer${e.key}`);
                 this.#twitchChatService.sendMessage(`!answer${e.key}`);
             }
         });

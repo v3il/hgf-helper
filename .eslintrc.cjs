@@ -29,6 +29,7 @@ module.exports = {
         'no-underscore-dangle': 'off',
         'no-plusplus': 'off',
         'consistent-return': 'off',
+        'no-unused-expressions': 'off',
         'no-restricted-syntax': 'off',
         'import/prefer-default-export': ["off", "any"],
         "import/no-extraneous-dependencies": ["off"]
