@@ -1,5 +1,4 @@
 import {
-    CommandsProcessor,
     StreamStatusService,
     TwitchChatService,
     QuizService,
@@ -46,7 +45,6 @@ async function runApp({
     const streamStatusService = StreamStatusService.create({ canvasContainerEl });
 
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
-    const commandsProcessor = new CommandsProcessor({ twitchService: twitchChatService });
     const quizService = QuizService.create({ twitchChatObserver, twitchChatService, twitchUser });
 
     GameRunner.create({
@@ -70,7 +68,6 @@ async function runApp({
     });
 
     ExtensionContainer.create({
-        commandsProcessor,
         streamStatusService,
         quizService,
         twitchChatService

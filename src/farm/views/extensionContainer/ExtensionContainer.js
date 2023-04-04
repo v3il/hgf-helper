@@ -4,16 +4,15 @@ import { INTERVAL_BETWEEN_ROUNDS } from '../../../../appConfig';
 
 export class ExtensionContainer {
     static create({
-        commandsProcessor, streamStatusService, quizService, twitchChatService
+        streamStatusService, quizService, twitchChatService
     }) {
         return new ExtensionContainer({
-            commandsProcessor, streamStatusService, quizService, twitchChatService
+            streamStatusService, quizService, twitchChatService
         });
     }
 
     _el;
     _timerEl;
-    _commandsProcessor;
     _streamStatusService;
     _quizService;
     _twitchChatService;
@@ -21,10 +20,9 @@ export class ExtensionContainer {
     _shouldProcessCommands = true;
 
     constructor({
-        commandsProcessor, streamStatusService, quizService, twitchChatService
+        streamStatusService, quizService, twitchChatService
     }) {
         this._el = this._createElement();
-        this._commandsProcessor = commandsProcessor;
         this._streamStatusService = streamStatusService;
         this._quizService = quizService;
         this._twitchChatService = twitchChatService;
@@ -75,13 +73,10 @@ export class ExtensionContainer {
 
         this._nextRoundTime = Date.now() + INTERVAL_BETWEEN_ROUNDS;
         this._toggleStatusClass(isBan);
-        this._renderRound();
 
         if (isBan || !this._shouldProcessCommands) {
             return null;
         }
-
-        return this._commandsProcessor.processCommandsQueue();
     }
 
     get el() {
@@ -91,10 +86,6 @@ export class ExtensionContainer {
     mount(rootEl) {
         rootEl.appendChild(this.el);
         return this.el;
-    }
-
-    _renderRound() {
-        this.el.querySelector('[data-round]').textContent = `[${this._commandsProcessor.round}]`;
     }
 
     _toggleStatusClass(isBan) {
