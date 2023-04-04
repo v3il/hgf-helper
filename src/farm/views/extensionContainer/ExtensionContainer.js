@@ -1,23 +1,28 @@
 import './style.css';
 import template from './template.html?raw';
+import { quizAnswers } from '../../consts';
 
 export class ExtensionContainer {
-    static create({ streamStatusService, quizService, twitchChatService }) {
-        return new ExtensionContainer({
-            streamStatusService, quizService, twitchChatService
-        });
+    static create(params) {
+        return new ExtensionContainer(params);
     }
 
     #el;
     #streamStatusService;
     #quizService;
     #twitchChatService;
+    #miniGamesRunner;
+    #hitsquadGameRunner;
 
-    constructor({ streamStatusService, quizService, twitchChatService }) {
+    constructor({
+        streamStatusService, quizService, twitchChatService, miniGamesRunner, hitsquadGameRunner
+    }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
         this.#quizService = quizService;
         this.#twitchChatService = twitchChatService;
+        this.#miniGamesRunner = miniGamesRunner;
+        this.#hitsquadGameRunner = hitsquadGameRunner;
 
         this.#listenEvents();
         this.#renderChecksResult();
@@ -25,6 +30,13 @@ export class ExtensionContainer {
     }
 
     #listenEvents() {
+        const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
+
+        toggleGamesEl.addEventListener('change', ({ target }) => {
+            target.checked ? this.#miniGamesRunner.start() : this.#miniGamesRunner.stop();
+            target.checked ? this.#hitsquadGameRunner.start() : this.#hitsquadGameRunner.stop();
+        });
+
         const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
 
         toggleQuizEl.addEventListener('change', ({ target }) => {
@@ -37,10 +49,10 @@ export class ExtensionContainer {
         });
 
         window.document.addEventListener('keydown', (e) => {
-            const isAnswerKey = ['1', '2', '3', '4'].includes(e.key);
+            const command = `!answer${e.key}`;
 
-            if (isAnswerKey) {
-                this.#twitchChatService.sendMessage(`!answer${e.key}`);
+            if (quizAnswers.includes(command)) {
+                this.#twitchChatService.sendMessage(command);
             }
         });
     }
@@ -51,7 +63,6 @@ export class ExtensionContainer {
 
     mount(rootEl) {
         rootEl.appendChild(this.el);
-        return this.el;
     }
 
     #toggleStatusClass(isBan) {

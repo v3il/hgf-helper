@@ -47,7 +47,7 @@ async function runApp({
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
     const quizService = QuizService.create({ twitchChatObserver, twitchChatService, twitchUser });
 
-    GameRunner.create({
+    const miniGamesRunner = GameRunner.create({
         twitchChatObserver,
         twitchChatService,
         streamStatusService,
@@ -57,7 +57,7 @@ async function runApp({
         commands: [Commands.BATTLEROYALE, Commands.GAUNTLET]
     });
 
-    GameRunner.create({
+    const hitsquadGameRunner = GameRunner.create({
         twitchChatObserver,
         twitchChatService,
         streamStatusService,
@@ -70,7 +70,9 @@ async function runApp({
     ExtensionContainer.create({
         streamStatusService,
         quizService,
-        twitchChatService
+        twitchChatService,
+        miniGamesRunner,
+        hitsquadGameRunner
     }).mount(document.body);
 }
 

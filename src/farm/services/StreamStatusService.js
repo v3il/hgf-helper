@@ -22,9 +22,7 @@ export class StreamStatusService {
         this.#canvasEl = this.#createCanvas();
         this.#canvasContainerEl.appendChild(this.#canvasEl);
 
-        console.time('a');
         this.checkBanPhase();
-        console.timeEnd('a');
 
         setInterval(() => {
             this.checkBanPhase();
@@ -135,13 +133,6 @@ export class StreamStatusService {
 
         ctx.clearRect(0, 0, this.#canvasEl.width, this.#canvasEl.height);
     }
-
-    // async isStreamOnline() {
-    //     const response = await fetch(window.location.href);
-    //     const pageHTML = await response.text();
-    //
-    //     return pageHTML.includes('isLiveBroadcast');
-    // }
 
     // #listenEvents() {
     //     document.body.addEventListener('click', ({ target, pageX, pageY }) => {

@@ -1,10 +1,8 @@
-import { JSON_BIN_ACCESS_KEY, JSON_BIN_MASTER_KEY } from '../storeConfig';
-
-const BIN_URL = 'https://api.jsonbin.io/v3/b/641a25fcebd26539d092d042';
+import { JSON_BIN_ACCESS_KEY, JSON_BIN_MASTER_KEY, JSON_BIN_URL } from '../storeConfig';
 
 export class JsonBinApiService {
     getHiddenOffers() {
-        return fetch(BIN_URL, {
+        return fetch(JSON_BIN_URL, {
             headers: this.#getHeaders()
         })
             .then((response) => response.json())
@@ -16,7 +14,7 @@ export class JsonBinApiService {
     }
 
     updateHiddenOffers(offers) {
-        return fetch(BIN_URL, {
+        return fetch(JSON_BIN_URL, {
             headers: this.#getHeaders(),
             method: 'put',
             body: JSON.stringify({ offers })

@@ -1,4 +1,5 @@
 import { shuffleArray } from '../utils';
+import { HGF_USERNAME } from '../farmConfig';
 
 export class GameRunner {
     static create(params) {
@@ -18,6 +19,8 @@ export class GameRunner {
     #messagePattern;
     #responseDelay;
     #commands;
+
+    #isPaused = false;
 
     constructor({
         twitchChatObserver,
@@ -48,7 +51,11 @@ export class GameRunner {
     }
 
     #processMessage({ userName, message }) {
-        if (userName === 'hitsquadgodfather' && message.includes(this.#messagePattern)) {
+        if (this.#isPaused) {
+            return;
+        }
+
+        if (userName === HGF_USERNAME && message.includes(this.#messagePattern)) {
             this.#completedGamesCount++;
         }
 
@@ -73,5 +80,13 @@ export class GameRunner {
             this.#twitchChatService.sendMessage(command);
             await this.#waiterService.wait(GameRunner.#DELAY_BETWEEN_COMMANDS, 1000);
         }
+    }
+
+    start() {
+        this.#isPaused = false;
+    }
+
+    stop() {
+        this.#isPaused = true;
     }
 }
