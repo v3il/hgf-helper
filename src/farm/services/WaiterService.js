@@ -11,11 +11,10 @@ export class WaiterService {
         this.#twitchUser = twitchUser;
     }
 
-    async wait(baseDelay) {
+    async wait(baseDelay, delta = 0) {
         const bonusDelay = this.#twitchUser.isPrimaryUser ? 0 : baseDelay * 0.5;
+        const deltaDelay = Math.random() * delta;
 
-        console.error('wait', baseDelay + bonusDelay);
-
-        await promisifiedSetTimeout(baseDelay + bonusDelay);
+        await promisifiedSetTimeout(baseDelay + bonusDelay + deltaDelay);
     }
 }
