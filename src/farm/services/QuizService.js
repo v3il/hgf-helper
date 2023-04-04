@@ -1,4 +1,3 @@
-import { sample } from 'lodash';
 import { quizAnswers, MessageTemplates } from '../consts';
 
 export class QuizService {
@@ -89,7 +88,8 @@ export class QuizService {
     }
 
     #getDesiredAnswerPosition() {
-        return sample([2, 3, 4]);
+        const positions = [2, 3, 4];
+        return positions[Math.floor(Math.random() * (positions.length + 1))];
     }
 
     #resetAnswers() {

@@ -23,5 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-appConfig.js
+src/farm/farmConfig.js
 src/store/storeConfig.js

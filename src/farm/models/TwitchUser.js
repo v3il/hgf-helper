@@ -1,4 +1,4 @@
-import { PRIMARY_USERNAME, SECONDARY_USERNAME } from '../../../appConfig';
+import { PRIMARY_USERNAME, SECONDARY_USERNAME } from '../farmConfig';
 
 export class TwitchUser {
     static create({ userName }) {
