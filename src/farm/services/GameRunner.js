@@ -1,3 +1,5 @@
+import { shuffleArray } from '../utils';
+
 export class GameRunner {
     static create(params) {
         return new GameRunner(params);
@@ -67,7 +69,7 @@ export class GameRunner {
     async #sendCommands() {
         await this.#waiterService.wait(this.#responseDelay);
 
-        for (const command of this.#commands) {
+        for (const command of shuffleArray(this.#commands)) {
             this.#twitchChatService.sendMessage(command);
             await this.#waiterService.wait(GameRunner.#DELAY_BETWEEN_COMMANDS, 1000);
         }
