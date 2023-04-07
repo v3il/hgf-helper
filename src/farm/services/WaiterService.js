@@ -1,14 +1,21 @@
-import { promisifiedSetTimeout } from '../utils/promisifiedSetTimeout';
+import { promisifiedSetTimeout } from '../utils';
 
 export class WaiterService {
     static create({ twitchUser }) {
         return new WaiterService({ twitchUser });
     }
 
+    static instance;
     #twitchUser;
 
     constructor({ twitchUser }) {
+        if (WaiterService.instance) {
+            // eslint-disable-next-line no-constructor-return
+            return WaiterService.instance;
+        }
+
         this.#twitchUser = twitchUser;
+        WaiterService.instance = this;
     }
 
     async wait(baseDelay, randomPart = 0) {

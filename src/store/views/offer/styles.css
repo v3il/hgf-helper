@@ -13,4 +13,5 @@
 
 .hgfs-container__hide {
     font-size: 12px;
+    display: block;
 }

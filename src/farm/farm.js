@@ -37,7 +37,8 @@ async function runApp({
     const userName = userNameEl.textContent.toLowerCase();
 
     const twitchUser = TwitchUser.create({ userName });
-    const waiterService = WaiterService.create({ twitchUser });
+
+    WaiterService.create({ twitchUser });
 
     const twitchChatObserver = TwitchChatObserver.create(chatContainerEl);
 
@@ -51,7 +52,6 @@ async function runApp({
         twitchChatObserver,
         twitchChatService,
         streamStatusService,
-        waiterService,
         messagePattern: MessageTemplates.MINI_GAME_REWARD,
         responseDelay: 10000,
         commands: [Commands.BATTLEROYALE, Commands.GAUNTLET]
@@ -61,7 +61,6 @@ async function runApp({
         twitchChatObserver,
         twitchChatService,
         streamStatusService,
-        waiterService,
         messagePattern: MessageTemplates.HITSQUAD_REWARD,
         responseDelay: 30000,
         commands: [Commands.HITSQUAD]

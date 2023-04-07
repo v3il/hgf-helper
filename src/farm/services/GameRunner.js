@@ -1,5 +1,6 @@
 import { shuffleArray } from '../utils';
 import { HGF_USERNAME } from '../farmConfig';
+import { WaiterService } from './WaiterService';
 
 export class GameRunner {
     static create(params) {
@@ -14,7 +15,6 @@ export class GameRunner {
     #twitchChatObserver;
     #twitchChatService;
     #streamStatusService;
-    #waiterService;
 
     #messagePattern;
     #responseDelay;
@@ -26,7 +26,6 @@ export class GameRunner {
         twitchChatObserver,
         twitchChatService,
         streamStatusService,
-        waiterService,
         messagePattern,
         responseDelay,
         commands
@@ -34,7 +33,6 @@ export class GameRunner {
         this.#twitchChatObserver = twitchChatObserver;
         this.#twitchChatService = twitchChatService;
         this.#streamStatusService = streamStatusService;
-        this.#waiterService = waiterService;
 
         this.#messagePattern = messagePattern;
         this.#responseDelay = responseDelay;
@@ -67,18 +65,18 @@ export class GameRunner {
 
     async #startNewRound() {
         if (this.#streamStatusService.isBanPhase) {
-            await this.#waiterService.wait(GameRunner.#BAN_PHASE_DELAY);
+            await WaiterService.instance.wait(GameRunner.#BAN_PHASE_DELAY);
         }
 
         this.#sendCommands();
     }
 
     async #sendCommands() {
-        await this.#waiterService.wait(this.#responseDelay);
+        await WaiterService.instance.wait(this.#responseDelay);
 
         for (const command of shuffleArray(this.#commands)) {
             this.#twitchChatService.sendMessage(command);
-            await this.#waiterService.wait(GameRunner.#DELAY_BETWEEN_COMMANDS, 1000);
+            await WaiterService.instance.wait(GameRunner.#DELAY_BETWEEN_COMMANDS, 1000);
         }
     }
 
