@@ -17,7 +17,9 @@ export class OfferView {
     }
 
     get #isHidden() {
-        return this.#offer.isSoldOut || this.#storageService.isOfferHidden(this.#offer.name);
+        return this.#offer.isSoldOut
+            || this.#offer.isTooExpensive
+            || this.#storageService.isOfferHidden(this.#offer.name);
     }
 
     #renderContainer() {

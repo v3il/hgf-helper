@@ -25,4 +25,8 @@ export class Offer {
     get isSoldOut() {
         return this.#count === 'sold out';
     }
+
+    get isTooExpensive() {
+        return this.#price > 300000;
+    }
 }
