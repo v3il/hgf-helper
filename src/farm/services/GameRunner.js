@@ -7,7 +7,7 @@ export class GameRunner {
         return new GameRunner(params);
     }
 
-    static #BAN_PHASE_DELAY = 5 * 60 * 1000;
+    static #BAN_PHASE_DELAY = 6 * 60 * 1000;
     static #DELAY_BETWEEN_COMMANDS = 3 * 1000;
 
     #completedGamesCount = 0;
@@ -19,6 +19,7 @@ export class GameRunner {
     #messagePattern;
     #responseDelay;
     #commands;
+    #roundDuration;
 
     #isPaused = false;
 
@@ -28,7 +29,8 @@ export class GameRunner {
         streamStatusService,
         messagePattern,
         responseDelay,
-        commands
+        commands,
+        roundDuration
     }) {
         this.#twitchChatObserver = twitchChatObserver;
         this.#twitchChatService = twitchChatService;
@@ -37,9 +39,30 @@ export class GameRunner {
         this.#messagePattern = messagePattern;
         this.#responseDelay = responseDelay;
         this.#commands = commands;
+        this.#roundDuration = roundDuration;
 
         this.#listenEvents();
-        this.#startNewRound();
+
+        if (this.#shouldProcessInitialRound) {
+            this.#startNewRound();
+        }
+    }
+
+    get #serviceId() {
+        return `gr_${this.#commands.join('_')}`;
+    }
+
+    get #lastCommandTime() {
+        const value = localStorage.getItem(this.#serviceId);
+        return value ? Number.parseInt(value, 10) : 0;
+    }
+
+    #setLastCommandTime() {
+        localStorage.setItem(this.#serviceId, Date.now());
+    }
+
+    get #shouldProcessInitialRound() {
+        return Date.now() - this.#lastCommandTime >= this.#roundDuration;
     }
 
     #listenEvents() {
@@ -78,6 +101,8 @@ export class GameRunner {
             this.#twitchChatService.sendMessage(command);
             await WaiterService.instance.wait(GameRunner.#DELAY_BETWEEN_COMMANDS, 1000);
         }
+
+        this.#setLastCommandTime();
     }
 
     start() {

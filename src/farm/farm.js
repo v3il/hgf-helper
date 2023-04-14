@@ -54,7 +54,8 @@ async function runApp({
         streamStatusService,
         messagePattern: MessageTemplates.MINI_GAME_REWARD,
         responseDelay: 10000,
-        commands: [Commands.BATTLEROYALE, Commands.GAUNTLET]
+        commands: [Commands.BATTLEROYALE, Commands.GAUNTLET],
+        roundDuration: 15 * 60 * 1000
     });
 
     const hitsquadGameRunner = GameRunner.create({
@@ -63,7 +64,8 @@ async function runApp({
         streamStatusService,
         messagePattern: MessageTemplates.HITSQUAD_REWARD,
         responseDelay: 30000,
-        commands: [Commands.HITSQUAD]
+        commands: [Commands.HITSQUAD],
+        roundDuration: 60 * 60 * 1000
     });
 
     ExtensionContainer.create({
