@@ -10,7 +10,7 @@ export class QuizService {
     #twitchUser;
 
     #isWaitingNextRound = true;
-    #isStopped = false;
+    #isStopped = true;
 
     #answers = {};
 
