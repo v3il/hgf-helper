@@ -86,6 +86,6 @@ const intervalId = setInterval(() => {
 
     if (isElementsExist(twitchElements)) {
         clearInterval(intervalId);
-        setTimeout(() => runApp(twitchElements), 3000);
+        setTimeout(() => runApp(twitchElements), 4000);
     }
-}, 1000);
+}, 500);

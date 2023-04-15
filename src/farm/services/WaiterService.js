@@ -24,4 +24,8 @@ export class WaiterService {
 
         await promisifiedSetTimeout(baseDelay + bonusDelay + randomDelay);
     }
+
+    async waitFixedTime(delay) {
+        await promisifiedSetTimeout(delay);
+    }
 }

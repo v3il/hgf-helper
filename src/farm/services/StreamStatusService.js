@@ -14,6 +14,7 @@ export class StreamStatusService {
     #canvasEl;
     #lastCheckData;
     #events;
+    #intervalId;
 
     constructor({ canvasContainerEl, events }) {
         this.#canvasContainerEl = canvasContainerEl;
@@ -24,7 +25,7 @@ export class StreamStatusService {
 
         this.checkBanPhase();
 
-        setInterval(() => {
+        this.#intervalId = setInterval(() => {
             this.checkBanPhase();
         }, 25000);
 
@@ -55,18 +56,32 @@ export class StreamStatusService {
     }
 
     checkBanPhase() {
-        const isSuccess = this.#makeScreenshot();
+        const errorCheckData = {
+            successfulChecks: 0,
+            totalChecks: 0,
+            isBan: true
+        };
 
-        if (!isSuccess) {
-            this.#lastCheckData = {
-                successfulChecks: 0,
-                totalChecks: 0,
-                isBan: true
-            };
+        const videoEl = this.#getActiveVideoEl();
 
+        // Some problems with video
+        if (!videoEl) {
+            this.#lastCheckData = errorCheckData;
             this.#clearCanvas();
             return this.#events.emit('check');
         }
+
+        // Stream went offline
+        if (videoEl.paused || videoEl.ended) {
+            this.#lastCheckData = errorCheckData;
+
+            clearInterval(this.#intervalId);
+            this.#clearCanvas();
+
+            return this.#events.emit('reload');
+        }
+
+        this.#makeScreenshot(videoEl);
 
         const canvas = this.#canvasEl;
         const { width, height } = canvas;
@@ -111,21 +126,13 @@ export class StreamStatusService {
         return this.#lastCheckData;
     }
 
-    #makeScreenshot() {
-        const videoEl = this.#getActiveVideoEl();
-
-        if (!videoEl) {
-            return false;
-        }
-
+    #makeScreenshot(videoEl) {
         this.#canvasEl.width = videoEl.clientWidth;
         this.#canvasEl.height = videoEl.clientHeight;
 
         const ctx = this.#canvasEl.getContext('2d');
 
         ctx.drawImage(videoEl, 0, 0, this.#canvasEl.width, this.#canvasEl.height);
-
-        return true;
     }
 
     #clearCanvas() {

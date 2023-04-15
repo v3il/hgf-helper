@@ -1,6 +1,7 @@
 import './style.css';
 import template from './template.html?raw';
 import { quizAnswers } from '../../consts';
+import { WaiterService } from '../../services';
 
 export class ExtensionContainer {
     static create(params) {
@@ -41,6 +42,11 @@ export class ExtensionContainer {
 
         toggleQuizEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#quizService.start() : this.#quizService.stop();
+        });
+
+        this.#streamStatusService.events.on('reload', async () => {
+            await WaiterService.instance.waitFixedTime(60 * 1000);
+            window.location.reload();
         });
 
         this.#streamStatusService.events.on('check', () => {
