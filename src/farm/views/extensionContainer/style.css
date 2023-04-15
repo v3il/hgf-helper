@@ -22,6 +22,10 @@
     border-color: lightgreen;
 }
 
+.haf-extension-container--reload {
+    border-color: lightseagreen;
+}
+
 .haf-extension-container__separator {
     height: 100%;
     width: 1px;

@@ -27,7 +27,7 @@ export class ExtensionContainer {
 
         this.#listenEvents();
         this.#renderChecksResult();
-        this.#toggleStatusClass(this.#streamStatusService.isBanPhase);
+        this.#toggleStatusClass();
     }
 
     #listenEvents() {
@@ -45,13 +45,14 @@ export class ExtensionContainer {
         });
 
         this.#streamStatusService.events.on('reload', async () => {
+            this.#toggleStatusClass();
             await WaiterService.instance.waitFixedTime(60 * 1000);
             window.location.reload();
         });
 
         this.#streamStatusService.events.on('check', () => {
             this.#renderChecksResult();
-            this.#toggleStatusClass(this.#streamStatusService.isBanPhase);
+            this.#toggleStatusClass();
         });
 
         window.document.addEventListener('keydown', (e) => {
@@ -71,9 +72,15 @@ export class ExtensionContainer {
         rootEl.appendChild(this.el);
     }
 
-    #toggleStatusClass(isBan) {
-        this.el.classList.toggle('haf-extension-container--ban-phase', isBan);
-        this.el.classList.toggle('haf-extension-container--no-ban-phase', !isBan);
+    #toggleStatusClass() {
+        const { lastCheckData } = this.#streamStatusService;
+
+        if (lastCheckData.isReload) {
+            return this.el.classList.add('haf-extension-container--reload');
+        }
+
+        this.el.classList.toggle('haf-extension-container--ban-phase', lastCheckData.isBan);
+        this.el.classList.toggle('haf-extension-container--no-ban-phase', !lastCheckData.isBan);
     }
 
     #createElement() {

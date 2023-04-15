@@ -56,24 +56,28 @@ export class StreamStatusService {
     }
 
     checkBanPhase() {
-        const errorCheckData = {
-            successfulChecks: 0,
-            totalChecks: 0,
-            isBan: true
-        };
-
         const videoEl = this.#getActiveVideoEl();
 
         // Some problems with video
         if (!videoEl) {
-            this.#lastCheckData = errorCheckData;
+            this.#lastCheckData = {
+                successfulChecks: 0,
+                totalChecks: 0,
+                isBan: true
+            };
+
             this.#clearCanvas();
             return this.#events.emit('check');
         }
 
         // Stream went offline
         if (videoEl.paused || videoEl.ended) {
-            this.#lastCheckData = errorCheckData;
+            this.#lastCheckData = {
+                successfulChecks: 0,
+                totalChecks: 0,
+                isBan: true,
+                isReload: true
+            };
 
             clearInterval(this.#intervalId);
             this.#clearCanvas();
