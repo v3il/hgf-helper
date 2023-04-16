@@ -95,7 +95,7 @@ export class GameRunner {
     }
 
     async #sendCommands() {
-        await WaiterService.instance.wait(this.#responseDelay);
+        await WaiterService.instance.waitFixedTime(this.#responseDelay);
 
         for (const command of shuffleArray(this.#commands)) {
             this.#twitchChatService.sendMessage(command);

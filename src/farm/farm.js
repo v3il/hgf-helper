@@ -63,7 +63,7 @@ async function runApp({
         twitchChatService,
         streamStatusService,
         messagePattern: MessageTemplates.HITSQUAD_REWARD,
-        responseDelay: 30000,
+        responseDelay: 60000,
         commands: [Commands.HITSQUAD],
         roundDuration: 60 * 60 * 1000
     });
