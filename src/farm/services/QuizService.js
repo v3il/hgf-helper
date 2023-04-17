@@ -1,4 +1,5 @@
 import { quizAnswers, MessageTemplates } from '../consts';
+import { WaiterService } from './WaiterService';
 
 export class QuizService {
     static create({ twitchChatObserver, twitchChatService, twitchUser }) {
@@ -42,8 +43,6 @@ export class QuizService {
             this.#isWaitingNextRound = false;
             this.#desiredAnswerPosition = this.#getDesiredAnswerPosition();
 
-            console.error('Desired', this.#desiredAnswerPosition);
-
             this.#resetAnswers();
             this.#registerFallback();
         }
@@ -64,12 +63,10 @@ export class QuizService {
         }
 
         this.#answers[message].add(userName);
-        const { answer, count } = this._getCorrectAnswer();
+        const { answer, answersCount } = this.#getCorrectAnswer();
 
-        console.error(answer, count);
-
-        if (count === this.#desiredAnswerPosition) {
-            console.error('send', answer, count);
+        if (answersCount + 1 === this.#desiredAnswerPosition) {
+            console.error('send', answer, answersCount + 1);
             this.#completeRound(answer);
         }
     }
@@ -84,48 +81,68 @@ export class QuizService {
     }
 
     #sendAnswer(answer) {
+        WaiterService.instance.waitFixedTime(200);
         this.#twitchChatService.sendMessage(answer);
     }
 
+    #getPositionChances() {
+        if (this.#twitchUser.isPrimaryUser) {
+            return {
+                2: 0.1,
+                3: 0.7,
+                4: 0.9,
+                5: 1
+            };
+        }
+
+        return {
+            2: 0.05,
+            3: 0.15,
+            4: 0.6,
+            5: 1
+        };
+    }
+
     #getDesiredAnswerPosition() {
-        const positions = [2, 3, 4];
-        return positions[Math.floor(Math.random() * (positions.length + 1))];
+        const chance = Math.random();
+        const positionChances = this.#getPositionChances();
+
+        console.info(positionChances, chance);
+
+        return +Object.keys(positionChances).find((position) => positionChances[position] >= chance);
     }
 
     #resetAnswers() {
         Object.values(this.#answers).forEach((set) => set.clear());
     }
 
+    #getFallbackDelay() {
+        const randomPart = Math.floor(Math.random() * 8);
+        const basePart = this.#twitchUser.isPrimaryUser ? 45 : 35;
+
+        return basePart + randomPart;
+    }
+
     #registerFallback() {
-        const delay = 40 + Math.floor(Math.random() * 14);
+        const delay = this.#getFallbackDelay();
 
         this.#fallbackTimeoutId = setTimeout(() => {
-            const { answer, count } = this._getCorrectAnswer();
+            const { answer, answersCount } = this.#getCorrectAnswer();
 
-            console.error('Fallback', answer, count);
+            console.error('Fallback', answer, answersCount);
 
-            if (count >= 1) {
-                console.error('send', answer);
+            if (answersCount >= 1) {
                 this.#completeRound(answer);
             }
         }, delay * 1000);
     }
 
-    _getCorrectAnswer() {
-        let answer = '';
-        let count = 0;
+    #getCorrectAnswer() {
+        const sortedAnswers = Object.entries(this.#answers)
+            .map(([answer, usersSet]) => ({ answer, answersCount: usersSet.size }))
+            .sort((a, b) => b.answersCount - a.answersCount);
 
-        // eslint-disable-next-line guard-for-in,no-restricted-syntax
-        for (const command in this.#answers) {
-            const set = this.#answers[command];
-
-            if (set.size > count) {
-                answer = command;
-                count = set.size;
-            }
-        }
-
-        return { answer, count };
+        return sortedAnswers[0];
     }
 
     start() {

@@ -8,7 +8,7 @@ export class GameRunner {
     }
 
     static #BAN_PHASE_DELAY = 6 * 60 * 1000;
-    static #DELAY_BETWEEN_COMMANDS = 3 * 1000;
+    static #DELAY_BETWEEN_COMMANDS = 2 * 1000;
 
     #completedGamesCount = 0;
 
@@ -95,7 +95,7 @@ export class GameRunner {
     }
 
     async #sendCommands() {
-        await WaiterService.instance.waitFixedTime(this.#responseDelay);
+        await WaiterService.instance.wait(this.#responseDelay);
 
         for (const command of shuffleArray(this.#commands)) {
             this.#twitchChatService.sendMessage(command);
