@@ -81,7 +81,7 @@ export class QuizService {
     }
 
     #sendAnswer(answer) {
-        WaiterService.instance.waitFixedTime(200);
+        WaiterService.instance.wait(200, 150);
         this.#twitchChatService.sendMessage(answer);
     }
 
