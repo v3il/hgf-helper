@@ -98,7 +98,7 @@ export class QuizService {
         return {
             2: 0.05,
             3: 0.15,
-            4: 0.6,
+            4: 0.4,
             5: 1
         };
     }
