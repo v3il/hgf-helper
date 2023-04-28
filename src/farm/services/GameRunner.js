@@ -7,7 +7,7 @@ export class GameRunner {
         return new GameRunner(params);
     }
 
-    static #BAN_PHASE_DELAY = 6 * 60 * 1000;
+    static #BAN_PHASE_DELAY = 30 * 1000;
     static #DELAY_BETWEEN_COMMANDS = 2 * 1000;
 
     #completedGamesCount = 0;
@@ -88,7 +88,8 @@ export class GameRunner {
 
     async #startNewRound() {
         if (this.#streamStatusService.isBanPhase) {
-            await WaiterService.instance.wait(GameRunner.#BAN_PHASE_DELAY);
+            await WaiterService.instance.waitFixedTime(GameRunner.#BAN_PHASE_DELAY);
+            return this.#startNewRound();
         }
 
         this.#sendCommands();
@@ -99,7 +100,7 @@ export class GameRunner {
 
         for (const command of shuffleArray(this.#commands)) {
             this.#twitchChatService.sendMessage(command);
-            await WaiterService.instance.wait(GameRunner.#DELAY_BETWEEN_COMMANDS, 1000);
+            await WaiterService.instance.wait(GameRunner.#DELAY_BETWEEN_COMMANDS, 2000);
         }
 
         this.#setLastCommandTime();
