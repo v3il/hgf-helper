@@ -9,10 +9,10 @@ export class TwitchChatService {
         this._streamStatusService = streamStatusService;
     }
 
-    sendMessage(message) {
-        console.error('send', message);
+    sendMessage(message, forced = false) {
+        console.error('send', message, forced);
 
-        if (this._streamStatusService.isBanPhase || 1) {
+        if (this._streamStatusService.isBanPhase && !forced) {
             return false;
         }
 

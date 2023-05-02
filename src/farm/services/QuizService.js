@@ -88,17 +88,14 @@ export class QuizService {
     #getPositionChances() {
         if (this.#twitchUser.isPrimaryUser) {
             return {
-                2: 0.1,
-                3: 0.7,
-                4: 0.9,
-                5: 1
+                3: 0.9,
+                4: 1
             };
         }
 
         return {
-            2: 0.05,
-            3: 0.15,
-            4: 0.4,
+            // 3: 0.05,
+            // 4: 0.05,
             5: 1
         };
     }

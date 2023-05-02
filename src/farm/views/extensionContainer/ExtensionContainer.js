@@ -55,11 +55,11 @@ export class ExtensionContainer {
             this.#toggleStatusClass();
         });
 
-        window.document.addEventListener('keydown', (e) => {
-            const command = `!answer${e.key}`;
+        window.document.addEventListener('keydown', (event) => {
+            const command = `!answer${event.key}`;
 
             if (quizAnswers.includes(command)) {
-                this.#twitchChatService.sendMessage(command);
+                this.#twitchChatService.sendMessage(command, event.altKey && event.ctrlKey);
             }
         });
     }
