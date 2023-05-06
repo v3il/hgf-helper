@@ -30,6 +30,10 @@ export class QuizService {
         this.#listenEvents();
     }
 
+    get #answeredUsers() {
+        return Object.values(this.#answers).flatMap((set) => Array.from(set));
+    }
+
     #listenEvents() {
         this.#twitchChatObserver.events.on('message', ({ userName, message }) => {
             if (!this.#isStopped) {
@@ -52,17 +56,21 @@ export class QuizService {
         }
 
         const isMyUser = this.#twitchUser.isCurrentUser(userName);
-        const isValidAnswer = quizAnswers.includes(message);
+        const answerInMessage = quizAnswers.find((answer) => message.startsWith(answer));
 
-        if (isMyUser && isValidAnswer) { // answered manually
-            return this.#completeRound();
-        }
-
-        if (!isValidAnswer) {
+        if (!answerInMessage) {
             return;
         }
 
-        this.#answers[message].add(userName);
+        if (isMyUser && answerInMessage) { // answered manually
+            return this.#completeRound();
+        }
+
+        if (this.#answeredUsers.includes(userName)) { // user answered again
+            return;
+        }
+
+        this.#answers[answerInMessage].add(userName);
         const { answer, answersCount } = this.#getCorrectAnswer();
 
         if (answersCount + 1 === this.#desiredAnswerPosition) {
@@ -80,15 +88,14 @@ export class QuizService {
         }
     }
 
-    #sendAnswer(answer) {
-        WaiterService.instance.wait(200, 150);
+    async #sendAnswer(answer) {
+        await WaiterService.instance.wait(500, 500);
         this.#twitchChatService.sendMessage(answer);
     }
 
     #getPositionChances() {
         return {
-            3: 0.2,
-            4: 0.6,
+            4: 0.5,
             5: 1
         };
     }
@@ -96,8 +103,6 @@ export class QuizService {
     #getDesiredAnswerPosition() {
         const chance = Math.random();
         const positionChances = this.#getPositionChances();
-
-        console.info(positionChances, chance);
 
         return +Object.keys(positionChances).find((position) => positionChances[position] >= chance);
     }
@@ -107,9 +112,7 @@ export class QuizService {
     }
 
     #getFallbackDelay() {
-        const randomPart = Math.floor(Math.random() * 8);
-
-        return 45 + randomPart;
+        return 45 + Math.floor(Math.random() * 8);
     }
 
     #registerFallback() {
@@ -117,8 +120,6 @@ export class QuizService {
 
         this.#fallbackTimeoutId = setTimeout(() => {
             const { answer, answersCount } = this.#getCorrectAnswer();
-
-            console.error('Fallback', answer, answersCount);
 
             if (answersCount >= 1) {
                 this.#completeRound(answer);

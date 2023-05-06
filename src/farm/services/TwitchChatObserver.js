@@ -47,7 +47,7 @@ export class TwitchChatObserver {
         }
 
         const userName = userNameEl.textContent.toLowerCase();
-        const message = messageEl.textContent.toLowerCase();
+        const message = messageEl.textContent.toLowerCase().trim();
 
         this.#events.emit('message', { userName, message });
     }
