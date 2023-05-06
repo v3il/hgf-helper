@@ -86,16 +86,9 @@ export class QuizService {
     }
 
     #getPositionChances() {
-        if (this.#twitchUser.isPrimaryUser) {
-            return {
-                3: 0.9,
-                4: 1
-            };
-        }
-
         return {
-            // 3: 0.05,
-            // 4: 0.05,
+            3: 0.2,
+            4: 0.6,
             5: 1
         };
     }
@@ -115,9 +108,8 @@ export class QuizService {
 
     #getFallbackDelay() {
         const randomPart = Math.floor(Math.random() * 8);
-        const basePart = this.#twitchUser.isPrimaryUser ? 45 : 35;
 
-        return basePart + randomPart;
+        return 45 + randomPart;
     }
 
     #registerFallback() {
