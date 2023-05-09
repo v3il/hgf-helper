@@ -43,7 +43,7 @@ async function runApp({
     const twitchChatObserver = TwitchChatObserver.create(chatContainerEl);
 
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
-    const streamStatusService = StreamStatusService.create({ canvasContainerEl });
+    const streamStatusService = StreamStatusService.create({ canvasContainerEl, twitchChatObserver });
 
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
     const quizService = QuizService.create({ twitchChatObserver, twitchChatService, twitchUser });

@@ -1,11 +1,13 @@
 import { ColorService } from './ColorService';
 import { banPhaseChecks } from '../consts/banPhaseChecks';
 import { EventEmitter } from '../models/EventsEmitter';
+import { Commands, Timing } from '../consts';
 
 export class StreamStatusService {
-    static create({ canvasContainerEl }) {
+    static create({ canvasContainerEl, twitchChatObserver }) {
         return new StreamStatusService({
             canvasContainerEl,
+            twitchChatObserver,
             events: EventEmitter.create()
         });
     }
@@ -15,9 +17,13 @@ export class StreamStatusService {
     #lastCheckData;
     #events;
     #intervalId;
+    #twitchChatObserver;
 
-    constructor({ canvasContainerEl, events }) {
+    #enteredCommandsCount = 50;
+
+    constructor({ canvasContainerEl, twitchChatObserver, events }) {
         this.#canvasContainerEl = canvasContainerEl;
+        this.#twitchChatObserver = twitchChatObserver;
         this.#events = events;
 
         this.#canvasEl = this.#createCanvas();
@@ -27,13 +33,27 @@ export class StreamStatusService {
 
         this.#intervalId = setInterval(() => {
             this.checkBanPhase();
-        }, 25000);
+        }, 25 * Timing.SECOND);
+
+        this.#checkStreamBotIsActive();
 
         // this.#listenEvents();
     }
 
     get events() {
         return this.#events;
+    }
+
+    #checkStreamBotIsActive() {
+        this.#twitchChatObserver.events.on('message', ({ message }) => {
+            const isCommand = Commands.getGameCommands().some((command) => message.startsWith(command));
+
+            if (isCommand) {
+                this.#enteredCommandsCount++;
+
+                console.error(this.#enteredCommandsCount);
+            }
+        });
     }
 
     #createCanvas() {
@@ -105,19 +125,25 @@ export class StreamStatusService {
             };
         });
 
-        const successfulChecks = checksResults.filter(({ similarity, actual }) => {
+        const failedChecks = checksResults.filter(({ similarity, actual }) => {
             const isBlack = actual === '000000';
             return isBlack ? true : similarity >= 0.85;
         });
 
+        const isEnoughFailedChecks = failedChecks.length / banPhaseChecks.length >= 0.7;
+        const isStreamBotActive = this.#enteredCommandsCount > 6;
+
+        console.error(isEnoughFailedChecks, isStreamBotActive);
+
         this.#lastCheckData = {
-            successfulChecks: successfulChecks.length,
+            successfulChecks: failedChecks.length,
             totalChecks: banPhaseChecks.length,
-            isBan: successfulChecks.length / banPhaseChecks.length >= 0.7
+            isBan: isEnoughFailedChecks || !isStreamBotActive
         };
 
         console.log(this.#lastCheckData);
 
+        this.#enteredCommandsCount = 0;
         this.#clearCanvas();
         this.#events.emit('check');
     }
