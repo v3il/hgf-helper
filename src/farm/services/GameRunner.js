@@ -1,6 +1,6 @@
-import { shuffleArray } from '../utils';
+import { generateDelay, promisifiedSetTimeout, shuffleArray } from '../utils';
 import { HGF_USERNAME } from '../farmConfig';
-import { WaiterService } from './WaiterService';
+import { Timing } from '../consts';
 
 export class GameRunner {
     static create(params) {
@@ -8,7 +8,6 @@ export class GameRunner {
     }
 
     static #BAN_PHASE_DELAY = 30 * 1000;
-    static #DELAY_BETWEEN_COMMANDS = 2 * 1000;
 
     #completedGamesCount = 0;
 
@@ -17,7 +16,7 @@ export class GameRunner {
     #streamStatusService;
 
     #messagePattern;
-    #responseDelay;
+    #generateMessagesDelay;
     #commands;
     #roundDuration;
 
@@ -28,7 +27,7 @@ export class GameRunner {
         twitchChatService,
         streamStatusService,
         messagePattern,
-        responseDelay,
+        generateMessagesDelay,
         commands,
         roundDuration
     }) {
@@ -37,7 +36,7 @@ export class GameRunner {
         this.#streamStatusService = streamStatusService;
 
         this.#messagePattern = messagePattern;
-        this.#responseDelay = responseDelay;
+        this.#generateMessagesDelay = generateMessagesDelay;
         this.#commands = commands;
         this.#roundDuration = roundDuration;
 
@@ -88,7 +87,7 @@ export class GameRunner {
 
     async #startNewRound() {
         if (this.#streamStatusService.isBanPhase) {
-            await WaiterService.instance.waitFixedTime(GameRunner.#BAN_PHASE_DELAY);
+            await promisifiedSetTimeout(GameRunner.#BAN_PHASE_DELAY);
             return this.#startNewRound();
         }
 
@@ -96,11 +95,19 @@ export class GameRunner {
     }
 
     async #sendCommands() {
-        await WaiterService.instance.wait(this.#responseDelay);
+        const delay = this.#generateMessagesDelay();
+
+        console.error(delay);
+
+        await promisifiedSetTimeout(delay);
 
         for (const command of shuffleArray(this.#commands)) {
+            const delayBetweenCommands = generateDelay(3 * Timing.SECOND, 10 * Timing.SECOND);
+
+            console.error(delayBetweenCommands);
+
             this.#twitchChatService.sendMessage(command);
-            await WaiterService.instance.wait(GameRunner.#DELAY_BETWEEN_COMMANDS, 2000);
+            await promisifiedSetTimeout(delayBetweenCommands);
         }
 
         this.#setLastCommandTime();

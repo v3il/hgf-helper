@@ -1,13 +1,17 @@
 import { PRIMARY_USERNAME, SECONDARY_USERNAME } from '../farmConfig';
+import { Timing } from '../consts';
+import { generateDelay } from '../utils';
 
 export class TwitchUser {
-    static create({ userName }) {
-        return new TwitchUser({ userName });
+    static create({ id, userName }) {
+        return new TwitchUser({ id, userName });
     }
 
+    #id;
     #userName;
 
-    constructor({ userName }) {
+    constructor({ id, userName }) {
+        this.#id = id;
         this.#userName = userName;
     }
 
@@ -21,5 +25,19 @@ export class TwitchUser {
 
     isCurrentUser(userName) {
         return userName === this.#userName;
+    }
+
+    getMiniGamesDelay() {
+        const basePart = (this.#id - 1) * Timing.MINUTE;
+        const randomPart = generateDelay(11 * Timing.SECOND, 55 * Timing.SECOND);
+
+        return basePart + randomPart;
+    }
+
+    getHitsquadDelay() {
+        const basePart = Timing.MINUTE;
+        const randomPart = generateDelay((this.#id - 1) * 30 * Timing.SECOND, this.#id * 30 * Timing.SECOND);
+
+        return basePart + randomPart;
     }
 }

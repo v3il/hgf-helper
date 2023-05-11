@@ -35,7 +35,7 @@ export class StreamStatusService {
             this.checkBanPhase();
         }, 25 * Timing.SECOND);
 
-        this.#checkStreamBotIsActive();
+        // this.#checkStreamBotIsActive();
 
         // this.#listenEvents();
     }
@@ -138,7 +138,7 @@ export class StreamStatusService {
         this.#lastCheckData = {
             successfulChecks: failedChecks.length,
             totalChecks: banPhaseChecks.length,
-            isBan: isEnoughFailedChecks || !isStreamBotActive
+            isBan: isEnoughFailedChecks // || !isStreamBotActive
         };
 
         console.log(this.#lastCheckData);

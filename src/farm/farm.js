@@ -7,7 +7,8 @@ import {
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 import { TwitchUser } from './models';
-import { Commands, MessageTemplates } from './consts';
+import { Commands, MessageTemplates, Timing } from './consts';
+import { users } from './users';
 
 function getTwitchElements() {
     const userDropdownToggleEl = document.querySelector('[data-a-target="user-menu-toggle"]');
@@ -35,8 +36,10 @@ async function runApp({
     chatInputEl, sendMessageButtonEl, chatContainerEl, userNameEl
 }) {
     const userName = userNameEl.textContent.toLowerCase();
+    const userConfig = users.find(({ name }) => name === userName);
+    const twitchUser = TwitchUser.create(userConfig);
 
-    const twitchUser = TwitchUser.create({ userName });
+    console.error(userConfig, twitchUser);
 
     WaiterService.create({ twitchUser });
 
@@ -53,9 +56,9 @@ async function runApp({
         twitchChatService,
         streamStatusService,
         messagePattern: MessageTemplates.MINI_GAME_REWARD,
-        responseDelay: 10000,
+        generateMessagesDelay: () => twitchUser.getMiniGamesDelay(),
         commands: [Commands.BATTLEROYALE, Commands.GAUNTLET],
-        roundDuration: 15 * 60 * 1000
+        roundDuration: 15 * Timing.MINUTE
     });
 
     const hitsquadGameRunner = GameRunner.create({
@@ -63,9 +66,9 @@ async function runApp({
         twitchChatService,
         streamStatusService,
         messagePattern: MessageTemplates.HITSQUAD_REWARD,
-        responseDelay: 60000,
+        generateMessagesDelay: () => twitchUser.getHitsquadDelay(),
         commands: [Commands.HITSQUAD],
-        roundDuration: 60 * 60 * 1000
+        roundDuration: 60 * Timing.MINUTE
     });
 
     ExtensionContainer.create({
