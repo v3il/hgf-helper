@@ -28,8 +28,8 @@ export class TwitchUser {
     }
 
     getMiniGamesDelay() {
-        const basePart = (this.#id - 1) * Timing.MINUTE;
-        const randomPart = generateDelay(11 * Timing.SECOND, 55 * Timing.SECOND);
+        const basePart = 10 * Timing.SECOND;
+        const randomPart = generateDelay((this.#id - 1) * 30 * Timing.SECOND, this.#id * 30 * Timing.SECOND);
 
         return basePart + randomPart;
     }

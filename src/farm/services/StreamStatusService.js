@@ -133,7 +133,7 @@ export class StreamStatusService {
         const isEnoughFailedChecks = failedChecks.length / banPhaseChecks.length >= 0.7;
         const isStreamBotActive = this.#enteredCommandsCount > 6;
 
-        console.error(isEnoughFailedChecks, isStreamBotActive);
+        // console.error(isEnoughFailedChecks, isStreamBotActive);
 
         this.#lastCheckData = {
             successfulChecks: failedChecks.length,

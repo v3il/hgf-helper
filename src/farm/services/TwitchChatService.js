@@ -12,8 +12,10 @@ export class TwitchChatService {
     sendMessage(message, forced = false) {
         console.error('send', message, forced);
 
-        // eslint-disable-next-line no-mixed-operators
-        if (1 || this._streamStatusService.isBanPhase && !forced) {
+        // return;
+
+        // eslint-disable-next-line no-unreachable
+        if (this._streamStatusService.isBanPhase && !forced) {
             return false;
         }
 

@@ -9,6 +9,7 @@ export class GameRunner {
 
     static #BAN_PHASE_DELAY = 30 * 1000;
 
+    #round = 0;
     #completedGamesCount = 0;
 
     #twitchChatObserver;
@@ -64,6 +65,10 @@ export class GameRunner {
         return Date.now() - this.#lastCommandTime >= this.#roundDuration;
     }
 
+    get #roundDelay() {
+        return this.#round === 0 ? 5 * Timing.SECOND * this.#commands.length : this.#generateMessagesDelay();
+    }
+
     #listenEvents() {
         this.#twitchChatObserver.events.on('message', ({ userName, message }) => {
             this.#processMessage({ userName, message });
@@ -95,22 +100,17 @@ export class GameRunner {
     }
 
     async #sendCommands() {
-        const delay = this.#generateMessagesDelay();
-
-        console.error(delay);
-
-        await promisifiedSetTimeout(delay);
+        await promisifiedSetTimeout(this.#roundDelay);
 
         for (const command of shuffleArray(this.#commands)) {
-            const delayBetweenCommands = generateDelay(3 * Timing.SECOND, 10 * Timing.SECOND);
-
-            console.error(delayBetweenCommands);
+            const delayBetweenCommands = generateDelay(3 * Timing.SECOND, 12 * Timing.SECOND);
 
             this.#twitchChatService.sendMessage(command);
             await promisifiedSetTimeout(delayBetweenCommands);
         }
 
         this.#setLastCommandTime();
+        this.#round++;
     }
 
     start() {
