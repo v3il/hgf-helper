@@ -91,16 +91,15 @@ export class GameRunner {
     }
 
     async #startNewRound() {
-        if (this.#streamStatusService.isBanPhase) {
-            await promisifiedSetTimeout(GameRunner.#BAN_PHASE_DELAY);
-            return this.#startNewRound();
-        }
-
-        this.#sendCommands();
+        await promisifiedSetTimeout(this.#roundDelay);
+        await this.#sendCommands();
     }
 
     async #sendCommands() {
-        await promisifiedSetTimeout(this.#roundDelay);
+        if (this.#streamStatusService.isBanPhase) {
+            await promisifiedSetTimeout(GameRunner.#BAN_PHASE_DELAY);
+            return this.#sendCommands();
+        }
 
         for (const command of shuffleArray(this.#commands)) {
             const delayBetweenCommands = generateDelay(3 * Timing.SECOND, 12 * Timing.SECOND);
