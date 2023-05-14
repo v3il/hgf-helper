@@ -44,13 +44,13 @@ export class ExtensionContainer {
             target.checked ? this.#quizService.start() : this.#quizService.stop();
         });
 
-        this.#streamStatusService.events.on('reload', async () => {
-            this.#toggleStatusClass();
-            await promisifiedSetTimeout(Timing.MINUTE);
-            window.location.reload();
-        });
+        this.#streamStatusService.events.on('check', async () => {
+            if (this.#streamStatusService.lastCheckData.isReload) {
+                this.#toggleStatusClass();
+                await promisifiedSetTimeout(Timing.MINUTE);
+                return window.location.reload();
+            }
 
-        this.#streamStatusService.events.on('check', () => {
             this.#renderChecksResult();
             this.#toggleStatusClass();
         });

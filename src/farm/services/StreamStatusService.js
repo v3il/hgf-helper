@@ -19,6 +19,8 @@ export class StreamStatusService {
     #intervalId;
     #twitchChatObserver;
 
+    #reloadRoundsCount = 0;
+
     #enteredCommandsCount = 50;
 
     constructor({ canvasContainerEl, twitchChatObserver, events }) {
@@ -33,7 +35,7 @@ export class StreamStatusService {
 
         this.#intervalId = setInterval(() => {
             this.checkBanPhase();
-        }, 25 * Timing.SECOND);
+        }, 20 * Timing.SECOND);
 
         // this.#checkStreamBotIsActive();
 
@@ -92,17 +94,26 @@ export class StreamStatusService {
 
         // Stream went offline
         if (videoEl.paused || videoEl.ended) {
+            this.#reloadRoundsCount++;
+
+            const isReload = this.#reloadRoundsCount === 3;
+
+            console.error(this.#reloadRoundsCount, isReload);
+
             this.#lastCheckData = {
                 successfulChecks: 0,
                 totalChecks: 0,
                 isBan: true,
-                isReload: true
+                isReload
             };
 
-            clearInterval(this.#intervalId);
+            if (isReload) {
+                clearInterval(this.#intervalId);
+            }
+
             this.#clearCanvas();
 
-            return this.#events.emit('reload');
+            return this.#events.emit('check');
         }
 
         this.#makeScreenshot(videoEl);
@@ -143,6 +154,7 @@ export class StreamStatusService {
 
         console.log(this.#lastCheckData);
 
+        this.#reloadRoundsCount = 0;
         this.#enteredCommandsCount = 0;
         this.#clearCanvas();
         this.#events.emit('check');
