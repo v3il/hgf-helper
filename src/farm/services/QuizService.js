@@ -55,14 +55,14 @@ export class QuizService {
             return;
         }
 
-        const isCurrentUser = this.#twitchUser.isCurrentUser(userName);
+        const isMe = this.#twitchUser.isCurrentUser(userName);
         const answerInMessage = Commands.getAnswers().find((answer) => message.startsWith(answer));
 
         if (!answerInMessage) {
             return;
         }
 
-        if (isCurrentUser && answerInMessage) { // answered manually
+        if (isMe && answerInMessage) { // answered manually
             return this.#completeRound();
         }
 
