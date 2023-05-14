@@ -1,26 +1,17 @@
-import { PRIMARY_USERNAME, SECONDARY_USERNAME } from '../farmConfig';
 import { Timing } from '../consts';
 import { generateDelay } from '../utils';
 
 export class TwitchUser {
-    static create({ id, userName }) {
-        return new TwitchUser({ id, userName });
+    static create(options) {
+        return new TwitchUser(options);
     }
 
     #id;
     #userName;
 
-    constructor({ id, userName }) {
+    constructor({ id, name }) {
         this.#id = id;
-        this.#userName = userName;
-    }
-
-    get isPrimaryUser() {
-        return this.#userName === PRIMARY_USERNAME;
-    }
-
-    get isSecondaryUser() {
-        return this.#userName === SECONDARY_USERNAME;
+        this.#userName = name;
     }
 
     isCurrentUser(userName) {
