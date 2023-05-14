@@ -1,5 +1,5 @@
-import { quizAnswers, MessageTemplates } from '../consts';
-import { WaiterService } from './WaiterService';
+import { MessageTemplates, Timing, Commands } from '../consts';
+import { generateDelay, promisifiedSetTimeout } from '../utils';
 
 export class QuizService {
     static create({ twitchChatObserver, twitchChatService, twitchUser }) {
@@ -23,7 +23,7 @@ export class QuizService {
         this.#twitchChatService = twitchChatService;
         this.#twitchUser = twitchUser;
 
-        quizAnswers.forEach((answer) => {
+        Commands.getAnswers().forEach((answer) => {
             this.#answers[answer] = new Set();
         });
 
@@ -56,7 +56,7 @@ export class QuizService {
         }
 
         const isMyUser = this.#twitchUser.isCurrentUser(userName);
-        const answerInMessage = quizAnswers.find((answer) => message.startsWith(answer));
+        const answerInMessage = Commands.getAnswers().find((answer) => message.startsWith(answer));
 
         if (!answerInMessage) {
             return;
@@ -89,7 +89,9 @@ export class QuizService {
     }
 
     async #sendAnswer(answer) {
-        await WaiterService.instance.wait(500, 500);
+        const delay = generateDelay(0.7 * Timing.SECOND, 2 * Timing.SECOND);
+
+        await promisifiedSetTimeout(delay);
         this.#twitchChatService.sendMessage(answer);
     }
 

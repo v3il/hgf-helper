@@ -3,7 +3,7 @@ import {
     TwitchChatService,
     QuizService,
     TwitchChatObserver,
-    GameRunner, WaiterService
+    GameRunner
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 import { TwitchUser } from './models';
@@ -46,9 +46,6 @@ async function runApp({
 
     const userConfig = users.find(({ name }) => name === userName);
     const twitchUser = TwitchUser.create(userConfig);
-
-    WaiterService.create({ twitchUser });
-
     const twitchChatObserver = TwitchChatObserver.create(chatContainerEl);
 
     const canvasContainerEl = CanvasContainer.create().mount(document.body);

@@ -1,7 +1,7 @@
 import './style.css';
 import template from './template.html?raw';
-import { quizAnswers } from '../../consts';
-import { WaiterService } from '../../services';
+import { Timing, Commands } from '../../consts';
+import { promisifiedSetTimeout } from '../../utils';
 
 export class ExtensionContainer {
     static create(params) {
@@ -46,7 +46,7 @@ export class ExtensionContainer {
 
         this.#streamStatusService.events.on('reload', async () => {
             this.#toggleStatusClass();
-            await WaiterService.instance.waitFixedTime(60 * 1000);
+            await promisifiedSetTimeout(Timing.MINUTE);
             window.location.reload();
         });
 
@@ -58,7 +58,7 @@ export class ExtensionContainer {
         window.document.addEventListener('keydown', (event) => {
             const command = `!answer${event.key}`;
 
-            if (quizAnswers.includes(command)) {
+            if (Commands.getAnswers().includes(command)) {
                 this.#twitchChatService.sendMessage(command, event.altKey && event.ctrlKey);
             }
         });
