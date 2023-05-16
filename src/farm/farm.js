@@ -9,6 +9,7 @@ import { CanvasContainer, ExtensionContainer } from './views';
 import { TwitchUser } from './models';
 import { Commands, MessageTemplates, Timing } from './consts';
 import { users } from './users';
+import { generateHitsquadDelay, generateMiniGameDelay } from './utils';
 
 function getTwitchElements() {
     const userDropdownToggleEl = document.querySelector('[data-a-target="user-menu-toggle"]');
@@ -59,7 +60,7 @@ async function runApp({
         twitchChatService,
         streamStatusService,
         messagePattern: MessageTemplates.MINI_GAME_REWARD,
-        generateMessagesDelay: () => twitchUser.getMiniGamesDelay(),
+        generateMessagesDelay: () => generateMiniGameDelay(),
         commands: [Commands.BATTLEROYALE, Commands.GAUNTLET],
         roundDuration: 15 * Timing.MINUTE
     });
@@ -69,7 +70,7 @@ async function runApp({
         twitchChatService,
         streamStatusService,
         messagePattern: MessageTemplates.HITSQUAD_REWARD,
-        generateMessagesDelay: () => twitchUser.getHitsquadDelay(),
+        generateMessagesDelay: () => generateHitsquadDelay(),
         commands: [Commands.HITSQUAD],
         roundDuration: 60 * Timing.MINUTE
     });
