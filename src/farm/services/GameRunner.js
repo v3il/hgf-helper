@@ -45,6 +45,8 @@ export class GameRunner {
 
         if (this.#shouldProcessInitialRound) {
             this.#startNewRound();
+        } else {
+            this.#round = 1;
         }
     }
 

@@ -14,7 +14,7 @@ export function generateMiniGameDelay() {
 }
 
 export function generateHitsquadDelay() {
-    const basePart = 10 * Timing.MINUTE;
+    const basePart = Timing.MINUTE;
     const randomPart = generateDelay(10 * Timing.SECOND, 10 * Timing.MINUTE);
 
     console.error('Hitsquad', basePart + randomPart, Math.floor((basePart + randomPart) / 60));
