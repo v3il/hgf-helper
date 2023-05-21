@@ -11,6 +11,7 @@ export class GameRunner {
 
     #round = 0;
     #completedGamesCount = 0;
+    #commandsEntered = 0;
 
     #twitchChatObserver;
     #twitchChatService;
@@ -82,12 +83,27 @@ export class GameRunner {
             return;
         }
 
+        const isGameCommand = this.#commands.some((command) => message.startsWith(command));
+
+        if (isGameCommand) {
+            this.#commandsEntered++;
+        }
+
         if (userName === HGF_USERNAME && message.includes(this.#messagePattern)) {
             this.#completedGamesCount++;
         }
 
         if (this.#completedGamesCount === this.#commands.length) {
+            const a = this.#commandsEntered;
+            const isStreamBotWorking = this.#commandsEntered >= this.#commands.length * 15;
+
             this.#completedGamesCount = 0;
+            this.#commandsEntered = 0;
+
+            if (this.#round > 1 && !isStreamBotWorking) {
+                return;
+            }
+
             this.#startNewRound();
         }
     }
@@ -104,7 +120,7 @@ export class GameRunner {
         }
 
         for (const command of shuffleArray(this.#commands)) {
-            const delayBetweenCommands = generateDelay(3 * Timing.SECOND, 12 * Timing.SECOND);
+            const delayBetweenCommands = generateDelay(3 * Timing.SECOND, 8 * Timing.SECOND);
 
             this.#twitchChatService.sendMessage(command);
             await promisifiedSetTimeout(delayBetweenCommands);
