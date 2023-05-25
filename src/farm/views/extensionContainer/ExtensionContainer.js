@@ -2,6 +2,7 @@ import './style.css';
 import template from './template.html?raw';
 import { Timing, Commands } from '../../consts';
 import { promisifiedSetTimeout } from '../../utils';
+import { TwitchPlayerService } from '../../services/TwitchPlayerService';
 
 export class ExtensionContainer {
     static create(params) {
@@ -61,6 +62,12 @@ export class ExtensionContainer {
             if (Commands.getAnswers().includes(command)) {
                 this.#twitchChatService.sendMessage(command, event.altKey && event.ctrlKey);
             }
+        });
+
+        const removeDelayButton = this.el.querySelector('[data-remove-delay]');
+
+        removeDelayButton.addEventListener('click', () => {
+            TwitchPlayerService.decreaseVideoDelay();
         });
     }
 

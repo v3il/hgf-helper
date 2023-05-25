@@ -2,6 +2,7 @@ import { ColorService } from './ColorService';
 import { banPhaseChecks } from '../consts/banPhaseChecks';
 import { EventEmitter } from '../models/EventsEmitter';
 import { Commands, Timing } from '../consts';
+import { TwitchPlayerService } from './TwitchPlayerService';
 
 export class StreamStatusService {
     static create({ canvasContainerEl, twitchChatObserver }) {
@@ -21,8 +22,6 @@ export class StreamStatusService {
 
     #reloadRoundsCount = 0;
 
-    #enteredCommandsCount = 50;
-
     constructor({ canvasContainerEl, twitchChatObserver, events }) {
         this.#canvasContainerEl = canvasContainerEl;
         this.#twitchChatObserver = twitchChatObserver;
@@ -35,27 +34,14 @@ export class StreamStatusService {
 
         this.#intervalId = setInterval(() => {
             this.checkBanPhase();
+            TwitchPlayerService.decreaseVideoDelay();
         }, 20 * Timing.SECOND);
-
-        // this.#checkStreamBotIsActive();
 
         // this.#listenEvents();
     }
 
     get events() {
         return this.#events;
-    }
-
-    #checkStreamBotIsActive() {
-        this.#twitchChatObserver.events.on('message', ({ message }) => {
-            const isCommand = Commands.getGameCommands().some((command) => message.startsWith(command));
-
-            if (isCommand) {
-                this.#enteredCommandsCount++;
-
-                console.error(this.#enteredCommandsCount);
-            }
-        });
     }
 
     #createCanvas() {
@@ -142,20 +128,16 @@ export class StreamStatusService {
         });
 
         const isEnoughFailedChecks = failedChecks.length / banPhaseChecks.length >= 0.7;
-        const isStreamBotActive = this.#enteredCommandsCount > 6;
-
-        // console.error(isEnoughFailedChecks, isStreamBotActive);
 
         this.#lastCheckData = {
             successfulChecks: failedChecks.length,
             totalChecks: banPhaseChecks.length,
-            isBan: isEnoughFailedChecks // || !isStreamBotActive
+            isBan: isEnoughFailedChecks
         };
 
         console.log(this.#lastCheckData);
 
         this.#reloadRoundsCount = 0;
-        this.#enteredCommandsCount = 0;
         this.#clearCanvas();
         this.#events.emit('check');
     }
