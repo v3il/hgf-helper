@@ -120,7 +120,7 @@ export class GameRunner {
         }
 
         for (const command of shuffleArray(this.#commands)) {
-            const delayBetweenCommands = generateDelay(3 * Timing.SECOND, 8 * Timing.SECOND);
+            const delayBetweenCommands = generateDelay(3 * Timing.SECOND, 5 * Timing.SECOND);
 
             this.#twitchChatService.sendMessage(command);
             await promisifiedSetTimeout(delayBetweenCommands);

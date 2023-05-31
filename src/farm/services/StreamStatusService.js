@@ -37,7 +37,7 @@ export class StreamStatusService {
             this.#round++;
             this.checkBanPhase();
 
-            if (this.#round % 3 === 0) {
+            if (this.#round % 2 === 0) {
                 TwitchPlayerService.decreaseVideoDelay();
             }
         }, 20 * Timing.SECOND);
