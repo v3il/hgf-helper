@@ -20,6 +20,7 @@ export class StreamStatusService {
     #intervalId;
     #twitchChatObserver;
 
+    #round = 0;
     #reloadRoundsCount = 0;
 
     constructor({ canvasContainerEl, twitchChatObserver, events }) {
@@ -33,8 +34,12 @@ export class StreamStatusService {
         this.checkBanPhase();
 
         this.#intervalId = setInterval(() => {
+            this.#round++;
             this.checkBanPhase();
-            TwitchPlayerService.decreaseVideoDelay();
+
+            if (this.#round % 3 === 0) {
+                TwitchPlayerService.decreaseVideoDelay();
+            }
         }, 20 * Timing.SECOND);
 
         // this.#listenEvents();
