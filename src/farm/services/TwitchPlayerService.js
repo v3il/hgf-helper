@@ -10,9 +10,9 @@ export class TwitchPlayerService {
         const radiosSelector = '[name ="player-settings-submenu-quality-option"]';
         const qualityRadios = Array.from(document.querySelectorAll(radiosSelector));
 
-        qualityRadios.at(-1).click();
-        await promisifiedSetTimeout(1000);
         qualityRadios.at(-2).click();
+        await promisifiedSetTimeout(5000);
+        qualityRadios.at(-1).click();
 
         document.querySelector('[data-a-target="player-settings-button"]').click();
     }
