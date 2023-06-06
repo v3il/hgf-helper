@@ -51,7 +51,7 @@ async function runApp({
         generateMessagesDelay: () => generateHitsquadDelay(),
         checkRoundSkipped: (round) => round % 3 !== 0,
         commands: [Commands.HITSQUAD],
-        roundDuration: 60 * Timing.MINUTE
+        roundDuration: 30 * Timing.MINUTE
     });
 
     ExtensionContainer.create({
