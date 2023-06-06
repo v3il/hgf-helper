@@ -1,5 +1,4 @@
 import { generateDelay, promisifiedSetTimeout, shuffleArray } from '../utils';
-import { HGF_USERNAME } from '../farmConfig';
 import { Timing } from '../consts';
 
 export class GameRunner {
@@ -19,6 +18,7 @@ export class GameRunner {
 
     #messagePattern;
     #generateMessagesDelay;
+    #checkRoundSkipped;
     #commands;
     #roundDuration;
 
@@ -30,6 +30,7 @@ export class GameRunner {
         streamStatusService,
         messagePattern,
         generateMessagesDelay,
+        checkRoundSkipped,
         commands,
         roundDuration
     }) {
@@ -39,6 +40,7 @@ export class GameRunner {
 
         this.#messagePattern = messagePattern;
         this.#generateMessagesDelay = generateMessagesDelay;
+        this.#checkRoundSkipped = checkRoundSkipped;
         this.#commands = commands;
         this.#roundDuration = roundDuration;
 
@@ -73,12 +75,12 @@ export class GameRunner {
     }
 
     #listenEvents() {
-        this.#twitchChatObserver.events.on('message', ({ userName, message }) => {
-            this.#processMessage({ userName, message });
+        this.#twitchChatObserver.events.on('message', ({ message, isAdmin }) => {
+            this.#processMessage({ message, isAdmin });
         });
     }
 
-    #processMessage({ userName, message }) {
+    #processMessage({ message, isAdmin }) {
         if (this.#isPaused) {
             return;
         }
@@ -89,7 +91,7 @@ export class GameRunner {
             this.#commandsEntered++;
         }
 
-        if (userName === HGF_USERNAME && message.includes(this.#messagePattern)) {
+        if (isAdmin && message.includes(this.#messagePattern)) {
             this.#completedGamesCount++;
         }
 
@@ -100,6 +102,16 @@ export class GameRunner {
             this.#commandsEntered = 0;
 
             if (this.#round > 1 && !isStreamBotWorking) {
+                return;
+            }
+
+            this.#round++;
+
+            const isRoundSkipped = this.#checkRoundSkipped(this.#round);
+
+            console.error(this.#round, isRoundSkipped);
+
+            if (isRoundSkipped) {
                 return;
             }
 
@@ -126,7 +138,6 @@ export class GameRunner {
         }
 
         this.#setLastCommandTime();
-        this.#round++;
     }
 
     start() {

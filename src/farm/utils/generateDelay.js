@@ -13,7 +13,7 @@ export function generateMiniGameDelay() {
 
 export function generateHitsquadDelay() {
     const basePart = Timing.MINUTE;
-    const randomPart = generateDelay(10 * Timing.SECOND, 15 * Timing.MINUTE);
+    const randomPart = generateDelay(2 * Timing.SECOND, Timing.MINUTE);
 
     return basePart + randomPart;
 }

@@ -48,7 +48,8 @@ export class TwitchChatObserver {
 
         const userName = userNameEl.textContent.toLowerCase();
         const message = messageEl.textContent.toLowerCase().trim();
+        const isAdmin = userName === 'hitsquadgodfather';
 
-        this.#events.emit('message', { userName, message });
+        this.#events.emit('message', { userName, message, isAdmin });
     }
 }

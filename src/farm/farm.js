@@ -38,6 +38,7 @@ async function runApp({
         streamStatusService,
         messagePattern: MessageTemplates.MINI_GAME_REWARD,
         generateMessagesDelay: () => generateMiniGameDelay(),
+        checkRoundSkipped: () => false,
         commands: [Commands.BATTLEROYALE, Commands.GAUNTLET],
         roundDuration: 15 * Timing.MINUTE
     });
@@ -48,6 +49,7 @@ async function runApp({
         streamStatusService,
         messagePattern: MessageTemplates.HITSQUAD_REWARD,
         generateMessagesDelay: () => generateHitsquadDelay(),
+        checkRoundSkipped: (round) => round % 3 !== 0,
         commands: [Commands.HITSQUAD],
         roundDuration: 60 * Timing.MINUTE
     });
