@@ -94,7 +94,6 @@ export class GameRunner {
         }
 
         if (this.#completedGamesCount === this.#commands.length) {
-            const a = this.#commandsEntered;
             const isStreamBotWorking = this.#commandsEntered >= this.#commands.length * 15;
 
             this.#completedGamesCount = 0;

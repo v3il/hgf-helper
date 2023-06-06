@@ -11,17 +11,15 @@ export class ExtensionContainer {
 
     #el;
     #streamStatusService;
-    #quizService;
     #twitchChatService;
     #miniGamesRunner;
     #hitsquadGameRunner;
 
     constructor({
-        streamStatusService, quizService, twitchChatService, miniGamesRunner, hitsquadGameRunner
+        streamStatusService, twitchChatService, miniGamesRunner, hitsquadGameRunner
     }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
-        this.#quizService = quizService;
         this.#twitchChatService = twitchChatService;
         this.#miniGamesRunner = miniGamesRunner;
         this.#hitsquadGameRunner = hitsquadGameRunner;
@@ -37,12 +35,6 @@ export class ExtensionContainer {
         toggleGamesEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#miniGamesRunner.start() : this.#miniGamesRunner.stop();
             target.checked ? this.#hitsquadGameRunner.start() : this.#hitsquadGameRunner.stop();
-        });
-
-        const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
-
-        toggleQuizEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#quizService.start() : this.#quizService.stop();
         });
 
         this.#streamStatusService.events.on('check', async () => {
@@ -62,12 +54,6 @@ export class ExtensionContainer {
             if (Commands.getAnswers().includes(command)) {
                 this.#twitchChatService.sendMessage(command, event.altKey && event.ctrlKey);
             }
-        });
-
-        const removeDelayButton = this.el.querySelector('[data-remove-delay]');
-
-        removeDelayButton.addEventListener('click', () => {
-            TwitchPlayerService.decreaseVideoDelay();
         });
     }
 
