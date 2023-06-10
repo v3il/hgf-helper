@@ -109,8 +109,6 @@ export class GameRunner {
 
             const isRoundSkipped = this.#checkRoundSkipped(this.#round);
 
-            console.error(this.#round, isRoundSkipped);
-
             if (isRoundSkipped) {
                 return;
             }
@@ -131,7 +129,7 @@ export class GameRunner {
         }
 
         for (const command of shuffleArray(this.#commands)) {
-            const delayBetweenCommands = generateDelay(3 * Timing.SECOND, 5 * Timing.SECOND);
+            const delayBetweenCommands = generateDelay(2 * Timing.SECOND, 4 * Timing.SECOND);
 
             this.#twitchChatService.sendMessage(command);
             await promisifiedSetTimeout(delayBetweenCommands);

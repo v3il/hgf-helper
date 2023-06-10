@@ -34,13 +34,9 @@ export class StreamStatusService {
         this.checkBanPhase();
 
         this.#intervalId = setInterval(() => {
-            // this.#round++;
             this.checkBanPhase();
-
-            // if (this.#round % 2 === 0) {
             TwitchPlayerService.decreaseVideoDelay();
-            // }
-        }, 25 * Timing.SECOND);
+        }, 40 * Timing.SECOND);
 
         // this.#listenEvents();
     }
@@ -88,8 +84,6 @@ export class StreamStatusService {
             this.#reloadRoundsCount++;
 
             const isReload = this.#reloadRoundsCount === 3;
-
-            console.error(this.#reloadRoundsCount, isReload);
 
             this.#lastCheckData = {
                 successfulChecks: 0,
