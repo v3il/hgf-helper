@@ -1,19 +1,41 @@
 import { promisifiedSetTimeout } from '../utils';
 
 export class TwitchPlayerService {
-    static async decreaseVideoDelay() {
-        document.querySelector('[data-a-target="player-settings-button"]').click();
-        await promisifiedSetTimeout(200);
-        document.querySelector('[data-a-target="player-settings-menu-item-quality"]').click();
-        await promisifiedSetTimeout(200);
+    static create() {
+        return new TwitchPlayerService();
+    }
 
-        const radiosSelector = '[name ="player-settings-submenu-quality-option"]';
-        const qualityRadios = Array.from(document.querySelectorAll(radiosSelector));
+    #settingsButton;
 
-        qualityRadios.at(-2).click();
+    constructor() {
+        this.#settingsButton = document.querySelector('[data-a-target="player-settings-button"]');
+    }
+
+    async decreaseVideoDelay() {
+        await this.#gotoQualitySettings();
+
+        let qualityRadios = this.#getQualitySettingsButtonEls();
+
+        qualityRadios.at(-1)?.click();
+        this.#settingsButton.click();
+
         await promisifiedSetTimeout(5000);
-        qualityRadios.at(-1).click();
+        await this.#gotoQualitySettings();
 
-        document.querySelector('[data-a-target="player-settings-button"]').click();
+        qualityRadios = this.#getQualitySettingsButtonEls();
+        qualityRadios.at(-2)?.click();
+
+        this.#settingsButton.click();
+    }
+
+    async #gotoQualitySettings() {
+        this.#settingsButton.click();
+        await promisifiedSetTimeout(200);
+        document.querySelector('[data-a-target="player-settings-menu-item-quality"]')?.click();
+        await promisifiedSetTimeout(200);
+    }
+
+    #getQualitySettingsButtonEls() {
+        return Array.from(document.querySelectorAll('[name="player-settings-submenu-quality-option"]'));
     }
 }

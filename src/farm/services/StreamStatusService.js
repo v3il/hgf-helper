@@ -1,14 +1,14 @@
 import { ColorService } from './ColorService';
 import { banPhaseChecks } from '../consts/banPhaseChecks';
 import { EventEmitter } from '../models/EventsEmitter';
-import { Commands, Timing } from '../consts';
-import { TwitchPlayerService } from './TwitchPlayerService';
+import { Timing } from '../consts';
 
 export class StreamStatusService {
-    static create({ canvasContainerEl, twitchChatObserver }) {
+    static create({ canvasContainerEl, twitchChatObserver, twitchPlayerService }) {
         return new StreamStatusService({
             canvasContainerEl,
             twitchChatObserver,
+            twitchPlayerService,
             events: EventEmitter.create()
         });
     }
@@ -19,14 +19,18 @@ export class StreamStatusService {
     #events;
     #intervalId;
     #twitchChatObserver;
+    #twitchPlayerService;
 
     // #round = 0;
     #reloadRoundsCount = 0;
 
-    constructor({ canvasContainerEl, twitchChatObserver, events }) {
+    constructor({
+        canvasContainerEl, twitchChatObserver, twitchPlayerService, events
+    }) {
         this.#canvasContainerEl = canvasContainerEl;
         this.#twitchChatObserver = twitchChatObserver;
         this.#events = events;
+        this.#twitchPlayerService = twitchPlayerService;
 
         this.#canvasEl = this.#createCanvas();
         this.#canvasContainerEl.appendChild(this.#canvasEl);
@@ -35,7 +39,7 @@ export class StreamStatusService {
 
         this.#intervalId = setInterval(() => {
             this.checkBanPhase();
-            TwitchPlayerService.decreaseVideoDelay();
+            twitchPlayerService.decreaseVideoDelay();
         }, 40 * Timing.SECOND);
 
         // this.#listenEvents();

@@ -1,5 +1,5 @@
 import {
-    StreamStatusService, TwitchChatService, TwitchChatObserver, GameRunner
+    StreamStatusService, TwitchChatService, TwitchChatObserver, GameRunner, TwitchPlayerService
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 import { Commands, MessageTemplates, Timing } from './consts';
@@ -44,9 +44,15 @@ async function runApp({
     const userConfig = users.find(({ name }) => name === userName);
     const twitchUser = TwitchUser.create(userConfig);
     const twitchChatObserver = TwitchChatObserver.create(chatContainerEl);
+    const twitchPlayerService = TwitchPlayerService.create();
 
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
-    const streamStatusService = StreamStatusService.create({ canvasContainerEl, twitchChatObserver });
+
+    const streamStatusService = StreamStatusService.create({
+        canvasContainerEl,
+        twitchChatObserver,
+        twitchPlayerService
+    });
 
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
 
