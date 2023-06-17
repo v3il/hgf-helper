@@ -7,14 +7,18 @@ import {
 import { CanvasContainer, ExtensionContainer } from './views';
 import { Commands, MessageTemplates, Timing } from './consts';
 import { generateHitsquadDelay, generateMiniGameDelay } from './utils';
+import { users } from './users';
+import { TwitchUser } from './models';
 
 function getTwitchElements() {
+    const userDropdownToggleEl = document.querySelector('[data-a-target="user-menu-toggle"]');
     const chatInputEl = document.querySelector('[data-a-target="chat-input"]');
     const sendMessageButtonEl = document.querySelector('[data-a-target="chat-send-button"]');
     const chatContainerEl = document.querySelector('.chat-scrollable-area__message-container');
     const videoEl = document.querySelector('video');
 
     return {
+        userDropdownToggleEl,
         chatInputEl,
         sendMessageButtonEl,
         chatContainerEl,
@@ -22,9 +26,26 @@ function getTwitchElements() {
     };
 }
 
+function getUserName(userDropdownToggleEl) {
+    userDropdownToggleEl.click();
+
+    const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
+    userDropdownToggleEl.click();
+
+    return userNameEl?.textContent.toLowerCase();
+}
+
 async function runApp({
     chatInputEl, sendMessageButtonEl, chatContainerEl, userDropdownToggleEl
 }) {
+    const userName = getUserName(userDropdownToggleEl);
+
+    if (!userName) {
+        return;
+    }
+
+    const userConfig = users.find(({ name }) => name === userName);
+    const twitchUser = TwitchUser.create(userConfig);
     const twitchChatObserver = TwitchChatObserver.create(chatContainerEl);
 
     const canvasContainerEl = CanvasContainer.create().mount(document.body);

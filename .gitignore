@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 src/store/storeConfig.js
+src/farm/users.js
