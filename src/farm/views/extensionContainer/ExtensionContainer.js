@@ -1,8 +1,7 @@
 import './style.css';
 import template from './template.html?raw';
-import { Timing, Commands } from '../../consts';
+import { Timing } from '../../consts';
 import { promisifiedSetTimeout } from '../../utils';
-import { TwitchPlayerService } from '../../services/TwitchPlayerService';
 
 export class ExtensionContainer {
     static create(params) {
@@ -13,16 +12,12 @@ export class ExtensionContainer {
     #streamStatusService;
     #twitchChatService;
     #miniGamesRunner;
-    #hitsquadGameRunner;
 
-    constructor({
-        streamStatusService, twitchChatService, miniGamesRunner, hitsquadGameRunner
-    }) {
+    constructor({ streamStatusService, twitchChatService, miniGamesRunner }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
         this.#twitchChatService = twitchChatService;
         this.#miniGamesRunner = miniGamesRunner;
-        this.#hitsquadGameRunner = hitsquadGameRunner;
 
         this.#listenEvents();
         this.#renderChecksResult();
@@ -34,7 +29,6 @@ export class ExtensionContainer {
 
         toggleGamesEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#miniGamesRunner.start() : this.#miniGamesRunner.stop();
-            target.checked ? this.#hitsquadGameRunner.start() : this.#hitsquadGameRunner.stop();
         });
 
         this.#streamStatusService.events.on('check', async () => {
@@ -46,14 +40,6 @@ export class ExtensionContainer {
 
             this.#renderChecksResult();
             this.#toggleStatusClass();
-        });
-
-        window.document.addEventListener('keydown', (event) => {
-            const command = `!answer${event.key}`;
-
-            if (Commands.getAnswers().includes(command)) {
-                this.#twitchChatService.sendMessage(command, event.altKey && event.ctrlKey);
-            }
         });
     }
 

@@ -1,12 +1,9 @@
 import {
-    StreamStatusService,
-    TwitchChatService,
-    TwitchChatObserver,
-    GameRunner
+    StreamStatusService, TwitchChatService, TwitchChatObserver, GameRunner
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 import { Commands, MessageTemplates, Timing } from './consts';
-import { generateHitsquadDelay, generateMiniGameDelay } from './utils';
+import { generateMiniGameDelay } from './utils';
 import { users } from './users';
 import { TwitchUser } from './models';
 
@@ -59,27 +56,14 @@ async function runApp({
         streamStatusService,
         messagePattern: MessageTemplates.MINI_GAME_REWARD,
         generateMessagesDelay: () => generateMiniGameDelay(),
-        checkRoundSkipped: () => false,
-        commands: [Commands.BATTLEROYALE, Commands.GAUNTLET],
-        roundDuration: 15 * Timing.MINUTE
-    });
-
-    const hitsquadGameRunner = GameRunner.create({
-        twitchChatObserver,
-        twitchChatService,
-        streamStatusService,
-        messagePattern: MessageTemplates.HITSQUAD_REWARD,
-        generateMessagesDelay: () => generateHitsquadDelay(),
-        checkRoundSkipped: (round) => round % 3 !== 0,
         commands: [Commands.HITSQUAD],
-        roundDuration: 30 * Timing.MINUTE
+        roundDuration: 15 * Timing.MINUTE
     });
 
     ExtensionContainer.create({
         streamStatusService,
         twitchChatService,
-        miniGamesRunner,
-        hitsquadGameRunner
+        miniGamesRunner
     }).mount(document.body);
 }
 

@@ -18,7 +18,6 @@ export class GameRunner {
 
     #messagePattern;
     #generateMessagesDelay;
-    #checkRoundSkipped;
     #commands;
     #roundDuration;
 
@@ -30,7 +29,6 @@ export class GameRunner {
         streamStatusService,
         messagePattern,
         generateMessagesDelay,
-        checkRoundSkipped,
         commands,
         roundDuration
     }) {
@@ -40,7 +38,6 @@ export class GameRunner {
 
         this.#messagePattern = messagePattern;
         this.#generateMessagesDelay = generateMessagesDelay;
-        this.#checkRoundSkipped = checkRoundSkipped;
         this.#commands = commands;
         this.#roundDuration = roundDuration;
 
@@ -71,7 +68,7 @@ export class GameRunner {
     }
 
     get #roundDelay() {
-        return this.#round === 0 ? 5 * Timing.SECOND * this.#commands.length : this.#generateMessagesDelay();
+        return this.#round === 0 ? 5 * Timing.SECOND : this.#generateMessagesDelay();
     }
 
     #listenEvents() {
@@ -107,11 +104,11 @@ export class GameRunner {
 
             this.#round++;
 
-            const isRoundSkipped = this.#checkRoundSkipped(this.#round);
-
-            if (isRoundSkipped) {
-                return;
-            }
+            // const isRoundSkipped = this.#checkRoundSkipped(this.#round);
+            //
+            // if (isRoundSkipped) {
+            //     return;
+            // }
 
             this.#startNewRound();
         }
