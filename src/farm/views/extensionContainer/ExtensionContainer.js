@@ -12,6 +12,7 @@ export class ExtensionContainer {
     #streamStatusService;
     #twitchChatService;
     // #miniGamesRunner;
+    #lastHitsquadTime = 0;
 
     constructor({ streamStatusService, twitchChatService, miniGamesRunner }) {
         this.#el = this.#createElement();
@@ -22,6 +23,9 @@ export class ExtensionContainer {
         this.#listenEvents();
         this.#renderChecksResult();
         this.#toggleStatusClass();
+
+        this.#updateSinceLastHitsquad();
+        this.#setHitsquadTimer();
     }
 
     #listenEvents() {
@@ -46,6 +50,8 @@ export class ExtensionContainer {
 
         sendHitsquadButton.addEventListener('click', () => {
             this.#twitchChatService.sendMessage(Commands.HITSQUAD);
+            this.#lastHitsquadTime = Date.now();
+            this.#updateSinceLastHitsquad();
         });
     }
 
@@ -83,5 +89,23 @@ export class ExtensionContainer {
 
         successfulChecksEl.textContent = successfulChecks;
         totalChecksEl.textContent = totalChecks;
+    }
+
+    #setHitsquadTimer() {
+        setInterval(() => {
+            this.#updateSinceLastHitsquad();
+        }, 30 * Timing.SECOND);
+    }
+
+    #updateSinceLastHitsquad() {
+        if (this.#lastHitsquadTime === 0) {
+            this.#el.querySelector('[data-since-last-hitsquad]').textContent = -1;
+            return;
+        }
+
+        const diff = Date.now() - this.#lastHitsquadTime;
+        const minutes = Math.floor(diff / Timing.MINUTE);
+
+        this.#el.querySelector('[data-since-last-hitsquad]').textContent = minutes;
     }
 }
