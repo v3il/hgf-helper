@@ -29,11 +29,11 @@ export class ExtensionContainer {
     }
 
     #listenEvents() {
-        const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
+        // const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
 
-        toggleGamesEl.addEventListener('change', ({ target }) => {
-            // target.checked ? this.#miniGamesRunner.start() : this.#miniGamesRunner.stop();
-        });
+        // toggleGamesEl.addEventListener('change', ({ target }) => {
+        // target.checked ? this.#miniGamesRunner.start() : this.#miniGamesRunner.stop();
+        // });
 
         this.#streamStatusService.events.on('check', async () => {
             if (this.#streamStatusService.lastCheckData.isReload) {

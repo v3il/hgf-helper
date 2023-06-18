@@ -12,7 +12,7 @@ export class TwitchChatService {
     sendMessage(message, forced = false) {
         console.error('send', message, forced);
 
-        // return;
+        return;
 
         // eslint-disable-next-line no-unreachable
         if (this._streamStatusService.isBanPhase && !forced) {
