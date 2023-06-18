@@ -56,20 +56,20 @@ async function runApp({
 
     const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
 
-    const miniGamesRunner = GameRunner.create({
-        twitchChatObserver,
-        twitchChatService,
-        streamStatusService,
-        messagePattern: MessageTemplates.MINI_GAME_REWARD,
-        generateMessagesDelay: () => generateMiniGameDelay(),
-        commands: [Commands.HITSQUAD],
-        roundDuration: 15 * Timing.MINUTE
-    });
+    // const miniGamesRunner = GameRunner.create({
+    //     twitchChatObserver,
+    //     twitchChatService,
+    //     streamStatusService,
+    //     messagePattern: MessageTemplates.MINI_GAME_REWARD,
+    //     generateMessagesDelay: () => generateMiniGameDelay(),
+    //     commands: [Commands.HITSQUAD],
+    //     roundDuration: 15 * Timing.MINUTE
+    // });
 
     ExtensionContainer.create({
         streamStatusService,
         twitchChatService,
-        miniGamesRunner
+        miniGamesRunner: null
     }).mount(document.body);
 }
 

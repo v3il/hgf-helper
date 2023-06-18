@@ -1,6 +1,6 @@
 import './style.css';
 import template from './template.html?raw';
-import { Timing } from '../../consts';
+import { Commands, Timing } from '../../consts';
 import { promisifiedSetTimeout } from '../../utils';
 
 export class ExtensionContainer {
@@ -11,13 +11,13 @@ export class ExtensionContainer {
     #el;
     #streamStatusService;
     #twitchChatService;
-    #miniGamesRunner;
+    // #miniGamesRunner;
 
     constructor({ streamStatusService, twitchChatService, miniGamesRunner }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
         this.#twitchChatService = twitchChatService;
-        this.#miniGamesRunner = miniGamesRunner;
+        // this.#miniGamesRunner = miniGamesRunner;
 
         this.#listenEvents();
         this.#renderChecksResult();
@@ -28,7 +28,7 @@ export class ExtensionContainer {
         const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
 
         toggleGamesEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#miniGamesRunner.start() : this.#miniGamesRunner.stop();
+            // target.checked ? this.#miniGamesRunner.start() : this.#miniGamesRunner.stop();
         });
 
         this.#streamStatusService.events.on('check', async () => {
@@ -40,6 +40,12 @@ export class ExtensionContainer {
 
             this.#renderChecksResult();
             this.#toggleStatusClass();
+        });
+
+        const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
+
+        sendHitsquadButton.addEventListener('click', () => {
+            this.#twitchChatService.sendMessage(Commands.HITSQUAD);
         });
     }
 
