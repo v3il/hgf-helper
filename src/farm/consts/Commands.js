@@ -1,12 +1,5 @@
 export const Commands = Object.freeze({
     HITSQUAD: '!hitsquad',
-    BATTLEROYALE: '!battleroyale',
-    GAUNTLET: '!gauntlet',
-
-    ANSWER1: '!answer1',
-    ANSWER2: '!answer2',
-    ANSWER3: '!answer3',
-    ANSWER4: '!answer4',
 
     ATTACK1: '!attack1',
     ATTACK2: '!attack2',
@@ -30,7 +23,7 @@ export const Commands = Object.freeze({
     FLAMES: '!flames',
 
     getMiniGameCommands() {
-        return [this.BATTLEROYALE, this.GAUNTLET, this.HITSQUAD];
+        return [this.HITSQUAD];
     },
 
     getShowdownCommands() {
@@ -58,11 +51,7 @@ export const Commands = Object.freeze({
         ];
     },
 
-    getAnswers() {
-        return [this.ANSWER1, this.ANSWER2, this.ANSWER3, this.ANSWER4];
-    },
-
     getGameCommands() {
-        return this.getMiniGameCommands().concat(this.getShowdownCommands()).concat(this.getAnswers());
+        return this.getMiniGameCommands().concat(this.getShowdownCommands());
     }
 });

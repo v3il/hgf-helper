@@ -1,4 +1,4 @@
-import { Commands, MessageTemplates } from '../consts';
+import { Commands, MessageTemplates, Timing } from '../consts';
 
 export class LimitedHitsquadRunner {
     #twitchChatObserver;
@@ -13,45 +13,57 @@ export class LimitedHitsquadRunner {
     }
 
     #listenEvents() {
-        this.#twitchChatObserver.events.on('message', ({ userName, message }) => {
-            this.#processMessage({ userName, message });
+        this.#twitchChatObserver.events.on('message', ({ message, isAdmin }) => {
+            this.#processMessage({ message, isAdmin });
         });
     }
 
-    #processMessage({ userName, message }) {
-        // if (message.includes(MessageTemplates.NEW_QUIZ_QUESTION)) {
-        //     this.#isWaitingNextRound = false;
-        //     this.#desiredAnswerPosition = this.#getDesiredAnswerPosition();
-        //
-        //     this.#resetAnswers();
-        //     this.#registerFallback();
-        // }
-        //
-        // if (this.#isWaitingNextRound) {
-        //     return;
-        // }
-        //
-        // const isMe = this.#twitchUser.isCurrentUser(userName);
-        // const answerInMessage = Commands.getAnswers().find((answer) => message.startsWith(answer));
-        //
-        // if (!answerInMessage) {
-        //     return;
-        // }
-        //
-        // if (isMe && answerInMessage) { // answered manually
-        //     return this.#completeRound();
-        // }
-        //
-        // if (this.#answeredUsers.includes(userName)) { // user answered again
-        //     return;
-        // }
-        //
-        // this.#answers[answerInMessage].add(userName);
-        // const { answer, answersCount } = this.#getCorrectAnswer();
-        //
-        // if (answersCount + 1 === this.#desiredAnswerPosition) {
-        //     console.error('send', answer, answersCount + 1);
-        //     this.#completeRound(answer);
-        // }
+    #processMessage({ isAdmin, message }) {
+        if (isAdmin && message.includes(MessageTemplates.BATTLEROYALE_REWARD)) {
+            return this.#processBattleroyale();
+        }
+
+        if (isAdmin && message.includes(MessageTemplates.HITSQUAD_REWARD)) {
+            return this.#processHitsquad();
+        }
+    }
+
+    #processBattleroyale() {
+        this.#lastBattleRoyalTime = Date.now();
+        console.error('bat');
+    }
+
+    #processHitsquad() {
+        const index = this.#findHitsquadRoundIndex();
+
+        if (index >= 0) {
+            this.#lastHitsquadTimes[index] = Date.now();
+        }
+
+        if (index === this.#lastHitsquadTimes.length - 1) {
+            this.#sendCommand();
+        }
+
+        console.error(this.#lastHitsquadTimes);
+    }
+
+    #findHitsquadRoundIndex() {
+        const minTime = Math.min(...this.#lastHitsquadTimes);
+        return this.#lastHitsquadTimes.findIndex((time) => time === minTime);
+    }
+
+    #sendCommand() {
+        const allHitsquadCollected = this.#lastHitsquadTimes.every((time) => time > 0);
+        const isBattleroyaleCollected = this.#lastBattleRoyalTime > 0;
+
+        if (!(allHitsquadCollected && isBattleroyaleCollected)) {
+            return;
+        }
+
+        const timesToNextHitsquads = this.#lastHitsquadTimes.map((time) => time + 30 * Timing.MINUTE - Date.now());
+        const timeToNextBattleroyale = this.#lastBattleRoyalTime + 30 * Timing.MINUTE - Date.now();
+        const timeToNearestGame = Math.min(...timesToNextHitsquads, timeToNextBattleroyale);
+
+        console.error(timeToNearestGame / Timing.MINUTE, timesToNextHitsquads);
     }
 }
