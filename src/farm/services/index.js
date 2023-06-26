@@ -3,5 +3,4 @@ export { StreamStatusService } from './StreamStatusService';
 export { TwitchChatObserver } from './TwitchChatObserver';
 export { GameRunner } from './GameRunner';
 export { TwitchPlayerService } from './TwitchPlayerService';
-export { LimitedHitsquadRunner } from './LimitedHitsquadRunner';
 export { HitsquadRunner } from './HitsquadRunner';

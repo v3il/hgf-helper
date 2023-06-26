@@ -11,29 +11,33 @@ export class ExtensionContainer {
     #el;
     #streamStatusService;
     #twitchChatService;
-    // #miniGamesRunner;
-    #lastHitsquadTime = 0;
+    #hitsquadRunner;
 
-    constructor({ streamStatusService, twitchChatService, miniGamesRunner }) {
+    constructor({ streamStatusService, twitchChatService, hitsquadRunner }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
         this.#twitchChatService = twitchChatService;
-        // this.#miniGamesRunner = miniGamesRunner;
+        this.#hitsquadRunner = hitsquadRunner;
 
         this.#listenEvents();
         this.#renderChecksResult();
         this.#toggleStatusClass();
-
-        this.#updateSinceLastHitsquad();
-        this.#setHitsquadTimer();
     }
 
     #listenEvents() {
-        // const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
+        const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
+        const isChecked = localStorage.getItem('hgf-helper-games') === 'true';
 
-        // toggleGamesEl.addEventListener('change', ({ target }) => {
-        // target.checked ? this.#miniGamesRunner.start() : this.#miniGamesRunner.stop();
-        // });
+        toggleGamesEl.checked = isChecked;
+
+        if (isChecked) {
+            this.#hitsquadRunner.start();
+        }
+
+        toggleGamesEl.addEventListener('change', ({ target }) => {
+            target.checked ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
+            localStorage.setItem('hgf-helper-games', String(target.checked)); // todo: refactor
+        });
 
         this.#streamStatusService.events.on('check', async () => {
             if (this.#streamStatusService.lastCheckData.isReload) {
@@ -50,8 +54,6 @@ export class ExtensionContainer {
 
         sendHitsquadButton.addEventListener('click', () => {
             this.#twitchChatService.sendMessage(Commands.HITSQUAD);
-            this.#lastHitsquadTime = Date.now();
-            this.#updateSinceLastHitsquad();
         });
     }
 
@@ -89,23 +91,5 @@ export class ExtensionContainer {
 
         successfulChecksEl.textContent = successfulChecks;
         totalChecksEl.textContent = totalChecks;
-    }
-
-    #setHitsquadTimer() {
-        setInterval(() => {
-            this.#updateSinceLastHitsquad();
-        }, 30 * Timing.SECOND);
-    }
-
-    #updateSinceLastHitsquad() {
-        if (this.#lastHitsquadTime === 0) {
-            this.#el.querySelector('[data-since-last-hitsquad]').textContent = -1;
-            return;
-        }
-
-        const diff = Date.now() - this.#lastHitsquadTime;
-        const minutes = Math.floor(diff / Timing.MINUTE);
-
-        this.#el.querySelector('[data-since-last-hitsquad]').textContent = minutes;
     }
 }

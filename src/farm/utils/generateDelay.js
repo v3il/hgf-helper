@@ -5,10 +5,8 @@ export function generateDelay(min, max) {
 }
 
 export function generateMiniGameDelay() {
-    const basePart = 10 * Timing.SECOND;
-    const randomPart = generateDelay(30 * Timing.SECOND, 5 * Timing.MINUTE);
-
-    console.error((basePart + randomPart) / Timing.MINUTE);
+    const basePart = Timing.MINUTE;
+    const randomPart = generateDelay(10 * Timing.SECOND, 5 * Timing.MINUTE);
 
     return basePart + randomPart;
 }

@@ -72,12 +72,10 @@ export class GameRunner {
     }
 
     #listenEvents() {
-        this.#twitchChatObserver.events.on('message', ({ message, isAdmin }) => {
-            this.#processMessage({ message, isAdmin });
-        });
+        this.#twitchChatObserver.events.on('message', (data) => this.#processMessage(data));
     }
 
-    #processMessage({ message, isAdmin }) {
+    #processMessage({ message, isSystemMessage }) {
         if (this.#isPaused) {
             return;
         }
@@ -88,7 +86,7 @@ export class GameRunner {
             this.#commandsEntered++;
         }
 
-        if (isAdmin && message.includes(this.#messagePattern)) {
+        if (isSystemMessage && message.includes(this.#messagePattern)) {
             this.#completedGamesCount++;
         }
 

@@ -66,19 +66,16 @@ async function runApp({
     //     roundDuration: 15 * Timing.MINUTE
     // });
 
-    HitsquadRunner.create({
+    const hitsquadRunner = HitsquadRunner.create({
         twitchChatObserver,
         twitchChatService,
-        streamStatusService,
-        commands: [Commands.HITSQUAD]
+        streamStatusService
     });
 
-    // new LimitedHitsquadRunner({ twitchChatObserver, streamStatusService, twitchChatService });
-
     ExtensionContainer.create({
+        hitsquadRunner,
         streamStatusService,
-        twitchChatService,
-        miniGamesRunner: null
+        twitchChatService
     }).mount(document.body);
 }
 
