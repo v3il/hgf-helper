@@ -16,7 +16,7 @@ export class HitsquadRunner {
     #twitchChatService;
     #streamStatusService;
 
-    #isPaused = false;
+    #isPaused = true;
 
     constructor({ twitchChatObserver, twitchChatService, streamStatusService }) {
         this.#twitchChatObserver = twitchChatObserver;
