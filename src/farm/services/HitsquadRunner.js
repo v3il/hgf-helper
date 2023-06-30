@@ -1,11 +1,18 @@
+import { Container } from 'typedi';
 import {
     generateDelay, generateMiniGameDelay, promisifiedSetTimeout, shuffleArray
 } from '../utils';
-import { Commands, MessageTemplates, Timing } from '../consts';
+import {
+    Commands, InjectionTokens, MessageTemplates, Timing
+} from '../consts';
 
 export class HitsquadRunner {
-    static create(params) {
-        return new HitsquadRunner(params);
+    static create() {
+        const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
+        const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
+        const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
+
+        return new HitsquadRunner({ twitchChatObserver, twitchChatService, streamStatusService });
     }
 
     static #BAN_PHASE_DELAY = 30 * 1000;
@@ -22,6 +29,10 @@ export class HitsquadRunner {
         this.#twitchChatObserver = twitchChatObserver;
         this.#twitchChatService = twitchChatService;
         this.#streamStatusService = streamStatusService;
+
+        // const t = Container.get(InjectionTokens.TWITCH_USER);
+        //
+        // console.error(2, t.name);
 
         this.#listenEvents();
     }

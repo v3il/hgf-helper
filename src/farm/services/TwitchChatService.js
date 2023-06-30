@@ -1,4 +1,17 @@
+import { Container } from 'typedi';
+import { InjectionTokens } from '../consts';
+
 export class TwitchChatService {
+    static create({ chatInputEl, sendMessageButtonEl }) {
+        const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
+
+        return new TwitchChatService({
+            chatInputEl,
+            sendMessageButtonEl,
+            streamStatusService
+        });
+    }
+
     _chatInputEl;
     _sendMessageButtonEl;
     _streamStatusService;
@@ -12,7 +25,7 @@ export class TwitchChatService {
     sendMessage(message, forced = false) {
         console.error('send', message, forced);
 
-        // return;
+        return;
 
         // eslint-disable-next-line no-unreachable
         if (this._streamStatusService.isBanPhase && !forced) {

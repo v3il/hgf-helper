@@ -1,10 +1,16 @@
+import { Container } from 'typedi';
 import { ColorService } from './ColorService';
 import { banPhaseChecks } from '../consts/banPhaseChecks';
 import { EventEmitter } from '../models/EventsEmitter';
-import { Timing } from '../consts';
+import { InjectionTokens, Timing } from '../consts';
 
 export class StreamStatusService {
-    static create({ canvasContainerEl, twitchChatObserver, twitchPlayerService }) {
+    static create({ canvasContainerEl }) {
+        const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
+        const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
+
+        console.error(3, twitchChatObserver, twitchPlayerService);
+
         return new StreamStatusService({
             canvasContainerEl,
             twitchChatObserver,

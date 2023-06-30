@@ -1,11 +1,16 @@
 import './style.css';
+import { Container } from 'typedi';
 import template from './template.html?raw';
-import { Commands, Timing } from '../../consts';
+import { Commands, InjectionTokens, Timing } from '../../consts';
 import { promisifiedSetTimeout } from '../../utils';
 
 export class ExtensionContainer {
-    static create(params) {
-        return new ExtensionContainer(params);
+    static create() {
+        const hitsquadRunner = Container.get(InjectionTokens.HITSQUAD_RUNNER);
+        const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
+        const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
+
+        return new ExtensionContainer({ hitsquadRunner, streamStatusService, twitchChatService });
     }
 
     #el;

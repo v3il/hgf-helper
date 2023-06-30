@@ -1,11 +1,15 @@
+import { Container } from 'typedi';
 import {
     StreamStatusService, TwitchChatService, TwitchChatObserver, GameRunner, TwitchPlayerService, HitsquadRunner
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
-import { Commands, MessageTemplates, Timing } from './consts';
+import {
+    Commands, InjectionTokens, MessageTemplates, Timing
+} from './consts';
 import { generateMiniGameDelay } from './utils';
 import { users } from './users';
 import { TwitchUser } from './models';
+import 'reflect-metadata';
 
 function getTwitchElements() {
     const userDropdownToggleEl = document.querySelector('[data-a-target="user-menu-toggle"]');
@@ -35,48 +39,30 @@ function getUserName(userDropdownToggleEl) {
 async function runApp({
     chatInputEl, sendMessageButtonEl, chatContainerEl, userDropdownToggleEl
 }) {
-    const userName = getUserName(userDropdownToggleEl);
+    console.clear();
 
-    if (!userName) {
+    const userName = getUserName(userDropdownToggleEl);
+    const userConfig = users.find(({ name }) => name === userName);
+
+    if (!userConfig) {
         return;
     }
 
-    const userConfig = users.find(({ name }) => name === userName);
-    const twitchUser = TwitchUser.create(userConfig);
-    const twitchChatObserver = TwitchChatObserver.create(chatContainerEl);
-    const twitchPlayerService = TwitchPlayerService.create();
-
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
 
-    const streamStatusService = StreamStatusService.create({
-        canvasContainerEl,
-        twitchChatObserver,
-        twitchPlayerService
-    });
+    Container.set([
+        { id: InjectionTokens.TWITCH_USER, factory: TwitchUser.create(userConfig) },
+        { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatContainerEl) },
+        { id: InjectionTokens.PLAYER_SERVICE, factory: () => TwitchPlayerService.create() },
+        {
+            id: InjectionTokens.CHAT_SERVICE,
+            factory: () => TwitchChatService.create({ chatInputEl, sendMessageButtonEl })
+        },
+        { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create({ canvasContainerEl }) },
+        { id: InjectionTokens.HITSQUAD_RUNNER, factory: () => HitsquadRunner.create() }
+    ]);
 
-    const twitchChatService = new TwitchChatService({ chatInputEl, sendMessageButtonEl, streamStatusService });
-
-    // const miniGamesRunner = GameRunner.create({
-    //     twitchChatObserver,
-    //     twitchChatService,
-    //     streamStatusService,
-    //     messagePattern: MessageTemplates.HITSQUAD_REWARD,
-    //     generateMessagesDelay: () => generateMiniGameDelay(),
-    //     commands: [Commands.HITSQUAD],
-    //     roundDuration: 15 * Timing.MINUTE
-    // });
-
-    const hitsquadRunner = HitsquadRunner.create({
-        twitchChatObserver,
-        twitchChatService,
-        streamStatusService
-    });
-
-    ExtensionContainer.create({
-        hitsquadRunner,
-        streamStatusService,
-        twitchChatService
-    }).mount(document.body);
+    ExtensionContainer.create().mount(document.body);
 }
 
 function isElementsExist(elements) {
