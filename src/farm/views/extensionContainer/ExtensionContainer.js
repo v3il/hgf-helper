@@ -7,12 +7,13 @@ import { promisifiedSetTimeout } from '../../utils';
 export class ExtensionContainer {
     static create() {
         const hitsquadRunner = Container.get(InjectionTokens.HITSQUAD_RUNNER);
+        const quizRunner = Container.get(InjectionTokens.QUIZ_RUNNER);
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
         const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
         const settingsService = Container.get(InjectionTokens.SETTINGS_SERVICE);
 
         return new ExtensionContainer({
-            hitsquadRunner, streamStatusService, twitchChatService, settingsService
+            hitsquadRunner, streamStatusService, twitchChatService, settingsService, quizRunner
         });
     }
 
@@ -21,15 +22,17 @@ export class ExtensionContainer {
     #twitchChatService;
     #hitsquadRunner;
     #settingsService;
+    #quizRunner;
 
     constructor({
-        streamStatusService, twitchChatService, hitsquadRunner, settingsService
+        streamStatusService, twitchChatService, hitsquadRunner, settingsService, quizRunner
     }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
         this.#twitchChatService = twitchChatService;
         this.#hitsquadRunner = hitsquadRunner;
         this.#settingsService = settingsService;
+        this.#quizRunner = quizRunner;
 
         this.#listenEvents();
         this.#renderChecksResult();
@@ -37,6 +40,14 @@ export class ExtensionContainer {
     }
 
     #listenEvents() {
+        this.#handleMiniGamesCheckbox();
+        this.#handleQuizCheckbox();
+        this.#handleReloadPage();
+        this.#handleKeydownHandler();
+        this.#handleHitsquadButton();
+    }
+
+    #handleMiniGamesCheckbox() {
         const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
         const isHitsquadRunning = this.#settingsService.getSetting('hitsquadRunner');
 
@@ -50,7 +61,25 @@ export class ExtensionContainer {
             target.checked ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
             this.#settingsService.setSetting('hitsquadRunner', target.checked);
         });
+    }
 
+    #handleQuizCheckbox() {
+        const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
+        const isQuizRunning = this.#settingsService.getSetting('quizRunner');
+
+        toggleQuizEl.checked = isQuizRunning;
+
+        if (isQuizRunning) {
+            this.#quizRunner.start();
+        }
+
+        toggleQuizEl.addEventListener('change', ({ target }) => {
+            target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
+            this.#settingsService.setSetting('quizRunner', target.checked);
+        });
+    }
+
+    #handleReloadPage() {
         this.#streamStatusService.events.on('check', async () => {
             if (this.#streamStatusService.lastCheckData.isReload) {
                 this.#toggleStatusClass();
@@ -61,7 +90,19 @@ export class ExtensionContainer {
             this.#renderChecksResult();
             this.#toggleStatusClass();
         });
+    }
 
+    #handleKeydownHandler() {
+        window.document.addEventListener('keydown', (event) => {
+            const command = `!answer${event.key}`;
+
+            if (Commands.getAnswers().includes(command)) {
+                this.#twitchChatService.sendMessage(command);
+            }
+        });
+    }
+
+    #handleHitsquadButton() {
         const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
 
         sendHitsquadButton.addEventListener('click', () => {

@@ -22,6 +22,11 @@ export const Commands = Object.freeze({
     SHIELD: '!shield',
     FLAMES: '!flames',
 
+    ANSWER1: '!answer1',
+    ANSWER2: '!answer2',
+    ANSWER3: '!answer3',
+    ANSWER4: '!answer4',
+
     getMiniGameCommands() {
         return [this.HITSQUAD];
     },
@@ -53,5 +58,14 @@ export const Commands = Object.freeze({
 
     getGameCommands() {
         return this.getMiniGameCommands().concat(this.getShowdownCommands());
+    },
+
+    getAnswers() {
+        return [
+            this.ANSWER1,
+            this.ANSWER2,
+            this.ANSWER3,
+            this.ANSWER4
+        ];
     }
 });

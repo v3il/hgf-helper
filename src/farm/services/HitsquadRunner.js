@@ -1,10 +1,6 @@
 import { Container } from 'typedi';
-import {
-    generateDelay, generateMiniGameDelay, promisifiedSetTimeout, shuffleArray
-} from '../utils';
-import {
-    Commands, InjectionTokens, MessageTemplates, Timing
-} from '../consts';
+import { generateMiniGameDelay, promisifiedSetTimeout } from '../utils';
+import { Commands, InjectionTokens, MessageTemplates } from '../consts';
 
 export class HitsquadRunner {
     static create() {
@@ -29,10 +25,6 @@ export class HitsquadRunner {
         this.#twitchChatObserver = twitchChatObserver;
         this.#twitchChatService = twitchChatService;
         this.#streamStatusService = streamStatusService;
-
-        // const t = Container.get(InjectionTokens.TWITCH_USER);
-        //
-        // console.error(2, t.name);
 
         this.#listenEvents();
     }

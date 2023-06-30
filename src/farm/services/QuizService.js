@@ -1,8 +1,15 @@
-import { MessageTemplates, Timing, Commands } from '../consts';
+import { Container } from 'typedi';
+import {
+    MessageTemplates, Timing, Commands, InjectionTokens
+} from '../consts';
 import { generateDelay, promisifiedSetTimeout } from '../utils';
 
 export class QuizService {
-    static create({ twitchChatObserver, twitchChatService, twitchUser }) {
+    static create() {
+        const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
+        const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
+        const twitchUser = Container.get(InjectionTokens.TWITCH_USER);
+
         return new QuizService({ twitchChatObserver, twitchChatService, twitchUser });
     }
 

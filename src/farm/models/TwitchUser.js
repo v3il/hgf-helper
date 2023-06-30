@@ -12,4 +12,8 @@ export class TwitchUser {
         this.#userName = name;
         this.#inactiveHours = inactiveHours;
     }
+
+    isCurrentUser(name) {
+        return this.#userName === name;
+    }
 }

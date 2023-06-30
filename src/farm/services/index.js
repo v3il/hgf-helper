@@ -5,3 +5,4 @@ export { GameRunner } from './GameRunner';
 export { TwitchPlayerService } from './TwitchPlayerService';
 export { HitsquadRunner } from './HitsquadRunner';
 export { SettingsService } from './SettingsService';
+export { QuizService } from './QuizService';

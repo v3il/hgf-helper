@@ -1,18 +1,15 @@
 import { Container } from 'typedi';
 import {
-    StreamStatusService,
-    TwitchChatService,
-    TwitchChatObserver,
-    GameRunner,
-    TwitchPlayerService,
     HitsquadRunner,
-    SettingsService
+    QuizService,
+    SettingsService,
+    StreamStatusService,
+    TwitchChatObserver,
+    TwitchChatService,
+    TwitchPlayerService
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
-import {
-    Commands, InjectionTokens, MessageTemplates, Timing
-} from './consts';
-import { generateMiniGameDelay } from './utils';
+import { InjectionTokens } from './consts';
 import { users } from './users';
 import { TwitchUser } from './models';
 import 'reflect-metadata';
@@ -66,7 +63,8 @@ async function runApp({
             factory: () => TwitchChatService.create({ chatInputEl, sendMessageButtonEl })
         },
         { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create({ canvasContainerEl }) },
-        { id: InjectionTokens.HITSQUAD_RUNNER, factory: () => HitsquadRunner.create() }
+        { id: InjectionTokens.HITSQUAD_RUNNER, factory: () => HitsquadRunner.create() },
+        { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() }
     ]);
 
     ExtensionContainer.create().mount(document.body);

@@ -9,8 +9,6 @@ export class StreamStatusService {
         const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
 
-        console.error(3, twitchChatObserver, twitchPlayerService);
-
         return new StreamStatusService({
             canvasContainerEl,
             twitchChatObserver,
