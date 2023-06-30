@@ -1,6 +1,12 @@
 import { Container } from 'typedi';
 import {
-    StreamStatusService, TwitchChatService, TwitchChatObserver, GameRunner, TwitchPlayerService, HitsquadRunner
+    StreamStatusService,
+    TwitchChatService,
+    TwitchChatObserver,
+    GameRunner,
+    TwitchPlayerService,
+    HitsquadRunner,
+    SettingsService
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 import {
@@ -51,7 +57,8 @@ async function runApp({
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
 
     Container.set([
-        { id: InjectionTokens.TWITCH_USER, factory: TwitchUser.create(userConfig) },
+        { id: InjectionTokens.SETTINGS_SERVICE, factory: () => SettingsService.create(window.localStorage) },
+        { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userConfig) },
         { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatContainerEl) },
         { id: InjectionTokens.PLAYER_SERVICE, factory: () => TwitchPlayerService.create() },
         {

@@ -9,20 +9,27 @@ export class ExtensionContainer {
         const hitsquadRunner = Container.get(InjectionTokens.HITSQUAD_RUNNER);
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
         const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
+        const settingsService = Container.get(InjectionTokens.SETTINGS_SERVICE);
 
-        return new ExtensionContainer({ hitsquadRunner, streamStatusService, twitchChatService });
+        return new ExtensionContainer({
+            hitsquadRunner, streamStatusService, twitchChatService, settingsService
+        });
     }
 
     #el;
     #streamStatusService;
     #twitchChatService;
     #hitsquadRunner;
+    #settingsService;
 
-    constructor({ streamStatusService, twitchChatService, hitsquadRunner }) {
+    constructor({
+        streamStatusService, twitchChatService, hitsquadRunner, settingsService
+    }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
         this.#twitchChatService = twitchChatService;
         this.#hitsquadRunner = hitsquadRunner;
+        this.#settingsService = settingsService;
 
         this.#listenEvents();
         this.#renderChecksResult();
@@ -31,17 +38,17 @@ export class ExtensionContainer {
 
     #listenEvents() {
         const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
-        const isChecked = localStorage.getItem('hgf-helper-games') === 'true';
+        const isHitsquadRunning = this.#settingsService.getSetting('hitsquadRunner');
 
-        toggleGamesEl.checked = isChecked;
+        toggleGamesEl.checked = isHitsquadRunning;
 
-        if (isChecked) {
+        if (isHitsquadRunning) {
             this.#hitsquadRunner.start();
         }
 
         toggleGamesEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
-            localStorage.setItem('hgf-helper-games', String(target.checked)); // todo: refactor
+            this.#settingsService.setSetting('hitsquadRunner', target.checked);
         });
 
         this.#streamStatusService.events.on('check', async () => {

@@ -4,3 +4,4 @@ export { TwitchChatObserver } from './TwitchChatObserver';
 export { GameRunner } from './GameRunner';
 export { TwitchPlayerService } from './TwitchPlayerService';
 export { HitsquadRunner } from './HitsquadRunner';
+export { SettingsService } from './SettingsService';
