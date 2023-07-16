@@ -7,8 +7,14 @@ export class HitsquadRunner {
         const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
         const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
+        const twitchUser = Container.get(InjectionTokens.TWITCH_USER);
 
-        return new HitsquadRunner({ twitchChatObserver, twitchChatService, streamStatusService });
+        return new HitsquadRunner({
+            twitchChatObserver,
+            twitchChatService,
+            streamStatusService,
+            twitchUser
+        });
     }
 
     static #BAN_PHASE_DELAY = 30 * 1000;
@@ -18,21 +24,28 @@ export class HitsquadRunner {
     #twitchChatObserver;
     #twitchChatService;
     #streamStatusService;
+    #twitchUser;
 
     #isPaused = true;
 
-    constructor({ twitchChatObserver, twitchChatService, streamStatusService }) {
+    constructor({
+        twitchChatObserver, twitchChatService, streamStatusService, twitchUser
+    }) {
         this.#twitchChatObserver = twitchChatObserver;
         this.#twitchChatService = twitchChatService;
         this.#streamStatusService = streamStatusService;
+        this.#twitchUser = twitchUser;
 
         this.#listenEvents();
     }
 
     #listenEvents() {
         this.#twitchChatObserver.events.on('message', (data) => {
-            if (!this.#isPaused) {
+            if (!this.#isPaused && this.#twitchUser.isMiniGamesRunning) {
                 this.#processMessage(data);
+            } else {
+                console.error('inactive');
+                this.#completedGamesCount = 0;
             }
         });
     }
@@ -72,5 +85,6 @@ export class HitsquadRunner {
 
     stop() {
         this.#isPaused = true;
+        this.#completedGamesCount = 0;
     }
 }

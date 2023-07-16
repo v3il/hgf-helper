@@ -5,15 +5,20 @@ export class TwitchUser {
 
     #id;
     #userName;
-    #inactiveHours;
+    #minigameHours;
 
-    constructor({ id, name, inactiveHours }) {
+    constructor({ id, name, minigameHours }) {
         this.#id = id;
         this.#userName = name;
-        this.#inactiveHours = inactiveHours;
+        this.#minigameHours = minigameHours;
     }
 
     isCurrentUser(name) {
         return this.#userName === name;
+    }
+
+    get isMiniGamesRunning() {
+        const hours = new Date().getHours();
+        return this.#minigameHours.includes(hours);
     }
 }
