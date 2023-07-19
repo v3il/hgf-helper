@@ -18,7 +18,8 @@ export class TwitchUser {
     }
 
     get isMiniGamesRunning() {
-        const hours = new Date().getHours();
-        return this.#minigameHours.includes(hours);
+        return true;
+        // const hours = new Date().getHours();
+        // return this.#minigameHours.includes(hours);
     }
 }
