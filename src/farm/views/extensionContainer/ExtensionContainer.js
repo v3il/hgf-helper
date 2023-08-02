@@ -40,11 +40,27 @@ export class ExtensionContainer {
     }
 
     #listenEvents() {
+        // this.#handleDebugMode();
         this.#handleMiniGamesCheckbox();
         this.#handleQuizCheckbox();
         this.#handleReloadPage();
         this.#handleKeydownHandler();
         this.#handleHitsquadButton();
+    }
+
+    #handleDebugMode() {
+        const toggleDebugEl = this.el.querySelector('[data-toggle-debug]');
+
+        toggleDebugEl.addEventListener('change', ({ target }) => {
+            const message = target.checked ? 'Enable debug?' : 'Disable debug?';
+
+            // eslint-disable-next-line no-restricted-globals
+            if (confirm(message)) {
+                // this.#canvasContainerView.setDebug(target.checked);
+            } else {
+                toggleDebugEl.checked = !toggleDebugEl.checked;
+            }
+        });
     }
 
     #handleMiniGamesCheckbox() {

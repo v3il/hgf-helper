@@ -9,7 +9,7 @@ import {
     TwitchPlayerService
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
-import { InjectionTokens } from './consts';
+import { InjectionTokens, isDev } from './consts';
 import { users } from './users';
 import { TwitchUser } from './models';
 import 'reflect-metadata';
@@ -43,6 +43,7 @@ async function runApp({
     chatInputEl, sendMessageButtonEl, chatContainerEl, userDropdownToggleEl
 }) {
     console.clear();
+    console.info(`HGF helper is running in ${isDev ? 'dev' : 'prod'} mode`);
 
     const userName = getUserName(userDropdownToggleEl);
     const userConfig = users.find(({ name }) => name === userName);
