@@ -1,20 +1,25 @@
+import { Container } from 'typedi';
 import { EventEmitter } from '../models/EventsEmitter';
+import { InjectionTokens } from '../consts';
 
 export class TwitchChatObserver {
     static create(twitchChatContainerEl) {
+        const twitchUser = Container.get(InjectionTokens.TWITCH_USER);
         const events = new EventEmitter();
-        return new TwitchChatObserver({ twitchChatContainerEl, events });
+        return new TwitchChatObserver({ twitchChatContainerEl, events, twitchUser });
     }
 
     #events;
     #twitchChatContainerEl;
     #observer;
+    #twitchUser;
 
-    constructor({ twitchChatContainerEl, events }) {
+    constructor({ twitchChatContainerEl, events, twitchUser }) {
         this.#events = events;
         this.#twitchChatContainerEl = twitchChatContainerEl;
-        this.#observer = this.#createObserver();
+        this.#twitchUser = twitchUser;
 
+        this.#observer = this.#createObserver();
         this.#observer.observe(this.#twitchChatContainerEl, { childList: true });
     }
 
@@ -49,7 +54,10 @@ export class TwitchChatObserver {
         const userName = userNameEl.textContent.toLowerCase();
         const message = messageEl.textContent.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather';
+        const isMe = this.#twitchUser.isCurrentUser(userName);
 
-        this.#events.emit('message', { userName, message, isSystemMessage });
+        this.#events.emit('message', {
+            userName, message, isSystemMessage, isMe
+        });
     }
 }

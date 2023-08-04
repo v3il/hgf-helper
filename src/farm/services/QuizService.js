@@ -8,14 +8,14 @@ export class QuizService {
     static create() {
         const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
-        const twitchUser = Container.get(InjectionTokens.TWITCH_USER);
+        const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
 
-        return new QuizService({ twitchChatObserver, twitchChatService, twitchUser });
+        return new QuizService({ twitchChatObserver, twitchChatService, streamStatusService });
     }
 
     #twitchChatObserver;
     #twitchChatService;
-    #twitchUser;
+    #streamStatusService;
 
     #isWaitingNextRound = true;
     #isStopped = true;
@@ -25,10 +25,10 @@ export class QuizService {
     #fallbackTimeoutId;
     #desiredAnswerPosition;
 
-    constructor({ twitchChatObserver, twitchChatService, twitchUser }) {
+    constructor({ twitchChatObserver, twitchChatService, streamStatusService }) {
         this.#twitchChatObserver = twitchChatObserver;
         this.#twitchChatService = twitchChatService;
-        this.#twitchUser = twitchUser;
+        this.#streamStatusService = streamStatusService;
 
         Commands.getAnswers().forEach((answer) => {
             this.#answers[answer] = new Set();
@@ -49,7 +49,7 @@ export class QuizService {
         });
     }
 
-    #processMessage({ userName, message }) {
+    #processMessage({ userName, message, isMe }) {
         if (message.includes(MessageTemplates.NEW_QUIZ_QUESTION)) {
             this.#isWaitingNextRound = false;
             this.#desiredAnswerPosition = this.#getDesiredAnswerPosition();
@@ -62,7 +62,6 @@ export class QuizService {
             return;
         }
 
-        const isMe = this.#twitchUser.isCurrentUser(userName);
         const answerInMessage = Commands.getAnswers().find((answer) => message.startsWith(answer));
 
         if (!answerInMessage) {
@@ -90,13 +89,13 @@ export class QuizService {
         this.#isWaitingNextRound = true;
         clearTimeout(this.#fallbackTimeoutId);
 
-        if (answer) {
+        if (answer && !this.#streamStatusService.isBanPhase) {
             this.#sendAnswer(answer);
         }
     }
 
     async #sendAnswer(answer) {
-        const delay = generateDelay(0.7 * Timing.SECOND, 2 * Timing.SECOND);
+        const delay = generateDelay(2 * Timing.SECOND, 4 * Timing.SECOND);
 
         await promisifiedSetTimeout(delay);
         this.#twitchChatService.sendMessage(answer);
@@ -150,5 +149,6 @@ export class QuizService {
 
     stop() {
         this.#isStopped = true;
+        clearTimeout(this.#fallbackTimeoutId);
     }
 }

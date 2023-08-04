@@ -7,13 +7,11 @@ export class HitsquadRunner {
         const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
         const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
-        const twitchUser = Container.get(InjectionTokens.TWITCH_USER);
 
         return new HitsquadRunner({
             twitchChatObserver,
             twitchChatService,
-            streamStatusService,
-            twitchUser
+            streamStatusService
         });
     }
 
@@ -24,24 +22,20 @@ export class HitsquadRunner {
     #twitchChatObserver;
     #twitchChatService;
     #streamStatusService;
-    #twitchUser;
 
     #isPaused = true;
 
-    constructor({
-        twitchChatObserver, twitchChatService, streamStatusService, twitchUser
-    }) {
+    constructor({ twitchChatObserver, twitchChatService, streamStatusService }) {
         this.#twitchChatObserver = twitchChatObserver;
         this.#twitchChatService = twitchChatService;
         this.#streamStatusService = streamStatusService;
-        this.#twitchUser = twitchUser;
 
         this.#listenEvents();
     }
 
     #listenEvents() {
         this.#twitchChatObserver.events.on('message', (data) => {
-            if (!this.#isPaused && this.#twitchUser.isMiniGamesRunning) {
+            if (!this.#isPaused) {
                 this.#processMessage(data);
             } else {
                 this.#completedGamesCount = 0;
