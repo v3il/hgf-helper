@@ -41,27 +41,27 @@ export class ExtensionContainer {
 
     #listenEvents() {
         // this.#handleDebugMode();
-        this.#handleMiniGamesCheckbox();
         this.#handleQuizCheckbox();
+        this.#handleMiniGamesCheckbox();
         this.#handleReloadPage();
         this.#handleKeydownHandler();
         this.#handleHitsquadButton();
     }
 
-    #handleDebugMode() {
-        const toggleDebugEl = this.el.querySelector('[data-toggle-debug]');
-
-        toggleDebugEl.addEventListener('change', ({ target }) => {
-            const message = target.checked ? 'Enable debug?' : 'Disable debug?';
-
-            // eslint-disable-next-line no-restricted-globals
-            if (confirm(message)) {
-                // this.#canvasContainerView.setDebug(target.checked);
-            } else {
-                toggleDebugEl.checked = !toggleDebugEl.checked;
-            }
-        });
-    }
+    // #handleDebugMode() {
+    //     const toggleDebugEl = this.el.querySelector('[data-toggle-debug]');
+    //
+    //     toggleDebugEl.addEventListener('change', ({ target }) => {
+    //         const message = target.checked ? 'Enable debug?' : 'Disable debug?';
+    //
+    //         // eslint-disable-next-line no-restricted-globals
+    //         if (confirm(message)) {
+    //             // this.#canvasContainerView.setDebug(target.checked);
+    //         } else {
+    //             toggleDebugEl.checked = !toggleDebugEl.checked;
+    //         }
+    //     });
+    // }
 
     #handleMiniGamesCheckbox() {
         const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
@@ -80,19 +80,23 @@ export class ExtensionContainer {
     }
 
     #handleQuizCheckbox() {
-        const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
-        const isQuizRunning = this.#settingsService.getSetting('quizRunner');
+        // Temporary unavailable
+        this.#settingsService.setSetting('quizRunner', false);
+        this.#quizRunner.stop();
 
-        toggleQuizEl.checked = isQuizRunning;
-
-        if (isQuizRunning) {
-            this.#quizRunner.start();
-        }
-
-        toggleQuizEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
-            this.#settingsService.setSetting('quizRunner', target.checked);
-        });
+        // const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
+        // const isQuizRunning = this.#settingsService.getSetting('quizRunner');
+        //
+        // toggleQuizEl.checked = isQuizRunning;
+        //
+        // if (isQuizRunning) {
+        //     this.#quizRunner.start();
+        // }
+        //
+        // toggleQuizEl.addEventListener('change', ({ target }) => {
+        //     target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
+        //     this.#settingsService.setSetting('quizRunner', target.checked);
+        // });
     }
 
     #handleReloadPage() {
@@ -113,7 +117,7 @@ export class ExtensionContainer {
             const command = `!answer${event.key}`;
 
             if (Commands.getAnswers().includes(command)) {
-                this.#twitchChatService.sendMessage(command);
+                this.#sendMessage(command);
             }
         });
     }
@@ -122,7 +126,7 @@ export class ExtensionContainer {
         const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
 
         sendHitsquadButton.addEventListener('click', () => {
-            this.#twitchChatService.sendMessage(Commands.HITSQUAD);
+            this.#sendMessage(Commands.HITSQUAD);
         });
     }
 
@@ -160,5 +164,11 @@ export class ExtensionContainer {
 
         successfulChecksEl.textContent = successfulChecks;
         totalChecksEl.textContent = totalChecks;
+    }
+
+    #sendMessage(command) {
+        if (!this.#streamStatusService.isBanPhase) {
+            this.#twitchChatService.sendMessage(command);
+        }
     }
 }

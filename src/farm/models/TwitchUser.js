@@ -16,10 +16,4 @@ export class TwitchUser {
     isCurrentUser(name) {
         return this.#userName === name;
     }
-
-    get isMiniGamesRunning() {
-        return true;
-        // const hours = new Date().getHours();
-        // return this.#minigameHours.includes(hours);
-    }
 }
