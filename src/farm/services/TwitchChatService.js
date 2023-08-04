@@ -1,35 +1,25 @@
-import { Container } from 'typedi';
-import { InjectionTokens, isDev } from '../consts';
+import { isDev } from '../consts';
 
 export class TwitchChatService {
     static create({ chatInputEl, sendMessageButtonEl }) {
-        const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
-
         return new TwitchChatService({
             chatInputEl,
-            sendMessageButtonEl,
-            streamStatusService
+            sendMessageButtonEl
         });
     }
 
     _chatInputEl;
     _sendMessageButtonEl;
-    _streamStatusService;
 
-    constructor({ chatInputEl, sendMessageButtonEl, streamStatusService }) {
+    constructor({ chatInputEl, sendMessageButtonEl }) {
         this._chatInputEl = chatInputEl;
         this._sendMessageButtonEl = sendMessageButtonEl;
-        this._streamStatusService = streamStatusService;
     }
 
     sendMessage(message, forced = false) {
         console.error('send', message, forced);
 
         if (isDev) {
-            return;
-        }
-
-        if (this._streamStatusService.isBanPhase && !forced) {
             return false;
         }
 

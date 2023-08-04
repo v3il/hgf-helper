@@ -44,7 +44,6 @@ export class HitsquadRunner {
             if (!this.#isPaused && this.#twitchUser.isMiniGamesRunning) {
                 this.#processMessage(data);
             } else {
-                console.error('inactive');
                 this.#completedGamesCount = 0;
             }
         });

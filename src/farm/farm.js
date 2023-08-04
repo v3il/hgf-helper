@@ -17,14 +17,14 @@ import 'reflect-metadata';
 function getTwitchElements() {
     const userDropdownToggleEl = document.querySelector('[data-a-target="user-menu-toggle"]');
     const chatInputEl = document.querySelector('[data-a-target="chat-input"]');
-    const sendMessageButtonEl = document.querySelector('[data-a-target="chat-send-button"]');
+    const sendMessageEl = document.querySelector('[data-a-target="chat-send-button"]');
     const chatContainerEl = document.querySelector('.chat-scrollable-area__message-container');
     const videoEl = document.querySelector('video');
 
     return {
         userDropdownToggleEl,
         chatInputEl,
-        sendMessageButtonEl,
+        sendMessageEl,
         chatContainerEl,
         videoEl
     };
@@ -40,7 +40,7 @@ function getUserName(userDropdownToggleEl) {
 }
 
 async function runApp({
-    chatInputEl, sendMessageButtonEl, chatContainerEl, userDropdownToggleEl
+    chatInputEl, sendMessageEl, chatContainerEl, userDropdownToggleEl
 }) {
     console.clear();
     console.info(`HGF helper is running in ${isDev ? 'dev' : 'prod'} mode`);
@@ -55,14 +55,11 @@ async function runApp({
     const canvasContainerEl = CanvasContainer.create().mount(document.body);
 
     Container.set([
-        { id: InjectionTokens.SETTINGS_SERVICE, factory: () => SettingsService.create(window.localStorage) },
         { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userConfig) },
+        { id: InjectionTokens.SETTINGS_SERVICE, factory: () => SettingsService.create(window.localStorage) },
         { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatContainerEl) },
         { id: InjectionTokens.PLAYER_SERVICE, factory: () => TwitchPlayerService.create() },
-        {
-            id: InjectionTokens.CHAT_SERVICE,
-            factory: () => TwitchChatService.create({ chatInputEl, sendMessageButtonEl })
-        },
+        { id: InjectionTokens.CHAT_SERVICE, factory: () => TwitchChatService.create({ chatInputEl, sendMessageEl }) },
         { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create({ canvasContainerEl }) },
         { id: InjectionTokens.HITSQUAD_RUNNER, factory: () => HitsquadRunner.create() },
         { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() }
