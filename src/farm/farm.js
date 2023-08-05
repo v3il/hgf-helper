@@ -52,7 +52,7 @@ async function runApp({
         return;
     }
 
-    const canvasContainerEl = CanvasContainer.create().mount(document.body);
+    const canvasView = CanvasContainer.create(document.body);
 
     Container.set([
         { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userConfig) },
@@ -60,7 +60,7 @@ async function runApp({
         { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatContainerEl) },
         { id: InjectionTokens.PLAYER_SERVICE, factory: () => TwitchPlayerService.create() },
         { id: InjectionTokens.CHAT_SERVICE, factory: () => TwitchChatService.create({ chatInputEl, sendMessageEl }) },
-        { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create({ canvasContainerEl }) },
+        { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create({ canvasView }) },
         { id: InjectionTokens.HITSQUAD_RUNNER, factory: () => HitsquadRunner.create() },
         { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() }
     ]);

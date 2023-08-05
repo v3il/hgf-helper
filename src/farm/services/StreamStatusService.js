@@ -5,20 +5,19 @@ import { EventEmitter } from '../models/EventsEmitter';
 import { InjectionTokens, Timing } from '../consts';
 
 export class StreamStatusService {
-    static create({ canvasContainerEl }) {
+    static create({ canvasView }) {
         const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
 
         return new StreamStatusService({
-            canvasContainerEl,
+            canvasView,
             twitchChatObserver,
             twitchPlayerService,
             events: EventEmitter.create()
         });
     }
 
-    #canvasContainerEl;
-    #canvasEl;
+    #canvasView;
     #lastCheckData;
     #events;
     #intervalId;
@@ -29,20 +28,17 @@ export class StreamStatusService {
     #reloadRoundsCount = 0;
 
     constructor({
-        canvasContainerEl, twitchChatObserver, twitchPlayerService, events
+        canvasView, twitchChatObserver, twitchPlayerService, events
     }) {
-        this.#canvasContainerEl = canvasContainerEl;
+        this.#canvasView = canvasView;
         this.#twitchChatObserver = twitchChatObserver;
         this.#events = events;
         this.#twitchPlayerService = twitchPlayerService;
 
-        this.#canvasEl = this.#createCanvas();
-        this.#canvasContainerEl.appendChild(this.#canvasEl);
-
-        this.checkBanPhase();
+        this.#checkBanPhase();
 
         this.#intervalId = setInterval(() => {
-            this.checkBanPhase();
+            this.#checkBanPhase();
             twitchPlayerService.decreaseVideoDelay();
         }, 40 * Timing.SECOND);
 
@@ -51,10 +47,6 @@ export class StreamStatusService {
 
     get events() {
         return this.#events;
-    }
-
-    #createCanvas() {
-        return document.createElement('canvas');
     }
 
     #getActiveVideoEl() {
@@ -72,7 +64,7 @@ export class StreamStatusService {
         return document.querySelector('[data-a-target="video-ad-countdown"]') !== null;
     }
 
-    checkBanPhase() {
+    #checkBanPhase() {
         const videoEl = this.#getActiveVideoEl();
 
         // Some problems with video
@@ -83,7 +75,7 @@ export class StreamStatusService {
                 isBan: true
             };
 
-            this.#clearCanvas();
+            // this.#clearCanvas();
             return this.#events.emit('check');
         }
 
@@ -104,14 +96,14 @@ export class StreamStatusService {
                 clearInterval(this.#intervalId);
             }
 
-            this.#clearCanvas();
+            // this.#clearCanvas();
 
             return this.#events.emit('check');
         }
 
-        this.#makeScreenshot(videoEl);
+        this.#canvasView.renderVideoFrame(videoEl);
 
-        const canvas = this.#canvasEl;
+        const canvas = this.#canvasView.canvasEl;
         const { width, height } = canvas;
 
         const checksResults = banPhaseChecks.map(({ xPercent, yPercent, color }) => {
@@ -145,7 +137,7 @@ export class StreamStatusService {
         console.log(this.#lastCheckData);
 
         this.#reloadRoundsCount = 0;
-        this.#clearCanvas();
+        // this.#clearCanvas();
         this.#events.emit('check');
     }
 
@@ -157,20 +149,20 @@ export class StreamStatusService {
         return this.#lastCheckData;
     }
 
-    #makeScreenshot(videoEl) {
-        this.#canvasEl.width = videoEl.clientWidth;
-        this.#canvasEl.height = videoEl.clientHeight;
+    // #makeScreenshot(videoEl) {
+    //     this.#canvasEl.width = videoEl.clientWidth;
+    //     this.#canvasEl.height = videoEl.clientHeight;
+    //
+    //     const ctx = this.#canvasEl.getContext('2d');
+    //
+    //     ctx.drawImage(videoEl, 0, 0, this.#canvasEl.width, this.#canvasEl.height);
+    // }
 
-        const ctx = this.#canvasEl.getContext('2d');
-
-        ctx.drawImage(videoEl, 0, 0, this.#canvasEl.width, this.#canvasEl.height);
-    }
-
-    #clearCanvas() {
-        const ctx = this.#canvasEl.getContext('2d');
-
-        ctx.clearRect(0, 0, this.#canvasEl.width, this.#canvasEl.height);
-    }
+    // #clearCanvas() {
+    //     const ctx = this.#canvasEl.getContext('2d');
+    //
+    //     ctx.clearRect(0, 0, this.#canvasEl.width, this.#canvasEl.height);
+    // }
 
     // #listenEvents() {
     //     document.body.addEventListener('click', ({ target, pageX, pageY }) => {
