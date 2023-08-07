@@ -1,16 +1,12 @@
 export class TwitchUser {
-    static create(options) {
-        return new TwitchUser(options);
+    static create(userName) {
+        return new TwitchUser(userName);
     }
 
-    #id;
     #userName;
-    #minigameHours;
 
-    constructor({ id, name, minigameHours }) {
-        this.#id = id;
-        this.#userName = name;
-        this.#minigameHours = minigameHours;
+    constructor(userName) {
+        this.#userName = userName;
     }
 
     isCurrentUser(name) {

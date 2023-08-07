@@ -10,7 +10,6 @@ import {
 } from './services';
 import { CanvasContainer, ExtensionContainer } from './views';
 import { InjectionTokens, isDev } from './consts';
-import { users } from './users';
 import { TwitchUser } from './models';
 import 'reflect-metadata';
 
@@ -46,16 +45,10 @@ async function runApp({
     console.info(`HGF helper is running in ${isDev ? 'dev' : 'prod'} mode`);
 
     const userName = getUserName(userDropdownToggleEl);
-    const userConfig = users.find(({ name }) => name === userName);
-
-    if (!userConfig) {
-        return;
-    }
-
     const canvasView = CanvasContainer.create(document.body);
 
     Container.set([
-        { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userConfig) },
+        { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userName) },
         { id: InjectionTokens.SETTINGS_SERVICE, factory: () => SettingsService.create(window.localStorage) },
         { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatContainerEl) },
         { id: InjectionTokens.PLAYER_SERVICE, factory: () => TwitchPlayerService.create() },
