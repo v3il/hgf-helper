@@ -1,7 +1,6 @@
 import { Offer } from './models/Offer';
 import { OfferView } from './views/offer/OfferView';
 import { StorageService, JsonBinApiService } from './services';
-import { JSON_BIN_URL } from './storeConfig';
 
 const sortDropdownObserver = new MutationObserver(() => {
     const sortDropdownEl = document.querySelector('[ng-model="vm.sortBy"]');
