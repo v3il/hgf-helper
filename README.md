@@ -47,7 +47,7 @@ At the moment the extension is built manually, so you need to have `Node.js` ins
      `{ "offers": [] }`
    - copy the `ID` of the created Bin, copy `X-Master-Key` and `X-Access-Key` on the page https://jsonbin.io/app/app/api-keys
    - paste the obtained values into the corresponding fields in the `src/store/storeConfig.js` file.
-6. Build extension files - `npx eslint --fix . && npx vite build`
+6. Build extension files - `npx eslint --fix . && npm run build`
 7. On the `chrome://extensions/` page, enable developer mode, add the unpacked extension by specifying the project folder
 
 ## Disclaimer
