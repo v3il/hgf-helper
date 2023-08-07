@@ -1,19 +1,19 @@
 import { isDev } from '../consts';
 
 export class TwitchChatService {
-    static create({ chatInputEl, sendMessageButtonEl }) {
+    static create({ chatInputEl, sendMessageEl }) {
         return new TwitchChatService({
             chatInputEl,
-            sendMessageButtonEl
+            sendMessageEl
         });
     }
 
     _chatInputEl;
-    _sendMessageButtonEl;
+    _sendMessageEl;
 
-    constructor({ chatInputEl, sendMessageButtonEl }) {
+    constructor({ chatInputEl, sendMessageEl }) {
         this._chatInputEl = chatInputEl;
-        this._sendMessageButtonEl = sendMessageButtonEl;
+        this._sendMessageEl = sendMessageEl;
     }
 
     sendMessage(message, forced = false) {
@@ -91,6 +91,6 @@ export class TwitchChatService {
     }
 
     _sendMessage() {
-        this._sendMessageButtonEl.click();
+        this._sendMessageEl.click();
     }
 }
