@@ -51,6 +51,5 @@ At the moment the extension is built manually, so you need to have `Node.js` ins
 7. On the `chrome://extensions/` page, enable developer mode, add the unpacked extension by specifying the project folder
 
 ## Disclaimer
-There have been many changes to the channel in the last few months and only hgf knows what will be changed and when (anti-cheat screen, minigame set, daily game limit, etc).
-The author of the extension is not responsible for any strikes received on the channel. \
-**Use the extension at your own risk!**
+**Using the extension comes with inherent risks, and users should exercise caution.**
+The author of the extension is not responsible for any strikes received on the channel. 
