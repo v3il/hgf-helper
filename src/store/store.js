@@ -1,6 +1,7 @@
 import { Offer } from './models/Offer';
 import { OfferView } from './views/offer/OfferView';
 import { StorageService, JsonBinApiService } from './services';
+import { JSON_BIN_URL } from './storeConfig';
 
 const sortDropdownObserver = new MutationObserver(() => {
     const sortDropdownEl = document.querySelector('[ng-model="vm.sortBy"]');
@@ -26,7 +27,11 @@ const itemsObserver = new MutationObserver(async () => {
     if (offerEls.length) {
         itemsObserver.disconnect();
 
-        await storageService.fetchHiddenOffers();
+        try {
+            await storageService.fetchHiddenOffers();
+        } catch (e) {
+            return console.error('Failed to fetch hidden offers!');
+        }
 
         offerEls.forEach((offerEl) => {
             const gameNameEl = offerEl.querySelector('.item-title');

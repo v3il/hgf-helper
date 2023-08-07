@@ -8,8 +8,7 @@ export class JsonBinApiService {
             .then((response) => response.json())
             .then((response) => response.record.offers)
             .catch((error) => {
-                console.error(error);
-                return [];
+                throw error;
             });
     }
 
