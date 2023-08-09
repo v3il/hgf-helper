@@ -1,7 +1,7 @@
 # HGF helper
 
 ## Overview
-This is a small extension for the Chrome browser that allows you to play minigames on the hitsquadgodfather channel in semi-afk mode. It consists of two sections.
+This is a small extension for the Chrome browser that allows you to play minigames on the `.tv/hitsquadgodfather` channel in semi-afk mode. It consists of two sections.
 
 ### Twitch helper
    A widget mounts on the stream page, allows you to play minigames in semi-automatic mode. The main features of the widget:
