@@ -48,7 +48,7 @@ export class HitsquadRunner {
             this.#completedGamesCount++;
         }
 
-        if (this.#completedGamesCount > 0 && this.#completedGamesCount % 3 === 0) {
+        if (this.#completedGamesCount > 0 && this.#completedGamesCount % 14 === 0) {
             this.#completedGamesCount = 0;
             this.#startNewRound();
         }

@@ -24,7 +24,6 @@ export class StreamStatusService {
     #twitchChatObserver;
     #twitchPlayerService;
 
-    // #round = 0;
     #reloadRoundsCount = 0;
 
     constructor({
@@ -41,8 +40,6 @@ export class StreamStatusService {
             this.#checkBanPhase();
             twitchPlayerService.decreaseVideoDelay();
         }, 40 * Timing.SECOND);
-
-        // this.#listenEvents();
     }
 
     get events() {
@@ -75,7 +72,6 @@ export class StreamStatusService {
                 isBan: true
             };
 
-            // this.#clearCanvas();
             return this.#events.emit('check');
         }
 
@@ -95,8 +91,6 @@ export class StreamStatusService {
             if (isReload) {
                 clearInterval(this.#intervalId);
             }
-
-            // this.#clearCanvas();
 
             return this.#events.emit('check');
         }
@@ -126,7 +120,7 @@ export class StreamStatusService {
             return isBlack ? true : similarity >= 0.85;
         });
 
-        const isEnoughFailedChecks = failedChecks.length / banPhaseChecks.length >= 0.7;
+        const isEnoughFailedChecks = failedChecks.length / banPhaseChecks.length >= 0.6;
 
         this.#lastCheckData = {
             successfulChecks: failedChecks.length,
@@ -137,7 +131,6 @@ export class StreamStatusService {
         console.log(this.#lastCheckData);
 
         this.#reloadRoundsCount = 0;
-        // this.#clearCanvas();
         this.#events.emit('check');
     }
 
@@ -148,58 +141,4 @@ export class StreamStatusService {
     get lastCheckData() {
         return this.#lastCheckData;
     }
-
-    // #makeScreenshot(videoEl) {
-    //     this.#canvasEl.width = videoEl.clientWidth;
-    //     this.#canvasEl.height = videoEl.clientHeight;
-    //
-    //     const ctx = this.#canvasEl.getContext('2d');
-    //
-    //     ctx.drawImage(videoEl, 0, 0, this.#canvasEl.width, this.#canvasEl.height);
-    // }
-
-    // #clearCanvas() {
-    //     const ctx = this.#canvasEl.getContext('2d');
-    //
-    //     ctx.clearRect(0, 0, this.#canvasEl.width, this.#canvasEl.height);
-    // }
-
-    // #listenEvents() {
-    //     document.body.addEventListener('click', ({ target, pageX, pageY }) => {
-    //         const canvasEl = this.#canvasEl;
-    //
-    //         function getPosition(element) {
-    //             let left = 0;
-    //             let top = 0;
-    //
-    //             if (element.offsetParent) {
-    //                 do {
-    //                     left += element.offsetLeft;
-    //                     top += element.offsetTop;
-    //                 } while (element = element.offsetParent);
-    //
-    //                 return { left, top };
-    //             }
-    //
-    //             return { left: 0, top: 0 };
-    //         }
-    //
-    //         if (target === canvasEl) {
-    //             const { width, height } = canvasEl;
-    //
-    //             const { left, top } = getPosition(canvasEl);
-    //             const x = pageX - left;
-    //             const y = pageY - top;
-    //             const context = canvasEl.getContext('2d');
-    //             const [r, g, b] = context.getImageData(x, y, 1, 1).data;
-    //             const color = ColorService.rgbToHex(r, g, b);
-    //
-    //             console.log({
-    //                 color,
-    //                 xPercent: x / width * 100,
-    //                 yPercent: y / height * 100
-    //             });
-    //         }
-    //     });
-    // }
 }
