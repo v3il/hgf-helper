@@ -7,7 +7,7 @@ This is a small extension for the Chrome browser that allows you to play minigam
    A widget mounts on the stream page, allows you to play minigames in semi-automatic mode. The main features of the widget:
 1. automatically sends the `!hitsquad` command to the chat after several completed games, if the corresponding checkbox is enabled;
 1. automatically recognizes the anti-cheat screen, blocking the sending of any commands. Scheduled commands will be sent automatically after the completion of the anti-cheat;
-1. allows you to play the Trivia minigame (quiz, not available at the moment). Getting into the top 5 is not guaranteed, as the algorithm relies on the answers of other participants, but you can win a few hundred points in quiet time. Also, pressing keys `1-4` allows you to quickly send the command `!answer1-4` to the chat;
+1. allows you to play the Trivia minigame (quiz, not available at the moment). Getting into the top 5 is not guaranteed, as the algorithm relies on the answers of other participants, but you can win a few hundred points in quiet time. Also, pressing keys `1-4` allows you to quickly send the command `!answer1-4` to the chat (not available at the moment as well);
 1. automatically removes the delay on the stream once a minute;
 1. adds a button to easily send `!hitsquad` command in manual mode;
 1. automatically refreshes the stream page when there are problems with the video;
@@ -17,10 +17,10 @@ The appearance of the widget is shown in the image below:
 
 ![readme_1.png](./readme_1.png)
 
-1. Anti-cheat screen check counter. A small number and a green frame around the widget indicates that the anti-cheat screen is not currently active. During the anti-cheat screen, the counter will increase to 10-12/12 and the frame color will change to red.
-2. A checkbox that activates the automatic sending of the `!hitsquad` command after completing several games (Giveaway or Battleroyale). \
-**Important information**: at the moment there is no control of the allowed limit of participation (80 times per day), so the checkbox must be disabled manually (about 7 hours after sending the first command). Automatic disabling is planned to be added in the near future.
-3. Button that allows to send !hitsquad command in manual mode.
+1. Anti-cheat screen check counter. A small number and a green frame around the widget indicates that the anti-cheat screen is not currently active. During the anti-cheat screen, the counter will increase to 8-12/12 and the frame color will change to red.
+1. A checkbox that activates the automatic sending of the `!hitsquad` command after completing several games (Giveaway or Battleroyale). \
+**Important information**: at the moment there is no control of the allowed limit of participation (1300 entries per day), so the checkbox must be disabled manually. Automatic disabling is planned to be added in the near future.
+1. Button that allows to send `!hitsquad` command in manual mode.
 
 ### StreamElements helper
 The widget mounts on the store page, adds several useful features:

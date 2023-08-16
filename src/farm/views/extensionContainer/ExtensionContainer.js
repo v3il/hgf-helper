@@ -113,13 +113,14 @@ export class ExtensionContainer {
     }
 
     #handleKeydownHandler() {
-        window.document.addEventListener('keydown', (event) => {
-            const command = `!answer${event.key}`;
-
-            if (Commands.getAnswers().includes(command)) {
-                this.#sendMessage(command);
-            }
-        });
+        // Temporary unavailable
+        // window.document.addEventListener('keydown', (event) => {
+        //     const command = `!answer${event.key}`;
+        //
+        //     if (Commands.getAnswers().includes(command)) {
+        //         this.#sendMessage(command);
+        //     }
+        // });
     }
 
     #handleHitsquadButton() {
