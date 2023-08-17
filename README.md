@@ -19,7 +19,7 @@ The appearance of the widget is shown in the image below:
 
 1. Anti-cheat screen check counter. A small number and a green frame around the widget indicates that the anti-cheat screen is not currently active. During the anti-cheat screen, the counter will increase to 8-12/12 and the frame color will change to red.
 1. A checkbox that activates the automatic sending of the `!hitsquad` command after completing several games (Giveaway or Battleroyale). \
-**Important information**: at the moment there is no control of the allowed limit of participation (1300 entries per day), so the checkbox must be disabled manually. Automatic disabling is planned to be added in the near future.
+**Important information**: at the moment there is no control of the allowed limit of participation (1200 entries per day), so the checkbox must be disabled manually. Automatic disabling is planned to be added in the near future.
 1. Button that allows to send `!hitsquad` command in manual mode.
 
 ### StreamElements helper
