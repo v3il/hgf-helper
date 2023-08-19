@@ -1,8 +1,7 @@
 import { Container } from 'typedi';
 import { ColorService } from './ColorService';
-import { banPhaseChecks } from '../consts/banPhaseChecks';
 import { EventEmitter } from '../models/EventsEmitter';
-import { InjectionTokens, Timing } from '../consts';
+import { InjectionTokens, Timing, antiCheatChecks } from '../consts';
 
 export class StreamStatusService {
     static create({ canvasView }) {
@@ -100,7 +99,7 @@ export class StreamStatusService {
         const canvas = this.#canvasView.canvasEl;
         const { width, height } = canvas;
 
-        const checksResults = banPhaseChecks.map(({ xPercent, yPercent, color }) => {
+        const checksResults = antiCheatChecks.map(({ xPercent, yPercent, color }) => {
             const x = Math.floor((xPercent * width) / 100);
             const y = Math.floor((yPercent * height) / 100);
 
@@ -120,11 +119,11 @@ export class StreamStatusService {
             return isBlack ? true : similarity >= 0.85;
         });
 
-        const isEnoughFailedChecks = failedChecks.length / banPhaseChecks.length >= 0.5;
+        const isEnoughFailedChecks = failedChecks.length / antiCheatChecks.length >= 0.75;
 
         this.#lastCheckData = {
             successfulChecks: failedChecks.length,
-            totalChecks: banPhaseChecks.length,
+            totalChecks: antiCheatChecks.length,
             isBan: isEnoughFailedChecks
         };
 

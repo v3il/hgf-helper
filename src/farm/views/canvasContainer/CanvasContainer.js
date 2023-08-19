@@ -15,6 +15,7 @@ export class CanvasContainer {
     constructor() {
         this.#el = this.#createElement();
         this.#canvasEl = this.#el.querySelector('[data-canvas]');
+        this._clickHandler = this._clickHandler.bind(this);
     }
 
     get el() {
@@ -39,12 +40,6 @@ export class CanvasContainer {
         ctx.drawImage(videoEl, 0, 0, this.#canvasEl.width, this.#canvasEl.height);
     }
 
-    clearCanvas() {
-        const ctx = this.#canvasEl.getContext('2d');
-
-        ctx.clearRect(0, 0, this.#canvasEl.width, this.#canvasEl.height);
-    }
-
     #createElement() {
         const containerEl = document.createElement('div');
         containerEl.innerHTML = template;
@@ -52,10 +47,7 @@ export class CanvasContainer {
         return containerEl.firstChild;
     }
 
-    #clickHandler({ pageX, pageY }) {
-        // const canvasEl = this.#canvasEl;
-        // const { width, height } = canvasEl;
-
+    _clickHandler({ pageX, pageY }) {
         const x = pageX - this.#canvasEl.offsetLeft;
         const y = pageY - this.#canvasEl.offsetTop;
 
@@ -75,13 +67,13 @@ export class CanvasContainer {
     #startDebug() {
         this.#isDebug = true;
         this.#el.classList.add('haf-container--debug');
-        this.#canvasEl.addEventListener('click', (e) => this.#clickHandler(e));
+        this.#canvasEl.addEventListener('click', this._clickHandler);
     }
 
     #endDebug() {
         this.#isDebug = false;
         this.#el.classList.remove('haf-container--debug');
-        // this.#canvasEl.removeEventListener('click', this.#clickHandler);
+        this.#canvasEl.removeEventListener('click', this._clickHandler);
 
         if (this.#checks.length) {
             console.info(this.#checks);
