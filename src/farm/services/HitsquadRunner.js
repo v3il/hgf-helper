@@ -44,7 +44,7 @@ export class HitsquadRunner {
     }
 
     #processMessage({ message, isSystemMessage }) {
-        if (isSystemMessage && message.includes(MessageTemplates.HITSQUAD_REWARD)) {
+        if (isSystemMessage && MessageTemplates.isHitsquadReward(message)) {
             this.#completedGamesCount++;
         }
 
