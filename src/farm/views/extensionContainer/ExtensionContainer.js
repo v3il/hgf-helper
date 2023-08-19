@@ -53,6 +53,7 @@ export class ExtensionContainer {
 
     #handleDebugMode() {
         window.document.addEventListener('keydown', (event) => {
+            // Ctrl + 0
             if (event.ctrlKey && event.key === '0') {
                 event.preventDefault();
                 this.#canvasView.toggleDebug();
