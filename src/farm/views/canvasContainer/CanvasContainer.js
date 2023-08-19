@@ -1,6 +1,6 @@
 import './style.css';
 import template from './template.html?raw';
-import { ColorService } from '../../services/ColorService';
+import { ColorService } from '../../services';
 
 export class CanvasContainer {
     static create(rootEl) {

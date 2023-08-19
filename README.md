@@ -4,6 +4,9 @@
 This is a small extension for the Chrome browser that allows you to play minigames on the `.tv/hitsquadgodfather` channel in semi-afk mode. It consists of two sections.
 
 ### Twitch helper
+
+Overlay update the extension works with: **August 19, 2023**
+
    A widget mounts on the stream page, allows you to play minigames in semi-automatic mode. The main features of the widget:
 1. automatically sends the `!hitsquad` command to the chat after several completed games, if the corresponding checkbox is enabled;
 1. automatically recognizes the anti-cheat screen, blocking the sending of any commands. Scheduled commands will be sent automatically after the completion of the anti-cheat;
@@ -51,5 +54,4 @@ At the moment the extension is built manually, so you need to have `Node.js` ins
 7. On the `chrome://extensions/` page, enable developer mode, add the unpacked extension by specifying the project folder
 
 ## Disclaimer
-**Using the extension comes with inherent risks, and users should exercise caution.**
-The author of the extension is not responsible for any strikes received on the channel. 
+**Due to frequent overlay updates, there is a chance that the extension will stop working correctly at any time. The author of the extension does not recommend leaving the stream unattended for a long time and is not responsible for any strikes received.**
