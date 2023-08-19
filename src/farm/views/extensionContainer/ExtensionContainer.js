@@ -11,9 +11,10 @@ export class ExtensionContainer {
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
         const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
         const settingsService = Container.get(InjectionTokens.SETTINGS_SERVICE);
+        const canvasView = Container.get(InjectionTokens.CANVAS_VIEW);
 
         return new ExtensionContainer({
-            hitsquadRunner, streamStatusService, twitchChatService, settingsService, quizRunner
+            hitsquadRunner, streamStatusService, twitchChatService, settingsService, quizRunner, canvasView
         });
     }
 
@@ -23,9 +24,10 @@ export class ExtensionContainer {
     #hitsquadRunner;
     #settingsService;
     #quizRunner;
+    #canvasView;
 
     constructor({
-        streamStatusService, twitchChatService, hitsquadRunner, settingsService, quizRunner
+        streamStatusService, twitchChatService, hitsquadRunner, settingsService, quizRunner, canvasView
     }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
@@ -33,6 +35,7 @@ export class ExtensionContainer {
         this.#hitsquadRunner = hitsquadRunner;
         this.#settingsService = settingsService;
         this.#quizRunner = quizRunner;
+        this.#canvasView = canvasView;
 
         this.#listenEvents();
         this.#renderChecksResult();
@@ -40,7 +43,7 @@ export class ExtensionContainer {
     }
 
     #listenEvents() {
-        // this.#handleDebugMode();
+        this.#handleDebugMode();
         this.#handleQuizCheckbox();
         this.#handleMiniGamesCheckbox();
         this.#handleReloadPage();
@@ -48,20 +51,14 @@ export class ExtensionContainer {
         this.#handleHitsquadButton();
     }
 
-    // #handleDebugMode() {
-    //     const toggleDebugEl = this.el.querySelector('[data-toggle-debug]');
-    //
-    //     toggleDebugEl.addEventListener('change', ({ target }) => {
-    //         const message = target.checked ? 'Enable debug?' : 'Disable debug?';
-    //
-    //         // eslint-disable-next-line no-restricted-globals
-    //         if (confirm(message)) {
-    //             // this.#canvasContainerView.setDebug(target.checked);
-    //         } else {
-    //             toggleDebugEl.checked = !toggleDebugEl.checked;
-    //         }
-    //     });
-    // }
+    #handleDebugMode() {
+        window.document.addEventListener('keydown', (event) => {
+            if (event.ctrlKey && event.key === '0') {
+                event.preventDefault();
+                this.#canvasView.toggleDebug();
+            }
+        });
+    }
 
     #handleMiniGamesCheckbox() {
         const toggleGamesEl = this.el.querySelector('[data-toggle-games]');

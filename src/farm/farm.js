@@ -55,7 +55,8 @@ async function runApp({
         { id: InjectionTokens.CHAT_SERVICE, factory: () => TwitchChatService.create({ chatInputEl, sendMessageEl }) },
         { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create({ canvasView }) },
         { id: InjectionTokens.HITSQUAD_RUNNER, factory: () => HitsquadRunner.create() },
-        { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() }
+        { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() },
+        { id: InjectionTokens.CANVAS_VIEW, factory: () => canvasView }
     ]);
 
     ExtensionContainer.create().mount(document.body);

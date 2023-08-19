@@ -1,5 +1,6 @@
 import './style.css';
 import template from './template.html?raw';
+import { ColorService } from '../../services/ColorService';
 
 export class CanvasContainer {
     static create(rootEl) {
@@ -8,6 +9,8 @@ export class CanvasContainer {
 
     #el;
     #canvasEl;
+    #isDebug = false;
+    #checks = [];
 
     constructor() {
         this.#el = this.#createElement();
@@ -49,42 +52,44 @@ export class CanvasContainer {
         return containerEl.firstChild;
     }
 
-    // #listenEvents() {
-    //     document.body.addEventListener('click', ({ target, pageX, pageY }) => {
-    //         const canvasEl = this.#canvasEl;
-    //
-    //         function getPosition(element) {
-    //             let left = 0;
-    //             let top = 0;
-    //
-    //             if (element.offsetParent) {
-    //                 do {
-    //                     left += element.offsetLeft;
-    //                     top += element.offsetTop;
-    //                 } while (element = element.offsetParent);
-    //
-    //                 return { left, top };
-    //             }
-    //
-    //             return { left: 0, top: 0 };
-    //         }
-    //
-    //         if (target === canvasEl) {
-    //             const { width, height } = canvasEl;
-    //
-    //             const { left, top } = getPosition(canvasEl);
-    //             const x = pageX - left;
-    //             const y = pageY - top;
-    //             const context = canvasEl.getContext('2d');
-    //             const [r, g, b] = context.getImageData(x, y, 1, 1).data;
-    //             const color = ColorService.rgbToHex(r, g, b);
-    //
-    //             console.log({
-    //                 color,
-    //                 xPercent: x / width * 100,
-    //                 yPercent: y / height * 100
-    //             });
-    //         }
-    //     });
-    // }
+    #clickHandler({ pageX, pageY }) {
+        // const canvasEl = this.#canvasEl;
+        // const { width, height } = canvasEl;
+
+        const x = pageX - this.#canvasEl.offsetLeft;
+        const y = pageY - this.#canvasEl.offsetTop;
+
+        const context = this.#canvasEl.getContext('2d');
+        const [r, g, b] = context.getImageData(x, y, 1, 1).data;
+        const color = ColorService.rgbToHex(r, g, b);
+
+        this.#checks.push({
+            color,
+            xPercent: (x / this.#canvasEl.width) * 100,
+            yPercent: (y / this.#canvasEl.height) * 100
+        });
+
+        console.info('Logged');
+    }
+
+    #startDebug() {
+        this.#isDebug = true;
+        this.#el.classList.add('haf-container--debug');
+        this.#canvasEl.addEventListener('click', (e) => this.#clickHandler(e));
+    }
+
+    #endDebug() {
+        this.#isDebug = false;
+        this.#el.classList.remove('haf-container--debug');
+        // this.#canvasEl.removeEventListener('click', this.#clickHandler);
+
+        if (this.#checks.length) {
+            console.info(this.#checks);
+            this.#checks = [];
+        }
+    }
+
+    toggleDebug() {
+        this.#isDebug ? this.#endDebug() : this.#startDebug();
+    }
 }

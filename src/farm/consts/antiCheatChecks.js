@@ -1,4 +1,4 @@
-export const banPhaseChecks = [
+export const antiCheatChecks = [
     {
         color: 'fcfefe',
         xPercent: 21.924398625429554,

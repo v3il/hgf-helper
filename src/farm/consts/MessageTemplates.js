@@ -8,6 +8,6 @@ export const MessageTemplates = Object.freeze({
 
     isHitsquadReward(message) {
         return [this.HITSQUAD_REWARD1, this.HITSQUAD_REWARD2, this.HITSQUAD_REWARD3, this.HITSQUAD_REWARD4]
-            .some((template) => message.includes(template));
+            .some((template) => message.includes(template.toLowerCase()));
     }
 });
