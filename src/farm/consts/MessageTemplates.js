@@ -1,13 +1,13 @@
 export const MessageTemplates = Object.freeze({
-    NEW_QUIZ_QUESTION: 'new trivia question', // New Trivia Question 60 Seconds To Answer!!
-    NEW_QUIZ_SESSION: 'Has Been Sent 250 Clams!'.toLowerCase(), // hitsquadgodfather: XXX Has Been Sent 250 Clams!
-    HITSQUAD_REWARD1: 'Has Been Sent 100 Clams!'.toLowerCase(), // hitsquadgodfather: XXX Has Been Sent 100 Clams!
-    HITSQUAD_REWARD2: 'Has Been Sent 200 Clams!'.toLowerCase(), // hitsquadgodfather: XXX Has Been Sent 200 Clams!
-    HITSQUAD_REWARD3: 'Has Been Sent 1000 Clams!'.toLowerCase(), // hitsquadgodfather: XXX Has Been Sent 1000 Clams!
-    HITSQUAD_REWARD4: 'Has Been Sent 10000 Clams!'.toLowerCase(), // hitsquadgodfather: XXX Has Been Sent 10000 Clams!
+    NEW_QUIZ_QUESTION: 'New Trivia Question 60 Seconds To Answer'.toLowerCase(),
+    NEW_QUIZ_SESSION: 'Has Been Sent 250 Clams!'.toLowerCase(),
+    HITSQUAD_REWARD100: 'Has Been Sent 100 Clams!'.toLowerCase(),
+    HITSQUAD_REWARD200: 'Has Been Sent 200 Clams!'.toLowerCase(),
+    HITSQUAD_REWARD1000: 'Has Been Sent 1000 Clams!'.toLowerCase(),
+    HITSQUAD_REWARD10000: 'Has Been Sent 10000 Clams!'.toLowerCase(),
 
     isHitsquadReward(message) {
-        return [this.HITSQUAD_REWARD1, this.HITSQUAD_REWARD2, this.HITSQUAD_REWARD3, this.HITSQUAD_REWARD4]
-            .some((template) => message.includes(template.toLowerCase()));
+        return [this.HITSQUAD_REWARD100, this.HITSQUAD_REWARD200, this.HITSQUAD_REWARD1000, this.HITSQUAD_REWARD10000]
+            .some((template) => message.includes(template));
     }
 });
