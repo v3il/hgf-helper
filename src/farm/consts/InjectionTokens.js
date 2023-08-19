@@ -6,5 +6,6 @@ export const InjectionTokens = Object.freeze({
     HITSQUAD_RUNNER: 'hitsquadRunner',
     STREAM_STATUS_SERVICE: 'streamStatusService',
     SETTINGS_SERVICE: 'settingsService',
-    QUIZ_RUNNER: 'quizRunner'
+    QUIZ_RUNNER: 'quizRunner',
+    CANVAS_VIEW: 'canvasView'
 });

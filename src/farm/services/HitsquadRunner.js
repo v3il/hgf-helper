@@ -16,6 +16,8 @@ export class HitsquadRunner {
     }
 
     static #BAN_PHASE_DELAY = 30 * 1000;
+    static #HITSQUAD_ENTRIES_ON_SCREEN = 25;
+    static #ENTRIES_COUNT_TARGET = Math.floor(HitsquadRunner.#HITSQUAD_ENTRIES_ON_SCREEN / 2);
 
     #completedGamesCount = 0;
 
@@ -44,11 +46,11 @@ export class HitsquadRunner {
     }
 
     #processMessage({ message, isSystemMessage }) {
-        if (isSystemMessage && message.includes(MessageTemplates.HITSQUAD_REWARD)) {
+        if (isSystemMessage && MessageTemplates.isHitsquadReward(message)) {
             this.#completedGamesCount++;
         }
 
-        if (this.#completedGamesCount > 0 && this.#completedGamesCount % 14 === 0) {
+        if (this.#completedGamesCount > 0 && this.#completedGamesCount % HitsquadRunner.#ENTRIES_COUNT_TARGET === 0) {
             this.#completedGamesCount = 0;
             this.#startNewRound();
         }
