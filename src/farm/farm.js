@@ -47,6 +47,9 @@ async function runApp({
     const userName = getUserName(userDropdownToggleEl);
     const canvasView = CanvasContainer.create(document.body);
 
+    // eslint-disable-next-line no-undef
+    // console.error(chrome.storage.local);
+
     Container.set([
         { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userName) },
         { id: InjectionTokens.SETTINGS_SERVICE, factory: () => SettingsService.create(window.localStorage) },

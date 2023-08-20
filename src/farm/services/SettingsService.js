@@ -16,6 +16,9 @@ export class SettingsService {
     constructor(storage) {
         this.#storage = storage;
         this.#loadSettings();
+
+        // eslint-disable-next-line no-undef
+        console.error(chrome.runtime);
     }
 
     #loadSettings() {
