@@ -1,7 +1,9 @@
 import './style.css';
 import { Container } from 'typedi';
 import template from './template.html?raw';
-import { Commands, InjectionTokens, Timing } from '../../consts';
+import {
+    Commands, InjectionTokens, Timing, isDev
+} from '../../consts';
 import { promisifiedSetTimeout } from '../../utils';
 
 export class ExtensionContainer {
@@ -43,12 +45,15 @@ export class ExtensionContainer {
     }
 
     #listenEvents() {
-        this.#handleDebugMode();
         this.#handleQuizCheckbox();
         this.#handleMiniGamesCheckbox();
         this.#handleReloadPage();
         this.#handleKeydownHandler();
         this.#handleHitsquadButton();
+
+        if (isDev) {
+            this.#handleDebugMode();
+        }
     }
 
     #handleDebugMode() {

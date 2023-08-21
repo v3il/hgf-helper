@@ -61,7 +61,7 @@ export class CanvasContainer {
             yPercent: (y / this.#canvasEl.height) * 100
         });
 
-        console.info('Logged');
+        console.info('Logged: ', this.#checks.length);
     }
 
     #startDebug() {
