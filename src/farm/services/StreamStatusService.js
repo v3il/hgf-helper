@@ -119,7 +119,7 @@ export class StreamStatusService {
             return isBlack ? true : similarity >= 0.85;
         });
 
-        const isEnoughFailedChecks = failedChecks.length / antiCheatChecks.length >= 0.75;
+        const isEnoughFailedChecks = failedChecks.length / antiCheatChecks.length >= 0.6;
 
         this.#lastCheckData = {
             successfulChecks: failedChecks.length,
