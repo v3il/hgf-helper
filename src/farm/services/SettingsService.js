@@ -1,3 +1,12 @@
+// import { settingsService } from '../../shared';
+
+const a = async () => {
+    // eslint-disable-next-line no-undef
+    console.error(chrome.runtime.id);
+    // eslint-disable-next-line no-undef
+    chrome.runtime.sendMessage({ greeting: 'hello' });
+};
+
 export class SettingsService {
     static #STORAGE_KEY = 'hgf-helper-settings';
 
@@ -17,8 +26,9 @@ export class SettingsService {
         this.#storage = storage;
         this.#loadSettings();
 
-        // eslint-disable-next-line no-undef
-        console.error(chrome.runtime);
+        a().then(console.error);
+
+        // settingsService.getSetting('test');
     }
 
     #loadSettings() {

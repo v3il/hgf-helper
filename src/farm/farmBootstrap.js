@@ -3,7 +3,7 @@ const distFolderPath = 'dist';
 const { body } = document;
 
 const script = document.createElement('script');
-script.type = 'text/javascript';
+script.type = 'module';
 script.src = chrome.runtime.getURL(`${distFolderPath}/farm.js`);
 body.appendChild(script);
 

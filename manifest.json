@@ -23,15 +23,19 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["dist/farmBootstrap.js", "dist/farm.js", "dist/farm.css"],
+      "resources": ["dist/farmBootstrap.js", "dist/farm.js", "dist/farm.css", "dist/assets/*"],
       "matches": ["https://www.twitch.tv/*"]
     },
 
     {
-      "resources": ["dist/store.js", "dist/store.css"],
+      "resources": ["dist/store.js", "dist/store.css", "dist/assets/*"],
       "matches": ["https://streamelements.com/*"]
     }
   ],
+
+  "background": {
+    "service_worker": "dist/background.js"
+  },
 
   "permissions": [
     "storage",

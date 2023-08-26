@@ -10,7 +10,9 @@ export default defineConfig({
             input: {
                 farmBootstrap: path.resolve(__dirname, 'src/farm/farmBootstrap.js'),
                 farm: path.resolve(__dirname, 'src/farm/farm.js'),
-                store: path.resolve(__dirname, 'src/store/store.js')
+                store: path.resolve(__dirname, 'src/store/store.js'),
+                popup: path.resolve(__dirname, 'src/popup/popup.js'),
+                background: path.resolve(__dirname, 'src/background/background.js')
             },
 
             output: {
