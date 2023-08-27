@@ -1,11 +1,19 @@
 // import { settingsService } from '../../shared';
 
-const a = async () => {
-    // eslint-disable-next-line no-undef
-    console.error(chrome.runtime.id);
-    // eslint-disable-next-line no-undef
-    chrome.runtime.sendMessage({ greeting: 'hello' });
-};
+// eslint-disable-next-line no-undef
+// const src = chrome.runtime.getURL('../shared/SettingsService.js');
+// const contentMain = await import(src);
+//
+// console.error(contentMain);
+
+// const a = async () => {
+//     // eslint-disable-next-line no-undef
+//     console.error(chrome.runtime.id);
+//     // eslint-disable-next-line no-undef
+//     return chrome.runtime.sendMessage({ greeting: 'hello' });
+// };
+
+// import { Actions } from '../../shared';
 
 export class SettingsService {
     static #STORAGE_KEY = 'hgf-helper-settings';
@@ -19,27 +27,36 @@ export class SettingsService {
         return new SettingsService(storage);
     }
 
-    #storage;
-    #settings;
+    #storage = {};
+    #settings = {};
 
     constructor(storage) {
-        this.#storage = storage;
-        this.#loadSettings();
+        // console.error('content', Actions);
 
-        a().then(console.error);
+        this.#storage = storage;
+        // this.#loadSettings();
+
+        // a().then(console.error);
 
         // settingsService.getSetting('test');
     }
 
-    #loadSettings() {
-        const value = this.#storage.getItem(SettingsService.#STORAGE_KEY);
+    async loadSettings() {
+        console.error('loadSettings');
 
-        if (!value) {
-            this.#settings = SettingsService.#DEFAULT_SETTINGS;
-            return this.#saveSettings();
-        }
+        // eslint-disable-next-line no-undef
+        const settings = await chrome.runtime.sendMessage({ greeting: 'hello' });
 
-        this.#settings = { ...SettingsService.#DEFAULT_SETTINGS, ...JSON.parse(value) };
+        console.error(2, settings);
+
+        // const value = this.#storage.getItem(SettingsService.#STORAGE_KEY);
+        //
+        // if (!value) {
+        //     this.#settings = SettingsService.#DEFAULT_SETTINGS;
+        //     return this.#saveSettings();
+        // }
+        //
+        // this.#settings = { ...SettingsService.#DEFAULT_SETTINGS, ...JSON.parse(value) };
     }
 
     getSetting(name) {
@@ -47,8 +64,8 @@ export class SettingsService {
     }
 
     setSetting(name, value) {
-        this.#settings[name] = value;
-        this.#saveSettings();
+        // this.#settings[name] = value;
+        // this.#saveSettings();
     }
 
     #saveSettings() {
