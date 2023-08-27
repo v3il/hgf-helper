@@ -1,5 +1,7 @@
 // import { settingsService } from '../shared';
 
+console.error('load');
+
 document.querySelector('button').addEventListener('click', async () => {
     // eslint-disable-next-line no-undef
     const settings = await chrome.runtime.sendMessage({ greeting: 'hello' });

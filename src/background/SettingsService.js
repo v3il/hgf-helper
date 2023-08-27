@@ -1,3 +1,5 @@
+const browser = chrome;
+
 export class SettingsService {
     static #LOCAL_SETTINGS = {
         hitsquadRunner: false,
@@ -5,52 +7,51 @@ export class SettingsService {
     };
 
     static #SYNC_SETTINGS = {
-        hitsquadRunner: false,
-        quizRunner: false
+        jsonBinUrl: '',
+        jsonBinMasterKey: '',
+        jsonBinAccessKey: ''
     };
 
-    static create(storage) {
-        return new SettingsService(storage);
+    static create() {
+        return new SettingsService();
     }
 
-    #storage;
-    #settings;
-
-    constructor(storage) {
-        this.#storage = storage;
-        // this.#loadSettings();
-    }
+    #syncSettings;
+    #localSettings;
 
     get settings() {
-        return this.#settings;
+        return { ...this.#localSettings, ...this.#syncSettings };
     }
 
     async loadSettings() {
-        // eslint-disable-next-line no-undef
-        const r = await chrome.storage.sync.get(['test']);
+        const localSettings = await this.#loadLocalSettings();
+        const syncSettings = await this.#loadSyncSettings();
 
-        console.error(r);
-
-        // const value = this.#storage.getItem(SettingsService.#STORAGE_KEY);
-        //
-        // if (!value) {
-        //     this.#settings = SettingsService.#DEFAULT_SETTINGS;
-        //     return this.#saveSettings();
-        // }
-
-        this.#settings = { ...SettingsService.#LOCAL_SETTINGS };
+        this.#localSettings = { ...SettingsService.#LOCAL_SETTINGS, ...localSettings };
+        this.#syncSettings = { ...SettingsService.#SYNC_SETTINGS, ...syncSettings };
     }
 
-    getSetting(name) {
-        return false; // this.#settings[name];
+    async #loadLocalSettings() {
+        return browser.storage.local.get(Object.keys(SettingsService.#LOCAL_SETTINGS));
     }
 
-    setSetting(name, value) {
-        this.#settings[name] = value;
-        this.#saveSettings();
+    async #loadSyncSettings() {
+        return browser.storage.sync.get(Object.keys(SettingsService.#SYNC_SETTINGS));
     }
 
-    #saveSettings() {
-        // this.#storage.setItem(SettingsService.#STORAGE_KEY, JSON.stringify(this.#settings));
+    updateSetting(name, value) {
+        name in SettingsService.#LOCAL_SETTINGS
+            ? this.#saveLocalSettings(name, value)
+            : this.#saveSyncSettings(name, value);
+    }
+
+    #saveLocalSettings(name, value) {
+        this.#localSettings[name] = value;
+        browser.storage.local.set(this.#localSettings);
+    }
+
+    #saveSyncSettings(name, value) {
+        this.#syncSettings[name] = value;
+        browser.storage.sync.set(this.#syncSettings);
     }
 }
