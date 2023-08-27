@@ -1,10 +1,14 @@
-import { JSON_BIN_ACCESS_KEY, JSON_BIN_MASTER_KEY, JSON_BIN_URL } from '../storeConfig';
-
 export class JsonBinApiService {
+    #settingsService;
+
+    constructor({ settingsService }) {
+        this.#settingsService = settingsService;
+    }
+
     getHiddenOffers() {
-        return fetch(JSON_BIN_URL, {
-            headers: this.#getHeaders()
-        })
+        const jsonBinUrl = this.#settingsService.getSetting('jsonBinUrl');
+
+        return fetch(jsonBinUrl, { headers: this.#getHeaders() })
             .then((response) => response.json())
             .then((response) => response.record.offers)
             .catch((error) => {
@@ -13,7 +17,9 @@ export class JsonBinApiService {
     }
 
     updateHiddenOffers(offers) {
-        return fetch(JSON_BIN_URL, {
+        const jsonBinUrl = this.#settingsService.getSetting('jsonBinUrl');
+
+        return fetch(jsonBinUrl, {
             headers: this.#getHeaders(),
             method: 'put',
             body: JSON.stringify({ offers })
@@ -26,10 +32,13 @@ export class JsonBinApiService {
     }
 
     #getHeaders() {
+        const jsonBinMasterKey = this.#settingsService.getSetting('jsonBinMasterKey');
+        const jsonBinAccessKey = this.#settingsService.getSetting('jsonBinAccessKey');
+
         return {
             'Content-Type': 'application/json',
-            'X-Master-Key': JSON_BIN_MASTER_KEY,
-            'X-ACCESS_KEY': JSON_BIN_ACCESS_KEY
+            'X-Master-Key': jsonBinMasterKey,
+            'X-ACCESS_KEY': jsonBinAccessKey
         };
     }
 }

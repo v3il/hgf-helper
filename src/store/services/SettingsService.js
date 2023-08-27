@@ -12,8 +12,4 @@ export class SettingsService {
     getSetting(name) {
         return this.#settings[name];
     }
-
-    setSetting(name, value) {
-        chrome.runtime.sendMessage({ action: 'UPDATE_SETTINGS', [name]: value });
-    }
 }

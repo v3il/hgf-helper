@@ -72,8 +72,6 @@ function isElementsExist(elements) {
 const intervalId = setInterval(() => {
     const twitchElements = getTwitchElements();
 
-    console.error(twitchElements, isElementsExist(twitchElements));
-
     if (isElementsExist(twitchElements)) {
         clearInterval(intervalId);
         setTimeout(() => runApp(twitchElements), 4000);
