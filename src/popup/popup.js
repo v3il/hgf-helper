@@ -1,25 +1,18 @@
-// import { settingsService } from '../shared';
+(async () => {
+    const settings = await chrome.runtime.sendMessage({ action: 'LOAD_SETTINGS' });
 
-console.error('load');
+    Object.entries(settings).forEach(([key, value]) => {
+        const input = document.querySelector(`[data-prop="${key}"]`);
 
-document.querySelector('button').addEventListener('click', async () => {
-    // eslint-disable-next-line no-undef
-    const settings = await chrome.runtime.sendMessage({ greeting: 'hello' });
+        if (!input) return;
 
-    console.error(2, settings);
+        input.value = value;
 
-    // settingsService.getSetting('test');
-
-    // // eslint-disable-next-line no-undef
-    // await chrome.storage.sync.set({ test: 'test' });
-    //
-    // // eslint-disable-next-line no-undef
-    // const r = await chrome.storage.sync.get(['test']);
-    //
-    // console.error(r);
-
-    // eslint-disable-next-line no-undef
-    // chrome.runtime.sendMessage({ greeting: 'hello' }, (response) => {
-    //     console.log(response.farewell);
-    // });
-});
+        input.addEventListener('change', () => {
+            chrome.runtime.sendMessage({
+                action: 'UPDATE_SETTINGS',
+                [key]: input.value
+            });
+        });
+    });
+})();

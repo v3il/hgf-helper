@@ -5,10 +5,16 @@ import { SettingsService } from './SettingsService';
 
     await settingsService.loadSettings();
 
-    // eslint-disable-next-line no-undef
     chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-        console.error('msg', message);
+        const { action, ...settings } = message;
 
-        sendResponse(settingsService.settings);
+        if (action === 'LOAD_SETTINGS') {
+            return sendResponse(settingsService.settings);
+        }
+
+        if (action === 'UPDATE_SETTINGS') {
+            settingsService.updateSettings(settings);
+            return sendResponse(true);
+        }
     });
 })();

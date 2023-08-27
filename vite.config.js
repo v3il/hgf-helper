@@ -9,7 +9,6 @@ export default defineConfig({
         target: 'esnext',
         rollupOptions: {
             input: {
-                // shared: path.resolve(__dirname, 'src/shared/index.js'),
                 farm: path.resolve(__dirname, 'src/farm/farm.js'),
                 store: path.resolve(__dirname, 'src/store/store.js'),
                 popup: path.resolve(__dirname, 'src/popup/popup.js'),

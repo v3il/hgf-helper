@@ -39,19 +39,14 @@ export class SettingsService {
         return browser.storage.sync.get(Object.keys(SettingsService.#SYNC_SETTINGS));
     }
 
-    updateSetting(name, value) {
-        name in SettingsService.#LOCAL_SETTINGS
-            ? this.#saveLocalSettings(name, value)
-            : this.#saveSyncSettings(name, value);
-    }
+    updateSettings(settings) {
+        Object.entries(settings).forEach(([key, value]) => {
+            key in SettingsService.#LOCAL_SETTINGS
+                ? this.#localSettings[key] = value
+                : this.#syncSettings[key] = value;
+        });
 
-    #saveLocalSettings(name, value) {
-        this.#localSettings[name] = value;
         browser.storage.local.set(this.#localSettings);
-    }
-
-    #saveSyncSettings(name, value) {
-        this.#syncSettings[name] = value;
         browser.storage.sync.set(this.#syncSettings);
     }
 }
