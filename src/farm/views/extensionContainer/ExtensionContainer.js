@@ -61,6 +61,7 @@ export class ExtensionContainer {
             // Ctrl + 0
             if (event.ctrlKey && event.key === '0') {
                 event.preventDefault();
+                this.#streamStatusService.checkBanPhase();
                 this.#canvasView.toggleDebug();
             }
         });
@@ -129,8 +130,8 @@ export class ExtensionContainer {
     #handleHitsquadButton() {
         const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
 
-        sendHitsquadButton.addEventListener('click', () => {
-            this.#sendMessage(Commands.HITSQUAD);
+        sendHitsquadButton.addEventListener('click', (event) => {
+            this.#sendMessage(Commands.HITSQUAD, event.ctrlKey);
         });
     }
 
@@ -170,9 +171,9 @@ export class ExtensionContainer {
         totalChecksEl.textContent = totalChecks;
     }
 
-    #sendMessage(command) {
+    #sendMessage(command, force = false) {
         if (!this.#streamStatusService.isBanPhase) {
-            this.#twitchChatService.sendMessage(command);
+            this.#twitchChatService.sendMessage(command, force);
         }
     }
 }

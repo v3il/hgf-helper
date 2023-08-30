@@ -45,6 +45,10 @@ export class StreamStatusService {
         return this.#events;
     }
 
+    checkBanPhase() {
+        this.#checkBanPhase();
+    }
+
     #getActiveVideoEl() {
         const isAdsPhase = this.#isAdsPhase();
         const [mainVideoEl, alternativeVideoEl] = document.querySelectorAll('video');

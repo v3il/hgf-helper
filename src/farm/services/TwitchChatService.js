@@ -19,7 +19,7 @@ export class TwitchChatService {
     sendMessage(message, forced = false) {
         console.error('send', message, forced);
 
-        if (isDev) {
+        if (isDev && !forced) {
             return false;
         }
 
