@@ -1,7 +1,9 @@
 import './style.css';
 import { Container } from 'typedi';
 import template from './template.html?raw';
-import { Commands, InjectionTokens, Timing } from '../../consts';
+import {
+    Commands, InjectionTokens, Timing, isDev
+} from '../../consts';
 import { promisifiedSetTimeout } from '../../utils';
 
 export class ExtensionContainer {
@@ -45,12 +47,15 @@ export class ExtensionContainer {
     }
 
     #listenEvents() {
-        this.#handleDebugMode();
         this.#handleQuizCheckbox();
         this.#handleMiniGamesCheckbox();
         this.#handleReloadPage();
         this.#handleKeydownHandler();
         this.#handleHitsquadButton();
+
+        if (isDev) {
+            this.#handleDebugMode();
+        }
     }
 
     #handleDebugMode() {
@@ -58,13 +63,14 @@ export class ExtensionContainer {
             // Ctrl + 0
             if (event.ctrlKey && event.key === '0') {
                 event.preventDefault();
+                this.#streamStatusService.checkBanPhase();
                 this.#canvasView.toggleDebug();
             }
         });
     }
 
     #handleMiniGamesCheckbox() {
-        const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
+        const toggleGamesEl = this.el.querySelector('[data-toggle-giveaways]');
         const isHitsquadRunning = this.#settingsService.getSetting('hitsquadRunner');
 
         toggleGamesEl.checked = isHitsquadRunning;
@@ -80,23 +86,19 @@ export class ExtensionContainer {
     }
 
     #handleQuizCheckbox() {
-        // Temporary unavailable
-        this.#settingsService.setSetting('quizRunner', false);
-        this.#quizRunner.stop();
+        const toggleQuizEl = this.el.querySelector('[data-toggle-trivia]');
+        const isQuizRunning = this.#settingsService.getSetting('quizRunner');
 
-        // const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
-        // const isQuizRunning = this.#settingsService.getSetting('quizRunner');
-        //
-        // toggleQuizEl.checked = isQuizRunning;
-        //
-        // if (isQuizRunning) {
-        //     this.#quizRunner.start();
-        // }
-        //
-        // toggleQuizEl.addEventListener('change', ({ target }) => {
-        //     target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
-        //     this.#settingsService.setSetting('quizRunner', target.checked);
-        // });
+        toggleQuizEl.checked = isQuizRunning;
+
+        if (isQuizRunning) {
+            this.#quizRunner.start();
+        }
+
+        toggleQuizEl.addEventListener('change', ({ target }) => {
+            target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
+            this.#settingsService.setSetting('quizRunner', target.checked);
+        });
     }
 
     #handleReloadPage() {
@@ -113,21 +115,20 @@ export class ExtensionContainer {
     }
 
     #handleKeydownHandler() {
-        // Temporary unavailable
-        // window.document.addEventListener('keydown', (event) => {
-        //     const command = `!answer${event.key}`;
-        //
-        //     if (Commands.getAnswers().includes(command)) {
-        //         this.#sendMessage(command);
-        //     }
-        // });
+        window.document.addEventListener('keydown', (event) => {
+            const command = `!answer${event.key}`;
+
+            if (Commands.getAnswers().includes(command)) {
+                this.#sendMessage(command);
+            }
+        });
     }
 
     #handleHitsquadButton() {
         const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
 
-        sendHitsquadButton.addEventListener('click', () => {
-            this.#sendMessage(Commands.HITSQUAD);
+        sendHitsquadButton.addEventListener('click', (event) => {
+            this.#sendMessage(Commands.HITSQUAD, event.ctrlKey);
         });
     }
 
@@ -168,9 +169,9 @@ export class ExtensionContainer {
         totalChecksEl.textContent = totalChecks;
     }
 
-    #sendMessage(command) {
+    #sendMessage(command, force = false) {
         if (!this.#streamStatusService.isBanPhase) {
-            this.#twitchChatService.sendMessage(command);
+            this.#twitchChatService.sendMessage(command, force);
         }
     }
 }
