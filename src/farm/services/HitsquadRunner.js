@@ -16,8 +16,8 @@ export class HitsquadRunner {
     }
 
     static #BAN_PHASE_DELAY = 30 * 1000;
-    static #HITSQUAD_ENTRIES_ON_SCREEN = 24;
-    static #ENTRIES_COUNT_TARGET = Math.floor(HitsquadRunner.#HITSQUAD_ENTRIES_ON_SCREEN / 2) + 4;
+    static #HITSQUAD_ENTRIES_ON_SCREEN = 12;
+    static #ENTRIES_COUNT_TARGET = Math.floor(HitsquadRunner.#HITSQUAD_ENTRIES_ON_SCREEN / 2) + 2;
 
     #completedGamesCount = 0;
 

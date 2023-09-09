@@ -84,23 +84,19 @@ export class ExtensionContainer {
     }
 
     #handleQuizCheckbox() {
-        // Temporary unavailable
-        this.#settingsService.setSetting('quizRunner', false);
-        this.#quizRunner.stop();
+        const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
+        const isQuizRunning = this.#settingsService.getSetting('quizRunner');
 
-        // const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
-        // const isQuizRunning = this.#settingsService.getSetting('quizRunner');
-        //
-        // toggleQuizEl.checked = isQuizRunning;
-        //
-        // if (isQuizRunning) {
-        //     this.#quizRunner.start();
-        // }
-        //
-        // toggleQuizEl.addEventListener('change', ({ target }) => {
-        //     target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
-        //     this.#settingsService.setSetting('quizRunner', target.checked);
-        // });
+        toggleQuizEl.checked = isQuizRunning;
+
+        if (isQuizRunning) {
+            this.#quizRunner.start();
+        }
+
+        toggleQuizEl.addEventListener('change', ({ target }) => {
+            target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
+            this.#settingsService.setSetting('quizRunner', target.checked);
+        });
     }
 
     #handleReloadPage() {
@@ -117,14 +113,13 @@ export class ExtensionContainer {
     }
 
     #handleKeydownHandler() {
-        // Temporary unavailable
-        // window.document.addEventListener('keydown', (event) => {
-        //     const command = `!answer${event.key}`;
-        //
-        //     if (Commands.getAnswers().includes(command)) {
-        //         this.#sendMessage(command);
-        //     }
-        // });
+        window.document.addEventListener('keydown', (event) => {
+            const command = `!answer${event.key}`;
+
+            if (Commands.getAnswers().includes(command)) {
+                this.#sendMessage(command);
+            }
+        });
     }
 
     #handleHitsquadButton() {

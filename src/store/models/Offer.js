@@ -27,6 +27,6 @@ export class Offer {
     }
 
     get isTooExpensive() {
-        return this.#price > 75000;
+        return this.#price > 50000;
     }
 }
