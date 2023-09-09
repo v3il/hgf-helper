@@ -68,7 +68,7 @@ export class ExtensionContainer {
     }
 
     #handleMiniGamesCheckbox() {
-        const toggleGamesEl = this.el.querySelector('[data-toggle-games]');
+        const toggleGamesEl = this.el.querySelector('[data-toggle-giveaways]');
         const isHitsquadRunning = this.#settingsService.getSetting('hitsquadRunner');
 
         toggleGamesEl.checked = isHitsquadRunning;
@@ -84,7 +84,7 @@ export class ExtensionContainer {
     }
 
     #handleQuizCheckbox() {
-        const toggleQuizEl = this.el.querySelector('[data-toggle-quiz]');
+        const toggleQuizEl = this.el.querySelector('[data-toggle-trivia]');
         const isQuizRunning = this.#settingsService.getSetting('quizRunner');
 
         toggleQuizEl.checked = isQuizRunning;

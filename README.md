@@ -22,7 +22,7 @@ The appearance of the widget is shown in the image below:
 
 1. Anti-cheat screen check counter. A green frame around the widget indicates that the anti-cheat screen is not currently active. During the anti-cheat screen the frame color will change to red.
 1. Checkbox that allows you to play the Trivia minigame automatically.
-1. Checkbox that activates the automatic sending of the `!hitsquad` command after completing several giveaways. \
+1. Checkbox that allows you to participate in Giveaways automatically.
 **Important information**: at the moment there is no control of the allowed limit of participation (1200 entries per day), so the checkbox must be disabled manually. Automatic disabling is planned to be added in the near future.
 1. Button that allows to send `!hitsquad` command in manual mode.
 
