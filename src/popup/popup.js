@@ -1,17 +1,21 @@
-(async () => {
-    const settings = await chrome.runtime.sendMessage({ action: 'LOAD_SETTINGS' });
+(() => {
+    document.addEventListener('DOMContentLoaded', async () => {
+        const settings = await chrome.runtime.sendMessage({ action: 'LOAD_SETTINGS' });
 
-    Object.entries(settings).forEach(([key, value]) => {
-        const input = document.querySelector(`[data-prop="${key}"]`);
+        console.error(settings);
 
-        if (!input) return;
+        Object.entries(settings).forEach(([key, value]) => {
+            const input = document.querySelector(`[data-prop="${key}"]`);
 
-        input.value = value;
+            if (!input) return;
 
-        input.addEventListener('change', () => {
-            chrome.runtime.sendMessage({
-                action: 'UPDATE_SETTINGS',
-                [key]: input.value
+            input.value = value;
+
+            input.addEventListener('change', () => {
+                chrome.runtime.sendMessage({
+                    action: 'UPDATE_SETTINGS',
+                    [key]: input.value
+                });
             });
         });
     });
