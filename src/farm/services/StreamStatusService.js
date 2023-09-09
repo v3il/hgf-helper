@@ -38,7 +38,7 @@ export class StreamStatusService {
         this.#intervalId = setInterval(() => {
             this.#checkBanPhase();
             twitchPlayerService.decreaseVideoDelay();
-        }, 40 * Timing.SECOND);
+        }, 30 * Timing.SECOND);
     }
 
     get events() {

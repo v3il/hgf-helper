@@ -1,82 +1,82 @@
 export const antiCheatChecks = [
     {
         color: '590000',
-        xPercent: 43.555093555093556,
-        yPercent: 13.67837338262477
+        xPercent: 2.481556002682763,
+        yPercent: 7.389749702026221
     },
     {
-        color: '5b0001',
-        xPercent: 63.82536382536382,
-        yPercent: 14.232902033271719
-    },
-    {
-        color: '580000',
-        xPercent: 87.42203742203742,
-        yPercent: 14.972273567467653
-    },
-    {
-        color: '3e3e3e',
-        xPercent: 98.44074844074844,
-        yPercent: 55.08317929759704
-    },
-    {
-        color: '9ca490',
-        xPercent: 87.21413721413721,
-        yPercent: 52.495378927911275
-    },
-    {
-        color: '4b4a4b',
-        xPercent: 90.64449064449065,
-        yPercent: 81.88539741219964
+        color: '540001',
+        xPercent: 14.084507042253522,
+        yPercent: 8.700834326579262
     },
     {
         color: 'ffffff',
-        xPercent: 97.4012474012474,
-        yPercent: 67.46765249537893
+        xPercent: 21.663313212608987,
+        yPercent: 7.151370679380214
+    },
+    {
+        color: 'fdfffd',
+        xPercent: 34.00402414486921,
+        yPercent: 7.270560190703218
+    },
+    {
+        color: '590000',
+        xPercent: 48.82629107981221,
+        yPercent: 14.183551847437425
+    },
+    {
+        color: 'eb0000',
+        xPercent: 75.0503018108652,
+        yPercent: 14.421930870083433
+    },
+    {
+        color: '520001',
+        xPercent: 89.47015425888665,
+        yPercent: 11.918951132300357
+    },
+    {
+        color: '1b0000',
+        xPercent: 88.46411804158282,
+        yPercent: 3.2181168057210967
     },
     {
         color: '9835ef',
-        xPercent: 44.49064449064449,
-        yPercent: 84.65804066543437
+        xPercent: 78.26961770623743,
+        yPercent: 26.340882002383793
     },
     {
         color: '9835ef',
-        xPercent: 74.84407484407485,
-        yPercent: 83.91866913123845
+        xPercent: 77.53185781354796,
+        yPercent: 42.66984505363528
     },
     {
-        color: '4b4b4b',
-        xPercent: 97.71309771309772,
-        yPercent: 83.54898336414048
+        color: '9835ef',
+        xPercent: 21.5962441314554,
+        yPercent: 25.98331346841478
     },
     {
-        color: 'e90101',
-        xPercent: 54.67775467775468,
-        yPercent: 76.89463955637707
+        color: '9835ef',
+        xPercent: 22.132796780684107,
+        yPercent: 36.471990464839095
     },
     {
-        color: '150000',
-        xPercent: 43.762993762993766,
-        yPercent: 70.42513863216267
+        color: '9835ef',
+        xPercent: 21.663313212608987,
+        yPercent: 49.225268176400476
     },
     {
-        color: 'f20000',
-        xPercent: 98.33679833679834,
-        yPercent: 17.929759704251385
+        color: '26dd73',
+        xPercent: 3.9570757880617036,
+        yPercent: 33.49225268176401
     },
     {
         color: 'f80000',
-        xPercent: 98.44074844074844,
-        yPercent: 24.953789279112755
+        xPercent: 97.45137491616364,
+        yPercent: 25.864123957091778
     },
     {
-        color: '9ca48f',
-        xPercent: 91.8918918918919,
-        yPercent: 53.04990757855823
-    },
-    {
-        color: '500000',
-        xPercent: 72.76507276507277,
-        yPercent: 74.86136783733826
+        color: '27dd73',
+        xPercent: 94.56740442655935,
+        yPercent: 34.088200238379024
     }
 ];
