@@ -50,10 +50,7 @@ export class ExtensionContainer {
         this.#handleReloadPage();
         this.#handleKeydownHandler();
         this.#handleHitsquadButton();
-
-        if (isDev) {
-            this.#handleDebugMode();
-        }
+        this.#handleDebugMode();
     }
 
     #handleDebugMode() {
