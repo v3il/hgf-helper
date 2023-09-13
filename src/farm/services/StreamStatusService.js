@@ -56,18 +56,20 @@ export class StreamStatusService {
         this.#isBan = true;
         this.#events.emit('check');
 
-        console.error('check ban phase: start');
+        console.error('-----------------------------');
+        console.error('Checks started');
 
         for (let i = 0; i < checksCount; i++) {
+            console.error(`Check #${i + 1}:`);
+
             if (this.#isAntiCheat()) {
-                console.error(i, 'is ban');
                 return;
             }
 
             await promisifiedSetTimeout(3 * Timing.SECOND);
         }
 
-        console.error('check ban phase: end');
+        console.error('Checks finished');
 
         this.#isBan = false;
         this.#events.emit('check');
@@ -118,7 +120,7 @@ export class StreamStatusService {
             return isBlack ? true : similarity >= 0.85;
         });
 
-        console.error(failedChecks.length, antiCheatChecks.length);
+        console.error(`${failedChecks.length} / ${antiCheatChecks.length}`);
 
         return failedChecks.length / antiCheatChecks.length >= 0.6;
     }

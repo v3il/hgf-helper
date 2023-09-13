@@ -96,14 +96,7 @@ export class ExtensionContainer {
     }
 
     #handleCheckEvent() {
-        this.#streamStatusService.events.on('check', async () => {
-            // if (this.#streamStatusService.lastCheckData.isReload) {
-            //     this.#toggleStatusClass();
-            //     await promisifiedSetTimeout(Timing.MINUTE);
-            //     return window.location.reload();
-            // }
-
-            // this.#renderChecksResult();
+        this.#streamStatusService.events.on('check', () => {
             this.#toggleStatusClass();
         });
     }
