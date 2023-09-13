@@ -1,6 +1,8 @@
 import { Container } from 'typedi';
 import { generateMiniGameDelay, promisifiedSetTimeout } from '../utils';
-import { Commands, InjectionTokens, MessageTemplates } from '../consts';
+import {
+    Commands, InjectionTokens, MessageTemplates, Timing
+} from '../consts';
 
 export class HitsquadRunner {
     static create() {
@@ -15,9 +17,9 @@ export class HitsquadRunner {
         });
     }
 
-    static #BAN_PHASE_DELAY = 20 * 1000;
+    static #BAN_PHASE_DELAY = 20 * Timing.SECOND;
     static #HITSQUAD_ENTRIES_ON_SCREEN = 12;
-    static #ENTRIES_COUNT_TARGET = Math.floor(HitsquadRunner.#HITSQUAD_ENTRIES_ON_SCREEN / 2) + 2;
+    static #ENTRIES_COUNT_TARGET = Math.floor(HitsquadRunner.#HITSQUAD_ENTRIES_ON_SCREEN / 2) + 3;
 
     #completedGamesCount = 0;
 
