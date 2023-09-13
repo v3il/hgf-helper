@@ -8,14 +8,12 @@ export class QuizService {
     static create() {
         const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
-        const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
 
-        return new QuizService({ twitchChatObserver, twitchChatService, streamStatusService });
+        return new QuizService({ twitchChatObserver, twitchChatService });
     }
 
     #twitchChatObserver;
     #twitchChatService;
-    #streamStatusService;
 
     #isWaitingNextRound = true;
     #isStopped = true;
@@ -25,10 +23,9 @@ export class QuizService {
     #fallbackTimeoutId;
     #desiredAnswerPosition;
 
-    constructor({ twitchChatObserver, twitchChatService, streamStatusService }) {
+    constructor({ twitchChatObserver, twitchChatService }) {
         this.#twitchChatObserver = twitchChatObserver;
         this.#twitchChatService = twitchChatService;
-        this.#streamStatusService = streamStatusService;
 
         Commands.getAnswers().forEach((answer) => {
             this.#answers[answer] = new Set();
@@ -89,7 +86,7 @@ export class QuizService {
         this.#isWaitingNextRound = true;
         clearTimeout(this.#fallbackTimeoutId);
 
-        if (answer && !this.#streamStatusService.isBanPhase) {
+        if (answer) {
             this.#sendAnswer(answer);
         }
     }
