@@ -40,14 +40,13 @@ export class ExtensionContainer {
         this.#canvasView = canvasView;
 
         this.#listenEvents();
-        this.#renderChecksResult();
         this.#toggleStatusClass();
     }
 
     #listenEvents() {
         this.#handleQuizCheckbox();
         this.#handleMiniGamesCheckbox();
-        this.#handleReloadPage();
+        this.#handleCheckEvent();
         this.#handleKeydownHandler();
         this.#handleHitsquadButton();
         this.#handleDebugMode();
@@ -58,7 +57,7 @@ export class ExtensionContainer {
             // Ctrl + 0
             if (event.ctrlKey && event.key === '0') {
                 event.preventDefault();
-                this.#streamStatusService.checkBanPhase();
+                this.#streamStatusService.renderVideoFrame();
                 this.#canvasView.toggleDebug();
             }
         });
@@ -96,15 +95,8 @@ export class ExtensionContainer {
         });
     }
 
-    #handleReloadPage() {
-        this.#streamStatusService.events.on('check', async () => {
-            if (this.#streamStatusService.lastCheckData.isReload) {
-                this.#toggleStatusClass();
-                await promisifiedSetTimeout(Timing.MINUTE);
-                return window.location.reload();
-            }
-
-            this.#renderChecksResult();
+    #handleCheckEvent() {
+        this.#streamStatusService.events.on('check', () => {
             this.#toggleStatusClass();
         });
     }
@@ -114,7 +106,7 @@ export class ExtensionContainer {
             const command = `!answer${event.key}`;
 
             if (Commands.getAnswers().includes(command)) {
-                this.#sendMessage(command);
+                this.#twitchChatService.sendMessage(command);
             }
         });
     }
@@ -123,7 +115,7 @@ export class ExtensionContainer {
         const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
 
         sendHitsquadButton.addEventListener('click', (event) => {
-            this.#sendMessage(Commands.HITSQUAD, event.ctrlKey);
+            this.#twitchChatService.sendMessage(Commands.HITSQUAD, event.ctrlKey);
         });
     }
 
@@ -136,14 +128,8 @@ export class ExtensionContainer {
     }
 
     #toggleStatusClass() {
-        const { lastCheckData } = this.#streamStatusService;
-
-        if (lastCheckData.isReload) {
-            return this.el.classList.add('haf-extension-container--reload');
-        }
-
-        this.el.classList.toggle('haf-extension-container--ban-phase', lastCheckData.isBan);
-        this.el.classList.toggle('haf-extension-container--no-ban-phase', !lastCheckData.isBan);
+        this.el.classList.toggle('haf-extension-container--ban-phase', this.#streamStatusService.isBanPhase);
+        this.el.classList.toggle('haf-extension-container--no-ban-phase', !this.#streamStatusService.isBanPhase);
     }
 
     #createElement() {
@@ -151,21 +137,5 @@ export class ExtensionContainer {
         containerEl.innerHTML = template;
 
         return containerEl.firstChild;
-    }
-
-    #renderChecksResult() {
-        const successfulChecksEl = this.el.querySelector('[data-successful-checks]');
-        const totalChecksEl = this.el.querySelector('[data-total-checks]');
-
-        const { successfulChecks, totalChecks } = this.#streamStatusService.lastCheckData;
-
-        successfulChecksEl.textContent = successfulChecks;
-        totalChecksEl.textContent = totalChecks;
-    }
-
-    #sendMessage(command, force = false) {
-        if (!this.#streamStatusService.isBanPhase) {
-            this.#twitchChatService.sendMessage(command, force);
-        }
     }
 }

@@ -5,7 +5,7 @@ This is a small extension for the Chrome browser that allows you to play minigam
 
 ### Twitch helper
 
-Overlay update the extension works with: **September 09, 2023**
+Overlay update the extension works with: **September 13, 2023**
 
    A widget mounts on the stream page, allows you to play minigames in semi-automatic mode. The main features of the widget:
 1. automatically sends the `!hitsquad` command to the chat after several completed games, if the corresponding checkbox is enabled;
@@ -20,7 +20,7 @@ The appearance of the widget is shown in the image below:
 
 ![readme_1.png](./readme_1.png)
 
-1. Anti-cheat screen check counter. A green frame around the widget indicates that the anti-cheat screen is not currently active. During the anti-cheat screen the frame color will change to red.
+1. Anti-cheat screen indicator. A green frame around the widget indicates that the anti-cheat screen is not currently active. During the anti-cheat screen the frame color will change to red.
 1. Checkbox that allows you to play the Trivia minigame automatically.
 1. Checkbox that allows you to participate in Giveaways automatically.
 **Important information**: at the moment there is no control of the allowed limit of participation (1200 entries per day), so the checkbox must be disabled manually. Automatic disabling is planned to be added in the near future.
