@@ -2,51 +2,39 @@ import { Container } from 'typedi';
 import { ColorService } from './ColorService';
 import { EventEmitter } from '../models/EventsEmitter';
 import { InjectionTokens, Timing, antiCheatChecks } from '../consts';
+import { promisifiedSetTimeout } from '../utils';
 
 export class StreamStatusService {
     static create({ canvasView }) {
-        const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
 
         return new StreamStatusService({
             canvasView,
-            twitchChatObserver,
             twitchPlayerService,
             events: EventEmitter.create()
         });
     }
 
     #canvasView;
-    #lastCheckData;
     #events;
-    #intervalId;
-    #twitchChatObserver;
     #twitchPlayerService;
+    #isBan = false;
 
-    #reloadRoundsCount = 0;
-
-    constructor({
-        canvasView, twitchChatObserver, twitchPlayerService, events
-    }) {
+    constructor({ canvasView, twitchPlayerService, events }) {
         this.#canvasView = canvasView;
-        this.#twitchChatObserver = twitchChatObserver;
         this.#events = events;
         this.#twitchPlayerService = twitchPlayerService;
 
-        this.#checkBanPhase();
+        this.#checkBanPhase(1);
 
-        this.#intervalId = setInterval(() => {
-            this.#checkBanPhase();
-            twitchPlayerService.decreaseVideoDelay();
-        }, 30 * Timing.SECOND);
+        setInterval(async () => {
+            await this.#checkBanPhase(3);
+            await twitchPlayerService.decreaseVideoDelay();
+        }, 35 * Timing.SECOND);
     }
 
     get events() {
         return this.#events;
-    }
-
-    checkBanPhase() {
-        this.#checkBanPhase();
     }
 
     #getActiveVideoEl() {
@@ -64,38 +52,45 @@ export class StreamStatusService {
         return document.querySelector('[data-a-target="video-ad-countdown"]') !== null;
     }
 
-    #checkBanPhase() {
+    async #checkBanPhase(checksCount) {
+        this.#isBan = true;
+        this.#events.emit('check');
+
+        console.error('check ban phase: start');
+
+        for (let i = 0; i < checksCount; i++) {
+            if (this.#isAntiCheat()) {
+                console.error(i, 'is ban');
+                return;
+            }
+
+            await promisifiedSetTimeout(3 * Timing.SECOND);
+        }
+
+        console.error('check ban phase: end');
+
+        this.#isBan = false;
+        this.#events.emit('check');
+    }
+
+    renderVideoFrame() {
+        const videoEl = this.#getActiveVideoEl();
+        this.#canvasView.renderVideoFrame(videoEl);
+    }
+
+    #isAntiCheat() {
         const videoEl = this.#getActiveVideoEl();
 
         // Some problems with video
         if (!videoEl) {
-            this.#lastCheckData = {
-                successfulChecks: 0,
-                totalChecks: 0,
-                isBan: true
-            };
-
-            return this.#events.emit('check');
+            console.error('video element not found');
+            return true;
         }
 
         // Stream went offline
         if (videoEl.paused || videoEl.ended) {
-            this.#reloadRoundsCount++;
-
-            const isReload = this.#reloadRoundsCount === 3;
-
-            this.#lastCheckData = {
-                successfulChecks: 0,
-                totalChecks: 0,
-                isBan: true,
-                isReload
-            };
-
-            if (isReload) {
-                clearInterval(this.#intervalId);
-            }
-
-            return this.#events.emit('check');
+            console.error('stream went offline');
+            return true;
         }
 
         this.#canvasView.renderVideoFrame(videoEl);
@@ -123,25 +118,12 @@ export class StreamStatusService {
             return isBlack ? true : similarity >= 0.85;
         });
 
-        const isEnoughFailedChecks = failedChecks.length / antiCheatChecks.length >= 0.6;
+        console.error(failedChecks.length, antiCheatChecks.length);
 
-        this.#lastCheckData = {
-            successfulChecks: failedChecks.length,
-            totalChecks: antiCheatChecks.length,
-            isBan: isEnoughFailedChecks
-        };
-
-        console.log(this.#lastCheckData);
-
-        this.#reloadRoundsCount = 0;
-        this.#events.emit('check');
+        return failedChecks.length / antiCheatChecks.length >= 0.6;
     }
 
     get isBanPhase() {
-        return this.#lastCheckData.isBan;
-    }
-
-    get lastCheckData() {
-        return this.#lastCheckData;
+        return this.#isBan;
     }
 }
