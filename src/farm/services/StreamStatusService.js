@@ -65,7 +65,6 @@ export class StreamStatusService {
             console.error(`Check #${i + 1}:`);
 
             if (this.#isAntiCheat()) {
-                this.#isBan = true;
                 this.#isChecksRunning = false;
                 return this.#events.emit('check');
             }
