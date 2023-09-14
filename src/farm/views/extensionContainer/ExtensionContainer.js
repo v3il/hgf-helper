@@ -130,6 +130,11 @@ export class ExtensionContainer {
     }
 
     #toggleStatusClass() {
+        if (this.#streamStatusService.isChecksRunning) {
+            return this.el.classList.add('haf-extension-container--checks-running');
+        }
+
+        this.el.classList.remove('haf-extension-container--checks-running');
         this.el.classList.toggle('haf-extension-container--ban-phase', this.#streamStatusService.isBanPhase);
         this.el.classList.toggle('haf-extension-container--no-ban-phase', !this.#streamStatusService.isBanPhase);
     }

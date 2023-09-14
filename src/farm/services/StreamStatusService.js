@@ -19,6 +19,7 @@ export class StreamStatusService {
     #events;
     #twitchPlayerService;
     #isBan = false;
+    #isChecksRunning = false;
 
     constructor({ canvasView, twitchPlayerService, events }) {
         this.#canvasView = canvasView;
@@ -54,6 +55,7 @@ export class StreamStatusService {
 
     async #checkBanPhase(checksCount) {
         this.#isBan = true;
+        this.#isChecksRunning = true;
         this.#events.emit('check');
 
         console.error('-----------------------------');
@@ -63,7 +65,9 @@ export class StreamStatusService {
             console.error(`Check #${i + 1}:`);
 
             if (this.#isAntiCheat()) {
-                return;
+                this.#isBan = true;
+                this.#isChecksRunning = false;
+                return this.#events.emit('check');
             }
 
             await promisifiedSetTimeout(3 * Timing.SECOND);
@@ -72,6 +76,7 @@ export class StreamStatusService {
         console.error('Checks finished');
 
         this.#isBan = false;
+        this.#isChecksRunning = false;
         this.#events.emit('check');
     }
 
@@ -127,5 +132,9 @@ export class StreamStatusService {
 
     get isBanPhase() {
         return this.#isBan;
+    }
+
+    get isChecksRunning() {
+        return this.#isChecksRunning;
     }
 }
