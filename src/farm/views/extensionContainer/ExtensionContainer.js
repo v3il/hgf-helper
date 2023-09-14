@@ -115,7 +115,9 @@ export class ExtensionContainer {
         const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
 
         sendHitsquadButton.addEventListener('click', (event) => {
-            this.#twitchChatService.sendMessage(Commands.HITSQUAD, event.ctrlKey);
+            if (!this.#streamStatusService.isBanPhase) {
+                this.#twitchChatService.sendMessage(Commands.HITSQUAD, event.ctrlKey);
+            }
         });
     }
 
