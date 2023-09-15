@@ -22,8 +22,8 @@
     border-color: lightgreen;
 }
 
-.haf-extension-container--reload {
-    border-color: lightseagreen;
+.haf-extension-container--checks-running {
+    border-color: lightblue;
 }
 
 .haf-extension-container__separator {
