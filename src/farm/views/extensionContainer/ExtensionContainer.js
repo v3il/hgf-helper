@@ -15,8 +15,6 @@ export class ExtensionContainer {
         const settingsService = Container.get(InjectionTokens.SETTINGS_SERVICE);
         const canvasView = Container.get(InjectionTokens.CANVAS_VIEW);
 
-        console.error('create');
-
         return new ExtensionContainer({
             hitsquadRunner, streamStatusService, twitchChatService, settingsService, quizRunner, canvasView
         });
@@ -128,7 +126,6 @@ export class ExtensionContainer {
     }
 
     mount(rootEl) {
-        console.error('mount');
         rootEl.appendChild(this.el);
     }
 
