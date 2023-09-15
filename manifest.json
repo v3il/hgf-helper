@@ -6,7 +6,7 @@
 
   "content_scripts": [
     {
-      "js": ["dist/farm.js"],
+      "js": ["dist/farm.js", "dist/farmBootstrap.js"],
       "css": ["dist/farm.css"],
       "matches": ["https://www.twitch.tv/hitsquadgodfather"],
       "run_at": "document_idle",
@@ -24,7 +24,7 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["dist/farm.js", "dist/farm.css"],
+      "resources": ["dist/farm.js", "dist/farmBootstrap.js", "dist/farmInjected.js", "dist/farm.css"],
       "matches": ["https://www.twitch.tv/*"]
     },
 

@@ -40,8 +40,6 @@ export class SettingsService {
     }
 
     updateSettings(settings) {
-        console.error('save', settings);
-
         Object.entries(settings).forEach(([key, value]) => {
             key in SettingsService.#LOCAL_SETTINGS
                 ? this.#localSettings[key] = value
