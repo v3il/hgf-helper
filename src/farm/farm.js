@@ -48,6 +48,8 @@ async function runApp({ chatContainerEl, userDropdownToggleEl }) {
 
     await settingsService.loadSettings();
 
+    console.info(settingsService.settings);
+
     Container.set([
         { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userName) },
         { id: InjectionTokens.SETTINGS_SERVICE, factory: () => settingsService },

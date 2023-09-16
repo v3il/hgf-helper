@@ -3,14 +3,16 @@ import { OfferView } from './views/offer/OfferView';
 import { StorageService, JsonBinApiService, SettingsService } from './services';
 
 (async () => {
+    console.clear();
+
     const settingsService = new SettingsService();
 
     await settingsService.loadSettings();
 
+    console.info(settingsService.settings);
+
     const jsonBinApiService = new JsonBinApiService({ settingsService });
     const storageService = new StorageService({ apiService: jsonBinApiService });
-
-    console.clear();
 
     try {
         await storageService.fetchHiddenOffers();
