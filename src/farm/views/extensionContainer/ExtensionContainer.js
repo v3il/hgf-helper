@@ -1,10 +1,7 @@
 import './style.css';
 import { Container } from 'typedi';
 import template from './template.html?raw';
-import {
-    Commands, InjectionTokens, Timing, isDev
-} from '../../consts';
-import { promisifiedSetTimeout } from '../../utils';
+import { Commands, InjectionTokens } from '../../consts';
 
 export class ExtensionContainer {
     static create() {
@@ -14,9 +11,16 @@ export class ExtensionContainer {
         const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
         const settingsService = Container.get(InjectionTokens.SETTINGS_SERVICE);
         const canvasView = Container.get(InjectionTokens.CANVAS_VIEW);
+        const chatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
 
         return new ExtensionContainer({
-            hitsquadRunner, streamStatusService, twitchChatService, settingsService, quizRunner, canvasView
+            hitsquadRunner,
+            streamStatusService,
+            twitchChatService,
+            settingsService,
+            quizRunner,
+            canvasView,
+            chatObserver
         });
     }
 
@@ -27,9 +31,10 @@ export class ExtensionContainer {
     #settingsService;
     #quizRunner;
     #canvasView;
+    #chatObserver;
 
     constructor({
-        streamStatusService, twitchChatService, hitsquadRunner, settingsService, quizRunner, canvasView
+        streamStatusService, twitchChatService, hitsquadRunner, settingsService, quizRunner, canvasView, chatObserver
     }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
@@ -38,14 +43,16 @@ export class ExtensionContainer {
         this.#settingsService = settingsService;
         this.#quizRunner = quizRunner;
         this.#canvasView = canvasView;
+        this.#chatObserver = chatObserver;
 
         this.#listenEvents();
         this.#toggleStatusClass();
     }
 
     #listenEvents() {
-        this.#handleQuizCheckbox();
-        this.#handleMiniGamesCheckbox();
+        this.#handleTriviaCheckbox();
+        this.#handleGiveawaysCheckbox();
+        this.#handleGiveawaysRemoteControl();
         this.#handleCheckEvent();
         this.#handleKeydownHandler();
         this.#handleHitsquadButton();
@@ -63,7 +70,7 @@ export class ExtensionContainer {
         });
     }
 
-    #handleMiniGamesCheckbox() {
+    #handleGiveawaysCheckbox() {
         const toggleGamesEl = this.el.querySelector('[data-toggle-giveaways]');
         const isHitsquadRunning = this.#settingsService.getSetting('hitsquadRunner');
 
@@ -79,7 +86,29 @@ export class ExtensionContainer {
         });
     }
 
-    #handleQuizCheckbox() {
+    #handleGiveawaysRemoteControl() {
+        const toggleGamesEl = this.el.querySelector('[data-toggle-giveaways]');
+
+        this.#chatObserver.events.on('message', ({ message, isMe }) => {
+            const isHitsquadCommand = message.startsWith(Commands.HITSQUAD);
+
+            if (!(isMe && isHitsquadCommand)) {
+                return;
+            }
+
+            const commandSuffix = message.split(' ')[1];
+
+            if (commandSuffix) {
+                const isEnabled = commandSuffix.length % 2 === 0;
+
+                isEnabled ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
+                this.#settingsService.setSetting('hitsquadRunner', isEnabled);
+                toggleGamesEl.checked = isEnabled;
+            }
+        });
+    }
+
+    #handleTriviaCheckbox() {
         const toggleQuizEl = this.el.querySelector('[data-toggle-trivia]');
         const isQuizRunning = this.#settingsService.getSetting('quizRunner');
 
