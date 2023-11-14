@@ -8,8 +8,10 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
-                farmBootstrap: path.resolve(__dirname, 'src/farm/farmBootstrap.js'),
-                farm: path.resolve(__dirname, 'src/farm/farm.js'),
+                twitchFarmBootstrap: path.resolve(__dirname, 'src/farm/twitchFarmBootstrap.js'),
+                twitchFarm: path.resolve(__dirname, 'src/farm/twitchFarm.js'),
+                youtubeFarm: path.resolve(__dirname, 'src/farm/youtubeFarm.js'),
+                youtubeFarmBootstrap: path.resolve(__dirname, 'src/farm/youtubeFarmBootstrap.js'),
                 store: path.resolve(__dirname, 'src/store/store.js')
             },
 

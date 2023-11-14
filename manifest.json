@@ -6,10 +6,17 @@
 
   "content_scripts": [
     {
-      "js": ["dist/farmBootstrap.js"],
+      "js": ["dist/twitchFarmBootstrap.js"],
       "matches": ["https://www.twitch.tv/hitsquadgodfather"],
       "run_at": "document_idle",
       "all_frames": true
+    },
+
+    {
+      "js": ["dist/youtubeFarmBootstrap.js"],
+      "matches": ["https://www.youtube.com/watch?v=0kcpL4AI0BY&ab_channel=HitsquadGodfather"],
+      "run_at": "document_idle",
+      "all_frames": false
     },
 
     {
@@ -23,8 +30,13 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["dist/farmBootstrap.js", "dist/farm.js", "dist/farm.css"],
+      "resources": ["dist/twitchFarmBootstrap.js", "dist/twitchFarm.js", "dist/twitchFarm.css"],
       "matches": ["https://www.twitch.tv/*"]
+    },
+
+    {
+      "resources": ["dist/youtubeFarmBootstrap.js", "dist/youtubeFarm.js", "dist/youtubeFarm.css"],
+      "matches": ["https://www.youtube.com/*"]
     },
 
     {
