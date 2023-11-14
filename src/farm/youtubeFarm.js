@@ -13,6 +13,8 @@ import { InjectionTokens, isDev } from './consts';
 import { TwitchUser } from './models';
 import 'reflect-metadata';
 
+console.error(document.getElementById('author-name'));
+
 function getTwitchElements() {
     const userDropdownToggleEl = document.querySelector('[data-a-target="user-menu-toggle"]');
     const chatInputEl = document.querySelector('[data-a-target="chat-input"]');
@@ -31,6 +33,8 @@ function getTwitchElements() {
 
 function getUserName(userDropdownToggleEl) {
     userDropdownToggleEl.click();
+
+    console.error(document.getElementById('author-name'));
 
     const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
     userDropdownToggleEl.click();
@@ -67,10 +71,10 @@ function isElementsExist(elements) {
 }
 
 const intervalId = setInterval(() => {
-    const twitchElements = getTwitchElements();
-
-    if (isElementsExist(twitchElements)) {
-        clearInterval(intervalId);
-        setTimeout(() => runApp(twitchElements), 4000);
-    }
+    // const twitchElements = getTwitchElements();
+    //
+    // if (isElementsExist(twitchElements)) {
+    //     clearInterval(intervalId);
+    //     setTimeout(() => runApp(twitchElements), 4000);
+    // }
 }, 500);

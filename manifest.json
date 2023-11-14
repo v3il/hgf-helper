@@ -30,13 +30,23 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["dist/twitchFarmBootstrap.js", "dist/twitchFarm.js", "dist/twitchFarm.css"],
-      "matches": ["https://www.twitch.tv/*"]
+      "matches": ["https://www.twitch.tv/*"],
+      "resources": [
+        "dist/Reflect.js",
+        "dist/twitchFarmBootstrap.js",
+        "dist/twitchFarm.js",
+        "dist/twitchFarm.css"
+      ]
     },
 
     {
-      "resources": ["dist/youtubeFarmBootstrap.js", "dist/youtubeFarm.js", "dist/youtubeFarm.css"],
-      "matches": ["https://www.youtube.com/*"]
+      "matches": ["https://www.youtube.com/*"],
+      "resources": [
+        "dist/Reflect.js",
+        "dist/youtubeFarmBootstrap.js",
+        "dist/youtubeFarm.js",
+        "dist/youtubeFarm.css"
+      ]
     },
 
     {
