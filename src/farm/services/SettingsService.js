@@ -12,6 +12,8 @@ export class SettingsService {
     async loadSettings() {
         try {
             this.#settings = await chrome.runtime.sendMessage({ action: 'LOAD_SETTINGS' });
+
+            console.error(this.#settings);
         } catch (error) {
             console.error('Retry loadSettings');
             this.loadSettings();

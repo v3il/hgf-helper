@@ -1,37 +1,23 @@
-let retry = false;
+import { SettingsService } from '../shared';
 
-async function loadSettings() {
-    try {
-        return chrome.runtime.sendMessage({ action: 'LOAD_SETTINGS' });
-    } catch (error) {
-        console.error('retry');
-        loadSettings();
-        retry = true;
-    }
-}
+document.addEventListener('DOMContentLoaded', async () => {
+    const settingsService = SettingsService.create();
 
-(() => {
-    document.addEventListener('DOMContentLoaded', async () => {
-        const settings = await loadSettings();
-        console.error(settings);
+    await settingsService.loadSettings();
 
-        if (retry) {
-            document.body.style.backgroundColor = 'lightcoral';
-        }
+    console.error(settingsService.settings);
 
-        Object.entries(settings).forEach(([key, value]) => {
-            const input = document.querySelector(`[data-prop="${key}"]`);
+    Object.entries(settingsService.settings).forEach(([key, value]) => {
+        const input = document.querySelector(`[data-prop="${key}"]`);
 
-            if (!input) return;
+        if (!input) return;
 
-            input.value = value;
+        input.value = value;
 
-            input.addEventListener('change', () => {
-                chrome.runtime.sendMessage({
-                    action: 'UPDATE_SETTINGS',
-                    [key]: input.value
-                });
+        input.addEventListener('change', () => {
+            settingsService.updateSettings({
+                [key]: input.value
             });
         });
     });
-})();
+});

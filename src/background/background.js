@@ -1,4 +1,5 @@
 import { SettingsService } from './SettingsService';
+import { BackgroundActions } from '../shared/enums/BackgroundActions';
 
 (async () => {
     const settingsService = new SettingsService();
@@ -8,11 +9,11 @@ import { SettingsService } from './SettingsService';
     chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         const { action, ...settings } = message;
 
-        if (action === 'LOAD_SETTINGS') {
+        if (action === BackgroundActions.LOAD_SETTINGS) {
             return sendResponse(settingsService.settings);
         }
 
-        if (action === 'UPDATE_SETTINGS') {
+        if (action === BackgroundActions.UPDATE_SETTINGS) {
             settingsService.updateSettings(settings);
             return sendResponse(true);
         }
