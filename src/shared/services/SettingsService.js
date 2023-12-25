@@ -15,8 +15,8 @@ export class SettingsService {
         try {
             this.#settings = await chrome.runtime.sendMessage({ action: BackgroundActions.LOAD_SETTINGS });
         } catch (error) {
-            console.error('Retry loadSettings');
-            this.loadSettings();
+            console.error('Retry loadSettings', error);
+            // this.loadSettings();
         }
     }
 

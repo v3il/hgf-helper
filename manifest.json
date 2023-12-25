@@ -24,12 +24,26 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["dist/farm.js", "dist/farmBootstrap.js", "dist/farmInjected.js", "dist/farm.css"],
+      "resources": [
+        "dist/BackgroundActions.js",
+        "dist/SettingsService.js",
+        "dist/farm.js",
+        "dist/farmBootstrap.js",
+        "dist/farmInjected.js",
+        "dist/farm.css"
+      ],
       "matches": ["https://www.twitch.tv/*"]
     },
 
     {
-      "resources": ["dist/store.js", "dist/store.css"],
+      "resources": [
+        "dist/shared.js",
+        "dist/BackgroundActions.js",
+        "dist/SettingsService.js",
+        "dist/storeBootstrap.js",
+        "dist/store.js",
+        "dist/store.css"
+      ],
       "matches": ["https://streamelements.com/*"]
     }
   ],

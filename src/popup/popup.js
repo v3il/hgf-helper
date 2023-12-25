@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await settingsService.loadSettings();
 
-    console.error(settingsService.settings);
+    console.info('Settings:', settingsService.settings);
 
     Object.entries(settingsService.settings).forEach(([key, value]) => {
         const input = document.querySelector(`[data-prop="${key}"]`);
