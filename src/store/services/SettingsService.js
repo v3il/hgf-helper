@@ -3,6 +3,8 @@ export class SettingsService {
         return new SettingsService({ storage: chrome.storage.local });
     }
 
+    static #STORAGE_KEY = 'hgf-helper.settings';
+
     static #DEFAULT_SETTINGS = {
         hitsquadRunner: false,
         quizRunner: false,
@@ -27,12 +29,12 @@ export class SettingsService {
     }
 
     async loadSettings() {
-        const settings = await this.#storage.get(Object.keys(SettingsService.#DEFAULT_SETTINGS));
-        this.#settings = { ...SettingsService.#DEFAULT_SETTINGS, ...settings };
+        const settings = await this.#storage.get([SettingsService.#STORAGE_KEY]);
+        this.#settings = { ...SettingsService.#DEFAULT_SETTINGS, ...settings[SettingsService.#STORAGE_KEY] };
     }
 
     updateSettings(settings) {
         this.#settings = { ...this.#settings, ...settings };
-        this.#storage.set(this.#settings);
+        this.#storage.set({ [SettingsService.#STORAGE_KEY]: this.#settings });
     }
 }
