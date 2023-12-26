@@ -5,7 +5,7 @@ This is a small extension for the Chrome browser that allows you to play minigam
 
 ### Twitch helper
 
-Overlay update the extension works with: **September 13, 2023**
+Overlay update the extension works with: **December 26, 2023**
 
    A widget mounts on the stream page, allows you to play minigames in semi-automatic mode. The main features of the widget:
 1. automatically sends the `!hitsquad` command to the chat after several completed games, if the corresponding checkbox is enabled;
@@ -40,9 +40,9 @@ The appearance of the widget is shown in the image below:
 Important information: Some customization is required for the widget to be available (see **Installation** for details).
 
 ## Installation
-1. Download the latest release (file [hgf-helper@v1.x.y.zip](https://github.com/v3il/hgf-helper/releases/tag/Release)) from the [releases page](https://github.com/v3il/hgf-helper/releases/tag/Release).
+1. Download the latest release (hgf-helper@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases/tag/Release).
 2. Unzip the archive to any directory
-3. Go to the [extensions page](chrome://extensions/)
+3. Go to the extensions page in the Chrome browser (chrome://extensions/)
 4. Turn on developer mode
 5. Click the "**Download unpacked extension**" button, specifying the path to the unpacked extension.
 
