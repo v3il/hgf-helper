@@ -82,7 +82,7 @@ export class ExtensionContainer {
 
         toggleGamesEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
-            this.#settingsService.setSetting('hitsquadRunner', target.checked);
+            this.#settingsService.updateSettings({ hitsquadRunner: target.checked });
         });
     }
 
@@ -120,7 +120,7 @@ export class ExtensionContainer {
 
         toggleQuizEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
-            this.#settingsService.setSetting('quizRunner', target.checked);
+            this.#settingsService.updateSettings({ quizRunner: target.checked });
         });
     }
 

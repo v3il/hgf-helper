@@ -1,50 +1,59 @@
 import { Offer } from './models/Offer';
 import { OfferView } from './views/offer/OfferView';
-import { StorageService, JsonBinApiService } from './services';
+import { StorageService, JsonBinApiService, SettingsService } from './services';
 
-const sortDropdownObserver = new MutationObserver(() => {
-    const sortDropdownEl = document.querySelector('[ng-model="vm.sortBy"]');
+(async () => {
+    console.clear();
 
-    if (sortDropdownEl) {
-        sortDropdownObserver.disconnect();
+    const settingsService = SettingsService.create();
 
-        sortDropdownEl.click();
+    await settingsService.loadSettings();
 
-        setTimeout(() => {
-            document.querySelector('[value="-cost"]')?.click();
-        }, 300);
+    const jsonBinApiService = new JsonBinApiService({ settingsService });
+    const storageService = new StorageService({ apiService: jsonBinApiService });
+
+    try {
+        await storageService.fetchHiddenOffers();
+    } catch (e) {
+        return console.error('Failed to fetch hidden offers!');
     }
-});
 
-sortDropdownObserver.observe(document.body, { childList: true });
+    const sortDropdownObserver = new MutationObserver(() => {
+        const sortDropdownEl = document.querySelector('[ng-model="vm.sortBy"]');
 
-const storageService = new StorageService({ apiService: new JsonBinApiService() });
+        if (sortDropdownEl) {
+            sortDropdownObserver.disconnect();
 
-const itemsObserver = new MutationObserver(async () => {
-    const offerEls = Array.from(document.querySelectorAll('.stream-store-list-item'));
+            sortDropdownEl.click();
 
-    if (offerEls.length) {
-        itemsObserver.disconnect();
-
-        try {
-            await storageService.fetchHiddenOffers();
-        } catch (e) {
-            return console.error('Failed to fetch hidden offers!');
+            setTimeout(() => {
+                document.querySelector('[value="-cost"]')?.click();
+            }, 300);
         }
+    });
 
-        offerEls.forEach((offerEl) => {
-            const gameNameEl = offerEl.querySelector('.item-title');
-            const countEl = offerEl.querySelector('.item-quantity-left span');
-            const itemCostEl = offerEl.querySelector('.item-cost');
+    sortDropdownObserver.observe(document.body, { childList: true });
 
-            const name = gameNameEl.getAttribute('title').toLowerCase().trim();
-            const count = countEl.textContent.toLowerCase().trim();
-            const price = itemCostEl.lastChild.textContent.trim();
+    const itemsObserver = new MutationObserver(async () => {
+        const offerEls = Array.from(document.querySelectorAll('.stream-store-list-item'));
 
-            const offer = new Offer({ name, count, price });
-            new OfferView({ offer, offerEl, storageService });
-        });
-    }
-});
+        if (offerEls.length) {
+            itemsObserver.disconnect();
 
-itemsObserver.observe(document.body, { childList: true });
+            offerEls.forEach((offerEl) => {
+                const gameNameEl = offerEl.querySelector('.item-title');
+                const countEl = offerEl.querySelector('.item-quantity-left span');
+                const itemCostEl = offerEl.querySelector('.item-cost');
+
+                const name = gameNameEl.getAttribute('title').toLowerCase().trim();
+                const count = countEl.textContent.toLowerCase().trim();
+                const price = itemCostEl.lastChild.textContent.trim();
+
+                const offer = new Offer({ name, count, price });
+                new OfferView({ offer, offerEl, storageService });
+            });
+        }
+    });
+
+    itemsObserver.observe(document.body, { childList: true });
+})();

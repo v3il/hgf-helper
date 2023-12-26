@@ -38,21 +38,22 @@ function getUserName(userDropdownToggleEl) {
     return userNameEl?.textContent.toLowerCase();
 }
 
-async function runApp({
-    chatInputEl, sendMessageEl, chatContainerEl, userDropdownToggleEl
-}) {
+async function runApp({ chatContainerEl, userDropdownToggleEl }) {
     console.clear();
     console.info(`HGF helper is running in ${isDev ? 'dev' : 'prod'} mode`);
 
     const userName = getUserName(userDropdownToggleEl);
     const canvasView = CanvasContainer.create(document.body);
+    const settingsService = SettingsService.create();
+
+    await settingsService.loadSettings();
 
     Container.set([
         { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userName) },
-        { id: InjectionTokens.SETTINGS_SERVICE, factory: () => SettingsService.create(window.localStorage) },
+        { id: InjectionTokens.SETTINGS_SERVICE, factory: () => settingsService },
         { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatContainerEl) },
         { id: InjectionTokens.PLAYER_SERVICE, factory: () => TwitchPlayerService.create() },
-        { id: InjectionTokens.CHAT_SERVICE, factory: () => TwitchChatService.create({ chatInputEl, sendMessageEl }) },
+        { id: InjectionTokens.CHAT_SERVICE, factory: () => TwitchChatService.create() },
         { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create({ canvasView }) },
         { id: InjectionTokens.HITSQUAD_RUNNER, factory: () => HitsquadRunner.create() },
         { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() },

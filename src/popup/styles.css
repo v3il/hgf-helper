@@ -1,0 +1,45 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    padding: 16px;
+    width: 400px;
+    font-size: 14px;
+}
+
+.mb-1 {
+    margin-bottom: 8px;
+}
+
+.mb-2 {
+    margin-bottom: 16px;
+}
+
+.note {
+    color: #555555;
+}
+
+.label {
+    display: block;
+    font-weight: bold;
+    width: 100%;
+}
+
+.link {
+    text-decoration: none;
+}
+
+.input {
+    width: 100%;
+    margin-top: 8px;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 0.2rem;
+    background-color: rgb(255, 255, 255);
+    display: block;
+    border: 1px solid #ccc;
+    outline: none;
+}

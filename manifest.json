@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
   "name": "HGF Helper",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "HGF Helper",
 
   "content_scripts": [
     {
-      "js": ["dist/farmBootstrap.js"],
+      "js": ["dist/farm.js", "dist/farmBootstrap.js"],
+      "css": ["dist/farm.css"],
       "matches": ["https://www.twitch.tv/hitsquadgodfather"],
       "run_at": "document_idle",
       "all_frames": true
@@ -23,13 +24,31 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["dist/farmBootstrap.js", "dist/farm.js", "dist/farm.css"],
+      "resources": [
+        "dist/farm.js",
+        "dist/farmBootstrap.js",
+        "dist/farmInjected.js",
+        "dist/farm.css"
+      ],
       "matches": ["https://www.twitch.tv/*"]
     },
 
     {
-      "resources": ["dist/store.js", "dist/store.css"],
+      "resources": [
+        "dist/store.js",
+        "dist/store.css"
+      ],
       "matches": ["https://streamelements.com/*"]
     }
-  ]
+  ],
+
+  "host_permissions": ["https://*/*"],
+
+  "permissions": [
+    "storage"
+  ],
+
+  "action": {
+    "default_popup": "./src/popup/index.html"
+  }
 }
