@@ -1,10 +1,7 @@
 import './style.css';
 import { Container } from 'typedi';
 import template from './template.html?raw';
-import {
-    Commands, InjectionTokens, Timing, isDev
-} from '../../consts';
-import { promisifiedSetTimeout } from '../../utils';
+import { Commands, InjectionTokens } from '../../consts';
 
 export class ExtensionContainer {
     static create() {
@@ -75,7 +72,7 @@ export class ExtensionContainer {
 
         toggleGamesEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
-            this.#settingsService.setSetting('hitsquadRunner', target.checked);
+            this.#settingsService.updateSettings({ hitsquadRunner: target.checked });
         });
     }
 
@@ -91,7 +88,7 @@ export class ExtensionContainer {
 
         toggleQuizEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
-            this.#settingsService.setSetting('quizRunner', target.checked);
+            this.#settingsService.updateSettings({ quizRunner: target.checked });
         });
     }
 
