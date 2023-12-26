@@ -1,19 +1,13 @@
 import { Offer } from './models/Offer';
 import { OfferView } from './views/offer/OfferView';
-import { StorageService, JsonBinApiService } from './services';
+import { StorageService, JsonBinApiService, SettingsService } from './services';
 
 (async () => {
     console.clear();
 
-    const shared = await import(chrome.runtime.getURL('dist/shared.js'));
-
-    console.error(shared);
-
-    const settingsService = new shared.S();
+    const settingsService = SettingsService.create();
 
     await settingsService.loadSettings();
-
-    console.info('Settings:', settingsService.settings);
 
     const jsonBinApiService = new JsonBinApiService({ settingsService });
     const storageService = new StorageService({ apiService: jsonBinApiService });

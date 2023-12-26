@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "HGF Helper",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "HGF Helper",
 
   "content_scripts": [
@@ -25,8 +25,6 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "dist/BackgroundActions.js",
-        "dist/SettingsService.js",
         "dist/farm.js",
         "dist/farmBootstrap.js",
         "dist/farmInjected.js",
@@ -37,21 +35,12 @@
 
     {
       "resources": [
-        "dist/shared.js",
-        "dist/BackgroundActions.js",
-        "dist/SettingsService.js",
-        "dist/storeBootstrap.js",
         "dist/store.js",
         "dist/store.css"
       ],
       "matches": ["https://streamelements.com/*"]
     }
   ],
-
-  "background": {
-    "service_worker": "dist/background.js",
-    "type": "module"
-  },
 
   "host_permissions": ["https://*/*"],
 
