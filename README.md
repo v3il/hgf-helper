@@ -40,19 +40,11 @@ The appearance of the widget is shown in the image below:
 Important information: Some customization is required for the widget to be available (see **Installation** for details).
 
 ## Installation
-At the moment the extension is built manually, so you need to have `Node.js` installed on your computer. Later I plan to add automatic building and posting releases on Github.
-1. Clone repository - `git clone https://github.com/v3il/hgf-helper.git`
-2. Go to the project directory - `cd ./hgf-helper`
-3. Install dependencies - `npm i`
-4. Create a config for StreamElements widget - `cp ./src/store/storeConfig.example.js ./src/store/storeConfig.js`
-5. Optional if you plan to use the widget for StreamElements
-   - create an account at https://jsonbin.io/
-   - create a Bin with the following content
-     `{ "offers": [] }`
-   - copy the `ID` of the created Bin, copy `X-Master-Key` and `X-Access-Key` on the page https://jsonbin.io/app/app/api-keys
-   - paste the obtained values into the corresponding fields in the `src/store/storeConfig.js` file.
-6. Build extension files - `npx eslint --fix . && npm run build`
-7. On the `chrome://extensions/` page, enable developer mode, add the unpacked extension by specifying the project folder
+1. Download the latest release (hgf-helper@v1.x.y) from [Releases page](https://github.com/v3il/hgf-helper/releases/tag/Release).
+2. Unzip the archive to any directory
+3. Go to the [extensions page](chrome://extensions/)
+4. Turn on developer mode
+5. Click the "**Download unpacked extension**" button, specifying the path to the unpacked extension.
 
 ## Disclaimer
 **Due to frequent overlay updates, there is a chance that the extension will stop working correctly at any time. The author of the extension does not recommend leaving the stream unattended for a long time and is not responsible for any strikes received.**
