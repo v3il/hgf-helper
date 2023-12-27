@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite build -w --mode development",
     "build": "vite build",
-    "release": "node createRelease.js"
+    "release": "npm run build && node createRelease.js"
   },
   "devDependencies": {
     "archiver": "^6.0.1",
