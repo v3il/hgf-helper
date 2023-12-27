@@ -46,6 +46,7 @@ Important information: Some customization is required for the widget to be avail
 3. Go to the extensions page in the Chrome browser (chrome://extensions/);
 4. Turn on developer mode;
 5. Click the "**Download unpacked extension**" button, specifying the path to the unpacked extension.
+6. **[optional]** Open the extension pop-up window, enter your [JSONBin](https://jsonbin.io/) account credentials for the StreamElements widget to work (these credentials will not be shared)
 
 ## Update
 1. Download the latest release (hgf-helper<area>@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
