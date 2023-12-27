@@ -12,6 +12,7 @@ Overlay update the extension works with: **December 26, 2023**
 1. automatically recognizes the anti-cheat screen, blocking the sending of any commands. Scheduled commands will be sent automatically after the completion of the anti-cheat;
 1. allows you to play the Trivia minigame. Getting into the top 5 is not guaranteed, as the algorithm relies on the answers of other participants, but you can win a few hundred points in quiet time. Also, pressing keys `1-4` allows you to quickly send the command `!answer1-4` to the chat;
 1. automatically removes the delay on the stream once a minute;
+1. automatically collects channel points;
 1. adds a button to easily send `!hitsquad` command in manual mode;
 1. automatically refreshes the stream page when there are problems with the video;
 1. all features continue to work while ads are being shown;
