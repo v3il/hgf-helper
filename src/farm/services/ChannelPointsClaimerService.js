@@ -14,20 +14,20 @@ export class ChannelPointsClaimerService {
         this.#observer = this.#createObserver();
         this.#observer.observe(this.#chatInputContainerEl, { childList: true, subtree: true });
 
-        this.#checkClaimButton();
+        this.#claimChannelPoints();
     }
 
     #createObserver() {
         return new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.addedNodes.length) {
-                    this.#checkClaimButton();
+                    this.#claimChannelPoints();
                 }
             });
         });
     }
 
-    #checkClaimButton = debounce(() => {
+    #claimChannelPoints = debounce(() => {
         const claimButtonEl = this.#chatInputContainerEl.querySelector('[aria-label="Claim Bonus"]');
 
         if (claimButtonEl) {
