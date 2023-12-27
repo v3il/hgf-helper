@@ -41,7 +41,7 @@ The appearance of the widget is shown in the image below:
 Important information: Some customization is required for the widget to be available (see **Installation** for details).
 
 ## Installation
-1. Download the latest release (hgf-helper@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases/tag/Release).
+1. Download the latest release (hgf-helper@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases).
 2. Unzip the archive to any directory
 3. Go to the extensions page in the Chrome browser (chrome://extensions/)
 4. Turn on developer mode
