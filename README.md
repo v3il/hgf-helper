@@ -41,14 +41,14 @@ The appearance of the widget is shown in the image below:
 Important information: Some customization is required for the widget to be available (see **Installation** for details).
 
 ## Installation
-1. Download the latest release (hgf-helper@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
+1. Download the latest release (hgf-helper<area>@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
 2. Unzip the archive to any directory;
 3. Go to the extensions page in the Chrome browser (chrome://extensions/);
 4. Turn on developer mode;
 5. Click the "**Download unpacked extension**" button, specifying the path to the unpacked extension.
 
 ## Update
-1. Download the latest release (hgf-helper@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
+1. Download the latest release (hgf-helper<area>@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
 2. Unzip the archive to any directory;
 3. Copy all the files of the new version of the extension to the directory of the old version, confirming the replacement of files;
 4. On the extensions page (chrome://extensions/), click the "Update extensions" button.
