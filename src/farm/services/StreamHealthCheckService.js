@@ -1,16 +1,13 @@
 import { Container } from 'typedi';
-import { ColorService } from './ColorService';
+import { antiCheatChecks, InjectionTokens, Timing } from '../consts';
 import { EventEmitter } from '../models/EventsEmitter';
-import { InjectionTokens, Timing, antiCheatChecks } from '../consts';
 import { promisifiedSetTimeout } from '../utils';
+import { ColorService } from './ColorService';
 
-export class StreamStatusService {
+export class StreamHealthCheckService {
     static create({ canvasView }) {
-        const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
-
-        return new StreamStatusService({
+        return new StreamHealthCheckService({
             canvasView,
-            twitchPlayerService,
             events: EventEmitter.create()
         });
     }
@@ -20,18 +17,11 @@ export class StreamStatusService {
     #twitchPlayerService;
     #isBan = false;
     #isChecksRunning = false;
+    #streamStatus;
 
-    constructor({ canvasView, twitchPlayerService, events }) {
+    constructor({ canvasView, events }) {
         this.#canvasView = canvasView;
         this.#events = events;
-        this.#twitchPlayerService = twitchPlayerService;
-
-        this.#checkBanPhase(1);
-
-        setInterval(async () => {
-            await this.#checkBanPhase(3);
-            await twitchPlayerService.decreaseVideoDelay();
-        }, 35 * Timing.SECOND);
     }
 
     get events() {
