@@ -34,7 +34,9 @@ export class StreamStatusService {
                 return;
             }
 
-            await promisifiedSetTimeout(3 * Timing.SECOND);
+            if (i !== checksCount - 1) {
+                await promisifiedSetTimeout(3 * Timing.SECOND);
+            }
         }
 
         console.error('Checks finished');

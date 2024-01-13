@@ -83,7 +83,10 @@ export class ExtensionContainer {
         this.#toggleStatus(StreamStatuses.CHECKING);
         this.#canvasView.renderVideoFrame(videoEl);
         await this.#streamStatusService.checkStreamStatus(checksCount);
-        this.#toggleStatus(this.#streamStatusService.isBanPhase ? StreamStatuses.ANTICHEAT : StreamStatuses.NORMAL);
+
+        if (!this.#isDebug) {
+            this.#toggleStatus(this.#streamStatusService.isBanPhase ? StreamStatuses.ANTICHEAT : StreamStatuses.NORMAL);
+        }
     }
 
     #listenEvents() {
@@ -111,7 +114,7 @@ export class ExtensionContainer {
         const videoEl = this.#twitchElementsRegistry.activeVideoEl;
 
         clearInterval(this.#intervalId);
-        this.#toggleStatus(StreamStatuses.DEBUG);
+        this.#toggleStatus(StreamStatuses.ANTICHEAT);
         this.#streamStatusService.forceBanPhase();
         this.#canvasView.renderVideoFrame(videoEl);
         this.#canvasView.enterDebugMode();
@@ -202,7 +205,6 @@ export class ExtensionContainer {
     }
 
     #toggleStatus(status) {
-        this.#el.classList.toggle('haf-extension-container--debug', status === StreamStatuses.DEBUG);
         this.#el.classList.toggle('haf-extension-container--checks-running', status === StreamStatuses.CHECKING);
         this.#el.classList.toggle('haf-extension-container--ban-phase', status === StreamStatuses.ANTICHEAT);
         this.#el.classList.toggle('haf-extension-container--no-ban-phase', status === StreamStatuses.NORMAL);
