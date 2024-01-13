@@ -14,6 +14,7 @@ export class ExtensionContainer {
         const settingsService = Container.get(InjectionTokens.SETTINGS_SERVICE);
         const canvasView = Container.get(InjectionTokens.CANVAS_VIEW);
         const chatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
+        const twitchElementsRegistry = Container.get(InjectionTokens.ELEMENTS_REGISTRY);
 
         return new ExtensionContainer({
             hitsquadRunner,
@@ -22,7 +23,8 @@ export class ExtensionContainer {
             settingsService,
             quizRunner,
             canvasView,
-            chatObserver
+            chatObserver,
+            twitchElementsRegistry
         });
     }
 
@@ -34,9 +36,19 @@ export class ExtensionContainer {
     #quizRunner;
     #canvasView;
     #chatObserver;
+    #twitchElementsRegistry;
+    #intervalId;
+    #isDebug = false;
 
     constructor({
-        streamStatusService, twitchChatService, hitsquadRunner, settingsService, quizRunner, canvasView, chatObserver
+        streamStatusService,
+        twitchChatService,
+        hitsquadRunner,
+        settingsService,
+        quizRunner,
+        canvasView,
+        chatObserver,
+        twitchElementsRegistry
     }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
@@ -46,6 +58,7 @@ export class ExtensionContainer {
         this.#quizRunner = quizRunner;
         this.#canvasView = canvasView;
         this.#chatObserver = chatObserver;
+        this.#twitchElementsRegistry = twitchElementsRegistry;
 
         this.#checkStreamStatus(1);
         this.#handleStreamStatusCheck();
@@ -53,14 +66,22 @@ export class ExtensionContainer {
     }
 
     #handleStreamStatusCheck() {
-        setInterval(() => {
+        this.#intervalId = setInterval(() => {
             this.#checkStreamStatus(3);
         }, 20 * Timing.SECOND);
     }
 
     async #checkStreamStatus(checksCount) {
+        const videoEl = this.#twitchElementsRegistry.activeVideoEl;
+
+        if (!videoEl || videoEl.paused || videoEl.ended) {
+            this.#streamStatusService.forceBanPhase();
+            this.#toggleStatus(StreamStatuses.ANTICHEAT);
+            return;
+        }
+
         this.#toggleStatus(StreamStatuses.CHECKING);
-        this.#canvasView.renderVideoFrame();
+        this.#canvasView.renderVideoFrame(videoEl);
         await this.#streamStatusService.checkStreamStatus(checksCount);
         this.#toggleStatus(this.#streamStatusService.isBanPhase ? StreamStatuses.ANTICHEAT : StreamStatuses.NORMAL);
     }
@@ -79,10 +100,27 @@ export class ExtensionContainer {
             // Ctrl + 0
             if (event.ctrlKey && event.key === '0') {
                 event.preventDefault();
-                this.#streamStatusService.renderVideoFrame();
-                this.#canvasView.toggleDebug();
+
+                this.#isDebug = !this.#isDebug;
+                this.#isDebug ? this.#enterDebugMode() : this.#exitDebugMode();
             }
         });
+    }
+
+    #enterDebugMode() {
+        const videoEl = this.#twitchElementsRegistry.activeVideoEl;
+
+        clearInterval(this.#intervalId);
+        this.#toggleStatus(StreamStatuses.DEBUG);
+        this.#streamStatusService.forceBanPhase();
+        this.#canvasView.renderVideoFrame(videoEl);
+        this.#canvasView.enterDebugMode();
+    }
+
+    #exitDebugMode() {
+        this.#canvasView.exitDebugMode();
+        this.#checkStreamStatus(1);
+        this.#handleStreamStatusCheck();
     }
 
     #handleGiveawaysCheckbox() {
@@ -164,6 +202,7 @@ export class ExtensionContainer {
     }
 
     #toggleStatus(status) {
+        this.#el.classList.toggle('haf-extension-container--debug', status === StreamStatuses.DEBUG);
         this.#el.classList.toggle('haf-extension-container--checks-running', status === StreamStatuses.CHECKING);
         this.#el.classList.toggle('haf-extension-container--ban-phase', status === StreamStatuses.ANTICHEAT);
         this.#el.classList.toggle('haf-extension-container--no-ban-phase', status === StreamStatuses.NORMAL);

@@ -40,15 +40,15 @@ twitchElementsRegistry.onElementsReady(async () => {
 
     Container.set([
         { id: InjectionTokens.ELEMENTS_REGISTRY, value: twitchElementsRegistry },
-        { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userName) },
+        { id: InjectionTokens.CANVAS_VIEW, value: canvasView },
         { id: InjectionTokens.SETTINGS_SERVICE, value: settingsService },
+        { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userName) },
         { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatScrollableAreaEl) },
         { id: InjectionTokens.PLAYER_SERVICE, factory: () => TwitchPlayerService.create() },
         { id: InjectionTokens.CHAT_SERVICE, factory: () => TwitchChatService.create() },
-        { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create({ canvasView }) },
+        { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create() },
         { id: InjectionTokens.HITSQUAD_RUNNER, factory: () => HitsquadRunner.create() },
-        { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() },
-        { id: InjectionTokens.CANVAS_VIEW, value: canvasView }
+        { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() }
     ]);
 
     ChannelPointsClaimerService.create(twitchElementsRegistry.chatButtonsContainerEl);

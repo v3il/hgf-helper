@@ -26,6 +26,10 @@
     border-color: lightblue;
 }
 
+.haf-extension-container--debug {
+    border-color: saddlebrown;
+}
+
 .haf-extension-container__separator {
     height: 100%;
     width: 1px;

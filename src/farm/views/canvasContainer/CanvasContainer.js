@@ -9,8 +9,7 @@ export class CanvasContainer {
 
     #el;
     #canvasEl;
-    #isDebug = false;
-    #checks = [];
+    #debugModeChecks = [];
 
     constructor() {
         this.#el = this.#createElement();
@@ -18,33 +17,16 @@ export class CanvasContainer {
         this._clickHandler = this._clickHandler.bind(this);
     }
 
-    get el() {
-        return this.#el;
-    }
-
     get canvasEl() {
         return this.#canvasEl;
     }
 
     mount(rootEl) {
-        rootEl.appendChild(this.el);
+        rootEl.appendChild(this.#el);
         return this;
     }
 
-    #getActiveVideoEl() {
-        const isAdsPhase = !!document.querySelector('[data-a-target="video-ad-countdown"]');
-        const [mainVideoEl, alternativeVideoEl] = document.querySelectorAll('video');
-
-        if (isAdsPhase && !alternativeVideoEl) {
-            return null;
-        }
-
-        return isAdsPhase ? alternativeVideoEl : mainVideoEl;
-    }
-
-    renderVideoFrame() {
-        const videoEl = this.#getActiveVideoEl();
-
+    renderVideoFrame(videoEl) {
         this.#canvasEl.width = videoEl.clientWidth;
         this.#canvasEl.height = videoEl.clientHeight;
 
@@ -68,33 +50,27 @@ export class CanvasContainer {
         const [r, g, b] = context.getImageData(x, y, 1, 1).data;
         const color = ColorService.rgbToHex(r, g, b);
 
-        this.#checks.push({
+        this.#debugModeChecks.push({
             color,
             xPercent: (x / this.#canvasEl.width) * 100,
             yPercent: (y / this.#canvasEl.height) * 100
         });
 
-        console.info(`Logged: ${this.#checks.length}`);
+        console.info(`Logged: ${this.#debugModeChecks.length}`);
     }
 
-    #startDebug() {
-        this.#isDebug = true;
+    enterDebugMode() {
         this.#el.classList.add('haf-container--debug');
         this.#canvasEl.addEventListener('click', this._clickHandler);
     }
 
-    #endDebug() {
-        this.#isDebug = false;
+    exitDebugMode() {
         this.#el.classList.remove('haf-container--debug');
         this.#canvasEl.removeEventListener('click', this._clickHandler);
 
-        if (this.#checks.length) {
-            console.info(this.#checks);
-            this.#checks = [];
+        if (this.#debugModeChecks.length) {
+            console.info(this.#debugModeChecks);
+            this.#debugModeChecks = [];
         }
-    }
-
-    toggleDebug() {
-        this.#isDebug ? this.#endDebug() : this.#startDebug();
     }
 }
