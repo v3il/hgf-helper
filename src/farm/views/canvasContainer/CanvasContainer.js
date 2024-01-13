@@ -31,7 +31,20 @@ export class CanvasContainer {
         return this;
     }
 
-    renderVideoFrame(videoEl) {
+    #getActiveVideoEl() {
+        const isAdsPhase = !!document.querySelector('[data-a-target="video-ad-countdown"]');
+        const [mainVideoEl, alternativeVideoEl] = document.querySelectorAll('video');
+
+        if (isAdsPhase && !alternativeVideoEl) {
+            return null;
+        }
+
+        return isAdsPhase ? alternativeVideoEl : mainVideoEl;
+    }
+
+    renderVideoFrame() {
+        const videoEl = this.#getActiveVideoEl();
+
         this.#canvasEl.width = videoEl.clientWidth;
         this.#canvasEl.height = videoEl.clientHeight;
 

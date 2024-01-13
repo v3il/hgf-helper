@@ -1,7 +1,9 @@
 import './style.css';
 import { Container } from 'typedi';
 import template from './template.html?raw';
-import { Commands, InjectionTokens } from '../../consts';
+import {
+    Commands, InjectionTokens, StreamStatuses, Timing
+} from '../../consts';
 
 export class ExtensionContainer {
     static create() {
@@ -45,15 +47,28 @@ export class ExtensionContainer {
         this.#canvasView = canvasView;
         this.#chatObserver = chatObserver;
 
+        this.#checkStreamStatus(1);
+        this.#handleStreamStatusCheck();
         this.#listenEvents();
-        this.#toggleStatusClass();
+    }
+
+    #handleStreamStatusCheck() {
+        setInterval(() => {
+            this.#checkStreamStatus(3);
+        }, 20 * Timing.SECOND);
+    }
+
+    async #checkStreamStatus(checksCount) {
+        this.#toggleStatus(StreamStatuses.CHECKING);
+        this.#canvasView.renderVideoFrame();
+        await this.#streamStatusService.checkStreamStatus(checksCount);
+        this.#toggleStatus(this.#streamStatusService.isBanPhase ? StreamStatuses.ANTICHEAT : StreamStatuses.NORMAL);
     }
 
     #listenEvents() {
         this.#handleTriviaCheckbox();
         this.#handleGiveawaysCheckbox();
         this.#handleGiveawaysRemoteControl();
-        this.#handleCheckEvent();
         this.#handleKeydownHandler();
         this.#handleHitsquadButton();
         this.#handleDebugMode();
@@ -71,7 +86,7 @@ export class ExtensionContainer {
     }
 
     #handleGiveawaysCheckbox() {
-        const toggleGamesEl = this.el.querySelector('[data-toggle-giveaways]');
+        const toggleGamesEl = this.#el.querySelector('[data-toggle-giveaways]');
         const isHitsquadRunning = this.#settingsService.getSetting('hitsquadRunner');
 
         toggleGamesEl.checked = isHitsquadRunning;
@@ -87,7 +102,7 @@ export class ExtensionContainer {
     }
 
     #handleGiveawaysRemoteControl() {
-        const toggleGamesEl = this.el.querySelector('[data-toggle-giveaways]');
+        const toggleGamesEl = this.#el.querySelector('[data-toggle-giveaways]');
 
         this.#chatObserver.events.on('message', ({ message, isMe }) => {
             const isHitsquadCommand = message.startsWith(Commands.HITSQUAD);
@@ -109,7 +124,7 @@ export class ExtensionContainer {
     }
 
     #handleTriviaCheckbox() {
-        const toggleQuizEl = this.el.querySelector('[data-toggle-trivia]');
+        const toggleQuizEl = this.#el.querySelector('[data-toggle-trivia]');
         const isQuizRunning = this.#settingsService.getSetting('quizRunner');
 
         toggleQuizEl.checked = isQuizRunning;
@@ -121,12 +136,6 @@ export class ExtensionContainer {
         toggleQuizEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
             this.#settingsService.updateSettings({ quizRunner: target.checked });
-        });
-    }
-
-    #handleCheckEvent() {
-        this.#streamStatusService.events.on('check', () => {
-            this.#toggleStatusClass();
         });
     }
 
@@ -144,28 +153,20 @@ export class ExtensionContainer {
         const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
 
         sendHitsquadButton.addEventListener('click', (event) => {
-            if (!this.#streamStatusService.isBanPhase) {
+            if (!this.#streamStatusService.isBanPhase || event.ctrlKey) {
                 this.#twitchChatService.sendMessage(Commands.HITSQUAD, event.ctrlKey);
             }
         });
     }
 
-    get el() {
-        return this.#el;
-    }
-
     mount(rootEl) {
-        rootEl.appendChild(this.el);
+        rootEl.appendChild(this.#el);
     }
 
-    #toggleStatusClass() {
-        if (this.#streamStatusService.isChecksRunning) {
-            return this.el.classList.add('haf-extension-container--checks-running');
-        }
-
-        this.el.classList.remove('haf-extension-container--checks-running');
-        this.el.classList.toggle('haf-extension-container--ban-phase', this.#streamStatusService.isBanPhase);
-        this.el.classList.toggle('haf-extension-container--no-ban-phase', !this.#streamStatusService.isBanPhase);
+    #toggleStatus(status) {
+        this.#el.classList.toggle('haf-extension-container--checks-running', status === StreamStatuses.CHECKING);
+        this.#el.classList.toggle('haf-extension-container--ban-phase', status === StreamStatuses.ANTICHEAT);
+        this.#el.classList.toggle('haf-extension-container--no-ban-phase', status === StreamStatuses.NORMAL);
     }
 
     #createElement() {

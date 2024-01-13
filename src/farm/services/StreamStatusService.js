@@ -26,16 +26,20 @@ export class StreamStatusService {
         this.#events = events;
         this.#twitchPlayerService = twitchPlayerService;
 
-        this.#checkBanPhase(1);
+        // this.#checkBanPhase(1);
 
-        setInterval(async () => {
-            await this.#checkBanPhase(3);
-            await twitchPlayerService.decreaseVideoDelay();
-        }, 35 * Timing.SECOND);
+        // setInterval(async () => {
+        //     await this.#checkBanPhase(3);
+        //     await twitchPlayerService.decreaseVideoDelay();
+        // }, 35 * Timing.SECOND);
     }
 
     get events() {
         return this.#events;
+    }
+
+    async checkStreamStatus(checksCount) {
+        await this.#checkBanPhase(checksCount);
     }
 
     #getActiveVideoEl() {
