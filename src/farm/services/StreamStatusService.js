@@ -1,7 +1,6 @@
 import { Container } from 'typedi';
 import { ColorService } from './ColorService';
-import { InjectionTokens, Timing, antiCheatChecks } from '../consts';
-import { promisifiedSetTimeout } from '../utils';
+import { InjectionTokens, antiCheatChecks } from '../consts';
 
 export class StreamStatusService {
     static create() {
@@ -11,37 +10,14 @@ export class StreamStatusService {
     }
 
     #canvasView;
-    #isBan = false;
+    #isAntiCheatScreen = false;
 
     constructor({ canvasView }) {
         this.#canvasView = canvasView;
     }
 
-    async checkStreamStatus(checksCount) {
-        await this.#checkBanPhase(checksCount);
-    }
-
-    async #checkBanPhase(checksCount) {
-        this.#isBan = true;
-
-        console.error('-----------------------------');
-        console.error('Checks started');
-
-        for (let i = 0; i < checksCount; i++) {
-            console.error(`Check #${i + 1}:`);
-
-            if (this.#isAntiCheat()) {
-                return;
-            }
-
-            if (i !== checksCount - 1) {
-                await promisifiedSetTimeout(3 * Timing.SECOND);
-            }
-        }
-
-        console.error('Checks finished');
-
-        this.#isBan = false;
+    checkStreamStatus() {
+        this.#isAntiCheatScreen = this.#isAntiCheat();
     }
 
     #isAntiCheat() {
@@ -68,16 +44,20 @@ export class StreamStatusService {
             return isBlack ? true : similarity >= 0.85;
         });
 
-        console.error(`${failedChecks.length} / ${antiCheatChecks.length}`);
+        const date = new Date().toLocaleString();
+        const isAntiCheat = (failedChecks.length / antiCheatChecks.length) >= 0.5;
+        const method = isAntiCheat ? 'error' : 'info';
 
-        return failedChecks.length / antiCheatChecks.length >= 0.6;
+        console[method](`[${date}] ${failedChecks.length} / ${antiCheatChecks.length}`);
+
+        return isAntiCheat;
     }
 
     get isBanPhase() {
-        return this.#isBan;
+        return this.#isAntiCheatScreen;
     }
 
     forceBanPhase() {
-        this.#isBan = true;
+        this.#isAntiCheatScreen = true;
     }
 }

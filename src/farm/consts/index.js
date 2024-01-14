@@ -3,6 +3,5 @@ export { Commands } from './Commands';
 export { Timing } from './Timing';
 export { InjectionTokens } from './InjectionTokens';
 export { antiCheatChecks } from './antiCheatChecks';
-export { StreamStatuses } from './StreamStatuses';
 
 export const isDev = import.meta.env.MODE === 'development';

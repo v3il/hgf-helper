@@ -1,11 +1,12 @@
 import './style.css';
 import { Container } from 'typedi';
 import template from './template.html?raw';
-import {
-    Commands, InjectionTokens, StreamStatuses, Timing
-} from '../../consts';
+import { Commands, InjectionTokens, Timing } from '../../consts';
 
 export class ExtensionContainer {
+    static #ANTI_CHEAT_DURATION = 2 * Timing.MINUTE + 10 * Timing.SECOND;
+    static #CHECK_INTERVAL = 5 * Timing.SECOND;
+
     static create() {
         const hitsquadRunner = Container.get(InjectionTokens.HITSQUAD_RUNNER);
         const quizRunner = Container.get(InjectionTokens.QUIZ_RUNNER);
@@ -37,7 +38,7 @@ export class ExtensionContainer {
     #canvasView;
     #chatObserver;
     #twitchElementsRegistry;
-    #intervalId;
+    #timeoutId;
     #isDebug = false;
 
     constructor({
@@ -60,33 +61,34 @@ export class ExtensionContainer {
         this.#chatObserver = chatObserver;
         this.#twitchElementsRegistry = twitchElementsRegistry;
 
-        this.#checkStreamStatus(1);
         this.#handleStreamStatusCheck();
         this.#listenEvents();
     }
 
     #handleStreamStatusCheck() {
-        this.#intervalId = setInterval(() => {
-            this.#checkStreamStatus(3);
-        }, 20 * Timing.SECOND);
+        this.#checkStreamStatus();
+
+        const time = this.#streamStatusService.isBanPhase
+            ? ExtensionContainer.#ANTI_CHEAT_DURATION
+            : ExtensionContainer.#CHECK_INTERVAL;
+
+        this.#timeoutId = setTimeout(() => {
+            this.#handleStreamStatusCheck();
+        }, time);
     }
 
-    async #checkStreamStatus(checksCount) {
+    #checkStreamStatus() {
         const videoEl = this.#twitchElementsRegistry.activeVideoEl;
 
         if (!videoEl || videoEl.paused || videoEl.ended) {
             this.#streamStatusService.forceBanPhase();
-            this.#toggleStatus(StreamStatuses.ANTICHEAT);
+            this.#renderStatus();
             return;
         }
 
-        this.#toggleStatus(StreamStatuses.CHECKING);
         this.#canvasView.renderVideoFrame(videoEl);
-        await this.#streamStatusService.checkStreamStatus(checksCount);
-
-        if (!this.#isDebug) {
-            this.#toggleStatus(this.#streamStatusService.isBanPhase ? StreamStatuses.ANTICHEAT : StreamStatuses.NORMAL);
-        }
+        this.#streamStatusService.checkStreamStatus();
+        this.#renderStatus();
     }
 
     #listenEvents() {
@@ -113,16 +115,15 @@ export class ExtensionContainer {
     #enterDebugMode() {
         const videoEl = this.#twitchElementsRegistry.activeVideoEl;
 
-        clearInterval(this.#intervalId);
-        this.#toggleStatus(StreamStatuses.ANTICHEAT);
+        clearTimeout(this.#timeoutId);
         this.#streamStatusService.forceBanPhase();
+        this.#renderStatus();
         this.#canvasView.renderVideoFrame(videoEl);
         this.#canvasView.enterDebugMode();
     }
 
     #exitDebugMode() {
         this.#canvasView.exitDebugMode();
-        this.#checkStreamStatus(1);
         this.#handleStreamStatusCheck();
     }
 
@@ -204,10 +205,9 @@ export class ExtensionContainer {
         rootEl.appendChild(this.#el);
     }
 
-    #toggleStatus(status) {
-        this.#el.classList.toggle('haf-extension-container--checks-running', status === StreamStatuses.CHECKING);
-        this.#el.classList.toggle('haf-extension-container--ban-phase', status === StreamStatuses.ANTICHEAT);
-        this.#el.classList.toggle('haf-extension-container--no-ban-phase', status === StreamStatuses.NORMAL);
+    #renderStatus() {
+        this.#el.classList.toggle('haf-extension-container--anticheat', this.#streamStatusService.isBanPhase);
+        this.#el.classList.toggle('haf-extension-container--no-anticheat', !this.#streamStatusService.isBanPhase);
     }
 
     #createElement() {
