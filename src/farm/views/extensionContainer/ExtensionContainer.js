@@ -13,7 +13,7 @@ export class ExtensionContainer {
         const quizRunner = Container.get(InjectionTokens.QUIZ_RUNNER);
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
         const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
-        const settingsService = Container.get(InjectionTokens.SETTINGS_SERVICE);
+        const settingsService = Container.get(InjectionTokens.LOCAL_SETTINGS_SERVICE);
         const canvasView = Container.get(InjectionTokens.STREAM_STATUS_CANVAS);
         const chatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchElementsRegistry = Container.get(InjectionTokens.ELEMENTS_REGISTRY);

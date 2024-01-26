@@ -3,6 +3,7 @@ import {
     HitsquadRunner,
     QuizService,
     SettingsService,
+    LocalSettingsService,
     StreamStatusService,
     TwitchChatObserver,
     TwitchChatService,
@@ -35,8 +36,12 @@ twitchElementsRegistry.onElementsReady(async () => {
     const streamStatusCanvas = StreamStatusCanvas.create(document.body);
     const debugModeView = DebugModeView.create(document.body);
     const settingsService = SettingsService.create();
+    const localSettingsService = LocalSettingsService.create();
 
     await settingsService.loadSettings();
+    localSettingsService.loadSettings();
+
+    console.error(localSettingsService.settings);
 
     const { chatScrollableAreaEl } = twitchElementsRegistry;
 
@@ -45,6 +50,7 @@ twitchElementsRegistry.onElementsReady(async () => {
         { id: InjectionTokens.STREAM_STATUS_CANVAS, value: streamStatusCanvas },
         { id: InjectionTokens.DEBUG_MODE_VIEW, value: debugModeView },
         { id: InjectionTokens.SETTINGS_SERVICE, value: settingsService },
+        { id: InjectionTokens.LOCAL_SETTINGS_SERVICE, value: localSettingsService },
         { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userName) },
         { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatScrollableAreaEl) },
         { id: InjectionTokens.PLAYER_SERVICE, factory: () => TwitchPlayerService.create() },

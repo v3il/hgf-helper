@@ -8,3 +8,4 @@ export { QuizService } from './QuizService';
 export { ColorService } from './ColorService';
 export { ChannelPointsClaimerService } from './ChannelPointsClaimerService';
 export { TwitchElementsRegistry } from './TwitchElementsRegistry';
+export { LocalSettingsService } from './LocalSettingsService';

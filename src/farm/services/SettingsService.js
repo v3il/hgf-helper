@@ -6,8 +6,6 @@ export class SettingsService {
     static #STORAGE_KEY = 'hgf-helper.settings';
 
     static #DEFAULT_SETTINGS = {
-        hitsquadRunner: false,
-        quizRunner: false,
         jsonBinUrl: '',
         jsonBinMasterKey: '',
         jsonBinAccessKey: ''
