@@ -23,6 +23,7 @@ export class StreamStatusService {
 
         if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
             this.#isVideoBroken = true;
+            this.#log('Video is broken', 'warn');
             return;
         }
 
@@ -54,13 +55,16 @@ export class StreamStatusService {
             return isBlack ? true : similarity >= 0.85;
         });
 
-        const date = new Date().toLocaleString();
         const isAntiCheat = (failedChecks.length / antiCheatChecks.length) >= 0.5;
-        const method = isAntiCheat ? 'error' : 'info';
 
-        console[method](`[${date}] ${failedChecks.length} / ${antiCheatChecks.length}`);
+        this.#log(`${failedChecks.length} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
 
         return isAntiCheat;
+    }
+
+    #log(message, type) {
+        const date = new Date().toLocaleString();
+        console[type](`[${date}]: ${message}`);
     }
 
     get isVideoBroken() {

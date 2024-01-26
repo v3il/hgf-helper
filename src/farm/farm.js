@@ -41,8 +41,6 @@ twitchElementsRegistry.onElementsReady(async () => {
     await settingsService.loadSettings();
     localSettingsService.loadSettings();
 
-    console.error(localSettingsService.settings);
-
     const { chatScrollableAreaEl } = twitchElementsRegistry;
 
     Container.set([
