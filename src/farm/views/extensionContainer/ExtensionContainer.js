@@ -6,6 +6,7 @@ import { Commands, InjectionTokens, Timing } from '../../consts';
 export class ExtensionContainer {
     static #ANTI_CHEAT_DURATION = 2 * Timing.MINUTE + 10 * Timing.SECOND;
     static #CHECK_INTERVAL = 3 * Timing.SECOND;
+    static #DECREASE_DELAY_ROUND = 20; // once a minute
 
     static create() {
         const hitsquadRunner = Container.get(InjectionTokens.HITSQUAD_RUNNER);
@@ -17,6 +18,7 @@ export class ExtensionContainer {
         const chatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchElementsRegistry = Container.get(InjectionTokens.ELEMENTS_REGISTRY);
         const debugModeView = Container.get(InjectionTokens.DEBUG_MODE_VIEW);
+        const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
 
         return new ExtensionContainer({
             hitsquadRunner,
@@ -27,7 +29,8 @@ export class ExtensionContainer {
             canvasView,
             chatObserver,
             twitchElementsRegistry,
-            debugModeView
+            debugModeView,
+            twitchPlayerService
         });
     }
 
@@ -42,7 +45,10 @@ export class ExtensionContainer {
     #twitchElementsRegistry;
     #timeoutId;
     #debugModeView;
+    #twitchPlayerService;
+
     #isDebug = false;
+    #checkId = 1;
 
     constructor({
         streamStatusService,
@@ -53,7 +59,8 @@ export class ExtensionContainer {
         canvasView,
         chatObserver,
         twitchElementsRegistry,
-        debugModeView
+        debugModeView,
+        twitchPlayerService
     }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
@@ -65,19 +72,24 @@ export class ExtensionContainer {
         this.#chatObserver = chatObserver;
         this.#twitchElementsRegistry = twitchElementsRegistry;
         this.#debugModeView = debugModeView;
+        this.#twitchPlayerService = twitchPlayerService;
 
         this.#handleStreamStatusCheck();
         this.#listenEvents();
     }
 
     #handleStreamStatusCheck() {
+        this.#checkId++;
+
         this.#checkStreamStatus();
 
         const time = this.#streamStatusService.isAntiCheatScreen
             ? ExtensionContainer.#ANTI_CHEAT_DURATION
             : ExtensionContainer.#CHECK_INTERVAL;
 
-        console.error(time);
+        if (this.#checkId % ExtensionContainer.#DECREASE_DELAY_ROUND === 0) {
+            this.#twitchPlayerService.decreaseVideoDelay();
+        }
 
         this.#timeoutId = setTimeout(() => {
             this.#handleStreamStatusCheck();

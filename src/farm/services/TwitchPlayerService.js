@@ -19,7 +19,7 @@ export class TwitchPlayerService {
         qualityRadios.at(-3)?.click();
         this.#settingsButton.click();
 
-        await promisifiedSetTimeout(5000);
+        await promisifiedSetTimeout(3000);
         await this.#gotoQualitySettings();
 
         qualityRadios = this.#getQualitySettingsButtonEls();
