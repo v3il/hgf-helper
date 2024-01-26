@@ -140,7 +140,7 @@ export class ExtensionContainer {
     }
 
     #handleGiveawaysRemoteControl() {
-        const toggleGamesEl = this.#el.querySelector('[data-toggle-giveaways]');
+        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
 
         this.#chatObserver.events.on('message', ({ message, isMe }) => {
             const isHitsquadCommand = message.startsWith(Commands.HITSQUAD);
@@ -152,11 +152,9 @@ export class ExtensionContainer {
             const commandSuffix = message.split(' ')[1];
 
             if (commandSuffix) {
-                const isEnabled = commandSuffix.length % 2 === 0;
-
-                isEnabled ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
-                this.#settingsService.updateSettings({ hitsquadRunner: isEnabled });
-                toggleGamesEl.checked = isEnabled;
+                this.#hitsquadRunner.stop();
+                this.#settingsService.updateSettings({ hitsquadRunner: false });
+                toggleGiveawaysEl.checked = false;
             }
         });
     }
