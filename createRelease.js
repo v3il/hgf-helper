@@ -5,6 +5,7 @@ import { globSync } from 'glob';
 import archiver from 'archiver';
 
 const { version } = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url)));
+const manifest = JSON.parse(fs.readFileSync(new URL('./manifest.json', import.meta.url)));
 const ARCHIVE_NAME = 'hgf-helper';
 
 const filename = fileURLToPath(import.meta.url);
@@ -20,8 +21,10 @@ for (const existingArchive of existingArchives) {
 
 fs.mkdirSync(releaseDir);
 
+manifest.description = `${manifest.name} (release v${version})`;
+fs.writeFileSync(`${releaseDir}/manifest.json`, JSON.stringify(manifest));
+
 fs.cpSync('./dist', `${releaseDir}/dist`, { recursive: true });
-fs.cpSync('./manifest.json', `${releaseDir}/manifest.json`);
 fs.cpSync('./icon.png', `${releaseDir}/icon.png`);
 fs.cpSync('./popup.html', `${releaseDir}/popup.html`);
 
