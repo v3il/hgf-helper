@@ -14,12 +14,16 @@
     color: white;
 }
 
-.haf-extension-container--anticheat {
+.haf-extension-container.anticheat {
     border-color: lightcoral;
 }
 
-.haf-extension-container--no-anticheat {
+.haf-extension-container.safe {
     border-color: lightgreen;
+}
+
+.haf-extension-container.broken {
+    border-color: lightblue;
 }
 
 .haf-extension-container__separator {

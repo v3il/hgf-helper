@@ -73,9 +73,11 @@ export class ExtensionContainer {
     #handleStreamStatusCheck() {
         this.#checkStreamStatus();
 
-        const time = this.#streamStatusService.isBanPhase
+        const time = this.#streamStatusService.isAntiCheatScreen
             ? ExtensionContainer.#ANTI_CHEAT_DURATION
             : ExtensionContainer.#CHECK_INTERVAL;
+
+        console.error(time);
 
         this.#timeoutId = setTimeout(() => {
             this.#handleStreamStatusCheck();
@@ -85,14 +87,7 @@ export class ExtensionContainer {
     #checkStreamStatus() {
         const videoEl = this.#twitchElementsRegistry.activeVideoEl;
 
-        if (!videoEl || videoEl.paused || videoEl.ended) {
-            this.#streamStatusService.forceBanPhase();
-            this.#renderStatus();
-            return;
-        }
-
-        this.#canvasView.renderVideoFrame(videoEl);
-        this.#streamStatusService.checkStreamStatus();
+        this.#streamStatusService.checkStreamStatus(videoEl);
         this.#renderStatus();
     }
 
@@ -196,7 +191,7 @@ export class ExtensionContainer {
         const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
 
         sendHitsquadButton.addEventListener('click', (event) => {
-            if (!this.#streamStatusService.isBanPhase || event.ctrlKey) {
+            if (this.#streamStatusService.isAllowedToSendMessage || event.ctrlKey) {
                 this.#twitchChatService.sendMessage(Commands.HITSQUAD, event.ctrlKey);
             }
         });
@@ -207,8 +202,9 @@ export class ExtensionContainer {
     }
 
     #renderStatus() {
-        this.#el.classList.toggle('haf-extension-container--anticheat', this.#streamStatusService.isBanPhase);
-        this.#el.classList.toggle('haf-extension-container--no-anticheat', !this.#streamStatusService.isBanPhase);
+        this.#el.classList.toggle('broken', this.#streamStatusService.isVideoBroken);
+        this.#el.classList.toggle('anticheat', this.#streamStatusService.isAntiCheatScreen);
+        this.#el.classList.toggle('safe', this.#streamStatusService.isAllowedToSendMessage);
     }
 
     #createElement() {

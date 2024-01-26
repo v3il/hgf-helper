@@ -10,13 +10,23 @@ export class StreamStatusService {
     }
 
     #canvasView;
+    #isVideoBroken = false;
     #isAntiCheatScreen = false;
 
     constructor({ canvasView }) {
         this.#canvasView = canvasView;
     }
 
-    checkStreamStatus() {
+    checkStreamStatus(activeVideoEl) {
+        this.#isAntiCheatScreen = false;
+        this.#isVideoBroken = false;
+
+        if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
+            this.#isVideoBroken = true;
+            return;
+        }
+
+        this.#canvasView.renderVideoFrame(activeVideoEl);
         this.#isAntiCheatScreen = this.#isAntiCheat();
     }
 
@@ -53,11 +63,15 @@ export class StreamStatusService {
         return isAntiCheat;
     }
 
-    get isBanPhase() {
+    get isVideoBroken() {
+        return this.#isVideoBroken;
+    }
+
+    get isAntiCheatScreen() {
         return this.#isAntiCheatScreen;
     }
 
-    forceBanPhase() {
-        this.#isAntiCheatScreen = true;
+    get isAllowedToSendMessage() {
+        return !this.#isVideoBroken && !this.#isAntiCheatScreen;
     }
 }

@@ -68,7 +68,7 @@ export class HitsquadRunner {
             return;
         }
 
-        if (this.#streamStatusService.isBanPhase) {
+        if (!this.#streamStatusService.isAllowedToSendMessage) {
             await promisifiedSetTimeout(HitsquadRunner.#BAN_PHASE_DELAY);
             return this.#sendCommands();
         }
