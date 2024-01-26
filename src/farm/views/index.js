@@ -1,2 +1,2 @@
-export { CanvasContainer } from './canvasContainer/CanvasContainer';
+export { StreamStatusCanvas } from './canvasContainer/StreamStatusCanvas';
 export { ExtensionContainer } from './extensionContainer/ExtensionContainer';

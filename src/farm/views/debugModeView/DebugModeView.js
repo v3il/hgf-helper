@@ -2,9 +2,9 @@ import './style.css';
 import template from './template.html?raw';
 import { ColorService } from '../../services';
 
-export class CanvasContainer {
+export class DebugModeView {
     static create(rootEl) {
-        return new CanvasContainer().mount(rootEl);
+        return new DebugModeView().mount(rootEl);
     }
 
     #el;
@@ -13,12 +13,8 @@ export class CanvasContainer {
 
     constructor() {
         this.#el = this.#createElement();
-        this.#canvasEl = this.#el.querySelector('[data-canvas]');
+        this.#canvasEl = this.#el.querySelector('[data-debug-mode-canvas]');
         this._clickHandler = this._clickHandler.bind(this);
-    }
-
-    get canvasEl() {
-        return this.#canvasEl;
     }
 
     mount(rootEl) {
@@ -60,12 +56,12 @@ export class CanvasContainer {
     }
 
     enterDebugMode() {
-        this.#el.classList.add('haf-container--debug');
+        this.#el.classList.add('visible');
         this.#canvasEl.addEventListener('click', this._clickHandler);
     }
 
     exitDebugMode() {
-        this.#el.classList.remove('haf-container--debug');
+        this.#el.classList.remove('visible');
         this.#canvasEl.removeEventListener('click', this._clickHandler);
 
         if (this.#debugModeChecks.length) {

@@ -4,7 +4,7 @@ import { InjectionTokens, antiCheatChecks } from '../consts';
 
 export class StreamStatusService {
     static create() {
-        const canvasView = Container.get(InjectionTokens.CANVAS_VIEW);
+        const canvasView = Container.get(InjectionTokens.STREAM_STATUS_CANVAS);
 
         return new StreamStatusService({ canvasView });
     }

@@ -13,9 +13,10 @@ export class ExtensionContainer {
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
         const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
         const settingsService = Container.get(InjectionTokens.SETTINGS_SERVICE);
-        const canvasView = Container.get(InjectionTokens.CANVAS_VIEW);
+        const canvasView = Container.get(InjectionTokens.STREAM_STATUS_CANVAS);
         const chatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchElementsRegistry = Container.get(InjectionTokens.ELEMENTS_REGISTRY);
+        const debugModeView = Container.get(InjectionTokens.DEBUG_MODE_VIEW);
 
         return new ExtensionContainer({
             hitsquadRunner,
@@ -25,7 +26,8 @@ export class ExtensionContainer {
             quizRunner,
             canvasView,
             chatObserver,
-            twitchElementsRegistry
+            twitchElementsRegistry,
+            debugModeView
         });
     }
 
@@ -39,6 +41,7 @@ export class ExtensionContainer {
     #chatObserver;
     #twitchElementsRegistry;
     #timeoutId;
+    #debugModeView;
     #isDebug = false;
 
     constructor({
@@ -49,7 +52,8 @@ export class ExtensionContainer {
         quizRunner,
         canvasView,
         chatObserver,
-        twitchElementsRegistry
+        twitchElementsRegistry,
+        debugModeView
     }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
@@ -60,6 +64,7 @@ export class ExtensionContainer {
         this.#canvasView = canvasView;
         this.#chatObserver = chatObserver;
         this.#twitchElementsRegistry = twitchElementsRegistry;
+        this.#debugModeView = debugModeView;
 
         this.#handleStreamStatusCheck();
         this.#listenEvents();
@@ -92,10 +97,10 @@ export class ExtensionContainer {
     }
 
     #listenEvents() {
-        this.#handleTriviaCheckbox();
+        // this.#handleTriviaCheckbox();
         this.#handleGiveawaysCheckbox();
         this.#handleGiveawaysRemoteControl();
-        this.#handleKeydownHandler();
+        // this.#handleKeydownHandler();
         this.#handleHitsquadButton();
         this.#handleDebugMode();
     }
@@ -115,16 +120,19 @@ export class ExtensionContainer {
     #enterDebugMode() {
         const videoEl = this.#twitchElementsRegistry.activeVideoEl;
 
-        clearTimeout(this.#timeoutId);
-        this.#streamStatusService.forceBanPhase();
-        this.#renderStatus();
-        this.#canvasView.renderVideoFrame(videoEl);
-        this.#canvasView.enterDebugMode();
+        this.#debugModeView.renderVideoFrame(videoEl);
+        this.#debugModeView.enterDebugMode();
+
+        // clearTimeout(this.#timeoutId);
+        // this.#streamStatusService.forceBanPhase();
+        // this.#renderStatus();
+        // this.#canvasView.renderVideoFrame(videoEl);
+        // this.#canvasView.enterDebugMode();
     }
 
     #exitDebugMode() {
-        this.#canvasView.exitDebugMode();
-        this.#handleStreamStatusCheck();
+        this.#debugModeView.exitDebugMode();
+        // this.#handleStreamStatusCheck();
     }
 
     #handleGiveawaysCheckbox() {

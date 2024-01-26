@@ -10,10 +10,11 @@ import {
     ChannelPointsClaimerService,
     TwitchElementsRegistry
 } from './services';
-import { CanvasContainer, ExtensionContainer } from './views';
+import { StreamStatusCanvas, ExtensionContainer } from './views';
 import { InjectionTokens, isDev } from './consts';
 import { TwitchUser } from './models';
 import 'reflect-metadata';
+import { DebugModeView } from './views/debugModeView/DebugModeView';
 
 function getUserName(userDropdownToggleEl) {
     userDropdownToggleEl.click();
@@ -31,7 +32,8 @@ twitchElementsRegistry.onElementsReady(async () => {
     console.info(`HGF helper is running in ${isDev ? 'dev' : 'prod'} mode`);
 
     const userName = getUserName(twitchElementsRegistry.userDropdownToggleEl);
-    const canvasView = CanvasContainer.create(document.body);
+    const streamStatusCanvas = StreamStatusCanvas.create(document.body);
+    const debugModeView = DebugModeView.create(document.body);
     const settingsService = SettingsService.create();
 
     await settingsService.loadSettings();
@@ -40,7 +42,8 @@ twitchElementsRegistry.onElementsReady(async () => {
 
     Container.set([
         { id: InjectionTokens.ELEMENTS_REGISTRY, value: twitchElementsRegistry },
-        { id: InjectionTokens.CANVAS_VIEW, value: canvasView },
+        { id: InjectionTokens.STREAM_STATUS_CANVAS, value: streamStatusCanvas },
+        { id: InjectionTokens.DEBUG_MODE_VIEW, value: debugModeView },
         { id: InjectionTokens.SETTINGS_SERVICE, value: settingsService },
         { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userName) },
         { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatScrollableAreaEl) },
