@@ -5,7 +5,7 @@ import { Commands, InjectionTokens, Timing } from '../../consts';
 
 export class ExtensionContainer {
     static #ANTI_CHEAT_DURATION = 2 * Timing.MINUTE + 10 * Timing.SECOND;
-    static #CHECK_INTERVAL = 5 * Timing.SECOND;
+    static #CHECK_INTERVAL = 3 * Timing.SECOND;
 
     static create() {
         const hitsquadRunner = Container.get(InjectionTokens.HITSQUAD_RUNNER);
@@ -98,9 +98,9 @@ export class ExtensionContainer {
 
     #listenEvents() {
         // this.#handleTriviaCheckbox();
+        // this.#handleTriviaAnswersHandler();
         this.#handleGiveawaysCheckbox();
         this.#handleGiveawaysRemoteControl();
-        // this.#handleKeydownHandler();
         this.#handleHitsquadButton();
         this.#handleDebugMode();
     }
@@ -122,17 +122,10 @@ export class ExtensionContainer {
 
         this.#debugModeView.renderVideoFrame(videoEl);
         this.#debugModeView.enterDebugMode();
-
-        // clearTimeout(this.#timeoutId);
-        // this.#streamStatusService.forceBanPhase();
-        // this.#renderStatus();
-        // this.#canvasView.renderVideoFrame(videoEl);
-        // this.#canvasView.enterDebugMode();
     }
 
     #exitDebugMode() {
         this.#debugModeView.exitDebugMode();
-        // this.#handleStreamStatusCheck();
     }
 
     #handleGiveawaysCheckbox() {
@@ -167,7 +160,7 @@ export class ExtensionContainer {
                 const isEnabled = commandSuffix.length % 2 === 0;
 
                 isEnabled ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
-                this.#settingsService.setSetting('hitsquadRunner', isEnabled);
+                this.#settingsService.updateSettings({ hitsquadRunner: isEnabled });
                 toggleGamesEl.checked = isEnabled;
             }
         });
@@ -189,7 +182,7 @@ export class ExtensionContainer {
         });
     }
 
-    #handleKeydownHandler() {
+    #handleTriviaAnswersHandler() {
         window.document.addEventListener('keydown', (event) => {
             const command = `!answer${event.key}`;
 
