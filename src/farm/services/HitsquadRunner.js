@@ -1,7 +1,7 @@
 import { Container } from 'typedi';
 import { generateMiniGameDelay, promisifiedSetTimeout } from '../utils';
 import {
-    Commands, InjectionTokens, MessageTemplates, Timing
+    Commands, InjectionTokens, MessageTemplates, Timing, GlobalVariables
 } from '../consts';
 
 export class HitsquadRunner {
@@ -17,9 +17,7 @@ export class HitsquadRunner {
         });
     }
 
-    static #BAN_PHASE_DELAY = 20 * Timing.SECOND;
-    static #HITSQUAD_ENTRIES_ON_SCREEN = 12;
-    static #ENTRIES_COUNT_TARGET = Math.floor(HitsquadRunner.#HITSQUAD_ENTRIES_ON_SCREEN / 2) + 3;
+    static #ENTRIES_COUNT_TARGET = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
 
     #completedGamesCount = 0;
 
@@ -69,7 +67,7 @@ export class HitsquadRunner {
         }
 
         if (!this.#streamStatusService.isAllowedToSendMessage) {
-            await promisifiedSetTimeout(HitsquadRunner.#BAN_PHASE_DELAY);
+            await promisifiedSetTimeout(20 * Timing.SECOND);
             return this.#sendCommands();
         }
 

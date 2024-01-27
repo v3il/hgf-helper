@@ -1,12 +1,11 @@
 import './style.css';
 import { Container } from 'typedi';
 import template from './template.html?raw';
-import { Commands, InjectionTokens, Timing } from '../../consts';
+import {
+    Commands, InjectionTokens, Timing, GlobalVariables
+} from '../../consts';
 
 export class ExtensionContainer {
-    static #DECREASE_DELAY_ROUND = 20; // once a minute
-    static #RELOAD_PAGE_ROUNDS = 10;
-
     static create() {
         const hitsquadRunner = Container.get(InjectionTokens.HITSQUAD_RUNNER);
         const quizRunner = Container.get(InjectionTokens.QUIZ_RUNNER);
@@ -86,7 +85,7 @@ export class ExtensionContainer {
         if (this.#streamStatusService.isVideoBroken) {
             this.#brokenVideoRoundsCount++;
 
-            if (this.#brokenVideoRoundsCount >= ExtensionContainer.#RELOAD_PAGE_ROUNDS) {
+            if (this.#brokenVideoRoundsCount >= GlobalVariables.PAGE_RELOAD_ROUNDS) {
                 return window.location.reload();
             }
         } else {
@@ -95,7 +94,7 @@ export class ExtensionContainer {
 
         const nextCheckDelay = this.#getNextCheckDelay();
 
-        if (this.#checkId % ExtensionContainer.#DECREASE_DELAY_ROUND === 0) {
+        if (this.#checkId % GlobalVariables.DECREASE_DELAY_ROUNDS === 0) {
             this.#twitchPlayerService.decreaseVideoDelay();
         }
 
@@ -106,7 +105,7 @@ export class ExtensionContainer {
 
     #getNextCheckDelay() {
         if (this.#streamStatusService.isAntiCheatScreen) {
-            return 2 * Timing.MINUTE + 10 * Timing.SECOND;
+            return GlobalVariables.ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
         }
 
         if (this.#streamStatusService.isVideoBroken) {
