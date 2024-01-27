@@ -20,7 +20,7 @@ for (const existingArchive of existingArchives) {
 
 fs.mkdirSync(releaseDir);
 
-manifest.description = `${manifest.name} (release v${manifest.version})`;
+manifest.description = `${manifest.name} (build ${manifest.version})`;
 fs.writeFileSync(`${releaseDir}/manifest.json`, JSON.stringify(manifest));
 
 fs.cpSync('./dist', `${releaseDir}/dist`, { recursive: true });
