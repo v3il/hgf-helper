@@ -1,114 +1,45 @@
 import { Container } from 'typedi';
 import { ColorService } from './ColorService';
-import { EventEmitter } from '../models/EventsEmitter';
-import { InjectionTokens, Timing, antiCheatChecks } from '../consts';
-import { promisifiedSetTimeout } from '../utils';
+import { InjectionTokens, antiCheatChecks } from '../consts';
 
 export class StreamStatusService {
-    static create({ canvasView }) {
-        const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
+    static create() {
+        const canvasView = Container.get(InjectionTokens.STREAM_STATUS_CANVAS);
 
-        return new StreamStatusService({
-            canvasView,
-            twitchPlayerService,
-            events: EventEmitter.create()
-        });
+        return new StreamStatusService({ canvasView });
     }
 
     #canvasView;
-    #events;
-    #twitchPlayerService;
-    #isBan = false;
-    #isChecksRunning = false;
+    #isVideoBroken = false;
+    #isAntiCheatScreen = false;
 
-    constructor({ canvasView, twitchPlayerService, events }) {
+    constructor({ canvasView }) {
         this.#canvasView = canvasView;
-        this.#events = events;
-        this.#twitchPlayerService = twitchPlayerService;
-
-        this.#checkBanPhase(1);
-
-        setInterval(async () => {
-            await this.#checkBanPhase(3);
-            await twitchPlayerService.decreaseVideoDelay();
-        }, 35 * Timing.SECOND);
     }
 
-    get events() {
-        return this.#events;
-    }
+    checkStreamStatus(activeVideoEl) {
+        this.#isAntiCheatScreen = false;
+        this.#isVideoBroken = false;
 
-    #getActiveVideoEl() {
-        const isAdsPhase = this.#isAdsPhase();
-        const [mainVideoEl, alternativeVideoEl] = document.querySelectorAll('video');
-
-        if (isAdsPhase && !alternativeVideoEl) {
-            return null;
+        if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
+            this.#isVideoBroken = true;
+            this.#log('Video is broken', 'warn');
+            return;
         }
 
-        return isAdsPhase ? alternativeVideoEl : mainVideoEl;
-    }
-
-    #isAdsPhase() {
-        return document.querySelector('[data-a-target="video-ad-countdown"]') !== null;
-    }
-
-    async #checkBanPhase(checksCount) {
-        this.#isBan = true;
-        this.#isChecksRunning = true;
-        this.#events.emit('check');
-
-        console.error('-----------------------------');
-        console.error('Checks started');
-
-        for (let i = 0; i < checksCount; i++) {
-            console.error(`Check #${i + 1}:`);
-
-            if (this.#isAntiCheat()) {
-                this.#isChecksRunning = false;
-                return this.#events.emit('check');
-            }
-
-            await promisifiedSetTimeout(3 * Timing.SECOND);
-        }
-
-        console.error('Checks finished');
-
-        this.#isBan = false;
-        this.#isChecksRunning = false;
-        this.#events.emit('check');
-    }
-
-    renderVideoFrame() {
-        const videoEl = this.#getActiveVideoEl();
-        this.#canvasView.renderVideoFrame(videoEl);
+        this.#canvasView.renderVideoFrame(activeVideoEl);
+        this.#isAntiCheatScreen = this.#isAntiCheat();
     }
 
     #isAntiCheat() {
-        const videoEl = this.#getActiveVideoEl();
-
-        // Some problems with video
-        if (!videoEl) {
-            console.error('video element not found');
-            return true;
-        }
-
-        // Stream went offline
-        if (videoEl.paused || videoEl.ended) {
-            console.error('stream went offline');
-            return true;
-        }
-
-        this.#canvasView.renderVideoFrame(videoEl);
-
-        const canvas = this.#canvasView.canvasEl;
-        const { width, height } = canvas;
+        const { canvasEl } = this.#canvasView;
+        const { width, height } = canvasEl;
 
         const checksResults = antiCheatChecks.map(({ xPercent, yPercent, color }) => {
             const x = Math.floor((xPercent * width) / 100);
             const y = Math.floor((yPercent * height) / 100);
 
-            const context = canvas.getContext('2d', { willReadFrequently: true });
+            const context = canvasEl.getContext('2d', { willReadFrequently: true });
             const [r, g, b] = context.getImageData(x, y, 1, 1).data;
             const pixelHexColor = ColorService.rgbToHex(r, g, b);
 
@@ -124,16 +55,27 @@ export class StreamStatusService {
             return isBlack ? true : similarity >= 0.85;
         });
 
-        console.error(`${failedChecks.length} / ${antiCheatChecks.length}`);
+        const isAntiCheat = (failedChecks.length / antiCheatChecks.length) >= 0.5;
 
-        return failedChecks.length / antiCheatChecks.length >= 0.6;
+        this.#log(`${failedChecks.length} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
+
+        return isAntiCheat;
     }
 
-    get isBanPhase() {
-        return this.#isBan;
+    #log(message, type) {
+        const date = new Date().toLocaleString();
+        console[type](`[${date}]: ${message}`);
     }
 
-    get isChecksRunning() {
-        return this.#isChecksRunning;
+    get isVideoBroken() {
+        return this.#isVideoBroken;
+    }
+
+    get isAntiCheatScreen() {
+        return this.#isAntiCheatScreen;
+    }
+
+    get isAllowedToSendMessage() {
+        return !this.#isVideoBroken && !this.#isAntiCheatScreen;
     }
 }

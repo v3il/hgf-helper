@@ -5,5 +5,5 @@ export function generateDelay(min, max) {
 }
 
 export function generateMiniGameDelay() {
-    return generateDelay(Timing.MINUTE, 2.5 * Timing.MINUTE);
+    return generateDelay(10 * Timing.SECOND, Timing.MINUTE);
 }

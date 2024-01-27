@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "HGF Helper",
-  "version": "1.0.4",
-  "description": "HGF Helper",
+  "version": "1.0.5",
+  "description": "HGF Helper (dev)",
 
   "content_scripts": [
     {

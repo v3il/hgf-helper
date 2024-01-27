@@ -14,16 +14,16 @@
     color: white;
 }
 
-.haf-extension-container--ban-phase {
+.haf-extension-container.anticheat {
     border-color: lightcoral;
 }
 
-.haf-extension-container--no-ban-phase {
+.haf-extension-container.safe {
     border-color: lightgreen;
 }
 
-.haf-extension-container--checks-running {
-    border-color: lightblue;
+.haf-extension-container.broken {
+    border-color: lightsalmon;
 }
 
 .haf-extension-container__separator {
@@ -44,4 +44,8 @@
 
 .mr-2 {
     margin-right: 8px;
+}
+
+.hidden {
+    display: none;
 }

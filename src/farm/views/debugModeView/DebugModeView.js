@@ -2,32 +2,23 @@ import './style.css';
 import template from './template.html?raw';
 import { ColorService } from '../../services';
 
-export class CanvasContainer {
+export class DebugModeView {
     static create(rootEl) {
-        return new CanvasContainer().mount(rootEl);
+        return new DebugModeView().mount(rootEl);
     }
 
     #el;
     #canvasEl;
-    #isDebug = false;
-    #checks = [];
+    #debugModeChecks = [];
 
     constructor() {
         this.#el = this.#createElement();
-        this.#canvasEl = this.#el.querySelector('[data-canvas]');
+        this.#canvasEl = this.#el.querySelector('[data-debug-mode-canvas]');
         this._clickHandler = this._clickHandler.bind(this);
     }
 
-    get el() {
-        return this.#el;
-    }
-
-    get canvasEl() {
-        return this.#canvasEl;
-    }
-
     mount(rootEl) {
-        rootEl.appendChild(this.el);
+        rootEl.appendChild(this.#el);
         return this;
     }
 
@@ -55,33 +46,27 @@ export class CanvasContainer {
         const [r, g, b] = context.getImageData(x, y, 1, 1).data;
         const color = ColorService.rgbToHex(r, g, b);
 
-        this.#checks.push({
+        this.#debugModeChecks.push({
             color,
             xPercent: (x / this.#canvasEl.width) * 100,
             yPercent: (y / this.#canvasEl.height) * 100
         });
 
-        console.info(`Logged: ${this.#checks.length}`);
+        console.info(`Logged: ${this.#debugModeChecks.length}`);
     }
 
-    #startDebug() {
-        this.#isDebug = true;
-        this.#el.classList.add('haf-container--debug');
+    enterDebugMode() {
+        this.#el.classList.add('visible');
         this.#canvasEl.addEventListener('click', this._clickHandler);
     }
 
-    #endDebug() {
-        this.#isDebug = false;
-        this.#el.classList.remove('haf-container--debug');
+    exitDebugMode() {
+        this.#el.classList.remove('visible');
         this.#canvasEl.removeEventListener('click', this._clickHandler);
 
-        if (this.#checks.length) {
-            console.info(this.#checks);
-            this.#checks = [];
+        if (this.#debugModeChecks.length) {
+            console.info(this.#debugModeChecks);
+            this.#debugModeChecks = [];
         }
-    }
-
-    toggleDebug() {
-        this.#isDebug ? this.#endDebug() : this.#startDebug();
     }
 }
