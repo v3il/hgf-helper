@@ -46,7 +46,6 @@ export class ExtensionContainer {
     #twitchPlayerService;
 
     #isDebug = false;
-    #checkId = 1;
     #brokenVideoRoundsCount = 0;
 
     constructor({
@@ -74,12 +73,16 @@ export class ExtensionContainer {
         this.#twitchPlayerService = twitchPlayerService;
 
         this.#handleStreamStatusCheck();
-        this.#listenEvents();
+        // this.#handleTriviaCheckbox();
+        // this.#handleTriviaAnswersHandler();
+        this.#handleGiveawaysCheckbox();
+        this.#handleGiveawaysRemoteControl();
+        this.#handleHitsquadButton();
+        this.#handleDebugMode();
+        this.#initRemoveDelayHandler();
     }
 
     #handleStreamStatusCheck() {
-        this.#checkId++;
-
         this.#checkStreamStatus();
 
         if (this.#streamStatusService.isVideoBroken) {
@@ -94,10 +97,6 @@ export class ExtensionContainer {
 
         const nextCheckDelay = this.#getNextCheckDelay();
 
-        if (this.#checkId % GlobalVariables.DECREASE_DELAY_ROUNDS === 0) {
-            this.#twitchPlayerService.decreaseVideoDelay();
-        }
-
         this.#timeoutId = setTimeout(() => {
             this.#handleStreamStatusCheck();
         }, nextCheckDelay);
@@ -108,11 +107,7 @@ export class ExtensionContainer {
             return GlobalVariables.ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
         }
 
-        if (this.#streamStatusService.isVideoBroken) {
-            return 20 * Timing.SECOND;
-        }
-
-        return 3 * Timing.SECOND;
+        return 5 * Timing.SECOND;
     }
 
     #checkStreamStatus() {
@@ -120,15 +115,6 @@ export class ExtensionContainer {
 
         this.#streamStatusService.checkStreamStatus(videoEl);
         this.#renderStatus();
-    }
-
-    #listenEvents() {
-        // this.#handleTriviaCheckbox();
-        // this.#handleTriviaAnswersHandler();
-        this.#handleGiveawaysCheckbox();
-        this.#handleGiveawaysRemoteControl();
-        this.#handleHitsquadButton();
-        this.#handleDebugMode();
     }
 
     #handleDebugMode() {
@@ -224,6 +210,12 @@ export class ExtensionContainer {
                 this.#twitchChatService.sendMessage(Commands.HITSQUAD, event.ctrlKey);
             }
         });
+    }
+
+    #initRemoveDelayHandler() {
+        setInterval(() => {
+            this.#twitchPlayerService.decreaseVideoDelay();
+        }, GlobalVariables.DECREASE_DELAY_TIMEOUT);
     }
 
     mount(rootEl) {
