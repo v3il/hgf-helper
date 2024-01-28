@@ -18,6 +18,8 @@ export class ExtensionContainer {
         const debugModeView = Container.get(InjectionTokens.DEBUG_MODE_VIEW);
         const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
 
+        const settingsFacade = Container.get(InjectionTokens.SETTINGS_FACADE);
+
         return new ExtensionContainer({
             hitsquadRunner,
             streamStatusService,
@@ -28,7 +30,9 @@ export class ExtensionContainer {
             chatObserver,
             twitchElementsRegistry,
             debugModeView,
-            twitchPlayerService
+            twitchPlayerService,
+
+            settingsFacade
         });
     }
 

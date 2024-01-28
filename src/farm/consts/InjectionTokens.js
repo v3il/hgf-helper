@@ -10,5 +10,7 @@ export const InjectionTokens = Object.freeze({
     QUIZ_RUNNER: 'quizRunner',
     STREAM_STATUS_CANVAS: 'streamStatusCanvas',
     DEBUG_MODE_VIEW: 'debugModeView',
-    ELEMENTS_REGISTRY: 'elementsRegistry'
+    ELEMENTS_REGISTRY: 'elementsRegistry',
+
+    SETTINGS_FACADE: 'settingsFacade'
 });

@@ -16,6 +16,7 @@ import { InjectionTokens, isDev } from './consts';
 import { TwitchUser } from './models';
 import 'reflect-metadata';
 import { DebugModeView } from './views/debugModeView/DebugModeView';
+import { SettingsFacade } from './facade';
 
 function getUserName(userDropdownToggleEl) {
     userDropdownToggleEl.click();
@@ -38,6 +39,19 @@ twitchElementsRegistry.onElementsReady(async () => {
     const settingsService = SettingsService.create();
     const localSettingsService = LocalSettingsService.create();
 
+    // const settingsContainer = Container.of('settings');
+    //
+    // settingsContainer.set([
+    //     { id: SettingsService, type: SettingsService },
+    //     { id: LocalSettingsService, type: LocalSettingsService }
+    // ]);
+
+    const settingsFacade = SettingsFacade.create();
+
+    await settingsFacade.loadSettings();
+
+    console.error(settingsFacade.getGlobalSettings('hitsquadRunner'));
+
     await settingsService.loadSettings();
     localSettingsService.loadSettings();
 
@@ -55,7 +69,9 @@ twitchElementsRegistry.onElementsReady(async () => {
         { id: InjectionTokens.CHAT_SERVICE, factory: () => TwitchChatService.create() },
         { id: InjectionTokens.STREAM_STATUS_SERVICE, factory: () => StreamStatusService.create() },
         { id: InjectionTokens.HITSQUAD_RUNNER, factory: () => HitsquadRunner.create() },
-        { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() }
+        { id: InjectionTokens.QUIZ_RUNNER, factory: () => QuizService.create() },
+
+        { id: InjectionTokens.SETTINGS_FACADE, value: settingsFacade }
     ]);
 
     ChannelPointsClaimerService.create(twitchElementsRegistry.chatButtonsContainerEl);
