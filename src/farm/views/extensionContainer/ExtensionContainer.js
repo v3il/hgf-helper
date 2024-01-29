@@ -4,7 +4,7 @@ import template from './template.html?raw';
 import {
     Commands, InjectionTokens, Timing, GlobalVariables
 } from '../../consts';
-import { SettingsFacade } from '../../settings';
+import { SettingsFacade } from '../../modules/settings';
 
 export class ExtensionContainer {
     static create() {

@@ -1,8 +1,8 @@
 import { Container } from 'typedi';
 import {
     MessageTemplates, Timing, Commands, InjectionTokens
-} from '../../consts';
-import { generateDelay, promisifiedSetTimeout } from '../../utils';
+} from '../../../consts';
+import { generateDelay, promisifiedSetTimeout } from '../../../utils';
 
 export class TriviaRunner {
     static create() {

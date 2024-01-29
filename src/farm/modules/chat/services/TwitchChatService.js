@@ -1,4 +1,4 @@
-import { isDev } from '../consts';
+import { isDev } from '../../../consts';
 
 export class TwitchChatService {
     static create() {

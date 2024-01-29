@@ -1,8 +1,7 @@
-import { Container } from 'typedi';
-import { generateMiniGameDelay, promisifiedSetTimeout } from '../../utils';
+import { generateMiniGameDelay, promisifiedSetTimeout } from '../../../utils';
 import {
     Commands, InjectionTokens, MessageTemplates, Timing, GlobalVariables
-} from '../../consts';
+} from '../../../consts';
 import { SettingsFacade } from '../../settings';
 
 export class HitsquadRunner {

@@ -1,5 +1,5 @@
 import { LocalSettingsService, SettingsService } from './services';
-import { BasicFacade } from '../BasicFacade';
+import { BasicFacade } from '../../BasicFacade';
 
 export class SettingsFacade extends BasicFacade {
     static providers = [

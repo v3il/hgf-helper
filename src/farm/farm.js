@@ -16,9 +16,9 @@ import { InjectionTokens, isDev } from './consts';
 import { TwitchUser } from './models';
 import 'reflect-metadata';
 import { DebugModeView } from './views/debugModeView/DebugModeView';
-// import { ChatFacade, SettingsFacade as Bbb } from './facade';
-import { SettingsFacade } from './settings';
-import { MiniGamesFacade } from './miniGames';
+// import { ChatFacade, StreamFacade as Bbb } from './facade';
+import { SettingsFacade } from './modules/settings';
+import { MiniGamesFacade } from './modules/miniGames';
 
 function getUserName(userDropdownToggleEl) {
     userDropdownToggleEl.click();
@@ -48,7 +48,7 @@ twitchElementsRegistry.onElementsReady(async () => {
     //     { id: LocalSettingsService, type: LocalSettingsService }
     // ]);
 
-    // const settingsFacade = SettingsFacade.instance;
+    // const settingsFacade = StreamFacade.instance;
 
     await SettingsFacade.instance.loadSettings();
 

@@ -1,5 +1,5 @@
 import { HitsquadRunner, TriviaRunner } from './services';
-import { BasicFacade } from '../BasicFacade';
+import { BasicFacade } from '../../BasicFacade';
 
 export class MiniGamesFacade extends BasicFacade {
     static providers = [

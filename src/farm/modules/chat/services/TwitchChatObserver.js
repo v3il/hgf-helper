@@ -1,6 +1,6 @@
 import { Container } from 'typedi';
-import { EventEmitter } from '../../models/EventsEmitter';
-import { InjectionTokens } from '../../consts';
+import { EventEmitter } from '../../../models/EventsEmitter';
+import { InjectionTokens } from '../../../consts';
 
 export class TwitchChatObserver {
     static create(twitchChatContainerEl) {

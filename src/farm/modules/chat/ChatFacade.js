@@ -1,5 +1,5 @@
 import { TwitchChatObserver, TwitchChatService } from './services';
-import { BasicFacade } from '../BasicFacade';
+import { BasicFacade } from '../../BasicFacade';
 
 export class ChatFacade extends BasicFacade {
     static providers = [
