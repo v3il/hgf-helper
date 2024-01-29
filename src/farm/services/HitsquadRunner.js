@@ -3,7 +3,6 @@ import { generateMiniGameDelay, promisifiedSetTimeout } from '../utils';
 import {
     Commands, InjectionTokens, MessageTemplates, Timing, GlobalVariables
 } from '../consts';
-import { SettingsFacade } from '../settings';
 
 export class HitsquadRunner {
     static create() {
@@ -28,16 +27,12 @@ export class HitsquadRunner {
 
     #isPaused = true;
 
-    constructor(c/* { twitchChatObserver, twitchChatService, streamStatusService } */) {
-        console.error(c);
+    constructor({ twitchChatObserver, twitchChatService, streamStatusService }) {
+        this.#twitchChatObserver = twitchChatObserver;
+        this.#twitchChatService = twitchChatService;
+        this.#streamStatusService = streamStatusService;
 
-        console.error('sf', c.get(SettingsFacade));
-
-        // this.#twitchChatObserver = twitchChatObserver;
-        // this.#twitchChatService = twitchChatService;
-        // this.#streamStatusService = streamStatusService;
-
-        // this.#listenEvents();
+        this.#listenEvents();
     }
 
     #listenEvents() {

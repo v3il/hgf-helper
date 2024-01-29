@@ -16,7 +16,7 @@ import { InjectionTokens, isDev } from './consts';
 import { TwitchUser } from './models';
 import 'reflect-metadata';
 import { DebugModeView } from './views/debugModeView/DebugModeView';
-// import { MiniGamesFacade, SettingsFacade as Bbb } from './facade';
+// import { ChatFacade, SettingsFacade as Bbb } from './facade';
 import { SettingsFacade } from './settings';
 import { MiniGamesFacade } from './miniGames';
 
@@ -57,9 +57,9 @@ twitchElementsRegistry.onElementsReady(async () => {
     // await settingsService.loadSettings();
     // localSettingsService.loadSettings();
 
-    // console.error(333, MiniGamesFacade.instance);
+    // console.error(333, ChatFacade.instance);
 
-    // const gf = MiniGamesFacade.create();
+    // const gf = ChatFacade.create();
 
     const { chatScrollableAreaEl } = twitchElementsRegistry;
 
