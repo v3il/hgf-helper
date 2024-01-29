@@ -1,17 +1,30 @@
 import { Container } from 'typedi';
+import { HitsquadRunner, QuizService } from '../services';
 import { InjectionTokens } from '../consts';
+import { SettingsFacade } from './SettingsFacade';
 
 export class MiniGamesFacade {
     static create() {
-        return new MiniGamesFacade();
+        const container = Container.of('miniGames');
+        const settingsFacade = Container.get(InjectionTokens.SETTINGS_FACADE);
+
+        console.error(1, settingsFacade);
+
+        container.set([
+            { id: HitsquadRunner, type: HitsquadRunner },
+            { id: InjectionTokens.SETTINGS_FACADE, value: settingsFacade }
+            // { id: QuizService, factory: () => QuizService.create() }
+        ]);
+
+        return new MiniGamesFacade({ container });
     }
 
     #hitsquadRunner;
-    #quizRunner;
+    #triviaRunner;
 
-    constructor() {
-        this.#hitsquadRunner = Container.get(InjectionTokens.HITSQUAD_RUNNER);
-        this.#quizRunner = Container.get(InjectionTokens.QUIZ_RUNNER);
+    constructor({ container }) {
+        this.#hitsquadRunner = container.get(HitsquadRunner);
+        this.#triviaRunner = container.get(QuizService);
     }
 
     startHitsquadRunner() {
@@ -22,11 +35,11 @@ export class MiniGamesFacade {
         this.#hitsquadRunner.stop();
     }
 
-    startQuizRunner() {
-        this.#quizRunner.start();
+    startTriviaRunner() {
+        this.#triviaRunner.start();
     }
 
-    stopQuizRunner() {
-        this.#quizRunner.stop();
+    stopTriviaRunner() {
+        this.#triviaRunner.stop();
     }
 }

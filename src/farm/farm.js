@@ -16,7 +16,8 @@ import { InjectionTokens, isDev } from './consts';
 import { TwitchUser } from './models';
 import 'reflect-metadata';
 import { DebugModeView } from './views/debugModeView/DebugModeView';
-import { SettingsFacade } from './facade';
+import { MiniGamesFacade, SettingsFacade as Bbb } from './facade';
+import { SettingsFacade } from './settings';
 
 function getUserName(userDropdownToggleEl) {
     userDropdownToggleEl.click();
@@ -36,8 +37,8 @@ twitchElementsRegistry.onElementsReady(async () => {
     const userName = getUserName(twitchElementsRegistry.userDropdownToggleEl);
     const streamStatusCanvas = StreamStatusCanvas.create(document.body);
     const debugModeView = DebugModeView.create(document.body);
-    const settingsService = SettingsService.create();
-    const localSettingsService = LocalSettingsService.create();
+    // const settingsService = SettingsService.create();
+    // const localSettingsService = LocalSettingsService.create();
 
     // const settingsContainer = Container.of('settings');
     //
@@ -46,14 +47,18 @@ twitchElementsRegistry.onElementsReady(async () => {
     //     { id: LocalSettingsService, type: LocalSettingsService }
     // ]);
 
-    const settingsFacade = SettingsFacade.create();
+    const settingsFacade = SettingsFacade.instance;
 
     await settingsFacade.loadSettings();
 
-    console.error(settingsFacade.getGlobalSettings('hitsquadRunner'));
+    console.error(6, settingsFacade.getLocalSetting('hitsquadRunner'));
 
-    await settingsService.loadSettings();
-    localSettingsService.loadSettings();
+    // await settingsService.loadSettings();
+    // localSettingsService.loadSettings();
+
+    // console.error(333, AAA.instance);
+
+    // const gf = MiniGamesFacade.create();
 
     const { chatScrollableAreaEl } = twitchElementsRegistry;
 
@@ -61,8 +66,8 @@ twitchElementsRegistry.onElementsReady(async () => {
         { id: InjectionTokens.ELEMENTS_REGISTRY, value: twitchElementsRegistry },
         { id: InjectionTokens.STREAM_STATUS_CANVAS, value: streamStatusCanvas },
         { id: InjectionTokens.DEBUG_MODE_VIEW, value: debugModeView },
-        { id: InjectionTokens.SETTINGS_SERVICE, value: settingsService },
-        { id: InjectionTokens.LOCAL_SETTINGS_SERVICE, value: localSettingsService },
+        // { id: InjectionTokens.SETTINGS_SERVICE, value: settingsService },
+        // { id: InjectionTokens.LOCAL_SETTINGS_SERVICE, value: localSettingsService },
         { id: InjectionTokens.TWITCH_USER, factory: () => TwitchUser.create(userName) },
         { id: InjectionTokens.CHAT_OBSERVER, factory: () => TwitchChatObserver.create(chatScrollableAreaEl) },
         { id: InjectionTokens.PLAYER_SERVICE, factory: () => TwitchPlayerService.create() },

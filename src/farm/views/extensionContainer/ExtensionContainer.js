@@ -4,6 +4,7 @@ import template from './template.html?raw';
 import {
     Commands, InjectionTokens, Timing, GlobalVariables
 } from '../../consts';
+import { SettingsFacade } from '../../settings';
 
 export class ExtensionContainer {
     static create() {
@@ -11,20 +12,16 @@ export class ExtensionContainer {
         const quizRunner = Container.get(InjectionTokens.QUIZ_RUNNER);
         const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
         const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
-        const settingsService = Container.get(InjectionTokens.LOCAL_SETTINGS_SERVICE);
         const canvasView = Container.get(InjectionTokens.STREAM_STATUS_CANVAS);
         const chatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
         const twitchElementsRegistry = Container.get(InjectionTokens.ELEMENTS_REGISTRY);
         const debugModeView = Container.get(InjectionTokens.DEBUG_MODE_VIEW);
         const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
 
-        const settingsFacade = Container.get(InjectionTokens.SETTINGS_FACADE);
-
         return new ExtensionContainer({
             hitsquadRunner,
             streamStatusService,
             twitchChatService,
-            settingsService,
             quizRunner,
             canvasView,
             chatObserver,
@@ -32,7 +29,7 @@ export class ExtensionContainer {
             debugModeView,
             twitchPlayerService,
 
-            settingsFacade
+            settingsFacade: SettingsFacade.instance
         });
     }
 
@@ -40,7 +37,6 @@ export class ExtensionContainer {
     #streamStatusService;
     #twitchChatService;
     #hitsquadRunner;
-    #settingsService;
     #quizRunner;
     #canvasView;
     #chatObserver;
@@ -49,6 +45,8 @@ export class ExtensionContainer {
     #debugModeView;
     #twitchPlayerService;
 
+    #settingsFacade;
+
     #isDebug = false;
     #brokenVideoRoundsCount = 0;
 
@@ -56,25 +54,26 @@ export class ExtensionContainer {
         streamStatusService,
         twitchChatService,
         hitsquadRunner,
-        settingsService,
         quizRunner,
         canvasView,
         chatObserver,
         twitchElementsRegistry,
         debugModeView,
-        twitchPlayerService
+        twitchPlayerService,
+        settingsFacade
     }) {
         this.#el = this.#createElement();
         this.#streamStatusService = streamStatusService;
         this.#twitchChatService = twitchChatService;
         this.#hitsquadRunner = hitsquadRunner;
-        this.#settingsService = settingsService;
         this.#quizRunner = quizRunner;
         this.#canvasView = canvasView;
         this.#chatObserver = chatObserver;
         this.#twitchElementsRegistry = twitchElementsRegistry;
         this.#debugModeView = debugModeView;
         this.#twitchPlayerService = twitchPlayerService;
+
+        this.#settingsFacade = settingsFacade;
 
         this.#handleStreamStatusCheck();
         // this.#handleTriviaCheckbox();
@@ -146,7 +145,7 @@ export class ExtensionContainer {
 
     #handleGiveawaysCheckbox() {
         const toggleGamesEl = this.#el.querySelector('[data-toggle-giveaways]');
-        const isHitsquadRunning = this.#settingsService.getSetting('hitsquadRunner');
+        const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
 
         toggleGamesEl.checked = isHitsquadRunning;
 
@@ -156,7 +155,7 @@ export class ExtensionContainer {
 
         toggleGamesEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
-            this.#settingsService.updateSettings({ hitsquadRunner: target.checked });
+            this.#settingsFacade.updateLocalSettings({ hitsquadRunner: target.checked });
         });
     }
 
@@ -174,7 +173,7 @@ export class ExtensionContainer {
 
             if (commandSuffix) {
                 this.#hitsquadRunner.stop();
-                this.#settingsService.updateSettings({ hitsquadRunner: false });
+                this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
                 toggleGiveawaysEl.checked = false;
             }
         });
@@ -182,7 +181,7 @@ export class ExtensionContainer {
 
     #handleTriviaCheckbox() {
         const toggleQuizEl = this.#el.querySelector('[data-toggle-trivia]');
-        const isQuizRunning = this.#settingsService.getSetting('quizRunner');
+        const isQuizRunning = this.#settingsFacade.getLocalSetting('quizRunner');
 
         toggleQuizEl.checked = isQuizRunning;
 
@@ -192,7 +191,7 @@ export class ExtensionContainer {
 
         toggleQuizEl.addEventListener('change', ({ target }) => {
             target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
-            this.#settingsService.updateSettings({ quizRunner: target.checked });
+            this.#settingsFacade.updateLocalSettings({ quizRunner: target.checked });
         });
     }
 

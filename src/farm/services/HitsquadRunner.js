@@ -27,12 +27,13 @@ export class HitsquadRunner {
 
     #isPaused = true;
 
-    constructor({ twitchChatObserver, twitchChatService, streamStatusService }) {
-        this.#twitchChatObserver = twitchChatObserver;
-        this.#twitchChatService = twitchChatService;
-        this.#streamStatusService = streamStatusService;
+    constructor(c/* { twitchChatObserver, twitchChatService, streamStatusService } */) {
+        console.error(c);
+        // this.#twitchChatObserver = twitchChatObserver;
+        // this.#twitchChatService = twitchChatService;
+        // this.#streamStatusService = streamStatusService;
 
-        this.#listenEvents();
+        // this.#listenEvents();
     }
 
     #listenEvents() {
