@@ -1,0 +1,1 @@
+export { MiniGamesFacade } from './MiniGamesFacade';

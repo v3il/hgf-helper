@@ -1,23 +1,11 @@
 import { Container } from 'typedi';
-import { generateMiniGameDelay, promisifiedSetTimeout } from '../utils';
+import { generateMiniGameDelay, promisifiedSetTimeout } from '../../utils';
 import {
     Commands, InjectionTokens, MessageTemplates, Timing, GlobalVariables
-} from '../consts';
-import { SettingsFacade } from '../settings';
+} from '../../consts';
+import { SettingsFacade } from '../../settings';
 
 export class HitsquadRunner {
-    static create() {
-        const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
-        const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
-        const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
-
-        return new HitsquadRunner({
-            twitchChatObserver,
-            twitchChatService,
-            streamStatusService
-        });
-    }
-
     static #ENTRIES_COUNT_TARGET = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
 
     #completedGamesCount = 0;
@@ -31,7 +19,7 @@ export class HitsquadRunner {
     constructor(c/* { twitchChatObserver, twitchChatService, streamStatusService } */) {
         console.error(c);
 
-        console.error('sf', c.get(SettingsFacade));
+        console.error('sf', c.get(SettingsFacade).getLocalSetting('hitsquadRunner'));
 
         // this.#twitchChatObserver = twitchChatObserver;
         // this.#twitchChatService = twitchChatService;

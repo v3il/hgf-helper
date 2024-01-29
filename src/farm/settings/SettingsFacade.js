@@ -1,28 +1,31 @@
 import { Container } from 'typedi';
-import { LocalSettingsService, SettingsService } from '../services';
+import { LocalSettingsService, SettingsService } from './services';
+import { BasicFacade } from '../BasicFacade';
 
-export class SettingsFacade {
-    static #instance;
-    static #container = Container.of('settings');
+export class SettingsFacade extends BasicFacade {
+    // static #instance;
+    // static container = Container.of('settings');
 
     static providers = [
         { id: SettingsService, factory: () => SettingsService.create() },
         { id: LocalSettingsService, factory: () => LocalSettingsService.create() }
     ];
 
-    static get instance() {
-        if (!this.#instance) {
-            this.#container.set(this.providers.concat({ id: this, type: this }));
-            this.#instance = this.#container.get(this);
-        }
-
-        return this.#instance;
-    }
+    // static get instance() {
+    //     if (!this.#instance) {
+    //         this.container.set(this.providers.concat({ id: this, type: this }));
+    //         this.#instance = this.container.get(this);
+    //     }
+    //
+    //     return this.#instance;
+    // }
 
     #settingsService;
     #localSettingsService;
 
     constructor(container) {
+        super();
+
         this.#settingsService = container.get(SettingsService);
         this.#localSettingsService = container.get(LocalSettingsService);
     }

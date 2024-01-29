@@ -13,7 +13,7 @@ export class MiniGamesFacade {
         container.set([
             { id: HitsquadRunner, type: HitsquadRunner },
             { id: InjectionTokens.SETTINGS_FACADE, value: settingsFacade }
-            // { id: QuizService, factory: () => QuizService.create() }
+            // { id: TriviaRunner, factory: () => TriviaRunner.create() }
         ]);
 
         return new MiniGamesFacade({ container });
