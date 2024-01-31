@@ -17,6 +17,8 @@ export class ChatFacade extends BasicFacade {
 
         this.#chatObserver = container.get(TwitchChatObserver);
         this.#chatService = container.get(TwitchChatService);
+
+        console.error('ChatFacade');
     }
 
     sendMessage(message, forced) {

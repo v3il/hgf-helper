@@ -1,25 +1,21 @@
 import 'reflect-metadata';
 
-import { Container } from 'typedi';
-import {
-    HitsquadRunner,
-    QuizService,
-    SettingsService,
-    LocalSettingsService,
-    StreamStatusService,
-    TwitchChatObserver,
-    TwitchChatService,
-    TwitchPlayerService,
-    ChannelPointsClaimerService,
-    TwitchElementsRegistry
-} from './services';
+// import { Container } from 'typedi';
+// import {
+//     HitsquadRunner,
+//     QuizService,
+//     SettingsService,
+//     LocalSettingsService,
+//     StreamStatusService,
+//     TwitchChatObserver,
+//     TwitchChatService,
+//     TwitchPlayerService,
+//     ChannelPointsClaimerService,
+//     TwitchElementsRegistry
+// } from './services';
 import { ExtensionContainer } from './views';
 import { InjectionTokens, isDev } from './consts';
-import { TwitchUser } from './models';
-
-import { DebugModeView } from './views/debugModeView/DebugModeView';
 import { SettingsFacade } from './modules/settings';
-import { MiniGamesFacade } from './modules/miniGames';
 import { TwitchFacade } from './modules/twitch';
 import { StreamFacade } from './modules/stream';
 
@@ -33,29 +29,13 @@ import { StreamFacade } from './modules/stream';
 // }
 
 TwitchFacade.instance.init(async () => {
-    console.clear();
+    // console.clear();
     console.info(`HGF helper is running in ${isDev ? 'dev' : 'prod'} mode`);
 
     await SettingsFacade.instance.loadSettings();
     StreamFacade.instance.checkStreamStatus();
 
     ExtensionContainer.create().mount(document.body);
-
-    // console.error(1, TwitchFacade.instance.twitchUser);
-    // const streamStatusCanvas = StreamStatusCanvas.create(document.body);
-    // const debugModeView = DebugModeService.create(document.body);
-    //
-    // console.error(TwitchFacade.instance);
-
-    //
-    // console.error(6, SettingsFacade.instance.getLocalSetting('hitsquadRunner'));
-
-    // await settingsService.loadSettings();
-    // localSettingsService.loadSettings();
-
-    // console.error(333, ChatFacade.instance);
-
-    // const gf = ChatFacade.create();
 
     // const { chatScrollableAreaEl } = twitchElementsRegistry;
     //

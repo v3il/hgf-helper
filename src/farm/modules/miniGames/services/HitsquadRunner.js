@@ -1,34 +1,28 @@
 import { generateMiniGameDelay, promisifiedSetTimeout } from '../../../utils';
 import {
-    Commands, InjectionTokens, MessageTemplates, Timing, GlobalVariables
+    Commands, MessageTemplates, Timing, GlobalVariables
 } from '../../../consts';
-import { SettingsFacade } from '../../settings';
+import { ChatFacade } from '../../chat';
+import { StreamFacade } from '../../stream';
 
 export class HitsquadRunner {
     static #ENTRIES_COUNT_TARGET = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
 
-    #completedGamesCount = 0;
-
-    #twitchChatObserver;
-    #twitchChatService;
-    #streamStatusService;
+    #chatFacade;
+    #streamFacade;
 
     #isPaused = true;
+    #completedGamesCount = 0;
 
-    constructor(c/* { twitchChatObserver, twitchChatService, streamStatusService } */) {
-        console.error(c);
+    constructor(container) {
+        this.#chatFacade = container.get(ChatFacade);
+        this.#streamFacade = container.get(StreamFacade);
 
-        console.error('sf', c.get(SettingsFacade).getLocalSetting('hitsquadRunner'));
-
-        // this.#twitchChatObserver = twitchChatObserver;
-        // this.#twitchChatService = twitchChatService;
-        // this.#streamStatusService = streamStatusService;
-
-        // this.#listenEvents();
+        this.#listenEvents();
     }
 
     #listenEvents() {
-        this.#twitchChatObserver.events.on('message', (data) => {
+        this.#chatFacade.observeChat((data) => {
             if (!this.#isPaused) {
                 this.#processMessage(data);
             } else {
@@ -58,12 +52,12 @@ export class HitsquadRunner {
             return;
         }
 
-        if (!this.#streamStatusService.isAllowedToSendMessage) {
+        if (!this.#streamFacade.isAllowedToSendMessage) {
             await promisifiedSetTimeout(20 * Timing.SECOND);
             return this.#sendCommands();
         }
 
-        this.#twitchChatService.sendMessage(Commands.HITSQUAD);
+        this.#chatFacade.sendMessage(Commands.HITSQUAD);
     }
 
     start() {

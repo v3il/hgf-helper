@@ -1,7 +1,5 @@
-import { Container } from 'typedi';
-import { EventEmitter } from '../../../models/EventsEmitter';
-import { InjectionTokens } from '../../../consts';
 import { TwitchFacade } from '../../twitch';
+import { EventEmitter } from '../../shared';
 
 export class TwitchChatObserver {
     #events;
@@ -13,6 +11,8 @@ export class TwitchChatObserver {
 
         this.#events = EventEmitter.create();
         this.#twitchUser = twitchFacade.twitchUser;
+
+        console.error(33, this.#twitchUser);
 
         this.#observer = this.#createObserver();
         this.#observer.observe(twitchFacade.chatScrollableAreaEl, { childList: true });

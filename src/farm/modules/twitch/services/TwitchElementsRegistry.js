@@ -6,9 +6,12 @@ export class TwitchElementsRegistry {
             const elements = [
                 this.chatContainerEl,
                 this.chatInputEl,
+                this.chatScrollableAreaEl,
                 this.userDropdownToggleEl,
                 videoEl
             ];
+
+            console.error(33333, elements);
 
             if (elements.every((element) => !!element) && this.#isVideoPlaying(videoEl)) {
                 clearInterval(interval);
@@ -32,6 +35,7 @@ export class TwitchElementsRegistry {
     }
 
     get chatContainerEl() {
+        console.error(1, document.querySelector('.chat-shell'));
         return document.querySelector('.chat-shell');
     }
 
@@ -44,7 +48,7 @@ export class TwitchElementsRegistry {
     }
 
     get chatScrollableAreaEl() {
-        return this.chatContainerEl.querySelector('.chat-scrollable-area__message-container');
+        return document.querySelector('.chat-scrollable-area__message-container');
     }
 
     get chatButtonsContainerEl() {

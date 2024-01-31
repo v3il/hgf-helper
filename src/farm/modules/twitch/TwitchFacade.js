@@ -18,6 +18,8 @@ export class TwitchFacade extends BasicFacade {
         this.#elementsRegistry = container.get(TwitchElementsRegistry);
         this.#userService = container.get(UserService);
         this.#channelPointsClaimerService = container.get(ChannelPointsClaimerService);
+
+        console.error('TwitchFacade');
     }
 
     get twitchUser() {

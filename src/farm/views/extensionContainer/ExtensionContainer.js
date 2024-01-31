@@ -1,95 +1,50 @@
 import './style.css';
-import { Container } from 'typedi';
 import template from './template.html?raw';
-import {
-    Commands, InjectionTokens, Timing, GlobalVariables
-} from '../../consts';
+import { Commands, Timing, GlobalVariables } from '../../consts';
 import { StreamFacade } from '../../modules/stream';
 import { ChatFacade } from '../../modules/chat';
+import { MiniGamesFacade } from '../../modules/miniGames';
+import { SettingsFacade } from '../../modules/settings';
 
 export class ExtensionContainer {
     static create() {
-        // const hitsquadRunner = Container.get(InjectionTokens.HITSQUAD_RUNNER);
-        // const quizRunner = Container.get(InjectionTokens.QUIZ_RUNNER);
-        // const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
-        // const streamStatusService = Container.get(InjectionTokens.STREAM_STATUS_SERVICE);
-        // const canvasView = Container.get(InjectionTokens.STREAM_STATUS_CANVAS);
-        // const chatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
-        // const twitchElementsRegistry = Container.get(InjectionTokens.ELEMENTS_REGISTRY);
-        // const debugModeView = Container.get(InjectionTokens.DEBUG_MODE_VIEW);
-        // const twitchPlayerService = Container.get(InjectionTokens.PLAYER_SERVICE);
-
         return new ExtensionContainer({
-            // hitsquadRunner,
-            // streamStatusService,
-            // twitchChatService,
-            // quizRunner,
-            // canvasView,
-            // chatObserver,
-            // twitchElementsRegistry,
-            // debugModeView,
-            // twitchPlayerService,
-
             streamFacade: StreamFacade.instance,
-            chatFacade: ChatFacade.instance
+            chatFacade: ChatFacade.instance,
+            miniGamesFacade: MiniGamesFacade.instance,
+            settingsFacade: SettingsFacade.instance
         });
     }
 
     #el;
-    #streamStatusService;
-    #twitchChatService;
-    #hitsquadRunner;
-    #quizRunner;
-    #canvasView;
-    #chatObserver;
-    #twitchElementsRegistry;
     #timeoutId;
-    #debugModeView;
-    #twitchPlayerService;
 
     #streamFacade;
     #chatFacade;
+    #miniGamesFacade;
+    #settingsFacade;
 
     #isDebug = false;
     #brokenVideoRoundsCount = 0;
 
     constructor({
-        streamStatusService,
-        twitchChatService,
-        hitsquadRunner,
-        quizRunner,
-        canvasView,
-        chatObserver,
-        twitchElementsRegistry,
-        debugModeView,
-        twitchPlayerService,
-        streamFacade,
-        chatFacade
+        streamFacade, chatFacade, miniGamesFacade, settingsFacade
     }) {
         this.#streamFacade = streamFacade;
         this.#chatFacade = chatFacade;
+        this.#miniGamesFacade = miniGamesFacade;
+        this.#settingsFacade = settingsFacade;
 
         this.#el = this.#createElement();
-        // this.#streamStatusService = streamStatusService;
-        // this.#twitchChatService = twitchChatService;
-        // this.#hitsquadRunner = hitsquadRunner;
-        // this.#quizRunner = quizRunner;
-        // this.#canvasView = canvasView;
-        // this.#chatObserver = chatObserver;
-        // this.#twitchElementsRegistry = twitchElementsRegistry;
-        // this.#debugModeView = debugModeView;
-        // this.#twitchPlayerService = twitchPlayerService;
-        //
-        // this.#settingsFacade = settingsFacade;
 
         this.#handleStreamStatusCheck();
         // this.#handleTriviaCheckbox();
         // this.#handleTriviaAnswersHandler();
-        // this.#handleGiveawaysCheckbox();
-        // this.#handleGiveawaysRemoteControl();
+        this.#handleGiveawaysCheckbox();
+        this.#handleGiveawaysRemoteControl();
         this.#handleHitsquadButton();
         this.#handleDebugMode();
-        // this.#initRemoveDelayHandler();
+        this.#initRemoveDelayHandler();
     }
 
     #handleStreamStatusCheck() {
@@ -144,24 +99,24 @@ export class ExtensionContainer {
 
     #handleGiveawaysCheckbox() {
         const toggleGamesEl = this.#el.querySelector('[data-toggle-giveaways]');
-        const isHitsquadRunning = false; // this.#settingsFacade.getLocalSetting('hitsquadRunner');
+        const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
 
         toggleGamesEl.checked = isHitsquadRunning;
 
         if (isHitsquadRunning) {
-            this.#hitsquadRunner.start();
+            this.#miniGamesFacade.startHitsquadRunner();
         }
 
         toggleGamesEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#hitsquadRunner.start() : this.#hitsquadRunner.stop();
-            // this.#settingsFacade.updateLocalSettings({ hitsquadRunner: target.checked });
+            target.checked ? this.#miniGamesFacade.startHitsquadRunner() : this.#miniGamesFacade.stopHitsquadRunner();
+            this.#settingsFacade.updateLocalSettings({ hitsquadRunner: target.checked });
         });
     }
 
     #handleGiveawaysRemoteControl() {
         const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
 
-        this.#chatObserver.events.on('message', ({ message, isMe }) => {
+        this.#chatFacade.observeChat(({ message, isMe }) => {
             const isHitsquadCommand = message.startsWith(Commands.HITSQUAD);
 
             if (!(isMe && isHitsquadCommand)) {
@@ -171,26 +126,26 @@ export class ExtensionContainer {
             const commandSuffix = message.split(' ')[1];
 
             if (commandSuffix) {
-                this.#hitsquadRunner.stop();
-                // this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
+                this.#miniGamesFacade.stopHitsquadRunner();
+                this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
                 toggleGiveawaysEl.checked = false;
             }
         });
     }
 
     #handleTriviaCheckbox() {
-        const toggleQuizEl = this.#el.querySelector('[data-toggle-trivia]');
-        const isQuizRunning = false; // this.#settingsFacade.getLocalSetting('quizRunner');
+        const toggleTriviaEl = this.#el.querySelector('[data-toggle-trivia]');
+        const isTriviaRunning = this.#settingsFacade.getLocalSetting('quizRunner');
 
-        toggleQuizEl.checked = isQuizRunning;
+        toggleTriviaEl.checked = isTriviaRunning;
 
-        if (isQuizRunning) {
-            this.#quizRunner.start();
+        if (isTriviaRunning) {
+            this.#miniGamesFacade.startTriviaRunner();
         }
 
-        toggleQuizEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#quizRunner.start() : this.#quizRunner.stop();
-            // this.#settingsFacade.updateLocalSettings({ quizRunner: target.checked });
+        toggleTriviaEl.addEventListener('change', ({ target }) => {
+            target.checked ? this.#miniGamesFacade.startTriviaRunner() : this.#miniGamesFacade.stopTriviaRunner();
+            this.#settingsFacade.updateLocalSettings({ quizRunner: target.checked });
         });
     }
 
@@ -199,7 +154,7 @@ export class ExtensionContainer {
             const command = `!answer${event.key}`;
 
             if (Commands.getAnswers().includes(command)) {
-                this.#twitchChatService.sendMessage(command);
+                this.#chatFacade.sendMessage(command);
             }
         });
     }
@@ -216,7 +171,7 @@ export class ExtensionContainer {
 
     #initRemoveDelayHandler() {
         setInterval(() => {
-            this.#twitchPlayerService.decreaseVideoDelay();
+            this.#streamFacade.decreaseVideoDelay();
         }, GlobalVariables.DECREASE_DELAY_TIMEOUT);
     }
 
