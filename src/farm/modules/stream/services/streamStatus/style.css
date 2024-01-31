@@ -1,0 +1,12 @@
+.haf-stream-status-view * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.haf-stream-status-view {
+    position: fixed;
+    top: 0;
+    left: -10000px;
+    z-index: 20000;
+}

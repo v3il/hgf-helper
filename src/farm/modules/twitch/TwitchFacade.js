@@ -24,6 +24,14 @@ export class TwitchFacade extends BasicFacade {
         return this.#userService.twitchUser;
     }
 
+    get activeVideoEl() {
+        return this.#elementsRegistry.activeVideoEl;
+    }
+
+    get chatScrollableAreaEl() {
+        return this.#elementsRegistry.chatScrollableAreaEl;
+    }
+
     init(callback) {
         this.#elementsRegistry.onElementsReady(() => {
             this.#initUser();

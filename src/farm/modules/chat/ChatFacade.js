@@ -1,10 +1,12 @@
 import { TwitchChatObserver, TwitchChatService } from './services';
 import { BasicFacade } from '../../BasicFacade';
+import { TwitchFacade } from '../twitch';
 
 export class ChatFacade extends BasicFacade {
     static providers = [
         { id: TwitchChatObserver, type: TwitchChatObserver },
-        { id: TwitchChatService, type: TwitchChatService }
+        { id: TwitchChatService, type: TwitchChatService },
+        { id: TwitchFacade, value: TwitchFacade.instance }
     ];
 
     #chatObserver;

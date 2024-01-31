@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { Container } from 'typedi';
 import {
     HitsquadRunner,
@@ -11,34 +13,37 @@ import {
     ChannelPointsClaimerService,
     TwitchElementsRegistry
 } from './services';
-import { StreamStatusCanvas, ExtensionContainer } from './views';
+import { ExtensionContainer } from './views';
 import { InjectionTokens, isDev } from './consts';
 import { TwitchUser } from './models';
-import 'reflect-metadata';
+
 import { DebugModeView } from './views/debugModeView/DebugModeView';
-// import { ChatFacade, TwitchFacade as Bbb } from './facade';
 import { SettingsFacade } from './modules/settings';
 import { MiniGamesFacade } from './modules/miniGames';
 import { TwitchFacade } from './modules/twitch';
+import { StreamFacade } from './modules/stream';
 
-function getUserName(userDropdownToggleEl) {
-    userDropdownToggleEl.click();
-
-    const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
-    userDropdownToggleEl.click();
-
-    return userNameEl?.textContent.toLowerCase();
-}
+// function getUserName(userDropdownToggleEl) {
+//     userDropdownToggleEl.click();
+//
+//     const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
+//     userDropdownToggleEl.click();
+//
+//     return userNameEl?.textContent.toLowerCase();
+// }
 
 TwitchFacade.instance.init(async () => {
     console.clear();
     console.info(`HGF helper is running in ${isDev ? 'dev' : 'prod'} mode`);
 
     await SettingsFacade.instance.loadSettings();
+    StreamFacade.instance.checkStreamStatus();
+
+    ExtensionContainer.create().mount(document.body);
 
     // console.error(1, TwitchFacade.instance.twitchUser);
     // const streamStatusCanvas = StreamStatusCanvas.create(document.body);
-    // const debugModeView = DebugModeView.create(document.body);
+    // const debugModeView = DebugModeService.create(document.body);
     //
     // console.error(TwitchFacade.instance);
 
@@ -76,7 +81,7 @@ TwitchFacade.instance.init(async () => {
     // ExtensionContainer.create().mount(document.body);
 });
 
-const twitchElementsRegistry = new TwitchElementsRegistry();
+/* const twitchElementsRegistry = new TwitchElementsRegistry();
 
 twitchElementsRegistry.onElementsReady(async () => {
     return;
@@ -87,7 +92,7 @@ twitchElementsRegistry.onElementsReady(async () => {
 
     const userName = getUserName(twitchElementsRegistry.userDropdownToggleEl);
     const streamStatusCanvas = StreamStatusCanvas.create(document.body);
-    const debugModeView = DebugModeView.create(document.body);
+    const debugModeView = DebugModeService.create(document.body);
 
     console.error(TwitchFacade.instance);
 
@@ -136,4 +141,4 @@ twitchElementsRegistry.onElementsReady(async () => {
     ChannelPointsClaimerService.create(twitchElementsRegistry.chatButtonsContainerEl);
 
     ExtensionContainer.create().mount(document.body);
-});
+}); */
