@@ -1,26 +1,16 @@
-import { Container } from 'typedi';
-import { EventEmitter } from '../models/EventsEmitter';
-import { InjectionTokens } from '../consts';
+import { EventEmitter } from '../../shared';
 
 export class TwitchChatObserver {
-    static create(twitchChatContainerEl) {
-        const twitchUser = Container.get(InjectionTokens.TWITCH_USER);
-        const events = new EventEmitter();
-        return new TwitchChatObserver({ twitchChatContainerEl, events, twitchUser });
-    }
-
     #events;
-    #twitchChatContainerEl;
     #observer;
     #twitchUser;
 
-    constructor({ twitchChatContainerEl, events, twitchUser }) {
-        this.#events = events;
-        this.#twitchChatContainerEl = twitchChatContainerEl;
-        this.#twitchUser = twitchUser;
+    constructor({ twitchFacade }) {
+        this.#events = EventEmitter.create();
+        this.#twitchUser = twitchFacade.twitchUser;
 
         this.#observer = this.#createObserver();
-        this.#observer.observe(this.#twitchChatContainerEl, { childList: true });
+        this.#observer.observe(twitchFacade.chatScrollableAreaEl, { childList: true });
     }
 
     get events() {

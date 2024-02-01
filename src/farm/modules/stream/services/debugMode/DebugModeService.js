@@ -1,12 +1,8 @@
 import './style.css';
 import template from './template.html?raw';
-import { ColorService } from '../../services';
+import { ColorService } from '../../../shared';
 
-export class DebugModeView {
-    static create(rootEl) {
-        return new DebugModeView().mount(rootEl);
-    }
-
+export class DebugModeService {
     #el;
     #canvasEl;
     #debugModeChecks = [];
@@ -15,11 +11,8 @@ export class DebugModeView {
         this.#el = this.#createElement();
         this.#canvasEl = this.#el.querySelector('[data-debug-mode-canvas]');
         this._clickHandler = this._clickHandler.bind(this);
-    }
 
-    mount(rootEl) {
-        rootEl.appendChild(this.#el);
-        return this;
+        document.body.appendChild(this.#el);
     }
 
     renderVideoFrame(videoEl) {

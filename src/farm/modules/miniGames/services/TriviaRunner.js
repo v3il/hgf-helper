@@ -1,19 +1,8 @@
-import { Container } from 'typedi';
-import {
-    MessageTemplates, Timing, Commands, InjectionTokens
-} from '../consts';
-import { generateDelay, promisifiedSetTimeout } from '../utils';
+import { MessageTemplates, Timing, Commands } from '../../../consts';
+import { generateDelay, promisifiedSetTimeout } from '../../../utils';
 
-export class QuizService {
-    static create() {
-        const twitchChatObserver = Container.get(InjectionTokens.CHAT_OBSERVER);
-        const twitchChatService = Container.get(InjectionTokens.CHAT_SERVICE);
-
-        return new QuizService({ twitchChatObserver, twitchChatService });
-    }
-
-    #twitchChatObserver;
-    #twitchChatService;
+export class TriviaRunner {
+    #chatFacade;
 
     #isWaitingNextRound = true;
     #isStopped = true;
@@ -23,9 +12,8 @@ export class QuizService {
     #fallbackTimeoutId;
     #desiredAnswerPosition;
 
-    constructor({ twitchChatObserver, twitchChatService }) {
-        this.#twitchChatObserver = twitchChatObserver;
-        this.#twitchChatService = twitchChatService;
+    constructor({ chatFacade }) {
+        this.#chatFacade = chatFacade;
 
         Commands.getAnswers().forEach((answer) => {
             this.#answers[answer] = new Set();
@@ -39,7 +27,7 @@ export class QuizService {
     }
 
     #listenEvents() {
-        this.#twitchChatObserver.events.on('message', ({ userName, message }) => {
+        this.#chatFacade.observeChat(({ userName, message }) => {
             if (!this.#isStopped) {
                 this.#processMessage({ userName, message });
             }
@@ -77,7 +65,6 @@ export class QuizService {
         const { answer, answersCount } = this.#getCorrectAnswer();
 
         if (answersCount + 1 === this.#desiredAnswerPosition) {
-            console.error('send', answer, answersCount + 1);
             this.#completeRound(answer);
         }
     }
@@ -95,7 +82,7 @@ export class QuizService {
         const delay = generateDelay(2 * Timing.SECOND, 4 * Timing.SECOND);
 
         await promisifiedSetTimeout(delay);
-        this.#twitchChatService.sendMessage(answer);
+        this.#chatFacade.sendMessage(answer);
     }
 
     #getPositionChances() {

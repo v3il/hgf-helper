@@ -15,9 +15,5 @@
     "glob": "^10.3.10",
     "vite": "^5.0.10",
     "vite-plugin-eslint": "^1.8.1"
-  },
-  "dependencies": {
-    "reflect-metadata": "^0.1.13",
-    "typedi": "^0.10.0"
   }
 }

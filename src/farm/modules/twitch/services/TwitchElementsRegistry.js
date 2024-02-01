@@ -6,6 +6,7 @@ export class TwitchElementsRegistry {
             const elements = [
                 this.chatContainerEl,
                 this.chatInputEl,
+                this.chatScrollableAreaEl,
                 this.userDropdownToggleEl,
                 videoEl
             ];
@@ -44,7 +45,7 @@ export class TwitchElementsRegistry {
     }
 
     get chatScrollableAreaEl() {
-        return this.chatContainerEl.querySelector('.chat-scrollable-area__message-container');
+        return document.querySelector('.chat-scrollable-area__message-container');
     }
 
     get chatButtonsContainerEl() {
@@ -53,5 +54,17 @@ export class TwitchElementsRegistry {
 
     #isVideoPlaying(videoEl) {
         return videoEl.currentTime > 0 && !videoEl.paused && !videoEl.ended && videoEl.readyState > 2;
+    }
+
+    getUserName() {
+        const { userDropdownToggleEl } = this;
+
+        userDropdownToggleEl.click();
+
+        const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
+
+        userDropdownToggleEl.click();
+
+        return userNameEl?.textContent.toLowerCase();
     }
 }
