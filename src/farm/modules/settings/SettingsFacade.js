@@ -1,20 +1,28 @@
 import { LocalSettingsService, SettingsService } from './services';
-import { BasicFacade } from '../../BasicFacade';
 
-export class SettingsFacade extends BasicFacade {
-    static providers = [
-        { id: SettingsService, factory: () => SettingsService.create() },
-        { id: LocalSettingsService, factory: () => LocalSettingsService.create() }
-    ];
+export class SettingsFacade {
+    static _instance;
+
+    static get instance() {
+        if (!this._instance) {
+            const localSettingsService = LocalSettingsService.create();
+            const settingsService = SettingsService.create();
+
+            this._instance = new SettingsFacade({
+                localSettingsService,
+                settingsService
+            });
+        }
+
+        return this._instance;
+    }
 
     #settingsService;
     #localSettingsService;
 
-    constructor(container) {
-        super();
-
-        this.#settingsService = container.get(SettingsService);
-        this.#localSettingsService = container.get(LocalSettingsService);
+    constructor({ localSettingsService, settingsService }) {
+        this.#settingsService = settingsService;
+        this.#localSettingsService = localSettingsService;
     }
 
     async loadSettings() {

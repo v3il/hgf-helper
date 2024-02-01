@@ -1,27 +1,38 @@
 import { DebugModeService, StreamStatusService, TwitchPlayerService } from './services';
-import { BasicFacade } from '../../BasicFacade';
 import { TwitchFacade } from '../twitch';
 
-export class StreamFacade extends BasicFacade {
-    static providers = [
-        { id: StreamStatusService, type: StreamStatusService },
-        { id: TwitchPlayerService, type: TwitchPlayerService },
-        { id: DebugModeService, type: DebugModeService },
-        { id: TwitchFacade, value: TwitchFacade.instance }
-    ];
+export class StreamFacade {
+    static _instance;
+
+    static get instance() {
+        if (!this._instance) {
+            const twitchPlayerService = new TwitchPlayerService();
+            const debugModeService = new DebugModeService();
+            const streamStatusService = new StreamStatusService();
+
+            this._instance = new StreamFacade({
+                twitchPlayerService,
+                debugModeService,
+                streamStatusService,
+                twitchFacade: TwitchFacade.instance
+            });
+        }
+
+        return this._instance;
+    }
 
     #streamStatusService;
     #twitchPlayerService;
     #debugModeService;
     #twitchFacade;
 
-    constructor(container) {
-        super();
-
-        this.#streamStatusService = container.get(StreamStatusService);
-        this.#twitchPlayerService = container.get(TwitchPlayerService);
-        this.#debugModeService = container.get(DebugModeService);
-        this.#twitchFacade = container.get(TwitchFacade);
+    constructor({
+        twitchPlayerService, debugModeService, streamStatusService, twitchFacade
+    }) {
+        this.#streamStatusService = streamStatusService;
+        this.#twitchPlayerService = twitchPlayerService;
+        this.#debugModeService = debugModeService;
+        this.#twitchFacade = twitchFacade;
     }
 
     get isVideoBroken() {

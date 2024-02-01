@@ -1,23 +1,32 @@
 import { TwitchElementsRegistry, UserService, ChannelPointsClaimerService } from './services';
-import { BasicFacade } from '../../BasicFacade';
 
-export class TwitchFacade extends BasicFacade {
-    static providers = [
-        { id: TwitchElementsRegistry, type: TwitchElementsRegistry },
-        { id: ChannelPointsClaimerService, type: ChannelPointsClaimerService },
-        { id: UserService, type: UserService }
-    ];
+export class TwitchFacade {
+    static _instance;
+
+    static get instance() {
+        if (!this._instance) {
+            const twitchElementsRegistry = new TwitchElementsRegistry();
+            const userService = new UserService();
+            const channelPointsClaimerService = new ChannelPointsClaimerService({ twitchElementsRegistry });
+
+            this._instance = new TwitchFacade({
+                twitchElementsRegistry,
+                userService,
+                channelPointsClaimerService
+            });
+        }
+
+        return this._instance;
+    }
 
     #elementsRegistry;
     #userService;
     #channelPointsClaimerService;
 
-    constructor(container) {
-        super();
-
-        this.#elementsRegistry = container.get(TwitchElementsRegistry);
-        this.#userService = container.get(UserService);
-        this.#channelPointsClaimerService = container.get(ChannelPointsClaimerService);
+    constructor({ twitchElementsRegistry, userService, channelPointsClaimerService }) {
+        this.#elementsRegistry = twitchElementsRegistry;
+        this.#userService = userService;
+        this.#channelPointsClaimerService = channelPointsClaimerService;
 
         console.error('TwitchFacade');
     }
@@ -37,11 +46,12 @@ export class TwitchFacade extends BasicFacade {
     init(callback) {
         this.#elementsRegistry.onElementsReady(() => {
             this.#initUser();
+            this.#enableChannelPointsClaimer();
             callback();
         });
     }
 
-    enableChannelPointsClaimer() {
+    #enableChannelPointsClaimer() {
         this.#channelPointsClaimerService.enableAutoClaim();
     }
 

@@ -1,26 +1,36 @@
 import { HitsquadRunner, TriviaRunner } from './services';
-import { BasicFacade } from '../../BasicFacade';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
 
-export class MiniGamesFacade extends BasicFacade {
-    static providers = [
-        { id: HitsquadRunner, type: HitsquadRunner },
-        { id: TriviaRunner, type: TriviaRunner }
-        // { id: ChatFacade, type: ChatFacade.instance }
-        // { id: StreamFacade, type: StreamFacade.instance }
-    ];
+export class MiniGamesFacade {
+    static _instance;
+
+    static get instance() {
+        if (!this._instance) {
+            const hitsquadRunner = new HitsquadRunner({
+                chatFacade: ChatFacade.instance,
+                streamFacade: StreamFacade.instance
+            });
+
+            const triviaRunner = new TriviaRunner({
+                chatFacade: ChatFacade.instance
+            });
+
+            this._instance = new MiniGamesFacade({
+                hitsquadRunner,
+                triviaRunner
+            });
+        }
+
+        return this._instance;
+    }
 
     #hitsquadRunner;
     #triviaRunner;
 
-    constructor(container) {
-        super();
-
-        this.#hitsquadRunner = container.get(HitsquadRunner);
-        this.#triviaRunner = container.get(TriviaRunner);
-
-        console.error('MiniGamesFacade');
+    constructor({ hitsquadRunner, triviaRunner }) {
+        this.#hitsquadRunner = hitsquadRunner;
+        this.#triviaRunner = triviaRunner;
     }
 
     startHitsquadRunner() {

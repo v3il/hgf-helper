@@ -1,18 +1,16 @@
 import './style.css';
 import template from './template.html?raw';
 import { Commands, Timing, GlobalVariables } from '../../consts';
-import { StreamFacade } from '../../modules/stream';
-import { ChatFacade } from '../../modules/chat';
-import { MiniGamesFacade } from '../../modules/miniGames';
-import { SettingsFacade } from '../../modules/settings';
 
 export class ExtensionContainer {
-    static create() {
+    static create({
+        streamFacade, chatFacade, miniGamesFacade, settingsFacade
+    }) {
         return new ExtensionContainer({
-            streamFacade: StreamFacade.instance,
-            chatFacade: ChatFacade.instance,
-            miniGamesFacade: MiniGamesFacade.instance,
-            settingsFacade: SettingsFacade.instance
+            streamFacade,
+            chatFacade,
+            miniGamesFacade,
+            settingsFacade
         });
     }
 

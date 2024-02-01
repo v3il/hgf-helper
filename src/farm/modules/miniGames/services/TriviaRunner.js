@@ -1,6 +1,5 @@
 import { MessageTemplates, Timing, Commands } from '../../../consts';
 import { generateDelay, promisifiedSetTimeout } from '../../../utils';
-import { ChatFacade } from '../../chat';
 
 export class TriviaRunner {
     #chatFacade;
@@ -13,8 +12,8 @@ export class TriviaRunner {
     #fallbackTimeoutId;
     #desiredAnswerPosition;
 
-    constructor(container) {
-        this.#chatFacade = container.get(ChatFacade);
+    constructor({ chatFacade }) {
+        this.#chatFacade = chatFacade;
 
         Commands.getAnswers().forEach((answer) => {
             this.#answers[answer] = new Set();

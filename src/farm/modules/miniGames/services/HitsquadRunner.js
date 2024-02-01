@@ -2,8 +2,6 @@ import { generateMiniGameDelay, promisifiedSetTimeout } from '../../../utils';
 import {
     Commands, MessageTemplates, Timing, GlobalVariables
 } from '../../../consts';
-import { ChatFacade } from '../../chat';
-import { StreamFacade } from '../../stream';
 
 export class HitsquadRunner {
     static #ENTRIES_COUNT_TARGET = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
@@ -14,9 +12,9 @@ export class HitsquadRunner {
     #isPaused = true;
     #completedGamesCount = 0;
 
-    constructor(container) {
-        this.#chatFacade = container.get(ChatFacade);
-        this.#streamFacade = container.get(StreamFacade);
+    constructor({ chatFacade, streamFacade }) {
+        this.#chatFacade = chatFacade;
+        this.#streamFacade = streamFacade;
 
         this.#listenEvents();
     }

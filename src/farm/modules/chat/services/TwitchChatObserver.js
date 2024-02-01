@@ -1,4 +1,3 @@
-import { TwitchFacade } from '../../twitch';
 import { EventEmitter } from '../../shared';
 
 export class TwitchChatObserver {
@@ -6,13 +5,9 @@ export class TwitchChatObserver {
     #observer;
     #twitchUser;
 
-    constructor(container) {
-        const twitchFacade = container.get(TwitchFacade);
-
+    constructor({ twitchFacade }) {
         this.#events = EventEmitter.create();
         this.#twitchUser = twitchFacade.twitchUser;
-
-        console.error(33, this.#twitchUser);
 
         this.#observer = this.#createObserver();
         this.#observer.observe(twitchFacade.chatScrollableAreaEl, { childList: true });

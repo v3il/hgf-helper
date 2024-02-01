@@ -1,24 +1,29 @@
 import { TwitchChatObserver, TwitchChatService } from './services';
-import { BasicFacade } from '../../BasicFacade';
 import { TwitchFacade } from '../twitch';
 
-export class ChatFacade extends BasicFacade {
-    static providers = [
-        { id: TwitchChatObserver, type: TwitchChatObserver },
-        { id: TwitchChatService, type: TwitchChatService },
-        { id: TwitchFacade, value: TwitchFacade.instance }
-    ];
+export class ChatFacade {
+    static _instance;
+
+    static get instance() {
+        if (!this._instance) {
+            const twitchChatService = new TwitchChatService();
+            const twitchChatObserver = new TwitchChatObserver({ twitchFacade: TwitchFacade.instance });
+
+            this._instance = new ChatFacade({
+                twitchChatService,
+                twitchChatObserver
+            });
+        }
+
+        return this._instance;
+    }
 
     #chatObserver;
     #chatService;
 
-    constructor(container) {
-        super();
-
-        this.#chatObserver = container.get(TwitchChatObserver);
-        this.#chatService = container.get(TwitchChatService);
-
-        console.error('ChatFacade');
+    constructor({ twitchChatService, twitchChatObserver }) {
+        this.#chatObserver = twitchChatObserver;
+        this.#chatService = twitchChatService;
     }
 
     sendMessage(message, forced) {

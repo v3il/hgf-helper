@@ -1,17 +1,17 @@
 import { debounce } from '../../../utils';
-import { TwitchElementsRegistry } from './TwitchElementsRegistry';
 
 export class ChannelPointsClaimerService {
+    #twitchElementsService;
     #chatInputContainerEl;
     #observer;
 
-    constructor(container) {
-        const twitchElementsRegistry = container.get(TwitchElementsRegistry);
-
-        this.#chatInputContainerEl = twitchElementsRegistry.chatButtonsContainerEl;
+    constructor({ twitchElementsRegistry }) {
+        this.#twitchElementsService = twitchElementsRegistry;
     }
 
     enableAutoClaim() {
+        this.#chatInputContainerEl = this.#twitchElementsService.chatButtonsContainerEl;
+
         this.#observer = this.#createObserver();
         this.#observer.observe(this.#chatInputContainerEl, { childList: true, subtree: true });
 

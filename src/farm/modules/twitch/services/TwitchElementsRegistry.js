@@ -11,8 +11,6 @@ export class TwitchElementsRegistry {
                 videoEl
             ];
 
-            console.error(33333, elements);
-
             if (elements.every((element) => !!element) && this.#isVideoPlaying(videoEl)) {
                 clearInterval(interval);
                 callback(elements);
@@ -35,7 +33,6 @@ export class TwitchElementsRegistry {
     }
 
     get chatContainerEl() {
-        console.error(1, document.querySelector('.chat-shell'));
         return document.querySelector('.chat-shell');
     }
 
