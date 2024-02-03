@@ -1,4 +1,4 @@
-import { LocalSettingsService, SettingsService } from './services';
+import { LocalSettingsService, GlobalSettingsService } from './services';
 
 export class SettingsFacade {
     static _instance;
@@ -6,7 +6,7 @@ export class SettingsFacade {
     static get instance() {
         if (!this._instance) {
             const localSettingsService = LocalSettingsService.create();
-            const settingsService = SettingsService.create();
+            const settingsService = GlobalSettingsService.create();
 
             this._instance = new SettingsFacade({
                 localSettingsService,
@@ -23,6 +23,10 @@ export class SettingsFacade {
     constructor({ localSettingsService, settingsService }) {
         this.#settingsService = settingsService;
         this.#localSettingsService = localSettingsService;
+    }
+
+    get globalSettings() {
+        return this.#settingsService.settings;
     }
 
     async loadSettings() {

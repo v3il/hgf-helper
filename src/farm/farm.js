@@ -1,6 +1,5 @@
 import { isDev } from './consts';
 import { TwitchFacade } from './modules/twitch';
-import { SettingsFacade } from './modules/settings';
 import { ChatFacade } from './modules/chat';
 import { StreamFacade } from './modules/stream';
 import { MiniGamesFacade } from './modules/miniGames';
@@ -9,6 +8,8 @@ import { ExtensionContainer } from './views';
 TwitchFacade.instance.init(async () => {
     console.clear();
     console.info(`HGF helper is running in ${isDev ? 'dev' : 'prod'} mode`);
+
+    const { SettingsFacade } = await import('../shared/settings');
 
     await SettingsFacade.instance.loadSettings();
 

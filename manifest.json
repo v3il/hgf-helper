@@ -28,7 +28,8 @@
         "dist/farm.js",
         "dist/farmBootstrap.js",
         "dist/farmInjected.js",
-        "dist/farm.css"
+        "dist/farm.css",
+        "dist/index.js"
       ],
       "matches": ["https://www.twitch.tv/*"]
     },
