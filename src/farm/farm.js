@@ -4,6 +4,9 @@ import { ChatFacade } from './modules/chat';
 import { StreamFacade } from './modules/stream';
 import { MiniGamesFacade } from './modules/miniGames';
 import { ExtensionContainer } from './views';
+// import { SettingsFacade } from '../shared/settings';
+
+// Sfa;
 
 TwitchFacade.instance.init(async () => {
     console.clear();
