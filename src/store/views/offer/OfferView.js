@@ -17,10 +17,6 @@ export class OfferView {
     }
 
     get #isHidden() {
-        console.error(this.#offer.isSoldOut
-            || this.#offer.isTooExpensive
-            || this.#offersFacade.isOfferHidden(this.#offer.name));
-
         return this.#offer.isSoldOut
             || this.#offer.isTooExpensive
             || this.#offersFacade.isOfferHidden(this.#offer.name);

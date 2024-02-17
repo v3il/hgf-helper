@@ -1,20 +1,29 @@
+import { promisifiedSetTimeout } from '@/shared/utils';
+
 export class StreamElementsRegistry {
     onElementsReady(callback) {
         const interval = setInterval(() => {
             const { offerEls } = this;
 
-            if (this.sortOffersDropdown && offerEls.length > 0) {
+            if (this.#sortOffersDropdownEl && offerEls.length > 0) {
                 clearInterval(interval);
                 callback();
             }
         }, 500);
     }
 
-    get sortOffersDropdown() {
+    get #sortOffersDropdownEl() {
         return document.querySelector('[ng-model="vm.sortBy"]');
     }
 
     get offerEls() {
         return document.querySelectorAll('.stream-store-list-item');
+    }
+
+    // todo
+    async sortOffersByCost() {
+        this.#sortOffersDropdownEl.click();
+        await promisifiedSetTimeout(300);
+        document.querySelector('[value="-cost"]')?.click();
     }
 }

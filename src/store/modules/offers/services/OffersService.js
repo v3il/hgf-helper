@@ -8,8 +8,6 @@ export class OffersService {
 
     async fetchHiddenOffers() {
         this.#hiddenOffers = await this.#apiService.getHiddenOffers();
-
-        console.error('this.#hiddenOffers', this.#hiddenOffers);
     }
 
     isOfferHidden(offerName) {

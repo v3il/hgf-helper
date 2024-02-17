@@ -23,6 +23,10 @@ export class StreamElementsFacade {
     }
 
     init(callback) {
-        this.#elementsRegistry.onElementsReady(() => callback());
+        this.#elementsRegistry.onElementsReady(callback);
+    }
+
+    async sortOffersByCost() {
+        await this.#elementsRegistry.sortOffersByCost();
     }
 }
