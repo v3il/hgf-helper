@@ -1,4 +1,4 @@
-export class StorageService {
+export class OffersService {
     #apiService;
     #hiddenOffers = [];
 
@@ -8,6 +8,8 @@ export class StorageService {
 
     async fetchHiddenOffers() {
         this.#hiddenOffers = await this.#apiService.getHiddenOffers();
+
+        console.error('this.#hiddenOffers', this.#hiddenOffers);
     }
 
     isOfferHidden(offerName) {

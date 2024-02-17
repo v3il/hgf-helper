@@ -1,2 +1,2 @@
-export { StorageService } from './StorageService';
+export { OffersService } from './OffersService';
 export { JsonBinApiService } from './JsonBinApiService';

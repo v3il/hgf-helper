@@ -4,12 +4,12 @@ import './styles.css';
 export class OfferView {
     #offer;
     #offerEl;
-    #storageService;
+    #offersFacade;
 
-    constructor({ offer, offerEl, storageService }) {
+    constructor({ offer, offerEl, offersFacade }) {
         this.#offer = offer;
         this.#offerEl = offerEl;
-        this.#storageService = storageService;
+        this.#offersFacade = offersFacade;
 
         this.#renderContainer();
         this.#toggleOffer();
@@ -17,9 +17,13 @@ export class OfferView {
     }
 
     get #isHidden() {
+        console.error(this.#offer.isSoldOut
+            || this.#offer.isTooExpensive
+            || this.#offersFacade.isOfferHidden(this.#offer.name));
+
         return this.#offer.isSoldOut
             || this.#offer.isTooExpensive
-            || this.#storageService.isOfferHidden(this.#offer.name);
+            || this.#offersFacade.isOfferHidden(this.#offer.name);
     }
 
     #renderContainer() {
@@ -43,7 +47,7 @@ export class OfferView {
                 return;
             }
 
-            this.#storageService.hideOffer(this.#offer.name);
+            this.#offersFacade.hideOffer(this.#offer.name);
             this.#hideOffer();
         });
     }
@@ -55,6 +59,6 @@ export class OfferView {
     }
 
     #hideOffer() {
-        this.#offerEl.style.display = 'none';
+        this.#offerEl.classList.add('hgfs-offer--hidden');
     }
 }

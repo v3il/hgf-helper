@@ -15,3 +15,7 @@
     font-size: 12px;
     display: block;
 }
+
+.hgfs-offer--hidden.hgfs-offer--hidden.hgfs-offer--hidden {
+    display: none !important;
+}

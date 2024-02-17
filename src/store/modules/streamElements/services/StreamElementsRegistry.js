@@ -1,9 +1,9 @@
 export class StreamElementsRegistry {
     onElementsReady(callback) {
         const interval = setInterval(() => {
-            const { offerElements } = this;
+            const { offerEls } = this;
 
-            if (this.sortOffersDropdown && offerElements.length > 0) {
+            if (this.sortOffersDropdown && offerEls.length > 0) {
                 clearInterval(interval);
                 callback();
             }
@@ -14,7 +14,7 @@ export class StreamElementsRegistry {
         return document.querySelector('[ng-model="vm.sortBy"]');
     }
 
-    get offerElements() {
+    get offerEls() {
         return document.querySelectorAll('.stream-store-list-item');
     }
 }

@@ -18,6 +18,10 @@ export class StreamElementsFacade {
         this.#elementsRegistry = elementsRegistry;
     }
 
+    get offerEls() {
+        return this.#elementsRegistry.offerEls;
+    }
+
     init(callback) {
         this.#elementsRegistry.onElementsReady(() => callback());
     }
