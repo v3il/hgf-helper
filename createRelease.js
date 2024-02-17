@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { globSync } from 'glob';
 import archiver from 'archiver';
 
+// todo
+
 const ARCHIVE_NAME = 'hgf-helper';
 const manifest = JSON.parse(fs.readFileSync(new URL('./manifest.json', import.meta.url)));
 

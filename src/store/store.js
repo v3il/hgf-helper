@@ -1,4 +1,11 @@
 import { SettingsFacade } from '../shared/settings';
+import { StreamElementsFacade } from './modules/streamElements';
+
+StreamElementsFacade.instance.init(async () => {
+    console.clear();
+
+    await SettingsFacade.instance.loadSettings();
+});
 
 (async () => {
     console.clear();
