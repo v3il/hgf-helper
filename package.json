@@ -9,6 +9,7 @@
     "release": "npm run build && node createRelease.js"
   },
   "devDependencies": {
+    "@crxjs/vite-plugin": "^2.0.0-beta.23",
     "archiver": "^6.0.1",
     "eslint": "^8.35.0",
     "eslint-config-airbnb": "^19.0.4",

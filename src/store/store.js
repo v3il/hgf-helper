@@ -1,18 +1,15 @@
-import { Offer } from './models/Offer';
-import { OfferView } from './views/offer/OfferView';
-import { StorageService, JsonBinApiService, SettingsService } from './services';
-// import { SettingsFacade } from '../shared/settings';
+import { SettingsFacade } from '../shared/settings';
 
 (async () => {
     console.clear();
 
-    const { SettingsFacade } = await import('../shared/settings');
+    // const { SettingsFacade } = await import('../shared/settings');
+
+    // await SettingsFacade.instance.loadSettings();
 
     await SettingsFacade.instance.loadSettings();
 
-    // const settingsService = SettingsService.create();
-
-    await SettingsFacade.instance.loadSettings();
+    // await settingsService.loadSettings();
 
     console.error('SettingsFacade.instance', SettingsFacade.instance.globalSettings);
 
