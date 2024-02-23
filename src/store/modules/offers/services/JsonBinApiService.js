@@ -10,8 +10,6 @@ export class JsonBinApiService {
     }
 
     getHiddenOffers() {
-        const jsonBinUrl = this.#jsonBinUrl;
-
         return fetch(this.#jsonBinUrl, { headers: this.#getHeaders() })
             .then((response) => response.json())
             .then((response) => response.record.offers)
