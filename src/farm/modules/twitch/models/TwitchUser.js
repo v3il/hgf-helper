@@ -9,6 +9,10 @@ export class TwitchUser {
         this.#userName = userName;
     }
 
+    get userName() {
+        return this.#userName;
+    }
+
     isCurrentUser(name) {
         return this.#userName === name;
     }

@@ -1,29 +1,18 @@
-import path from 'path';
 import { defineConfig } from 'vite';
 import eslint from 'vite-plugin-eslint';
+import { crx } from '@crxjs/vite-plugin';
+import { resolve } from 'path';
+import manifest from './manifest.json';
 
 export default defineConfig({
     plugins: [
-        eslint()
+        eslint(),
+        crx({ manifest })
     ],
 
-    build: {
-        target: 'modules',
-
-        rollupOptions: {
-            input: {
-                farm: path.resolve(__dirname, 'src/farm/farm.js'),
-                farmInjected: path.resolve(__dirname, 'src/farm/farmInjected.js'),
-                farmBootstrap: path.resolve(__dirname, 'src/farm/farmBootstrap.js'),
-                store: path.resolve(__dirname, 'src/store/store.js'),
-                popup: path.resolve(__dirname, 'src/popup/popup.js')
-            },
-
-            output: {
-                entryFileNames: '[name].js',
-                assetFileNames: '[name].[ext]',
-                chunkFileNames: '[name].js'
-            }
+    resolve: {
+        alias: {
+            '@': resolve(__dirname, './src')
         }
     }
 });

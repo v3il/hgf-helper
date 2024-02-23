@@ -34,6 +34,7 @@ module.exports = {
         'consistent-return': 'off',
         'no-unused-expressions': 'off',
         'no-restricted-syntax': 'off',
+        'import/extensions': 'off',
         'import/prefer-default-export': ["off", "any"],
         "import/no-extraneous-dependencies": ["off"]
     }

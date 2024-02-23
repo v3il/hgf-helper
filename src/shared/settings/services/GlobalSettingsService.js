@@ -1,6 +1,6 @@
-export class SettingsService {
+export class GlobalSettingsService {
     static create() {
-        return new SettingsService({ storage: chrome.storage.local });
+        return new GlobalSettingsService({ storage: chrome.storage.local });
     }
 
     static #STORAGE_KEY = 'hgf-helper.settings';
@@ -27,12 +27,15 @@ export class SettingsService {
     }
 
     async loadSettings() {
-        const settings = await this.#storage.get([SettingsService.#STORAGE_KEY]);
-        this.#settings = { ...SettingsService.#DEFAULT_SETTINGS, ...settings[SettingsService.#STORAGE_KEY] };
+        const settings = await this.#storage.get([GlobalSettingsService.#STORAGE_KEY]);
+        this.#settings = {
+            ...GlobalSettingsService.#DEFAULT_SETTINGS,
+            ...settings[GlobalSettingsService.#STORAGE_KEY]
+        };
     }
 
     updateSettings(settings) {
         this.#settings = { ...this.#settings, ...settings };
-        this.#storage.set({ [SettingsService.#STORAGE_KEY]: this.#settings });
+        this.#storage.set({ [GlobalSettingsService.#STORAGE_KEY]: this.#settings });
     }
 }

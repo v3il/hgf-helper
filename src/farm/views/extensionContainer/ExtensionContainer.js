@@ -1,16 +1,19 @@
 import './style.css';
 import template from './template.html?raw';
-import { Commands, Timing, GlobalVariables } from '../../consts';
+import {
+    Commands, Timing, GlobalVariables, MessageTemplates
+} from '../../consts';
 
 export class ExtensionContainer {
     static create({
-        streamFacade, chatFacade, miniGamesFacade, settingsFacade
+        streamFacade, chatFacade, miniGamesFacade, settingsFacade, twitchFacade
     }) {
         return new ExtensionContainer({
             streamFacade,
             chatFacade,
             miniGamesFacade,
-            settingsFacade
+            settingsFacade,
+            twitchFacade
         });
     }
 
@@ -21,25 +24,27 @@ export class ExtensionContainer {
     #chatFacade;
     #miniGamesFacade;
     #settingsFacade;
+    #twitchFacade;
 
     #isDebug = false;
     #brokenVideoRoundsCount = 0;
 
     constructor({
-        streamFacade, chatFacade, miniGamesFacade, settingsFacade
+        streamFacade, chatFacade, miniGamesFacade, settingsFacade, twitchFacade
     }) {
         this.#streamFacade = streamFacade;
         this.#chatFacade = chatFacade;
         this.#miniGamesFacade = miniGamesFacade;
         this.#settingsFacade = settingsFacade;
+        this.#twitchFacade = twitchFacade;
 
         this.#el = this.#createElement();
 
         this.#handleStreamStatusCheck();
         // this.#handleTriviaCheckbox();
         // this.#handleTriviaAnswersHandler();
+        this.#addGlobalChatListener();
         this.#handleGiveawaysCheckbox();
-        this.#handleGiveawaysRemoteControl();
         this.#handleHitsquadButton();
         this.#handleDebugMode();
         this.#initRemoveDelayHandler();
@@ -111,24 +116,26 @@ export class ExtensionContainer {
         });
     }
 
-    #handleGiveawaysRemoteControl() {
-        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
-
-        this.#chatFacade.observeChat(({ message, isMe }) => {
-            const isHitsquadCommand = message.startsWith(Commands.HITSQUAD);
-
-            if (!(isMe && isHitsquadCommand)) {
-                return;
+    #addGlobalChatListener() {
+        this.#chatFacade.observeChat(({ message, isMe, isSystemMessage }) => {
+            if (isMe && message.startsWith(Commands.HITSQUAD) && message.split(' ')[1]) {
+                return this.#turnOffGiveaways();
             }
 
-            const commandSuffix = message.split(' ')[1];
+            const twitchUserName = this.#twitchFacade.twitchUser.userName;
 
-            if (commandSuffix) {
-                this.#miniGamesFacade.stopHitsquadRunner();
-                this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
-                toggleGiveawaysEl.checked = false;
+            if (isSystemMessage && MessageTemplates.isTooManyStrikesNotification(message, twitchUserName)) {
+                this.#turnOffGiveaways();
             }
         });
+    }
+
+    #turnOffGiveaways() {
+        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
+
+        this.#miniGamesFacade.stopHitsquadRunner();
+        this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
+        toggleGiveawaysEl.checked = false;
     }
 
     #handleTriviaCheckbox() {

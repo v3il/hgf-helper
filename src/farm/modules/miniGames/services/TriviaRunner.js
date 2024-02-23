@@ -1,5 +1,6 @@
-import { MessageTemplates, Timing, Commands } from '../../../consts';
-import { generateDelay, promisifiedSetTimeout } from '../../../utils';
+import { MessageTemplates, Timing, Commands } from '@/farm/consts';
+import { generateDelay } from '@/farm/utils';
+import { promisifiedSetTimeout } from '@/shared/utils';
 
 export class TriviaRunner {
     #chatFacade;

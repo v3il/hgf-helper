@@ -1,10 +1,10 @@
 import { isDev } from './consts';
 import { TwitchFacade } from './modules/twitch';
-import { SettingsFacade } from './modules/settings';
 import { ChatFacade } from './modules/chat';
 import { StreamFacade } from './modules/stream';
 import { MiniGamesFacade } from './modules/miniGames';
 import { ExtensionContainer } from './views';
+import { SettingsFacade } from '@/shared/settings';
 
 TwitchFacade.instance.init(async () => {
     console.clear();
@@ -13,6 +13,7 @@ TwitchFacade.instance.init(async () => {
     await SettingsFacade.instance.loadSettings();
 
     ExtensionContainer.create({
+        twitchFacade: TwitchFacade.instance,
         settingsFacade: SettingsFacade.instance,
         streamFacade: StreamFacade.instance,
         chatFacade: ChatFacade.instance,

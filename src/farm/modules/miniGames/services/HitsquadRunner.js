@@ -1,7 +1,8 @@
-import { generateMiniGameDelay, promisifiedSetTimeout } from '../../../utils';
+import { generateMiniGameDelay } from '@/farm/utils';
 import {
     Commands, MessageTemplates, Timing, GlobalVariables
-} from '../../../consts';
+} from '@/farm/consts';
+import { promisifiedSetTimeout } from '@/shared/utils';
 
 export class HitsquadRunner {
     static #ENTRIES_COUNT_TARGET = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;

@@ -1,3 +1,5 @@
+/*todo: refactor styles*/
+
 .hgfs-container {
     position: absolute;
     right: 0;
@@ -14,4 +16,8 @@
 .hgfs-container__hide {
     font-size: 12px;
     display: block;
+}
+
+.hgfs-offer--hidden.hgfs-offer--hidden.hgfs-offer--hidden {
+    display: none !important;
 }

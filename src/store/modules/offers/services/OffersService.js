@@ -1,4 +1,4 @@
-export class StorageService {
+export class OffersService {
     #apiService;
     #hiddenOffers = [];
 

@@ -27,8 +27,6 @@ export class TwitchFacade {
         this.#elementsRegistry = twitchElementsRegistry;
         this.#userService = userService;
         this.#channelPointsClaimerService = channelPointsClaimerService;
-
-        console.error('TwitchFacade');
     }
 
     get twitchUser() {

@@ -1,14 +1,10 @@
 import './popup.css';
-import { SettingsService } from './SettingsService';
+import { SettingsFacade } from '../shared/settings';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const settingsService = SettingsService.create();
+    await SettingsFacade.instance.loadSettings();
 
-    await settingsService.loadSettings();
-
-    console.info(settingsService.settings);
-
-    Object.entries(settingsService.settings).forEach(([key, value]) => {
+    Object.entries(SettingsFacade.instance.globalSettings).forEach(([key, value]) => {
         const input = document.querySelector(`[data-prop="${key}"]`);
 
         if (!input) return;
@@ -16,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         input.value = value;
 
         input.addEventListener('change', () => {
-            settingsService.updateSettings({
+            SettingsFacade.instance.updateGlobalSettings({
                 [key]: input.value
             });
         });
