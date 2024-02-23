@@ -42,6 +42,10 @@ export class SettingsFacade {
         this.#settingsService.updateSettings(settings);
     }
 
+    onGlobalSettingChanged(settingName, callback) {
+        this.#settingsService.events.on(`settings-updated:${settingName}`, callback);
+    }
+
     getLocalSetting(settingName) {
         return this.#localSettingsService.getSetting(settingName);
     }
