@@ -43,3 +43,15 @@ body {
     border: 1px solid #ccc;
     outline: none;
 }
+
+.range {
+    width: 100%;
+    margin-top: 8px;
+    display: block;
+}
+
+.range_grid {
+    display: flex;
+    margin-top: 8px;
+    justify-content: space-between;
+}
