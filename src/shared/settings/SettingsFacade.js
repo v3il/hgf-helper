@@ -43,7 +43,7 @@ export class SettingsFacade {
     }
 
     onGlobalSettingChanged(settingName, callback) {
-        this.#globalSettingsService.onSettingChanged(settingName, callback);
+        this.#globalSettingsService.events.on(`setting-changed:${settingName}`, callback);
     }
 
     getLocalSetting(settingName) {

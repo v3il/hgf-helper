@@ -1,3 +1,5 @@
+import { EventEmitter } from '@/farm/modules/shared';
+
 export class GlobalSettingsService {
     static create() {
         return new GlobalSettingsService({ storage: chrome.storage.local });
@@ -14,14 +16,20 @@ export class GlobalSettingsService {
 
     #settings = {};
     #storage;
+    #events;
 
     constructor({ storage }) {
         this.#storage = storage;
-        this.#storage.onChanged.addListener(() => this.loadSettings());
+        this.#events = EventEmitter.create();
+        this.#initObserver();
     }
 
     get settings() {
         return this.#settings;
+    }
+
+    get events() {
+        return this.#events;
     }
 
     getSetting(name) {
@@ -41,14 +49,16 @@ export class GlobalSettingsService {
         this.#storage.set({ [GlobalSettingsService.#STORAGE_KEY]: this.#settings });
     }
 
-    onSettingChanged(settingName, callback) {
+    #initObserver() {
         this.#storage.onChanged.addListener((changes) => {
-            const oldValue = changes[GlobalSettingsService.#STORAGE_KEY].oldValue[settingName];
-            const newValue = changes[GlobalSettingsService.#STORAGE_KEY].newValue[settingName];
+            const { oldValue, newValue } = changes[GlobalSettingsService.#STORAGE_KEY];
 
-            if (oldValue !== newValue) {
-                setTimeout(() => callback(newValue), 500);
-                // callback(newValue);
+            this.#settings = { ...newValue };
+
+            for (const key in oldValue) {
+                if (oldValue[key] !== newValue[key]) {
+                    this.#events.emit(`setting-changed:${key}`, newValue[key]);
+                }
             }
         });
     }
