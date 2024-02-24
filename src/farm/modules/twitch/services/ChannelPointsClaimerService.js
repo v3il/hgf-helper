@@ -1,4 +1,4 @@
-import { debounce } from '../../../utils';
+import { debounce } from '@/farm/utils';
 
 export class ChannelPointsClaimerService {
     #twitchElementsRegistry;
