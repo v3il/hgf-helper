@@ -15,6 +15,8 @@ export class OfferView {
         this.#offersFacade = offersFacade;
         this.#settingsFacade = settingsFacade;
 
+        this._clickHandler = this._clickHandler.bind(this);
+
         this.#renderContainer();
         this.toggleOffer();
         this.#listenEvents();
@@ -37,22 +39,31 @@ export class OfferView {
     }
 
     #listenEvents() {
-        if (this.#isHidden) {
+        if (!this.#isHidden) {
+            this.#attachClickListener();
+        }
+    }
+
+    #attachClickListener() {
+        const hideButtonEl = this.#offerEl.querySelector('[data-hide]');
+
+        hideButtonEl.addEventListener('click', this._clickHandler);
+    }
+
+    #removeClickListener() {
+        const hideButtonEl = this.#offerEl.querySelector('[data-hide]');
+
+        hideButtonEl.removeEventListener('click', this._clickHandler);
+    }
+
+    _clickHandler() {
+        // eslint-disable-next-line no-alert
+        if (!window.confirm('Hide?')) {
             return;
         }
 
-        const hideButtonEl = this.#offerEl.querySelector('[data-hide]');
-
-        // todo
-        hideButtonEl.addEventListener('click', () => {
-            // eslint-disable-next-line no-alert
-            if (!window.confirm('Hide?')) {
-                return;
-            }
-
-            this.#offersFacade.hideOffer(this.#offer.name);
-            this.#hideOffer();
-        });
+        this.#offersFacade.hideOffer(this.#offer.name);
+        this.#hideOffer();
     }
 
     toggleOffer() {
@@ -60,10 +71,12 @@ export class OfferView {
     }
 
     #hideOffer() {
+        this.#removeClickListener();
         this.#offerEl.classList.add('hgfs-offer--hidden');
     }
 
     #showOffer() {
+        this.#attachClickListener();
         this.#offerEl.classList.remove('hgfs-offer--hidden');
     }
 }
