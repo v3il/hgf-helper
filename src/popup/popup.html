@@ -6,31 +6,43 @@
     <link rel="stylesheet" href="./popup.css">
 </head>
 <body>
-<h2 class="h2 mb-2">HGF Helper</h2>
+<h2 class="h2 mb-4">HGF Helper</h2>
 
-<h3 class="h3 mb-1">Stream Elements Widget Settings</h3>
+<h3 class="h3 mb-2">Stream Elements Widget Settings</h3>
 
-<p class="note mb-1">Leave empty if you are not going to use widget for Stream Elements</p>
+<div class="label mb-4" data-setting="jsonBinUrl">
+    <p class="mb-1 bold">JSONBin URL <a href="https://jsonbin.io/app/bins" target="_blank" class="link">&#10697;</a></p>
+    <p class="note mb-1">Not Required</p>
+    <input type="text" placeholder="https://api.jsonbin.io/v3/b/************************" class="input" data-input>
+</div>
 
-<label class="label mb-2">
-    JSONBin URL <a href="https://jsonbin.io/app/bins" target="_blank" class="link">&#10697;</a>
-    <input type="text" placeholder="https://api.jsonbin.io/v3/b/************************" class="input" data-prop="jsonBinUrl">
-</label>
+<div class="label mb-4" data-setting="jsonBinMasterKey">
+    <p class="mb-1 bold">JSONBin X-Master Key <a href="https://jsonbin.io/app/app/api-keys" target="_blank" class="link">&#10697;</a></p>
+    <p class="note mb-1">Not Required</p>
+    <input type="text" class="input" data-input>
+</div>
 
-<label class="label mb-2">
-    JSONBin X-Master Key <a href="https://jsonbin.io/app/app/api-keys" target="_blank" class="link">&#10697;</a>
-    <input type="text" class="input" data-prop="jsonBinMasterKey">
-</label>
+<div class="label mb-4" data-setting="jsonBinAccessKey">
+    <p class="mb-1 bold">JSONBin X-Access Key <a href="https://jsonbin.io/app/app/api-keys" target="_blank" class="link">&#10697;</a></p>
+    <p class="note mb-1">Not Required</p>
+    <input type="text" class="input" data-input>
+</div>
 
-<label class="label mb-2">
-    JSONBin X-Access Key <a href="https://jsonbin.io/app/app/api-keys" target="_blank" class="link">&#10697;</a>
-    <input type="text" class="input" data-prop="jsonBinAccessKey">
-</label>
+<div class="label" data-setting="offersMaxPrice">
+    <p class="flex flex-between flex-center">
+        <span class="bold">Hide offers with price over</span>
+        <span data-value>0</span>
+    </p>
 
-<label class="label">
-    Hide offers with price over
-    <input type="number" min="0" max="1000000" class="input" data-prop="offersMaxPrice">
-</label>
+    <input type="range" min="0" max="600000" class="range" list="priceRange" data-input>
+
+    <datalist id="priceRange" class="range_grid">
+        <option value="0">0</option>
+        <option value="200000">200k</option>
+        <option value="400000">400k</option>
+        <option value="600000">600k</option>
+    </datalist>
+</div>
 
 <script src="./popup.js" type="module"></script>
 </body>

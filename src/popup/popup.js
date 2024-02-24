@@ -1,33 +1,39 @@
 import './popup.css';
 import { SettingsFacade } from '@/shared/settings';
 
-function initTextInputSetting(settingName, normalizer) {
-    const input = document.querySelector(`[data-prop="${settingName}"]`);
+const settings = {
+    jsonBinUrl: String,
+    jsonBinMasterKey: String,
+    jsonBinAccessKey: String,
+    offersMaxPrice: Number
+};
 
-    input.value = SettingsFacade.instance.getGlobalSetting(settingName);
+function initSettingView(settingName, settingNormalizer) {
+    const el = document.querySelector(`[data-setting="${settingName}"]`);
+    const inputEl = el.querySelector('[data-input]');
+    const valueEl = el.querySelector('[data-value]');
 
-    input.addEventListener('change', () => {
-        const value = normalizer ? normalizer(input.value) : input.value;
+    inputEl.value = SettingsFacade.instance.getGlobalSetting(settingName);
 
-        input.value = value;
+    if (valueEl) {
+        valueEl.textContent = inputEl.value;
 
+        inputEl.addEventListener('input', () => {
+            valueEl.textContent = inputEl.value;
+        });
+    }
+
+    inputEl.addEventListener('change', () => {
         SettingsFacade.instance.updateGlobalSettings({
-            [settingName]: value
+            [settingName]: settingNormalizer(inputEl.value)
         });
     });
 }
 
-const settingsNormalizer = {
-    offersMaxPrice: (value) => {
-        const numericValue = Number.parseInt(value, 10);
-        return Number.isNaN(numericValue) ? 0 : numericValue;
-    }
-};
-
 document.addEventListener('DOMContentLoaded', async () => {
     await SettingsFacade.instance.loadSettings();
 
-    ['jsonBinUrl', 'jsonBinMasterKey', 'jsonBinAccessKey', 'offersMaxPrice'].forEach((settingName) => {
-        initTextInputSetting(settingName, settingsNormalizer[settingName]);
+    Object.entries(settings).forEach(([settingName, settingNormalizer]) => {
+        initSettingView(settingName, settingNormalizer);
     });
 });

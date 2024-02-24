@@ -11,7 +11,7 @@ export class GlobalSettingsService {
         jsonBinUrl: '',
         jsonBinMasterKey: '',
         jsonBinAccessKey: '',
-        offersMaxPrice: 1000000
+        offersMaxPrice: 600_000
     };
 
     #settings = {};
