@@ -18,8 +18,8 @@ export class StreamElementsFacade {
         this.#elementsRegistry = elementsRegistry;
     }
 
-    get offerEls() {
-        return this.#elementsRegistry.offerEls;
+    get offersListEl() {
+        return this.#elementsRegistry.offersListEl;
     }
 
     init(callback) {

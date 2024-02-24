@@ -6,40 +6,44 @@ export class SettingsFacade {
     static get instance() {
         if (!this._instance) {
             const localSettingsService = LocalSettingsService.create();
-            const settingsService = GlobalSettingsService.create();
+            const globalSettingsService = GlobalSettingsService.create();
 
             this._instance = new SettingsFacade({
                 localSettingsService,
-                settingsService
+                globalSettingsService
             });
         }
 
         return this._instance;
     }
 
-    #settingsService;
+    #globalSettingsService;
     #localSettingsService;
 
-    constructor({ localSettingsService, settingsService }) {
-        this.#settingsService = settingsService;
+    constructor({ localSettingsService, globalSettingsService }) {
+        this.#globalSettingsService = globalSettingsService;
         this.#localSettingsService = localSettingsService;
     }
 
     get globalSettings() {
-        return this.#settingsService.settings;
+        return this.#globalSettingsService.settings;
     }
 
     async loadSettings() {
         this.#localSettingsService.loadSettings();
-        await this.#settingsService.loadSettings();
+        await this.#globalSettingsService.loadSettings();
     }
 
     getGlobalSetting(settingName) {
-        return this.#settingsService.getSetting(settingName);
+        return this.#globalSettingsService.getSetting(settingName);
     }
 
     updateGlobalSettings(settings) {
-        this.#settingsService.updateSettings(settings);
+        this.#globalSettingsService.updateSettings(settings);
+    }
+
+    onGlobalSettingChanged(settingName, callback) {
+        this.#globalSettingsService.events.on(`setting-changed:${settingName}`, callback);
     }
 
     getLocalSetting(settingName) {

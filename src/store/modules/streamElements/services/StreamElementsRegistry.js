@@ -3,7 +3,7 @@ import { promisifiedSetTimeout } from '@/shared/utils';
 export class StreamElementsRegistry {
     onElementsReady(callback) {
         const interval = setInterval(() => {
-            const { offerEls } = this;
+            const offerEls = document.querySelectorAll('.stream-store-list-item');
 
             if (this.#sortOffersDropdownEl && offerEls.length > 0) {
                 clearInterval(interval);
@@ -16,8 +16,8 @@ export class StreamElementsRegistry {
         return document.querySelector('[ng-model="vm.sortBy"]');
     }
 
-    get offerEls() {
-        return document.querySelectorAll('.stream-store-list-item');
+    get offersListEl() {
+        return document.querySelector('.public-store-items');
     }
 
     // todo
