@@ -32,7 +32,7 @@ The widget mounts on the store page, adds several useful features:
 1. automatically sorts offers by cost when you enter the page;
 1. adds a button to the offers that allows you to hide the offer (the game has already been purchased, or you already own the game);
 1. adds a red background under the button if there are few keys left for a certain game;
-1. automatically hides offers more expensive than 50000 clams. I did it for myself, as I am not interested in very expensive AAA games. In the future I will think about putting it in some setting (maybe);
+1. adds ability to hide offers over defined price;
 
 The appearance of the widget is shown in the image below:
 
