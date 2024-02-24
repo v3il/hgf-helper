@@ -1,5 +1,3 @@
-import { EventEmitter } from '@/farm/modules/shared';
-
 export class GlobalSettingsService {
     static create() {
         return new GlobalSettingsService({ storage: chrome.storage.local });
@@ -11,20 +9,15 @@ export class GlobalSettingsService {
         jsonBinUrl: '',
         jsonBinMasterKey: '',
         jsonBinAccessKey: '',
-        hideOffersOver: 1000000
+        offersMaxPrice: 1000000
     };
 
     #settings = {};
     #storage;
-    #events;
 
     constructor({ storage }) {
         this.#storage = storage;
-        this.#events = EventEmitter.create();
-    }
-
-    get events() {
-        return this.#events;
+        this.#storage.onChanged.addListener(() => this.loadSettings());
     }
 
     get settings() {
@@ -46,9 +39,17 @@ export class GlobalSettingsService {
     updateSettings(settings) {
         this.#settings = { ...this.#settings, ...settings };
         this.#storage.set({ [GlobalSettingsService.#STORAGE_KEY]: this.#settings });
+    }
 
-        Object.keys(settings).forEach((key) => {
-            this.#events.emit(`settings-updated:${key}`);
+    onSettingChanged(settingName, callback) {
+        this.#storage.onChanged.addListener((changes) => {
+            const oldValue = changes[GlobalSettingsService.#STORAGE_KEY].oldValue[settingName];
+            const newValue = changes[GlobalSettingsService.#STORAGE_KEY].newValue[settingName];
+
+            if (oldValue !== newValue) {
+                setTimeout(() => callback(newValue), 500);
+                // callback(newValue);
+            }
         });
     }
 }

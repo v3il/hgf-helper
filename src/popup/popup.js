@@ -18,7 +18,7 @@ function initTextInputSetting(settingName, normalizer) {
 }
 
 const settingsNormalizer = {
-    hideOffersOver: (value) => {
+    offersMaxPrice: (value) => {
         const numericValue = Number.parseInt(value, 10);
         return Number.isNaN(numericValue) ? 0 : numericValue;
     }
@@ -27,7 +27,7 @@ const settingsNormalizer = {
 document.addEventListener('DOMContentLoaded', async () => {
     await SettingsFacade.instance.loadSettings();
 
-    ['jsonBinUrl', 'jsonBinMasterKey', 'jsonBinAccessKey', 'hideOffersOver'].forEach((settingName) => {
+    ['jsonBinUrl', 'jsonBinMasterKey', 'jsonBinAccessKey', 'offersMaxPrice'].forEach((settingName) => {
         initTextInputSetting(settingName, settingsNormalizer[settingName]);
     });
 });

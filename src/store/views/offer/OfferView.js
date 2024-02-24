@@ -5,20 +5,26 @@ export class OfferView {
     #offer;
     #offerEl;
     #offersFacade;
+    #settingsFacade;
 
-    constructor({ offer, offerEl, offersFacade }) {
+    constructor({
+        offer, offerEl, offersFacade, settingsFacade
+    }) {
         this.#offer = offer;
         this.#offerEl = offerEl;
         this.#offersFacade = offersFacade;
+        this.#settingsFacade = settingsFacade;
 
         this.#renderContainer();
-        this.#toggleOffer();
+        this.toggleOffer();
         this.#listenEvents();
     }
 
     get #isHidden() {
+        const offersMaxPrice = this.#settingsFacade.getGlobalSetting('offersMaxPrice');
+
         return this.#offer.isSoldOut
-            || this.#offer.isTooExpensive
+            || this.#offer.price > offersMaxPrice
             || this.#offersFacade.isOfferHidden(this.#offer.name);
     }
 
@@ -37,6 +43,7 @@ export class OfferView {
 
         const hideButtonEl = this.#offerEl.querySelector('[data-hide]');
 
+        // todo
         hideButtonEl.addEventListener('click', () => {
             // eslint-disable-next-line no-alert
             if (!window.confirm('Hide?')) {
@@ -48,13 +55,15 @@ export class OfferView {
         });
     }
 
-    #toggleOffer() {
-        if (this.#isHidden) {
-            this.#hideOffer();
-        }
+    toggleOffer() {
+        this.#isHidden ? this.#hideOffer() : this.#showOffer();
     }
 
     #hideOffer() {
         this.#offerEl.classList.add('hgfs-offer--hidden');
+    }
+
+    #showOffer() {
+        this.#offerEl.classList.remove('hgfs-offer--hidden');
     }
 }

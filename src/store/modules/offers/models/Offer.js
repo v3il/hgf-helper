@@ -13,6 +13,10 @@ export class Offer {
         return this.#name;
     }
 
+    get price() {
+        return this.#price;
+    }
+
     get countValue() {
         const value = Number.parseInt(this.#count, 10);
         return Number.isNaN(value) ? 0 : value;
@@ -24,9 +28,5 @@ export class Offer {
 
     get isSoldOut() {
         return this.#count === 'sold out';
-    }
-
-    get isTooExpensive() {
-        return this.#price > 50000;
     }
 }
