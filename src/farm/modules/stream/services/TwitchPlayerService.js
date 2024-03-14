@@ -9,11 +9,15 @@ export class TwitchPlayerService {
 
     constructor() {
         this.#settingsButton = document.querySelector('[data-a-target="player-settings-button"]');
-        this.#currentQuality = this.#getCurrentQuality();
+        this.init();
     }
 
-    decreaseVideoDelay() {
-        this.#gotoQualitySettings();
+    async init() {
+        this.#currentQuality = await this.#getCurrentQuality();
+    }
+
+    async decreaseVideoDelay() {
+        await this.#gotoQualitySettings();
 
         const qualityRadios = this.#getQualitySettingsButtonEls();
         const nextQuality = this.#getNextQuality();
@@ -23,13 +27,21 @@ export class TwitchPlayerService {
             qualityRadio.click();
         }
 
+        console.error('decre', nextQuality, qualityRadio, qualityRadios);
+
         this.#closeSettingsPopup();
         this.#currentQuality = nextQuality;
     }
 
     #gotoQualitySettings() {
         this.#settingsButton.click();
-        document.querySelector('[data-a-target="player-settings-menu-item-quality"]')?.click();
+
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                document.querySelector('[data-a-target="player-settings-menu-item-quality"]')?.click();
+                resolve();
+            }, 50);
+        });
     }
 
     #closeSettingsPopup() {
@@ -40,8 +52,8 @@ export class TwitchPlayerService {
         return Array.from(document.querySelectorAll('[name="player-settings-submenu-quality-option"]'));
     }
 
-    #getCurrentQuality() {
-        this.#gotoQualitySettings();
+    async #getCurrentQuality() {
+        await this.#gotoQualitySettings();
 
         const qualityRadios = this.#getQualitySettingsButtonEls();
         const checkedRadio = qualityRadios.find((radioEl) => radioEl.checked);
