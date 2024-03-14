@@ -16,7 +16,7 @@ class TwitchChatService {
 
         try {
             this._typeMessage(message);
-            this._sendMessage();
+            setTimeout(() => { this._sendMessage(); }, 0);
         } catch (e) {
             console.error(e);
             return false;
@@ -27,7 +27,7 @@ class TwitchChatService {
 
     _getReactInstance(element) {
         for (const key in element) {
-            if (key.startsWith('__reactInternalInstance$')) {
+            if (key.startsWith('__reactInternalInstance$') || key.startsWith('__reactFiber$')) {
                 return element[key];
             }
         }
