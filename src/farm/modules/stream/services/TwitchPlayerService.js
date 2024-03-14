@@ -27,8 +27,6 @@ export class TwitchPlayerService {
             qualityRadio.click();
         }
 
-        console.error('decre', nextQuality, qualityRadio, qualityRadios);
-
         this.#closeSettingsPopup();
         this.#currentQuality = nextQuality;
     }
