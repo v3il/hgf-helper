@@ -55,6 +55,6 @@ export class Offer {
             return this.#description.match(regex)[0];
         }
 
-        return null;
+        return `https://store.steampowered.com/search/?term=${this.#name}`;
     }
 }

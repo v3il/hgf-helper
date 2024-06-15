@@ -36,7 +36,3 @@
 .hgfs-container__steam:hover {
     text-decoration: underline;
 }
-
-.hidden {
-    visibility: hidden;
-}
