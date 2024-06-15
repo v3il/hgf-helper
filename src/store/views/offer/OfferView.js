@@ -33,6 +33,13 @@ export class OfferView {
     #renderContainer() {
         this.#offerEl.insertAdjacentHTML('beforeend', template);
 
+        if (this.#offer.steamAppLink) {
+            const steamAppLinkEl = this.#offerEl.querySelector('[data-steam-app-link]');
+
+            steamAppLinkEl.href = this.#offer.steamAppLink;
+            steamAppLinkEl.classList.remove('hidden');
+        }
+
         if (this.#offer.isDeficiency) {
             this.#offerEl.querySelector('[data-container]').classList.add('hgfs-container--danger');
         }
