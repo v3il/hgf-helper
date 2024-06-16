@@ -48,6 +48,7 @@ export class ExtensionContainer {
         this.#handleHitsquadButton();
         this.#handleDebugMode();
         this.#initRemoveDelayHandler();
+        this.#handleHitsquadRunnerStop();
     }
 
     #handleStreamStatusCheck() {
@@ -101,18 +102,44 @@ export class ExtensionContainer {
     }
 
     #handleGiveawaysCheckbox() {
-        const toggleGamesEl = this.#el.querySelector('[data-toggle-giveaways]');
+        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
         const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
 
-        toggleGamesEl.checked = isHitsquadRunning;
+        toggleGiveawaysEl.checked = isHitsquadRunning;
 
         if (isHitsquadRunning) {
             this.#miniGamesFacade.startHitsquadRunner();
         }
 
-        toggleGamesEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#miniGamesFacade.startHitsquadRunner() : this.#miniGamesFacade.stopHitsquadRunner();
-            this.#settingsFacade.updateLocalSettings({ hitsquadRunner: target.checked });
+        toggleGiveawaysEl.addEventListener('change', ({ target }) => {
+            target.checked ? this.#handleGiveawaysOn() : this.#handleGiveawaysOff();
+        });
+    }
+
+    #handleGiveawaysOn() {
+        const gamesCount = prompt('Enter games count', '1200');
+        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
+        const numericGamesCount = Number(gamesCount);
+
+        if (!gamesCount || Number.isNaN(numericGamesCount) || numericGamesCount <= 0) {
+            toggleGiveawaysEl.checked = false;
+            return;
+        }
+
+        this.#miniGamesFacade.startHitsquadRunner({ gamesCount: numericGamesCount });
+        this.#settingsFacade.updateLocalSettings({ hitsquadRunner: true });
+    }
+
+    #handleGiveawaysOff() {
+        this.#miniGamesFacade.stopHitsquadRunner();
+        this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
+    }
+
+    #handleHitsquadRunnerStop() {
+        this.#miniGamesFacade.onHitsquadRunnerStop(() => {
+            const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
+            toggleGiveawaysEl.checked = false;
+            this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
         });
     }
 

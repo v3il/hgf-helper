@@ -9,15 +9,22 @@ export class HitsquadRunner {
 
     #chatFacade;
     #streamFacade;
+    #events;
 
     #isPaused = true;
     #completedGamesCount = 0;
+    #totalGamesCount = 0;
 
-    constructor({ chatFacade, streamFacade }) {
+    constructor({ chatFacade, streamFacade, events }) {
         this.#chatFacade = chatFacade;
         this.#streamFacade = streamFacade;
+        this.#events = events;
 
         this.#listenEvents();
+    }
+
+    get events() {
+        return this.#events;
     }
 
     #listenEvents() {
@@ -36,8 +43,15 @@ export class HitsquadRunner {
         }
 
         if (this.#completedGamesCount > 0 && this.#completedGamesCount % HitsquadRunner.#ENTRIES_COUNT_TARGET === 0) {
+            this.#totalGamesCount -= this.#completedGamesCount;
             this.#completedGamesCount = 0;
-            this.#startNewRound();
+
+            if (this.#totalGamesCount > 0) {
+                this.#startNewRound();
+            } else {
+                this.stop();
+                this.#events.emit('hitsquadRunner:stop');
+            }
         }
     }
 
@@ -59,7 +73,8 @@ export class HitsquadRunner {
         this.#chatFacade.sendMessage(Commands.HITSQUAD);
     }
 
-    start() {
+    start({ gamesCount }) {
+        this.#totalGamesCount = gamesCount;
         this.#isPaused = false;
     }
 
