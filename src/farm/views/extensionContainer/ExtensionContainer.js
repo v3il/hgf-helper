@@ -108,7 +108,7 @@ export class ExtensionContainer {
         toggleGiveawaysEl.checked = isHitsquadRunning;
 
         if (isHitsquadRunning) {
-            this.#miniGamesFacade.startHitsquadRunner();
+            this.#miniGamesFacade.startHitsquadRunner({ gamesCount: GlobalVariables.HITSQUAD_GAMES_PER_DAY });
         }
 
         toggleGiveawaysEl.addEventListener('change', ({ target }) => {
@@ -117,7 +117,7 @@ export class ExtensionContainer {
     }
 
     #handleGiveawaysOn() {
-        const gamesCount = prompt('Enter games count', '1200');
+        const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
         const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
         const numericGamesCount = Number(gamesCount);
 

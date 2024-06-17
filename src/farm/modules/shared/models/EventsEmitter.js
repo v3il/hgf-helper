@@ -11,6 +11,10 @@ export class EventEmitter {
         }
 
         this.storage[event].push(handler);
+
+        return () => {
+            this.storage[event] = this.storage[event].filter((callback) => callback !== handler);
+        };
     }
 
     emit(event, data = {}) {

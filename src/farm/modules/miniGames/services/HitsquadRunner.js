@@ -5,22 +5,22 @@ import {
 import { promisifiedSetTimeout } from '@/shared/utils';
 
 export class HitsquadRunner {
-    static #ENTRIES_COUNT_TARGET = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
+    static #GAMES_UNTIL_COMMAND = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
 
     #chatFacade;
     #streamFacade;
     #events;
 
-    #isPaused = true;
-    #completedGamesCount = 0;
+    #isStopped = true;
+    #gamesUntilCommand = 0;
     #totalGamesCount = 0;
+
+    #unsubscribe;
 
     constructor({ chatFacade, streamFacade, events }) {
         this.#chatFacade = chatFacade;
         this.#streamFacade = streamFacade;
         this.#events = events;
-
-        this.#listenEvents();
     }
 
     get events() {
@@ -28,40 +28,41 @@ export class HitsquadRunner {
     }
 
     #listenEvents() {
-        this.#chatFacade.observeChat((data) => {
-            if (!this.#isPaused) {
-                this.#processMessage(data);
-            } else {
-                this.#completedGamesCount = 0;
-            }
+        this.#unsubscribe = this.#chatFacade.observeChat((data) => {
+            this.#processMessage(data);
         });
     }
 
-    #processMessage({ message, isSystemMessage }) {
+    async #processMessage({ message, isSystemMessage }) {
         if (isSystemMessage && MessageTemplates.isHitsquadReward(message)) {
-            this.#completedGamesCount++;
+            this.#gamesUntilCommand--;
+            this.#totalGamesCount--;
         }
 
-        if (this.#completedGamesCount > 0 && this.#completedGamesCount % HitsquadRunner.#ENTRIES_COUNT_TARGET === 0) {
-            this.#totalGamesCount -= this.#completedGamesCount;
-            this.#completedGamesCount = 0;
+        if (this.#totalGamesCount <= 0) {
+            this.stop();
+            this.#events.emit('hitsquadRunner:stop');
 
-            if (this.#totalGamesCount > 0) {
-                this.#startNewRound();
-            } else {
-                this.stop();
-                this.#events.emit('hitsquadRunner:stop');
+            if (this.#gamesUntilCommand !== HitsquadRunner.#GAMES_UNTIL_COMMAND) {
+                this.#queueCommandSend();
             }
+
+            return;
+        }
+
+        if (this.#gamesUntilCommand === 0) {
+            this.#gamesUntilCommand = HitsquadRunner.#GAMES_UNTIL_COMMAND;
+            this.#queueCommandSend();
         }
     }
 
-    async #startNewRound() {
+    async #queueCommandSend() {
         await promisifiedSetTimeout(generateMiniGameDelay());
         await this.#sendCommands();
     }
 
     async #sendCommands() {
-        if (this.#isPaused) {
+        if (this.#isStopped) {
             return;
         }
 
@@ -75,11 +76,14 @@ export class HitsquadRunner {
 
     start({ gamesCount }) {
         this.#totalGamesCount = gamesCount;
-        this.#isPaused = false;
+        this.#gamesUntilCommand = HitsquadRunner.#GAMES_UNTIL_COMMAND;
+        this.#isStopped = false;
+        this.#listenEvents();
     }
 
     stop() {
-        this.#isPaused = true;
-        this.#completedGamesCount = 0;
+        this.#isStopped = true;
+        this.#gamesUntilCommand = 0;
+        this.#unsubscribe?.();
     }
 }
