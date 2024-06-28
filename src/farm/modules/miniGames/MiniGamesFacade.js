@@ -43,8 +43,8 @@ export class MiniGamesFacade {
         this.#hitsquadRunner.stop();
     }
 
-    onHitsquadRunnerStop(callback) {
-        this.#hitsquadRunner.events.on('hitsquadRunner:stop', callback);
+    onHitsquadRoundEnd(callback) {
+        this.#hitsquadRunner.events.on('hitsquadRunner:round', callback);
     }
 
     startTriviaRunner() {

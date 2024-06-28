@@ -104,15 +104,15 @@ export class ExtensionContainer {
     #handleGiveawaysCheckbox() {
         const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
         const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
+        const remainingHitsquadRounds = this.#settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
 
-        toggleGiveawaysEl.checked = isHitsquadRunning;
-
-        if (isHitsquadRunning) {
-            this.#miniGamesFacade.startHitsquadRunner({ totalRounds: GlobalVariables.HITSQUAD_GAMES_PER_DAY });
+        if (isHitsquadRunning && remainingHitsquadRounds > 0) {
+            toggleGiveawaysEl.checked = true;
+            this.#miniGamesFacade.startHitsquadRunner({ totalRounds: remainingHitsquadRounds });
         }
 
         toggleGiveawaysEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#handleGiveawaysOn() : this.#handleGiveawaysOff();
+            target.checked ? this.#handleGiveawaysOn() : this.#turnOffGiveaways();
         });
     }
 
@@ -127,19 +127,22 @@ export class ExtensionContainer {
         }
 
         this.#miniGamesFacade.startHitsquadRunner({ totalRounds: numericGamesCount });
-        this.#settingsFacade.updateLocalSettings({ hitsquadRunner: true });
-    }
 
-    #handleGiveawaysOff() {
-        this.#miniGamesFacade.stopHitsquadRunner();
-        this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
+        this.#settingsFacade.updateLocalSettings({
+            hitsquadRunner: true,
+            hitsquadRunnerRemainingRounds: numericGamesCount
+        });
     }
 
     #handleHitsquadRunnerStop() {
-        this.#miniGamesFacade.onHitsquadRunnerStop(() => {
-            const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
-            toggleGiveawaysEl.checked = false;
-            this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
+        this.#miniGamesFacade.onHitsquadRoundEnd(({ remainingRounds, stopped }) => {
+            if (stopped) {
+                return this.#turnOffGiveaways();
+            }
+
+            this.#settingsFacade.updateLocalSettings({
+                hitsquadRunnerRemainingRounds: remainingRounds
+            });
         });
     }
 
@@ -160,9 +163,14 @@ export class ExtensionContainer {
     #turnOffGiveaways() {
         const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
 
-        this.#miniGamesFacade.stopHitsquadRunner();
-        this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
         toggleGiveawaysEl.checked = false;
+
+        this.#miniGamesFacade.stopHitsquadRunner();
+
+        this.#settingsFacade.updateLocalSettings({
+            hitsquadRunner: false,
+            hitsquadRunnerRemainingRounds: 0
+        });
     }
 
     #handleTriviaCheckbox() {
@@ -196,7 +204,7 @@ export class ExtensionContainer {
 
         sendHitsquadButton.addEventListener('click', (event) => {
             if (this.#streamFacade.isAllowedToSendMessage || event.ctrlKey) {
-                this.#chatFacade.sendMessage(Commands.HITSQUAD, event.ctrlKey);
+                this.#chatFacade.sendMessage(Commands.HITSQUAD, true);
             }
         });
     }

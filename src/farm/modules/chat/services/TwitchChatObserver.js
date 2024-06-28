@@ -18,12 +18,18 @@ export class TwitchChatObserver {
     }
 
     #createObserver() {
+        let isInitial = true;
+
         return new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 mutation.addedNodes.forEach((addedElement) => {
-                    this.#processAddedElement(addedElement);
+                    if (!isInitial) {
+                        this.#processAddedElement(addedElement);
+                    }
                 });
             });
+
+            isInitial = false;
         });
     }
 

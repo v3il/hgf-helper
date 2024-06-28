@@ -5,7 +5,7 @@ import {
 import { promisifiedSetTimeout } from '@/shared/utils';
 
 export class HitsquadRunner {
-    static #GAMES_UNTIL_COMMAND = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
+    static #ROUNDS_UNTIL_COMMAND = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
 
     #chatFacade;
     #streamFacade;
@@ -39,9 +39,9 @@ export class HitsquadRunner {
 
         if (this.#counter.totalRounds <= 0) {
             this.stop();
-            this.#events.emit('hitsquadRunner:stop');
+            this.#emitEvent();
 
-            if (this.#counter.roundsUntilCommand < HitsquadRunner.#GAMES_UNTIL_COMMAND) {
+            if (this.#counter.roundsUntilCommand > 0) {
                 this.#queueCommandSend();
             }
 
@@ -49,8 +49,9 @@ export class HitsquadRunner {
         }
 
         if (this.#counter.roundsUntilCommand === 0) {
-            this.#counter.roundsUntilCommand = HitsquadRunner.#GAMES_UNTIL_COMMAND;
+            this.#counter.roundsUntilCommand = HitsquadRunner.#ROUNDS_UNTIL_COMMAND;
             this.#queueCommandSend();
+            this.#emitEvent();
         }
     }
 
@@ -63,6 +64,12 @@ export class HitsquadRunner {
         return generateDelay(30 * Timing.SECOND, 2 * Timing.MINUTE);
     }
 
+    #emitEvent() {
+        const remainingRounds = this.#counter.totalRounds;
+
+        this.#events.emit('hitsquadRunner:round', { remainingRounds, stopped: remainingRounds <= 0 });
+    }
+
     async #sendCommand() {
         if (!this.#streamFacade.isAllowedToSendMessage) {
             await promisifiedSetTimeout(20 * Timing.SECOND);
@@ -73,7 +80,7 @@ export class HitsquadRunner {
     }
 
     start({ totalRounds }) {
-        this.#counter = { totalRounds, roundsUntilCommand: HitsquadRunner.#GAMES_UNTIL_COMMAND };
+        this.#counter = { totalRounds, roundsUntilCommand: HitsquadRunner.#ROUNDS_UNTIL_COMMAND };
         this.#listenEvents();
     }
 
