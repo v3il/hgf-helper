@@ -1,4 +1,4 @@
-import { generateMiniGameDelay } from '@/farm/utils';
+import { generateDelay } from '@/farm/utils';
 import {
     Commands, MessageTemplates, Timing, GlobalVariables
 } from '@/farm/consts';
@@ -11,9 +11,7 @@ export class HitsquadRunner {
     #streamFacade;
     #events;
 
-    #isStopped = true;
-    #gamesUntilCommand = 0;
-    #totalGamesCount = 0;
+    #counter = { totalRounds: 0, roundsUntilCommand: 0 };
 
     #unsubscribe;
 
@@ -35,55 +33,51 @@ export class HitsquadRunner {
 
     async #processMessage({ message, isSystemMessage }) {
         if (isSystemMessage && MessageTemplates.isHitsquadReward(message)) {
-            this.#gamesUntilCommand--;
-            this.#totalGamesCount--;
+            this.#counter.totalRounds--;
+            this.#counter.roundsUntilCommand--;
         }
 
-        if (this.#totalGamesCount <= 0) {
+        if (this.#counter.totalRounds <= 0) {
             this.stop();
             this.#events.emit('hitsquadRunner:stop');
 
-            if (this.#gamesUntilCommand !== HitsquadRunner.#GAMES_UNTIL_COMMAND) {
+            if (this.#counter.roundsUntilCommand < HitsquadRunner.#GAMES_UNTIL_COMMAND) {
                 this.#queueCommandSend();
             }
 
             return;
         }
 
-        if (this.#gamesUntilCommand === 0) {
-            this.#gamesUntilCommand = HitsquadRunner.#GAMES_UNTIL_COMMAND;
+        if (this.#counter.roundsUntilCommand === 0) {
+            this.#counter.roundsUntilCommand = HitsquadRunner.#GAMES_UNTIL_COMMAND;
             this.#queueCommandSend();
         }
     }
 
     async #queueCommandSend() {
-        await promisifiedSetTimeout(generateMiniGameDelay());
-        await this.#sendCommands();
+        await promisifiedSetTimeout(this.#generateDelay());
+        await this.#sendCommand();
     }
 
-    async #sendCommands() {
-        if (this.#isStopped) {
-            return;
-        }
+    #generateDelay() {
+        return generateDelay(30 * Timing.SECOND, 2 * Timing.MINUTE);
+    }
 
+    async #sendCommand() {
         if (!this.#streamFacade.isAllowedToSendMessage) {
             await promisifiedSetTimeout(20 * Timing.SECOND);
-            return this.#sendCommands();
+            return this.#sendCommand();
         }
 
         this.#chatFacade.sendMessage(Commands.HITSQUAD);
     }
 
-    start({ gamesCount }) {
-        this.#totalGamesCount = gamesCount;
-        this.#gamesUntilCommand = HitsquadRunner.#GAMES_UNTIL_COMMAND;
-        this.#isStopped = false;
+    start({ totalRounds }) {
+        this.#counter = { totalRounds, roundsUntilCommand: HitsquadRunner.#GAMES_UNTIL_COMMAND };
         this.#listenEvents();
     }
 
     stop() {
-        this.#isStopped = true;
-        this.#gamesUntilCommand = 0;
         this.#unsubscribe?.();
     }
 }

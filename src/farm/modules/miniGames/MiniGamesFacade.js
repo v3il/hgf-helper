@@ -35,8 +35,8 @@ export class MiniGamesFacade {
         this.#triviaRunner = triviaRunner;
     }
 
-    startHitsquadRunner({ gamesCount }) {
-        this.#hitsquadRunner.start({ gamesCount });
+    startHitsquadRunner({ totalRounds }) {
+        this.#hitsquadRunner.start({ totalRounds });
     }
 
     stopHitsquadRunner() {

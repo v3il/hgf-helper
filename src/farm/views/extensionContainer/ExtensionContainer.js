@@ -108,7 +108,7 @@ export class ExtensionContainer {
         toggleGiveawaysEl.checked = isHitsquadRunning;
 
         if (isHitsquadRunning) {
-            this.#miniGamesFacade.startHitsquadRunner({ gamesCount: GlobalVariables.HITSQUAD_GAMES_PER_DAY });
+            this.#miniGamesFacade.startHitsquadRunner({ totalRounds: GlobalVariables.HITSQUAD_GAMES_PER_DAY });
         }
 
         toggleGiveawaysEl.addEventListener('change', ({ target }) => {
@@ -126,7 +126,7 @@ export class ExtensionContainer {
             return;
         }
 
-        this.#miniGamesFacade.startHitsquadRunner({ gamesCount: numericGamesCount });
+        this.#miniGamesFacade.startHitsquadRunner({ totalRounds: numericGamesCount });
         this.#settingsFacade.updateLocalSettings({ hitsquadRunner: true });
     }
 
