@@ -107,6 +107,7 @@ export class ExtensionContainer {
         const remainingHitsquadRounds = this.#settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
 
         if (isHitsquadRunning && remainingHitsquadRounds > 0) {
+            console.info(`HGF helper: start Hitsquad runner with ${remainingHitsquadRounds} rounds`);
             toggleGiveawaysEl.checked = true;
             this.#miniGamesFacade.startHitsquadRunner({ totalRounds: remainingHitsquadRounds });
         }
@@ -117,6 +118,7 @@ export class ExtensionContainer {
     }
 
     #handleGiveawaysOn() {
+        // eslint-disable-next-line no-alert
         const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
         const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
         const numericGamesCount = Number(gamesCount);
