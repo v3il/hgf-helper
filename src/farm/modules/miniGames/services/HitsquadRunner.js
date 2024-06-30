@@ -40,7 +40,7 @@ export class HitsquadRunner {
         if (this.#counter.totalRounds <= 0) {
             this.stop();
             this.#emitEvent();
-            this.#queueCommandSend();
+            promisifiedSetTimeout(Timing.MINUTE).then(() => this.#queueCommandSend());
 
             return;
         }
