@@ -12,7 +12,7 @@ A widget will be placed on the stream page, allowing you to play mini-games in s
 1. automatically detects the anti-cheat screen and blocks the sending of commands. Scheduled commands will be sent automatically after the anti-cheat has finished;
 1. automatically removes the delay on the stream once a minute;
 1. automatically collects channel points;
-1. adds a button to easily send the `!hitsquad' command in manual mode;
+1. adds a button to easily send the `!hitsquad` command in manual mode;
 1. automatically refresh the stream page if there are problems with the video;
 1. all features continue to work while showing ads;
 
