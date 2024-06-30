@@ -40,15 +40,12 @@ export class HitsquadRunner {
         if (this.#counter.totalRounds <= 0) {
             this.stop();
             this.#emitEvent();
-
-            if (this.#counter.roundsUntilCommand > 0) {
-                this.#queueCommandSend();
-            }
+            this.#queueCommandSend();
 
             return;
         }
 
-        if (this.#counter.roundsUntilCommand === 0) {
+        if (this.#counter.roundsUntilCommand === 1) {
             this.#counter.roundsUntilCommand = HitsquadRunner.#ROUNDS_UNTIL_COMMAND;
             this.#queueCommandSend();
             this.#emitEvent();
