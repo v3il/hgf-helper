@@ -4,6 +4,8 @@ import {
     Commands, Timing, GlobalVariables, MessageTemplates
 } from '../../consts';
 import { BasicView } from '@/farm/views/BasicView';
+import { HitsquadButtonView } from './HitsquadButtonView';
+import { HitsquadManagerView } from './HitsquadManagerView';
 
 export class ExtensionContainer extends BasicView {
     static create({
@@ -42,11 +44,29 @@ export class ExtensionContainer extends BasicView {
 
         this.#handleStreamStatusCheck();
         this.#addGlobalChatListener();
-        this.#handleGiveawaysCheckbox();
-        this.#handleHitsquadButton();
+        // this.#handleGiveawaysCheckbox();
         this.#handleDebugMode();
         this.#initRemoveDelayHandler();
         this.#handleHitsquadRunnerStop();
+
+        this.#initHitsquadButtonView();
+        this.#initHitsquadManagerView();
+    }
+
+    #initHitsquadButtonView() {
+        new HitsquadButtonView({
+            el: this.el.querySelector('[data-hitsquad]'),
+            chatFacade: this.#chatFacade,
+            streamFacade: this.#streamFacade
+        });
+    }
+
+    #initHitsquadManagerView() {
+        new HitsquadManagerView({
+            el: this.el.querySelector('[data-giveaways]'),
+            settingsFacade: this.#settingsFacade,
+            miniGamesFacade: this.#miniGamesFacade
+        });
     }
 
     #handleStreamStatusCheck() {
@@ -99,40 +119,40 @@ export class ExtensionContainer extends BasicView {
         });
     }
 
-    #handleGiveawaysCheckbox() {
-        const toggleGiveawaysEl = this.el.querySelector('[data-toggle-giveaways]');
-        const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
-        const remainingHitsquadRounds = this.#settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
+    // #handleGiveawaysCheckbox() {
+    //     const toggleGiveawaysEl = this.el.querySelector('[data-toggle-giveaways]');
+    //     const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
+    //     const remainingHitsquadRounds = this.#settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
+    //
+    //     if (isHitsquadRunning && remainingHitsquadRounds > 0) {
+    //         console.info(`HGF helper: start Hitsquad runner with ${remainingHitsquadRounds} rounds`);
+    //         toggleGiveawaysEl.checked = true;
+    //         this.#miniGamesFacade.startHitsquadRunner({ totalRounds: remainingHitsquadRounds });
+    //     }
+    //
+    //     toggleGiveawaysEl.addEventListener('change', ({ target }) => {
+    //         target.checked ? this.#handleGiveawaysOn() : this.#turnOffGiveaways();
+    //     });
+    // }
 
-        if (isHitsquadRunning && remainingHitsquadRounds > 0) {
-            console.info(`HGF helper: start Hitsquad runner with ${remainingHitsquadRounds} rounds`);
-            toggleGiveawaysEl.checked = true;
-            this.#miniGamesFacade.startHitsquadRunner({ totalRounds: remainingHitsquadRounds });
-        }
-
-        toggleGiveawaysEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#handleGiveawaysOn() : this.#turnOffGiveaways();
-        });
-    }
-
-    #handleGiveawaysOn() {
-        // eslint-disable-next-line no-alert
-        const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
-        const toggleGiveawaysEl = this.el.querySelector('[data-toggle-giveaways]');
-        const numericGamesCount = Number(gamesCount);
-
-        if (!gamesCount || Number.isNaN(numericGamesCount) || numericGamesCount <= 0) {
-            toggleGiveawaysEl.checked = false;
-            return;
-        }
-
-        this.#miniGamesFacade.startHitsquadRunner({ totalRounds: numericGamesCount });
-
-        this.#settingsFacade.updateLocalSettings({
-            hitsquadRunner: true,
-            hitsquadRunnerRemainingRounds: numericGamesCount
-        });
-    }
+    // #handleGiveawaysOn() {
+    //     // eslint-disable-next-line no-alert
+    //     const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
+    //     const toggleGiveawaysEl = this.el.querySelector('[data-toggle-giveaways]');
+    //     const numericGamesCount = Number(gamesCount);
+    //
+    //     if (!gamesCount || Number.isNaN(numericGamesCount) || numericGamesCount <= 0) {
+    //         toggleGiveawaysEl.checked = false;
+    //         return;
+    //     }
+    //
+    //     this.#miniGamesFacade.startHitsquadRunner({ totalRounds: numericGamesCount });
+    //
+    //     this.#settingsFacade.updateLocalSettings({
+    //         hitsquadRunner: true,
+    //         hitsquadRunnerRemainingRounds: numericGamesCount
+    //     });
+    // }
 
     #handleHitsquadRunnerStop() {
         this.#miniGamesFacade.onHitsquadRoundEnd(({ remainingRounds, stopped }) => {
@@ -170,16 +190,6 @@ export class ExtensionContainer extends BasicView {
         this.#settingsFacade.updateLocalSettings({
             hitsquadRunner: false,
             hitsquadRunnerRemainingRounds: 0
-        });
-    }
-
-    #handleHitsquadButton() {
-        const sendHitsquadButton = this.el.querySelector('[data-hitsquad]');
-
-        sendHitsquadButton.addEventListener('click', (event) => {
-            if (this.#streamFacade.isAllowedToSendMessage || event.ctrlKey) {
-                this.#chatFacade.sendMessage(Commands.HITSQUAD, true);
-            }
         });
     }
 
