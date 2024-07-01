@@ -7,6 +7,7 @@ export class LocalSettingsService {
 
     static #DEFAULT_SETTINGS = {
         hitsquadRunner: false,
+        hitsquadRunnerRemainingRounds: 0,
         quizRunner: false
     };
 

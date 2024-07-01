@@ -2,15 +2,25 @@ export class Offer {
     #name;
     #count;
     #price;
+    #description;
+    #steamAppLink;
 
-    constructor({ name, count, price }) {
+    constructor({
+        name, count, price, description
+    }) {
         this.#name = name;
         this.#count = count;
         this.#price = price;
+        this.#description = description;
+        this.#steamAppLink = this.#getSteamAppLink();
     }
 
     get name() {
         return this.#name;
+    }
+
+    get price() {
+        return this.#price;
     }
 
     get countValue() {
@@ -26,7 +36,25 @@ export class Offer {
         return this.#count === 'sold out';
     }
 
-    get isTooExpensive() {
-        return this.#price > 50000;
+    get steamAppLink() {
+        return this.#steamAppLink;
+    }
+
+    #getSteamAppLink() {
+        const appPrefix = 'https://store.steampowered.com/app';
+
+        if (this.#description.includes(appPrefix)) {
+            const regex = new RegExp(`${appPrefix}/\\d+/\\w+/`);
+            return this.#description.match(regex)[0];
+        }
+
+        const bundlePrefix = 'https://store.steampowered.com/sub';
+
+        if (this.#description.includes(bundlePrefix)) {
+            const regex = new RegExp(`${bundlePrefix}/\\d+/`);
+            return this.#description.match(regex)[0];
+        }
+
+        return `https://store.steampowered.com/search/?term=${this.#name}`;
     }
 }

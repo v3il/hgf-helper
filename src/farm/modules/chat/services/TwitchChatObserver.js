@@ -1,4 +1,5 @@
 import { EventEmitter } from '../../shared';
+import { Timing } from '@/farm/consts';
 
 export class TwitchChatObserver {
     #events;
@@ -10,7 +11,12 @@ export class TwitchChatObserver {
         this.#twitchUser = twitchFacade.twitchUser;
 
         this.#observer = this.#createObserver();
-        this.#observer.observe(twitchFacade.chatScrollableAreaEl, { childList: true });
+
+        // Skip initial messages
+        // todo: find a better way
+        setTimeout(() => {
+            this.#observer.observe(twitchFacade.chatScrollableAreaEl, { childList: true });
+        }, 5 * Timing.SECOND);
     }
 
     get events() {

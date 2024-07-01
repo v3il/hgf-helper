@@ -48,6 +48,7 @@ export class ExtensionContainer {
         this.#handleHitsquadButton();
         this.#handleDebugMode();
         this.#initRemoveDelayHandler();
+        this.#handleHitsquadRunnerStop();
     }
 
     #handleStreamStatusCheck() {
@@ -101,18 +102,49 @@ export class ExtensionContainer {
     }
 
     #handleGiveawaysCheckbox() {
-        const toggleGamesEl = this.#el.querySelector('[data-toggle-giveaways]');
+        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
         const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
+        const remainingHitsquadRounds = this.#settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
 
-        toggleGamesEl.checked = isHitsquadRunning;
-
-        if (isHitsquadRunning) {
-            this.#miniGamesFacade.startHitsquadRunner();
+        if (isHitsquadRunning && remainingHitsquadRounds > 0) {
+            console.info(`HGF helper: start Hitsquad runner with ${remainingHitsquadRounds} rounds`);
+            toggleGiveawaysEl.checked = true;
+            this.#miniGamesFacade.startHitsquadRunner({ totalRounds: remainingHitsquadRounds });
         }
 
-        toggleGamesEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#miniGamesFacade.startHitsquadRunner() : this.#miniGamesFacade.stopHitsquadRunner();
-            this.#settingsFacade.updateLocalSettings({ hitsquadRunner: target.checked });
+        toggleGiveawaysEl.addEventListener('change', ({ target }) => {
+            target.checked ? this.#handleGiveawaysOn() : this.#turnOffGiveaways();
+        });
+    }
+
+    #handleGiveawaysOn() {
+        // eslint-disable-next-line no-alert
+        const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
+        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
+        const numericGamesCount = Number(gamesCount);
+
+        if (!gamesCount || Number.isNaN(numericGamesCount) || numericGamesCount <= 0) {
+            toggleGiveawaysEl.checked = false;
+            return;
+        }
+
+        this.#miniGamesFacade.startHitsquadRunner({ totalRounds: numericGamesCount });
+
+        this.#settingsFacade.updateLocalSettings({
+            hitsquadRunner: true,
+            hitsquadRunnerRemainingRounds: numericGamesCount
+        });
+    }
+
+    #handleHitsquadRunnerStop() {
+        this.#miniGamesFacade.onHitsquadRoundEnd(({ remainingRounds, stopped }) => {
+            if (stopped) {
+                return this.#turnOffGiveaways();
+            }
+
+            this.#settingsFacade.updateLocalSettings({
+                hitsquadRunnerRemainingRounds: remainingRounds
+            });
         });
     }
 
@@ -133,9 +165,14 @@ export class ExtensionContainer {
     #turnOffGiveaways() {
         const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
 
-        this.#miniGamesFacade.stopHitsquadRunner();
-        this.#settingsFacade.updateLocalSettings({ hitsquadRunner: false });
         toggleGiveawaysEl.checked = false;
+
+        this.#miniGamesFacade.stopHitsquadRunner();
+
+        this.#settingsFacade.updateLocalSettings({
+            hitsquadRunner: false,
+            hitsquadRunnerRemainingRounds: 0
+        });
     }
 
     #handleTriviaCheckbox() {
@@ -169,7 +206,7 @@ export class ExtensionContainer {
 
         sendHitsquadButton.addEventListener('click', (event) => {
             if (this.#streamFacade.isAllowedToSendMessage || event.ctrlKey) {
-                this.#chatFacade.sendMessage(Commands.HITSQUAD, event.ctrlKey);
+                this.#chatFacade.sendMessage(Commands.HITSQUAD, true);
             }
         });
     }

@@ -1,70 +1,87 @@
-import { generateMiniGameDelay } from '@/farm/utils';
+import { generateDelay } from '@/farm/utils';
 import {
     Commands, MessageTemplates, Timing, GlobalVariables
 } from '@/farm/consts';
 import { promisifiedSetTimeout } from '@/shared/utils';
 
 export class HitsquadRunner {
-    static #ENTRIES_COUNT_TARGET = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
+    static #ROUNDS_UNTIL_COMMAND = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
 
     #chatFacade;
     #streamFacade;
+    #events;
 
-    #isPaused = true;
-    #completedGamesCount = 0;
+    #counter = { totalRounds: 0, roundsUntilCommand: 0 };
 
-    constructor({ chatFacade, streamFacade }) {
+    #unsubscribe;
+
+    constructor({ chatFacade, streamFacade, events }) {
         this.#chatFacade = chatFacade;
         this.#streamFacade = streamFacade;
+        this.#events = events;
+    }
 
-        this.#listenEvents();
+    get events() {
+        return this.#events;
     }
 
     #listenEvents() {
-        this.#chatFacade.observeChat((data) => {
-            if (!this.#isPaused) {
-                this.#processMessage(data);
-            } else {
-                this.#completedGamesCount = 0;
-            }
+        this.#unsubscribe = this.#chatFacade.observeChat((data) => {
+            this.#processMessage(data);
         });
     }
 
-    #processMessage({ message, isSystemMessage }) {
+    async #processMessage({ message, isSystemMessage }) {
         if (isSystemMessage && MessageTemplates.isHitsquadReward(message)) {
-            this.#completedGamesCount++;
+            this.#counter.totalRounds--;
+            this.#counter.roundsUntilCommand--;
         }
 
-        if (this.#completedGamesCount > 0 && this.#completedGamesCount % HitsquadRunner.#ENTRIES_COUNT_TARGET === 0) {
-            this.#completedGamesCount = 0;
-            this.#startNewRound();
-        }
-    }
+        if (this.#counter.totalRounds <= 0) {
+            this.stop();
+            this.#emitEvent();
+            promisifiedSetTimeout(Timing.MINUTE).then(() => this.#queueCommandSend());
 
-    async #startNewRound() {
-        await promisifiedSetTimeout(generateMiniGameDelay());
-        await this.#sendCommands();
-    }
-
-    async #sendCommands() {
-        if (this.#isPaused) {
             return;
         }
 
+        if (this.#counter.roundsUntilCommand === 1) {
+            this.#counter.roundsUntilCommand = HitsquadRunner.#ROUNDS_UNTIL_COMMAND;
+            this.#queueCommandSend();
+            this.#emitEvent();
+        }
+    }
+
+    async #queueCommandSend() {
+        await promisifiedSetTimeout(this.#generateDelay());
+        await this.#sendCommand();
+    }
+
+    #generateDelay() {
+        return generateDelay(30 * Timing.SECOND, 2 * Timing.MINUTE);
+    }
+
+    #emitEvent() {
+        const remainingRounds = this.#counter.totalRounds;
+
+        this.#events.emit('hitsquadRunner:round', { remainingRounds, stopped: remainingRounds <= 0 });
+    }
+
+    async #sendCommand() {
         if (!this.#streamFacade.isAllowedToSendMessage) {
             await promisifiedSetTimeout(20 * Timing.SECOND);
-            return this.#sendCommands();
+            return this.#sendCommand();
         }
 
         this.#chatFacade.sendMessage(Commands.HITSQUAD);
     }
 
-    start() {
-        this.#isPaused = false;
+    start({ totalRounds }) {
+        this.#counter = { totalRounds, roundsUntilCommand: HitsquadRunner.#ROUNDS_UNTIL_COMMAND };
+        this.#listenEvents();
     }
 
     stop() {
-        this.#isPaused = true;
-        this.#completedGamesCount = 0;
+        this.#unsubscribe?.();
     }
 }
