@@ -3,8 +3,11 @@ import template from './template.html?raw';
 import {
     Commands, Timing, GlobalVariables, MessageTemplates
 } from '../../consts';
+import { BasicView } from '@/farm/views/BasicView';
+import { HitsquadButtonView } from './HitsquadButtonView';
+import { HitsquadManagerView } from './HitsquadManagerView';
 
-export class ExtensionContainer {
+export class ExtensionContainer extends BasicView {
     static create({
         streamFacade, chatFacade, miniGamesFacade, settingsFacade, twitchFacade
     }) {
@@ -17,7 +20,6 @@ export class ExtensionContainer {
         });
     }
 
-    #el;
     #timeoutId;
 
     #streamFacade;
@@ -32,23 +34,39 @@ export class ExtensionContainer {
     constructor({
         streamFacade, chatFacade, miniGamesFacade, settingsFacade, twitchFacade
     }) {
+        super(template);
+
         this.#streamFacade = streamFacade;
         this.#chatFacade = chatFacade;
         this.#miniGamesFacade = miniGamesFacade;
         this.#settingsFacade = settingsFacade;
         this.#twitchFacade = twitchFacade;
 
-        this.#el = this.#createElement();
-
         this.#handleStreamStatusCheck();
-        // this.#handleTriviaCheckbox();
-        // this.#handleTriviaAnswersHandler();
         this.#addGlobalChatListener();
-        this.#handleGiveawaysCheckbox();
-        this.#handleHitsquadButton();
+        // this.#handleGiveawaysCheckbox();
         this.#handleDebugMode();
         this.#initRemoveDelayHandler();
         this.#handleHitsquadRunnerStop();
+
+        this.#initHitsquadButtonView();
+        this.#initHitsquadManagerView();
+    }
+
+    #initHitsquadButtonView() {
+        new HitsquadButtonView({
+            el: this.el.querySelector('[data-hitsquad]'),
+            chatFacade: this.#chatFacade,
+            streamFacade: this.#streamFacade
+        });
+    }
+
+    #initHitsquadManagerView() {
+        new HitsquadManagerView({
+            el: this.el.querySelector('[data-giveaways]'),
+            settingsFacade: this.#settingsFacade,
+            miniGamesFacade: this.#miniGamesFacade
+        });
     }
 
     #handleStreamStatusCheck() {
@@ -101,40 +119,40 @@ export class ExtensionContainer {
         });
     }
 
-    #handleGiveawaysCheckbox() {
-        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
-        const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
-        const remainingHitsquadRounds = this.#settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
+    // #handleGiveawaysCheckbox() {
+    //     const toggleGiveawaysEl = this.el.querySelector('[data-toggle-giveaways]');
+    //     const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
+    //     const remainingHitsquadRounds = this.#settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
+    //
+    //     if (isHitsquadRunning && remainingHitsquadRounds > 0) {
+    //         console.info(`HGF helper: start Hitsquad runner with ${remainingHitsquadRounds} rounds`);
+    //         toggleGiveawaysEl.checked = true;
+    //         this.#miniGamesFacade.startHitsquadRunner({ totalRounds: remainingHitsquadRounds });
+    //     }
+    //
+    //     toggleGiveawaysEl.addEventListener('change', ({ target }) => {
+    //         target.checked ? this.#handleGiveawaysOn() : this.#turnOffGiveaways();
+    //     });
+    // }
 
-        if (isHitsquadRunning && remainingHitsquadRounds > 0) {
-            console.info(`HGF helper: start Hitsquad runner with ${remainingHitsquadRounds} rounds`);
-            toggleGiveawaysEl.checked = true;
-            this.#miniGamesFacade.startHitsquadRunner({ totalRounds: remainingHitsquadRounds });
-        }
-
-        toggleGiveawaysEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#handleGiveawaysOn() : this.#turnOffGiveaways();
-        });
-    }
-
-    #handleGiveawaysOn() {
-        // eslint-disable-next-line no-alert
-        const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
-        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
-        const numericGamesCount = Number(gamesCount);
-
-        if (!gamesCount || Number.isNaN(numericGamesCount) || numericGamesCount <= 0) {
-            toggleGiveawaysEl.checked = false;
-            return;
-        }
-
-        this.#miniGamesFacade.startHitsquadRunner({ totalRounds: numericGamesCount });
-
-        this.#settingsFacade.updateLocalSettings({
-            hitsquadRunner: true,
-            hitsquadRunnerRemainingRounds: numericGamesCount
-        });
-    }
+    // #handleGiveawaysOn() {
+    //     // eslint-disable-next-line no-alert
+    //     const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
+    //     const toggleGiveawaysEl = this.el.querySelector('[data-toggle-giveaways]');
+    //     const numericGamesCount = Number(gamesCount);
+    //
+    //     if (!gamesCount || Number.isNaN(numericGamesCount) || numericGamesCount <= 0) {
+    //         toggleGiveawaysEl.checked = false;
+    //         return;
+    //     }
+    //
+    //     this.#miniGamesFacade.startHitsquadRunner({ totalRounds: numericGamesCount });
+    //
+    //     this.#settingsFacade.updateLocalSettings({
+    //         hitsquadRunner: true,
+    //         hitsquadRunnerRemainingRounds: numericGamesCount
+    //     });
+    // }
 
     #handleHitsquadRunnerStop() {
         this.#miniGamesFacade.onHitsquadRoundEnd(({ remainingRounds, stopped }) => {
@@ -163,7 +181,7 @@ export class ExtensionContainer {
     }
 
     #turnOffGiveaways() {
-        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
+        const toggleGiveawaysEl = this.el.querySelector('[data-toggle-giveaways]');
 
         toggleGiveawaysEl.checked = false;
 
@@ -175,62 +193,15 @@ export class ExtensionContainer {
         });
     }
 
-    #handleTriviaCheckbox() {
-        const toggleTriviaEl = this.#el.querySelector('[data-toggle-trivia]');
-        const isTriviaRunning = this.#settingsFacade.getLocalSetting('quizRunner');
-
-        toggleTriviaEl.checked = isTriviaRunning;
-
-        if (isTriviaRunning) {
-            this.#miniGamesFacade.startTriviaRunner();
-        }
-
-        toggleTriviaEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#miniGamesFacade.startTriviaRunner() : this.#miniGamesFacade.stopTriviaRunner();
-            this.#settingsFacade.updateLocalSettings({ quizRunner: target.checked });
-        });
-    }
-
-    #handleTriviaAnswersHandler() {
-        window.document.addEventListener('keydown', (event) => {
-            const command = `!answer${event.key}`;
-
-            if (Commands.getAnswers().includes(command)) {
-                this.#chatFacade.sendMessage(command);
-            }
-        });
-    }
-
-    #handleHitsquadButton() {
-        const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
-
-        sendHitsquadButton.addEventListener('click', (event) => {
-            if (this.#streamFacade.isAllowedToSendMessage || event.ctrlKey) {
-                this.#chatFacade.sendMessage(Commands.HITSQUAD, true);
-            }
-        });
-    }
-
     #initRemoveDelayHandler() {
         setInterval(() => {
             this.#streamFacade.decreaseVideoDelay();
         }, GlobalVariables.DECREASE_DELAY_TIMEOUT);
     }
 
-    mount(rootEl) {
-        rootEl.appendChild(this.#el);
-    }
-
     #renderStatus() {
-        this.#el.classList.toggle('broken', this.#streamFacade.isVideoBroken);
-        this.#el.classList.toggle('anticheat', this.#streamFacade.isAntiCheatScreen);
-        this.#el.classList.toggle('safe', this.#streamFacade.isAllowedToSendMessage);
-    }
-
-    #createElement() {
-        const containerEl = document.createElement('div');
-        containerEl.innerHTML = template;
-
-        return containerEl.firstChild;
+        this.el.classList.toggle('broken', this.#streamFacade.isVideoBroken);
+        this.el.classList.toggle('anticheat', this.#streamFacade.isAntiCheatScreen);
+        this.el.classList.toggle('safe', this.#streamFacade.isAllowedToSendMessage);
     }
 }

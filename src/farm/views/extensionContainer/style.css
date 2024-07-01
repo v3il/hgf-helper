@@ -42,8 +42,16 @@
     display: inline-block;
 }
 
+.flex {
+    display: flex;
+}
+
 .mr-2 {
     margin-right: 8px;
+}
+
+.ml-2 {
+    margin-left: 8px;
 }
 
 .hidden {

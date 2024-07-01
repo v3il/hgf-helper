@@ -6,10 +6,18 @@
 
     <div class="haf-extension-container__separator hidden"></div>
 
-    <label class="haf-extension-container__label">
-        <span class="haf-extension-container__label-text mr-2">Giveaways</span>
-        <input type="checkbox" data-toggle-giveaways>
-    </label>
+    <div class="flex" data-giveaways>
+        <label class="haf-extension-container__label" data-giveaways-manager>
+            <span class="haf-extension-container__label-text mr-2">Giveaways</span>
+            <input type="checkbox" data-toggle-giveaways>
+        </label>
+
+        <span class="mr-2 ml-2">&bullet;</span>
+
+        <div data-giveaways-counter>
+            <span data-remaining-rounds>&mdash;</span> / <span data-total-rounds>&mdash;</span>
+        </div>
+    </div>
 
     <div class="haf-extension-container__separator"></div>
 

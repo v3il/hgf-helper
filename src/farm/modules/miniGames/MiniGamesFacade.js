@@ -1,4 +1,4 @@
-import { HitsquadRunner, TriviaRunner } from './services';
+import { HitsquadRunner } from './services';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
 import { EventEmitter } from '@/farm/modules/shared';
@@ -14,13 +14,8 @@ export class MiniGamesFacade {
                 events: EventEmitter.create()
             });
 
-            const triviaRunner = new TriviaRunner({
-                chatFacade: ChatFacade.instance
-            });
-
             this._instance = new MiniGamesFacade({
-                hitsquadRunner,
-                triviaRunner
+                hitsquadRunner
             });
         }
 
@@ -28,11 +23,9 @@ export class MiniGamesFacade {
     }
 
     #hitsquadRunner;
-    #triviaRunner;
 
-    constructor({ hitsquadRunner, triviaRunner }) {
+    constructor({ hitsquadRunner }) {
         this.#hitsquadRunner = hitsquadRunner;
-        this.#triviaRunner = triviaRunner;
     }
 
     startHitsquadRunner({ totalRounds }) {
@@ -45,13 +38,5 @@ export class MiniGamesFacade {
 
     onHitsquadRoundEnd(callback) {
         this.#hitsquadRunner.events.on('hitsquadRunner:round', callback);
-    }
-
-    startTriviaRunner() {
-        this.#triviaRunner.start();
-    }
-
-    stopTriviaRunner() {
-        this.#triviaRunner.stop();
     }
 }
