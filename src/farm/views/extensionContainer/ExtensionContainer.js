@@ -206,7 +206,7 @@ export class ExtensionContainer {
 
         sendHitsquadButton.addEventListener('click', (event) => {
             if (this.#streamFacade.isAllowedToSendMessage || event.ctrlKey) {
-                this.#chatFacade.sendMessage(Commands.HITSQUAD, true);
+                this.#chatFacade.sendMessage(Commands.HITSQUAD, event.ctrlKey);
             }
         });
     }
