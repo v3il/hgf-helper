@@ -34,9 +34,9 @@ export class TwitchChatObserver {
     }
 
     #processAddedElement(addedElement) {
-        const isMessage = addedElement.classList && addedElement.classList.contains('chat-line__message');
+        const messageWrapperEl = addedElement.querySelector?.('.chat-line__message');
 
-        if (!isMessage) {
+        if (!messageWrapperEl) {
             return;
         }
 

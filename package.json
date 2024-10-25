@@ -1,7 +1,7 @@
 {
   "name": "hitsquadgodfather-auto-farm",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite build -w --mode development",
@@ -9,7 +9,7 @@
     "release": "npm run build && node createRelease.js"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.0.0-beta.23",
+    "@crxjs/vite-plugin": "^2.0.0-beta.26",
     "archiver": "^7.0.1",
     "eslint": "^8.35.0",
     "eslint-config-airbnb": "^19.0.4",
