@@ -1,1 +1,0 @@
-export { SettingsFacade } from './SettingsFacade';
