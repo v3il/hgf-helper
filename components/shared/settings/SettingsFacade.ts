@@ -44,7 +44,7 @@ export class SettingsFacade {
         return this.#globalSettingsService.getSetting(settingName);
     }
 
-    updateGlobalSettings(settings: Record<string, string>) {
+    updateGlobalSettings(settings: Record<string, String | Number>) {
         this.#globalSettingsService.updateSettings(settings);
     }
 
@@ -56,7 +56,7 @@ export class SettingsFacade {
         return this.#localSettingsService.getSetting(settingName);
     }
 
-    updateLocalSettings(settings: Record<string, string>) {
+    updateLocalSettings(settings: Record<string, String | Number>) {
         this.#localSettingsService.updateSettings(settings);
     }
 }

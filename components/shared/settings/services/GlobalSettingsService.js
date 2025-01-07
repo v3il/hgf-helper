@@ -1,4 +1,4 @@
-import { EventEmitter } from '@/farm/modules/shared';
+import { EventEmitter } from '../../EventEmitter';
 
 export class GlobalSettingsService {
     static create() {
