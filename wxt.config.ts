@@ -1,27 +1,35 @@
 import { defineConfig } from 'wxt';
+// @ts-ignore
+import eslint from 'vite-plugin-eslint';
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
-  extensionApi: 'chrome',
+    extensionApi: 'chrome',
 
-  manifest: {
-    name: 'HGF Helper',
-    description: 'HGF Helper (dev)',
+    vite: () => ({
+        plugins: [
+            eslint()
+        ]
+    }),
 
-    // "content_scripts": [
-    //   {
-    //     "js": ["src/farm/farm.js", "src/farm/farmMainWorldInjector.js"],
-    //     "matches": ["https://www.twitch.tv/hitsquadgodfather"],
-    //     "run_at": "document_start"
-    //   },
-    //
-    //   {
-    //     "js": ["src/store/index.ts"],
-    //     "matches": ["https://streamelements.com/hitsquadgodfather/store"],
-    //     "run_at": "document_start"
-    //   }
-    // ],
+    manifest: {
+        name: 'HGF Helper',
+        description: 'HGF Helper (dev)',
 
-    permissions: ['storage']
-  }
+        // "content_scripts": [
+        //   {
+        //     "js": ["src/farm/farm.js", "src/farm/farmMainWorldInjector.js"],
+        //     "matches": ["https://www.twitch.tv/hitsquadgodfather"],
+        //     "run_at": "document_start"
+        //   },
+        //
+        //   {
+        //     "js": ["src/store/index.ts"],
+        //     "matches": ["https://streamelements.com/hitsquadgodfather/store"],
+        //     "run_at": "document_start"
+        //   }
+        // ],
+
+        permissions: ['storage']
+    }
 });

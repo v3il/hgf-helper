@@ -7,6 +7,7 @@ interface ISettingsFacadeParams {
 }
 
 export class SettingsFacade {
+    // eslint-disable-next-line no-use-before-define
     private static _instance: SettingsFacade;
 
     static get instance() {

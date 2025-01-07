@@ -12,11 +12,18 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.280",
     "typescript": "^5.6.3",
-    "wxt": "^0.19.13"
+    "wxt": "^0.19.13",
+    "eslint": "^8.35.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "vite-plugin-eslint": "^1.8.1",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0"
   }
 }
