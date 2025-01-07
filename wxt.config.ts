@@ -16,7 +16,7 @@ export default defineConfig({
     //   },
     //
     //   {
-    //     "js": ["src/store/store.js"],
+    //     "js": ["src/store/index.ts"],
     //     "matches": ["https://streamelements.com/hitsquadgodfather/store"],
     //     "run_at": "document_start"
     //   }
