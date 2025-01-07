@@ -9,11 +9,11 @@ export const MessageTemplates = Object.freeze({
             .map((reward) => `Has Been Sent ${reward} Clams!`.toLowerCase());
     },
 
-    isHitsquadReward(message) {
+    isHitsquadReward(message: string) {
         return this.hitsquadRewards.some((template) => message.includes(template));
     },
 
-    isTooManyStrikesNotification(message, name) {
+    isTooManyStrikesNotification(message: string, name: string) {
         return message === this.TOO_MANY_STRIKES_NOTIFICATION.replace('{{name}}', name);
     }
 });

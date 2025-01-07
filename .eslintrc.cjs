@@ -31,6 +31,9 @@ module.exports = {
 
     rules: {
         'no-console': 'off',
+        'no-useless-constructor': 'off',
+        'no-empty-function': 'off',
+        'no-use-before-define': 'off',
         indent: ['error', 4],
         'semi': [2, 'always'],
         'no-unused-vars': 'off',

@@ -3,6 +3,7 @@ import {
     Commands, MessageTemplates, Timing, GlobalVariables
 } from '../../../consts';
 import { promisifiedSetTimeout } from '@/components/shared';
+import { IChatMessage } from '../../chat';
 
 export class HitsquadRunner {
     static #ROUNDS_UNTIL_COMMAND = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
@@ -13,9 +14,9 @@ export class HitsquadRunner {
 
     #counter = { totalRounds: 0, roundsUntilCommand: 0 };
 
-    #unsubscribe;
+    private unsubscribe!: () => void;
 
-    constructor({ chatFacade, streamFacade, events }) {
+    constructor({ chatFacade, streamFacade, events }: { chatFacade: any, streamFacade: any, events: any }) {
         this.#chatFacade = chatFacade;
         this.#streamFacade = streamFacade;
         this.#events = events;
@@ -26,12 +27,12 @@ export class HitsquadRunner {
     }
 
     #listenEvents() {
-        this.#unsubscribe = this.#chatFacade.observeChat((data) => {
+        this.unsubscribe = this.#chatFacade.observeChat((data: IChatMessage) => {
             this.#processMessage(data);
         });
     }
 
-    async #processMessage({ message, isSystemMessage }) {
+    async #processMessage({ message, isSystemMessage }: IChatMessage) {
         if (isSystemMessage && MessageTemplates.isHitsquadReward(message)) {
             this.#counter.totalRounds--;
             this.#counter.roundsUntilCommand--;
@@ -67,7 +68,7 @@ export class HitsquadRunner {
         this.#events.emit('hitsquadRunner:round', { remainingRounds, stopped: remainingRounds <= 0 });
     }
 
-    async #sendCommand() {
+    async #sendCommand(): Promise<void> {
         if (!this.#streamFacade.isAllowedToSendMessage) {
             await promisifiedSetTimeout(20 * Timing.SECOND);
             return this.#sendCommand();
@@ -76,12 +77,12 @@ export class HitsquadRunner {
         this.#chatFacade.sendMessage(Commands.HITSQUAD);
     }
 
-    start({ totalRounds }) {
+    start({ totalRounds }: { totalRounds: number }) {
         this.#counter = { totalRounds, roundsUntilCommand: HitsquadRunner.#ROUNDS_UNTIL_COMMAND };
         this.#listenEvents();
     }
 
     stop() {
-        this.#unsubscribe?.();
+        this.unsubscribe?.();
     }
 }

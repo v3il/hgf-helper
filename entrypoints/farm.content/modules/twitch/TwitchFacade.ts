@@ -1,7 +1,13 @@
 import { TwitchElementsRegistry, UserService, ChannelPointsClaimerService } from './services';
 
+interface ITwitchFacadeParams {
+    twitchElementsRegistry: TwitchElementsRegistry;
+    userService: UserService;
+    channelPointsClaimerService: ChannelPointsClaimerService;
+}
+
 export class TwitchFacade {
-    static _instance;
+    static _instance: TwitchFacade;
 
     static get instance() {
         if (!this._instance) {
@@ -23,7 +29,7 @@ export class TwitchFacade {
     #userService;
     #channelPointsClaimerService;
 
-    constructor({ twitchElementsRegistry, userService, channelPointsClaimerService }) {
+    constructor({ twitchElementsRegistry, userService, channelPointsClaimerService }: ITwitchFacadeParams) {
         this.#elementsRegistry = twitchElementsRegistry;
         this.#userService = userService;
         this.#channelPointsClaimerService = channelPointsClaimerService;
@@ -41,7 +47,7 @@ export class TwitchFacade {
         return this.#elementsRegistry.chatScrollableAreaEl;
     }
 
-    init(callback) {
+    init(callback: () => void) {
         this.#elementsRegistry.onElementsReady(() => {
             this.#initUser();
             this.#enableChannelPointsClaimer();

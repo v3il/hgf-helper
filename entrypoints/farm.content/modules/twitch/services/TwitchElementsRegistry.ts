@@ -1,5 +1,5 @@
 export class TwitchElementsRegistry {
-    onElementsReady(callback) {
+    onElementsReady(callback: (elements: Element[]) => void) {
         const interval = setInterval(() => {
             const videoEl = this.activeVideoEl;
 
@@ -11,7 +11,7 @@ export class TwitchElementsRegistry {
                 videoEl
             ];
 
-            if (elements.every((element) => !!element) && this.#isVideoPlaying(videoEl)) {
+            if (elements.every((element) => !!element) && this.#isVideoPlaying(videoEl!)) {
                 clearInterval(interval);
                 callback(elements);
             }
@@ -49,15 +49,15 @@ export class TwitchElementsRegistry {
     }
 
     get chatButtonsContainerEl() {
-        return this.chatContainerEl.querySelector('.chat-input__buttons-container');
+        return this.chatContainerEl!.querySelector('.chat-input__buttons-container');
     }
 
-    #isVideoPlaying(videoEl) {
+    #isVideoPlaying(videoEl: HTMLVideoElement) {
         return videoEl.currentTime > 0 && !videoEl.paused && !videoEl.ended && videoEl.readyState > 2;
     }
 
     getUserName() {
-        const { userDropdownToggleEl } = this;
+        const userDropdownToggleEl = this.userDropdownToggleEl! as HTMLButtonElement;
 
         userDropdownToggleEl.click();
 
@@ -65,6 +65,6 @@ export class TwitchElementsRegistry {
 
         userDropdownToggleEl.click();
 
-        return userNameEl?.textContent.toLowerCase();
+        return userNameEl?.textContent!.toLowerCase() ?? '';
     }
 }

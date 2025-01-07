@@ -1,39 +1,43 @@
-import { EventEmitter } from '../../shared';
+import { EventEmitter } from '@/components/shared';
 import { Timing } from '../../../consts';
+// @ts-ignore
+import { TwitchFacade } from '../../twitch';
+
+export interface IChatMessage {
+    userName: string;
+    message: string;
+    isSystemMessage: boolean;
+    isMe: boolean;
+}
 
 export class TwitchChatObserver {
-    #events;
-    #observer;
-    #twitchUser;
+    readonly events;
+    private twitchUser;
+    private observer;
 
-    constructor({ twitchFacade }) {
-        this.#events = EventEmitter.create();
-        this.#twitchUser = twitchFacade.twitchUser;
-
-        this.#observer = this.#createObserver();
+    constructor({ twitchFacade }: {twitchFacade: TwitchFacade}) {
+        this.events = EventEmitter.create();
+        this.twitchUser = twitchFacade.twitchUser;
+        this.observer = this.#createObserver();
 
         // Skip initial messages
         // todo: find a better way
         setTimeout(() => {
-            this.#observer.observe(twitchFacade.chatScrollableAreaEl, { childList: true });
+            this.observer.observe(twitchFacade.chatScrollableAreaEl, { childList: true });
         }, 5 * Timing.SECOND);
-    }
-
-    get events() {
-        return this.#events;
     }
 
     #createObserver() {
         return new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 mutation.addedNodes.forEach((addedElement) => {
-                    this.#processAddedElement(addedElement);
+                    this.#processAddedElement(addedElement as HTMLElement);
                 });
             });
         });
     }
 
-    #processAddedElement(addedElement) {
+    #processAddedElement(addedElement: HTMLElement) {
         const messageWrapperEl = addedElement.querySelector?.('.chat-line__message');
 
         if (!messageWrapperEl) {
@@ -47,12 +51,12 @@ export class TwitchChatObserver {
             return;
         }
 
-        const userName = userNameEl.textContent.toLowerCase();
-        const message = messageEl.textContent.toLowerCase().trim();
+        const userName = userNameEl.textContent!.toLowerCase();
+        const message = messageEl!.textContent!.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather';
-        const isMe = this.#twitchUser.isCurrentUser(userName);
+        const isMe = this.twitchUser.isCurrentUser(userName);
 
-        this.#events.emit('message', {
+        this.events.emit('message', {
             userName, message, isSystemMessage, isMe
         });
     }
