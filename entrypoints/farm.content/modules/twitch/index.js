@@ -1,0 +1,1 @@
+export { TwitchFacade } from './TwitchFacade';

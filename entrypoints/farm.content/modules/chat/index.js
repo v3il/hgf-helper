@@ -1,0 +1,1 @@
+export { ChatFacade } from './ChatFacade';

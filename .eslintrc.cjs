@@ -23,6 +23,12 @@ module.exports = {
         sourceType: 'module'
     },
 
+    globals: {
+        defineUnlistedScript: 'readonly',
+        defineContentScript: 'readonly',
+        injectScript: 'readonly'
+    },
+
     rules: {
         'no-console': 'off',
         indent: ['error', 4],
