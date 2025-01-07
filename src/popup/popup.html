@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./popup.css">
+</head>
+<body>
+<h2 class="h2 mb-4">HGF Helper</h2>
+
+<h3 class="h3 mb-2">Stream Elements Widget Settings</h3>
+
+<div class="label mb-4" data-setting="jsonBinUrl">
+    <p class="mb-1 bold">JSONBin URL <a href="https://jsonbin.io/app/bins" target="_blank" class="link">&#10697;</a></p>
+    <p class="note mb-1">Not Required</p>
+    <input type="text" placeholder="https://api.jsonbin.io/v3/b/************************" class="input" data-input>
+</div>
+
+<div class="label mb-4" data-setting="jsonBinMasterKey">
+    <p class="mb-1 bold">JSONBin X-Master Key <a href="https://jsonbin.io/app/app/api-keys" target="_blank" class="link">&#10697;</a></p>
+    <p class="note mb-1">Not Required</p>
+    <input type="text" class="input" data-input>
+</div>
+
+<div class="label mb-4" data-setting="jsonBinAccessKey">
+    <p class="mb-1 bold">JSONBin X-Access Key <a href="https://jsonbin.io/app/app/api-keys" target="_blank" class="link">&#10697;</a></p>
+    <p class="note mb-1">Not Required</p>
+    <input type="text" class="input" data-input>
+</div>
+
+<div class="label" data-setting="offersMaxPrice">
+    <p class="flex flex-between flex-center">
+        <span class="bold">Hide offers with price over</span>
+        <span data-value>0</span>
+    </p>
+
+    <input type="range" min="0" max="600000" class="range" list="priceRange" data-input>
+
+    <datalist id="priceRange" class="range_grid">
+        <option value="0">0</option>
+        <option value="200000">200k</option>
+        <option value="400000">400k</option>
+        <option value="600000">600k</option>
+    </datalist>
+</div>
+
+<script src="./popup.js" type="module"></script>
+</body>
+</html>
