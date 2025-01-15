@@ -1,22 +1,26 @@
-type EventHandler = (data: object) => void;
+type EventHandler<T = object> = (payload: T) => void;
 
-export class EventEmitter {
-    static create() {
-        return new EventEmitter();
+export class EventEmitter<T extends Record<string, object | void>> {
+    static create<TEvents extends Record<string, object | void>>() {
+        return new EventEmitter<TEvents>();
     }
 
-    private storage: Record<string, EventHandler[]> = {};
+    private events: { [K in keyof T]?: EventHandler<T[K]>[] } = {};
 
-    on(event: string, handler: EventHandler) {
-        this.storage[event] ??= [];
-        this.storage[event].push(handler);
-
-        return () => {
-            this.storage[event] = this.storage[event].filter((callback) => callback !== handler);
-        };
+    on<K extends keyof T>(event: K, handler: EventHandler<T[K]>): void {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event]!.push(handler);
     }
 
-    emit(event: string, data: object = {}) {
-        (this.storage[event] || []).forEach((callback) => callback(data));
+    off<K extends keyof T>(event: K, handler: EventHandler<T[K]>): void {
+        if (!this.events[event]) return;
+        this.events[event] = this.events[event]!.filter((h) => h !== handler);
+    }
+
+    emit<K extends keyof T>(event: K, payload: T[K]): void {
+        if (!this.events[event]) return;
+        this.events[event]!.forEach((handler) => handler(payload));
     }
 }

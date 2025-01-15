@@ -1,6 +1,5 @@
 import { EventEmitter } from '@/components/shared';
 import { Timing } from '../../../consts';
-// @ts-ignore
 import { TwitchFacade } from '../../twitch';
 
 export interface IChatMessage {
@@ -16,14 +15,17 @@ export class TwitchChatObserver {
     private observer;
 
     constructor({ twitchFacade }: {twitchFacade: TwitchFacade}) {
-        this.events = EventEmitter.create();
+        this.events = EventEmitter.create<{
+            message: IChatMessage;
+        }>();
+
         this.twitchUser = twitchFacade.twitchUser;
         this.observer = this.#createObserver();
 
         // Skip initial messages
         // todo: find a better way
         setTimeout(() => {
-            this.observer.observe(twitchFacade.chatScrollableAreaEl, { childList: true });
+            this.observer.observe(twitchFacade.chatScrollableAreaEl!, { childList: true });
         }, 5 * Timing.SECOND);
     }
 

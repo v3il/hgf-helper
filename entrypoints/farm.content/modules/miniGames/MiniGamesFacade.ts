@@ -11,7 +11,9 @@ export class MiniGamesFacade {
             const hitsquadRunner = new HitsquadRunner({
                 chatFacade: ChatFacade.instance,
                 streamFacade: StreamFacade.instance,
-                events: EventEmitter.create()
+                events: EventEmitter.create<{
+                    'hitsquadRunner:round': void
+                }>()
             });
 
             this._instance = new MiniGamesFacade(hitsquadRunner);
@@ -26,7 +28,7 @@ export class MiniGamesFacade {
         this.hitsquadRunner = hitsquadRunner;
     }
 
-    startHitsquadRunner({ totalRounds }: {totalRounds: number }) {
+    startHitsquadRunner({ totalRounds }: { totalRounds: number }) {
         this.hitsquadRunner.start({ totalRounds });
     }
 
