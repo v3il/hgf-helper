@@ -3,11 +3,24 @@ import template from './template.html?raw';
 import {
     Commands, Timing, GlobalVariables, MessageTemplates
 } from '../../consts';
+import { ChatFacade } from '../../modules/chat';
+import { MiniGamesFacade } from '../../modules/miniGames';
+import { SettingsFacade } from '@/components/shared/settings';
+import { StreamFacade } from '../../modules/stream';
+import { TwitchFacade } from '../../modules/twitch';
+
+interface IParams {
+    streamFacade: StreamFacade;
+    chatFacade: ChatFacade;
+    miniGamesFacade: MiniGamesFacade;
+    settingsFacade: SettingsFacade;
+    twitchFacade: TwitchFacade;
+}
 
 export class ExtensionContainer {
     static create({
         streamFacade, chatFacade, miniGamesFacade, settingsFacade, twitchFacade
-    }) {
+    }: IParams) {
         return new ExtensionContainer({
             streamFacade,
             chatFacade,
@@ -18,7 +31,6 @@ export class ExtensionContainer {
     }
 
     #el;
-    #timeoutId;
 
     #streamFacade;
     #chatFacade;
@@ -31,7 +43,7 @@ export class ExtensionContainer {
 
     constructor({
         streamFacade, chatFacade, miniGamesFacade, settingsFacade, twitchFacade
-    }) {
+    }: IParams) {
         this.#streamFacade = streamFacade;
         this.#chatFacade = chatFacade;
         this.#miniGamesFacade = miniGamesFacade;
@@ -41,8 +53,6 @@ export class ExtensionContainer {
         this.#el = this.#createElement();
 
         this.#handleStreamStatusCheck();
-        // this.#handleTriviaCheckbox();
-        // this.#handleTriviaAnswersHandler();
         this.#addGlobalChatListener();
         this.#handleGiveawaysCheckbox();
         this.#handleHitsquadButton();
@@ -66,7 +76,7 @@ export class ExtensionContainer {
 
         const nextCheckDelay = this.#getNextCheckDelay();
 
-        this.#timeoutId = setTimeout(() => {
+        setTimeout(() => {
             this.#handleStreamStatusCheck();
         }, nextCheckDelay);
     }
@@ -102,7 +112,7 @@ export class ExtensionContainer {
     }
 
     #handleGiveawaysCheckbox() {
-        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
+        const toggleGiveawaysEl = this.#el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
         const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
         const remainingHitsquadRounds = this.#settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
 
@@ -113,14 +123,14 @@ export class ExtensionContainer {
         }
 
         toggleGiveawaysEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#handleGiveawaysOn() : this.#turnOffGiveaways();
+            toggleGiveawaysEl.checked ? this.#handleGiveawaysOn() : this.#turnOffGiveaways();
         });
     }
 
     #handleGiveawaysOn() {
         // eslint-disable-next-line no-alert
         const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
-        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
+        const toggleGiveawaysEl = this.#el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
         const numericGamesCount = Number(gamesCount);
 
         if (!gamesCount || Number.isNaN(numericGamesCount) || numericGamesCount <= 0) {
@@ -137,7 +147,7 @@ export class ExtensionContainer {
     }
 
     #handleHitsquadRunnerStop() {
-        this.#miniGamesFacade.onHitsquadRoundEnd(({ remainingRounds, stopped }) => {
+        this.#miniGamesFacade.hitsquadEvents.on('hitsquadRunner:round', ({ remainingRounds, stopped }) => {
             if (stopped) {
                 return this.#turnOffGiveaways();
             }
@@ -146,6 +156,16 @@ export class ExtensionContainer {
                 hitsquadRunnerRemainingRounds: remainingRounds
             });
         });
+
+        // this.#miniGamesFacade.onHitsquadRoundEnd(({ remainingRounds, stopped }) => {
+        //     if (stopped) {
+        //         return this.#turnOffGiveaways();
+        //     }
+        //
+        //     this.#settingsFacade.updateLocalSettings({
+        //         hitsquadRunnerRemainingRounds: remainingRounds
+        //     });
+        // });
     }
 
     #addGlobalChatListener() {
@@ -163,7 +183,7 @@ export class ExtensionContainer {
     }
 
     #turnOffGiveaways() {
-        const toggleGiveawaysEl = this.#el.querySelector('[data-toggle-giveaways]');
+        const toggleGiveawaysEl = this.#el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
 
         toggleGiveawaysEl.checked = false;
 
@@ -175,34 +195,8 @@ export class ExtensionContainer {
         });
     }
 
-    #handleTriviaCheckbox() {
-        const toggleTriviaEl = this.#el.querySelector('[data-toggle-trivia]');
-        const isTriviaRunning = this.#settingsFacade.getLocalSetting('quizRunner');
-
-        toggleTriviaEl.checked = isTriviaRunning;
-
-        if (isTriviaRunning) {
-            this.#miniGamesFacade.startTriviaRunner();
-        }
-
-        toggleTriviaEl.addEventListener('change', ({ target }) => {
-            target.checked ? this.#miniGamesFacade.startTriviaRunner() : this.#miniGamesFacade.stopTriviaRunner();
-            this.#settingsFacade.updateLocalSettings({ quizRunner: target.checked });
-        });
-    }
-
-    #handleTriviaAnswersHandler() {
-        window.document.addEventListener('keydown', (event) => {
-            const command = `!answer${event.key}`;
-
-            if (Commands.getAnswers().includes(command)) {
-                this.#chatFacade.sendMessage(command);
-            }
-        });
-    }
-
     #handleHitsquadButton() {
-        const sendHitsquadButton = this.#el.querySelector('[data-hitsquad]');
+        const sendHitsquadButton = this.#el.querySelector<HTMLButtonElement>('[data-hitsquad]')!;
 
         sendHitsquadButton.addEventListener('click', (event) => {
             if (this.#streamFacade.isAllowedToSendMessage || event.ctrlKey) {
@@ -217,7 +211,7 @@ export class ExtensionContainer {
         }, GlobalVariables.DECREASE_DELAY_TIMEOUT);
     }
 
-    mount(rootEl) {
+    mount(rootEl: HTMLElement) {
         rootEl.appendChild(this.#el);
     }
 
@@ -231,6 +225,6 @@ export class ExtensionContainer {
         const containerEl = document.createElement('div');
         containerEl.innerHTML = template;
 
-        return containerEl.firstChild;
+        return containerEl.firstChild! as HTMLElement;
     }
 }

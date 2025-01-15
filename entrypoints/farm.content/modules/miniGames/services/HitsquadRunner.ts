@@ -2,8 +2,13 @@ import { generateDelay } from '../../../utils';
 import {
     Commands, MessageTemplates, Timing, GlobalVariables
 } from '../../../consts';
-import { promisifiedSetTimeout } from '@/components/shared';
+import { promisifiedSetTimeout, EventEmitter } from '@/components/shared';
 import { IChatMessage } from '../../chat';
+
+export interface IHitsquadRunnerRound {
+    remainingRounds: number,
+    stopped: boolean
+}
 
 export class HitsquadRunner {
     static #ROUNDS_UNTIL_COMMAND = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
@@ -16,10 +21,12 @@ export class HitsquadRunner {
 
     private unsubscribe!: () => void;
 
-    constructor({ chatFacade, streamFacade, events }: { chatFacade: any, streamFacade: any, events: any }) {
+    constructor({ chatFacade, streamFacade }: { chatFacade: any, streamFacade: any }) {
         this.#chatFacade = chatFacade;
         this.#streamFacade = streamFacade;
-        this.#events = events;
+        this.#events = EventEmitter.create<{
+            'hitsquadRunner:round': IHitsquadRunnerRound
+        }>();
     }
 
     get events() {

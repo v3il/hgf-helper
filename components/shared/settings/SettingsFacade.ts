@@ -57,7 +57,7 @@ export class SettingsFacade {
         return this.#localSettingsService.getSetting(settingName);
     }
 
-    updateLocalSettings(settings: Record<string, String | Number>) {
+    updateLocalSettings(settings: Record<string, String | Number | Boolean>) {
         this.#localSettingsService.updateSettings(settings);
     }
 }

@@ -7,7 +7,7 @@ interface IChatFacadeParams {
 }
 
 export class ChatFacade {
-    static _instance: unknown;
+    static _instance: ChatFacade;
 
     static get instance() {
         if (!this._instance) {

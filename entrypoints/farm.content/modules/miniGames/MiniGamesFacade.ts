@@ -1,19 +1,15 @@
 import { HitsquadRunner } from './services';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
-import { EventEmitter } from '@/components/shared';
 
 export class MiniGamesFacade {
-    static _instance: unknown;
+    static _instance: MiniGamesFacade;
 
     static get instance() {
         if (!this._instance) {
             const hitsquadRunner = new HitsquadRunner({
                 chatFacade: ChatFacade.instance,
-                streamFacade: StreamFacade.instance,
-                events: EventEmitter.create<{
-                    'hitsquadRunner:round': void
-                }>()
+                streamFacade: StreamFacade.instance
             });
 
             this._instance = new MiniGamesFacade(hitsquadRunner);
@@ -28,15 +24,15 @@ export class MiniGamesFacade {
         this.hitsquadRunner = hitsquadRunner;
     }
 
+    get hitsquadEvents() {
+        return this.hitsquadRunner.events;
+    }
+
     startHitsquadRunner({ totalRounds }: { totalRounds: number }) {
         this.hitsquadRunner.start({ totalRounds });
     }
 
     stopHitsquadRunner() {
         this.hitsquadRunner.stop();
-    }
-
-    onHitsquadRoundEnd(callback: () => void) {
-        this.hitsquadRunner.events.on('hitsquadRunner:round', callback);
     }
 }

@@ -1,14 +1,8 @@
-// @ts-ignore
 import { isDev } from './consts';
-// @ts-ignore
 import { TwitchFacade } from './modules/twitch';
-// @ts-ignore
 import { ChatFacade } from './modules/chat';
-// @ts-ignore
 import { StreamFacade } from './modules/stream';
-// @ts-ignore
 import { MiniGamesFacade } from './modules/miniGames';
-// @ts-ignore
 import { ExtensionContainer } from './views';
 import { SettingsFacade } from '@/components/shared';
 
