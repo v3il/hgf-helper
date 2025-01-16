@@ -1,2 +1,3 @@
-export { ExtensionContainer } from './extensionContainer';
-export { DebugModeView } from './debugMode';
+export * from './extensionContainer';
+export * from './debugMode';
+export * from './streamStatus';

@@ -2,6 +2,7 @@ import './style.css';
 import template from './template.html?raw';
 import { ColorService } from '../../modules/shared';
 import { TwitchFacade } from '../../modules/twitch';
+import { BasicView } from '../BasicView';
 
 interface IDebugModeCheck {
     color: string;
@@ -9,8 +10,7 @@ interface IDebugModeCheck {
     yPercent: number;
 }
 
-export class DebugModeView {
-    private readonly el;
+export class DebugModeView extends BasicView {
     private readonly canvasEl;
     private readonly twitchFacade;
 
@@ -18,12 +18,13 @@ export class DebugModeView {
     private checks: IDebugModeCheck[] = [];
 
     constructor(twitchFacade: TwitchFacade) {
+        super(template);
+
         this.twitchFacade = twitchFacade;
-        this.el = this.createElement();
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-debug-mode-canvas]')!;
         this.clickHandler = this.clickHandler.bind(this);
 
-        document.body.appendChild(this.el);
+        this.mount(document.body);
     }
 
     private renderVideoFrame() {
@@ -39,13 +40,6 @@ export class DebugModeView {
         const ctx = this.canvasEl.getContext('2d')!;
 
         ctx.drawImage(videoEl, 0, 0, this.canvasEl.width, this.canvasEl.height);
-    }
-
-    private createElement() {
-        const containerEl = document.createElement('div');
-        containerEl.innerHTML = template;
-
-        return containerEl.firstChild! as HTMLElement;
     }
 
     private clickHandler({ pageX, pageY }: MouseEvent) {

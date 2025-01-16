@@ -9,6 +9,8 @@ import { SettingsFacade } from '@/components/shared/settings';
 import { StreamFacade } from '../../modules/stream';
 import { TwitchFacade } from '../../modules/twitch';
 import { DebugModeView } from '../debugMode';
+import { StreamStatusView } from '../streamStatus';
+import { BasicView } from '../BasicView';
 
 interface IParams {
     streamFacade: StreamFacade;
@@ -18,7 +20,7 @@ interface IParams {
     twitchFacade: TwitchFacade;
 }
 
-export class ExtensionContainer {
+export class ExtensionContainer extends BasicView {
     static create({
         streamFacade, chatFacade, miniGamesFacade, settingsFacade, twitchFacade
     }: IParams) {
@@ -31,39 +33,41 @@ export class ExtensionContainer {
         });
     }
 
-    #el;
+    private readonly streamFacade: StreamFacade;
+    private readonly chatFacade: ChatFacade;
+    private readonly miniGamesFacade: MiniGamesFacade;
+    private readonly settingsFacade: SettingsFacade;
+    private readonly twitchFacade: TwitchFacade;
 
-    #streamFacade;
-    #chatFacade;
-    #miniGamesFacade;
-    #settingsFacade;
-    #twitchFacade;
+    private readonly streamStatusView: StreamStatusView;
 
-    #brokenVideoRoundsCount = 0;
+    private brokenVideoRounds = 0;
 
     constructor({
         streamFacade, chatFacade, miniGamesFacade, settingsFacade, twitchFacade
     }: IParams) {
-        this.#streamFacade = streamFacade;
-        this.#chatFacade = chatFacade;
-        this.#miniGamesFacade = miniGamesFacade;
-        this.#settingsFacade = settingsFacade;
-        this.#twitchFacade = twitchFacade;
+        super(template);
 
-        this.#el = this.#createElement();
+        this.streamFacade = streamFacade;
+        this.chatFacade = chatFacade;
+        this.miniGamesFacade = miniGamesFacade;
+        this.settingsFacade = settingsFacade;
+        this.twitchFacade = twitchFacade;
 
-        this.#handleStreamStatusCheck();
+        this.streamStatusView = new StreamStatusView(this.twitchFacade);
+
         this.#addGlobalChatListener();
         this.#handleGiveawaysCheckbox();
         this.#handleHitsquadButton();
         // this.#handleDebugMode();
         this.#initRemoveDelayHandler();
         this.#handleHitsquadRunnerStop();
+        this.handleStreamStatusCheck();
         this.initDebugMode();
     }
 
     private initDebugMode() {
-        const debugModeView = new DebugModeView(this.#twitchFacade);
+        const debugModeView = new DebugModeView(this.twitchFacade);
 
         window.document.addEventListener('keydown', (event) => {
             // Ctrl + 0
@@ -74,68 +78,53 @@ export class ExtensionContainer {
         });
     }
 
-    #handleStreamStatusCheck() {
-        this.#checkStreamStatus();
+    private handleStreamStatusCheck() {
+        this.streamStatusView.checkStreamStatus();
+        this.renderStatus();
+        this.handleBrokenVideo();
 
-        if (this.#streamFacade.isVideoBroken) {
-            this.#brokenVideoRoundsCount++;
-
-            if (this.#brokenVideoRoundsCount >= GlobalVariables.PAGE_RELOAD_ROUNDS) {
-                return window.location.reload();
-            }
-        } else {
-            this.#brokenVideoRoundsCount = 0;
-        }
-
-        const nextCheckDelay = this.#getNextCheckDelay();
+        const nextCheckDelay = this.getNextCheckDelay();
 
         setTimeout(() => {
-            this.#handleStreamStatusCheck();
+            this.handleStreamStatusCheck();
         }, nextCheckDelay);
     }
 
-    #getNextCheckDelay() {
-        if (this.#streamFacade.isAntiCheatScreen) {
+    private handleBrokenVideo() {
+        const isBroken = this.streamStatusView.isVideoBroken;
+
+        if (!isBroken) {
+            this.brokenVideoRounds = 0;
+            return;
+        }
+
+        this.brokenVideoRounds++;
+
+        if (this.brokenVideoRounds >= GlobalVariables.PAGE_RELOAD_ROUNDS) {
+            window.location.reload();
+        }
+    }
+
+    getNextCheckDelay() {
+        if (this.streamStatusView.isAntiCheatScreen) {
             return GlobalVariables.ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
         }
 
         return 5 * Timing.SECOND;
     }
 
-    #checkStreamStatus() {
-        this.#streamFacade.checkStreamStatus();
-        this.#renderStatus();
-    }
-
-    // #handleDebugMode() {
-    //     window.document.addEventListener('keydown', (event) => {
-    //         // Ctrl + 0
-    //         if (event.ctrlKey && event.key === '0') {
-    //             event.preventDefault();
-    //
-    //             this.#isDebug = !this.#isDebug;
-    //
-    //             if (this.#isDebug) {
-    //                 this.#streamFacade.enterDebugMode();
-    //             } else {
-    //                 this.#streamFacade.exitDebugMode();
-    //             }
-    //         }
-    //     });
-    // }
-
     #handleGiveawaysCheckbox() {
-        const toggleGiveawaysEl = this.#el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
-        const isHitsquadRunning = this.#settingsFacade.getLocalSetting('hitsquadRunner');
-        const remainingHitsquadRounds = this.#settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
+        const toggleGiveawaysEl = this.el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
+        const isHitsquadRunning = this.settingsFacade.getLocalSetting('hitsquadRunner');
+        const remainingHitsquadRounds = this.settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
 
         if (isHitsquadRunning && remainingHitsquadRounds > 0) {
             console.info(`HGF helper: start Hitsquad runner with ${remainingHitsquadRounds} rounds`);
             toggleGiveawaysEl.checked = true;
-            this.#miniGamesFacade.startHitsquadRunner({ totalRounds: remainingHitsquadRounds });
+            this.miniGamesFacade.startHitsquadRunner({ totalRounds: remainingHitsquadRounds });
         }
 
-        toggleGiveawaysEl.addEventListener('change', ({ target }) => {
+        toggleGiveawaysEl.addEventListener('change', () => {
             toggleGiveawaysEl.checked ? this.#handleGiveawaysOn() : this.#turnOffGiveaways();
         });
     }
@@ -143,7 +132,7 @@ export class ExtensionContainer {
     #handleGiveawaysOn() {
         // eslint-disable-next-line no-alert
         const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
-        const toggleGiveawaysEl = this.#el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
+        const toggleGiveawaysEl = this.el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
         const numericGamesCount = Number(gamesCount);
 
         if (!gamesCount || Number.isNaN(numericGamesCount) || numericGamesCount <= 0) {
@@ -151,21 +140,21 @@ export class ExtensionContainer {
             return;
         }
 
-        this.#miniGamesFacade.startHitsquadRunner({ totalRounds: numericGamesCount });
+        this.miniGamesFacade.startHitsquadRunner({ totalRounds: numericGamesCount });
 
-        this.#settingsFacade.updateLocalSettings({
+        this.settingsFacade.updateLocalSettings({
             hitsquadRunner: true,
             hitsquadRunnerRemainingRounds: numericGamesCount
         });
     }
 
     #handleHitsquadRunnerStop() {
-        this.#miniGamesFacade.hitsquadEvents.on('hitsquadRunner:round', ({ remainingRounds, stopped }) => {
+        this.miniGamesFacade.hitsquadEvents.on('hitsquadRunner:round', ({ remainingRounds, stopped }) => {
             if (stopped) {
                 return this.#turnOffGiveaways();
             }
 
-            this.#settingsFacade.updateLocalSettings({
+            this.settingsFacade.updateLocalSettings({
                 hitsquadRunnerRemainingRounds: remainingRounds
             });
         });
@@ -182,12 +171,12 @@ export class ExtensionContainer {
     }
 
     #addGlobalChatListener() {
-        this.#chatFacade.observeChat(({ message, isMe, isSystemMessage }) => {
+        this.chatFacade.observeChat(({ message, isMe, isSystemMessage }) => {
             if (isMe && message.startsWith(Commands.HITSQUAD) && message.split(' ')[1]) {
                 return this.#turnOffGiveaways();
             }
 
-            const twitchUserName = this.#twitchFacade.twitchUser.userName;
+            const twitchUserName = this.twitchFacade.twitchUser.userName;
 
             if (isSystemMessage && MessageTemplates.isTooManyStrikesNotification(message, twitchUserName)) {
                 this.#turnOffGiveaways();
@@ -196,48 +185,37 @@ export class ExtensionContainer {
     }
 
     #turnOffGiveaways() {
-        const toggleGiveawaysEl = this.#el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
+        const toggleGiveawaysEl = this.el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
 
         toggleGiveawaysEl.checked = false;
 
-        this.#miniGamesFacade.stopHitsquadRunner();
+        this.miniGamesFacade.stopHitsquadRunner();
 
-        this.#settingsFacade.updateLocalSettings({
+        this.settingsFacade.updateLocalSettings({
             hitsquadRunner: false,
             hitsquadRunnerRemainingRounds: 0
         });
     }
 
     #handleHitsquadButton() {
-        const sendHitsquadButton = this.#el.querySelector<HTMLButtonElement>('[data-hitsquad]')!;
+        const sendHitsquadButton = this.el.querySelector<HTMLButtonElement>('[data-hitsquad]')!;
 
         sendHitsquadButton.addEventListener('click', (event) => {
-            if (this.#streamFacade.isAllowedToSendMessage || event.ctrlKey) {
-                this.#chatFacade.sendMessage(Commands.HITSQUAD, event.ctrlKey);
+            if (this.streamFacade.isAllowedToSendMessage || event.ctrlKey) {
+                this.chatFacade.sendMessage(Commands.HITSQUAD, event.ctrlKey);
             }
         });
     }
 
     #initRemoveDelayHandler() {
         setInterval(() => {
-            this.#streamFacade.decreaseVideoDelay();
+            this.streamFacade.decreaseVideoDelay();
         }, GlobalVariables.DECREASE_DELAY_TIMEOUT);
     }
 
-    mount(rootEl: HTMLElement) {
-        rootEl.appendChild(this.#el);
-    }
-
-    #renderStatus() {
-        this.#el.classList.toggle('broken', this.#streamFacade.isVideoBroken);
-        this.#el.classList.toggle('anticheat', this.#streamFacade.isAntiCheatScreen);
-        this.#el.classList.toggle('safe', this.#streamFacade.isAllowedToSendMessage);
-    }
-
-    #createElement() {
-        const containerEl = document.createElement('div');
-        containerEl.innerHTML = template;
-
-        return containerEl.firstChild! as HTMLElement;
+    renderStatus() {
+        this.el.classList.toggle('broken', this.streamStatusView.isVideoBroken);
+        this.el.classList.toggle('anticheat', this.streamStatusView.isAntiCheatScreen);
+        this.el.classList.toggle('safe', this.streamStatusView.isStreamOk);
     }
 }
