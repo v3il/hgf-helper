@@ -8,6 +8,7 @@ import { MiniGamesFacade } from '../../modules/miniGames';
 import { SettingsFacade } from '@/components/shared/settings';
 import { StreamFacade } from '../../modules/stream';
 import { TwitchFacade } from '../../modules/twitch';
+import { DebugModeView } from '../debugMode';
 
 interface IParams {
     streamFacade: StreamFacade;
@@ -38,7 +39,6 @@ export class ExtensionContainer {
     #settingsFacade;
     #twitchFacade;
 
-    #isDebug = false;
     #brokenVideoRoundsCount = 0;
 
     constructor({
@@ -56,9 +56,22 @@ export class ExtensionContainer {
         this.#addGlobalChatListener();
         this.#handleGiveawaysCheckbox();
         this.#handleHitsquadButton();
-        this.#handleDebugMode();
+        // this.#handleDebugMode();
         this.#initRemoveDelayHandler();
         this.#handleHitsquadRunnerStop();
+        this.initDebugMode();
+    }
+
+    private initDebugMode() {
+        const debugModeView = new DebugModeView(this.#twitchFacade);
+
+        window.document.addEventListener('keydown', (event) => {
+            // Ctrl + 0
+            if (event.ctrlKey && event.key === '0') {
+                event.preventDefault();
+                debugModeView.toggle();
+            }
+        });
     }
 
     #handleStreamStatusCheck() {
@@ -94,22 +107,22 @@ export class ExtensionContainer {
         this.#renderStatus();
     }
 
-    #handleDebugMode() {
-        window.document.addEventListener('keydown', (event) => {
-            // Ctrl + 0
-            if (event.ctrlKey && event.key === '0') {
-                event.preventDefault();
-
-                this.#isDebug = !this.#isDebug;
-
-                if (this.#isDebug) {
-                    this.#streamFacade.enterDebugMode();
-                } else {
-                    this.#streamFacade.exitDebugMode();
-                }
-            }
-        });
-    }
+    // #handleDebugMode() {
+    //     window.document.addEventListener('keydown', (event) => {
+    //         // Ctrl + 0
+    //         if (event.ctrlKey && event.key === '0') {
+    //             event.preventDefault();
+    //
+    //             this.#isDebug = !this.#isDebug;
+    //
+    //             if (this.#isDebug) {
+    //                 this.#streamFacade.enterDebugMode();
+    //             } else {
+    //                 this.#streamFacade.exitDebugMode();
+    //             }
+    //         }
+    //     });
+    // }
 
     #handleGiveawaysCheckbox() {
         const toggleGiveawaysEl = this.#el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;

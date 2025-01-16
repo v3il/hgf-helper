@@ -1,1 +1,2 @@
-export { ExtensionContainer } from './extensionContainer/ExtensionContainer';
+export { ExtensionContainer } from './extensionContainer';
+export { DebugModeView } from './debugMode';
