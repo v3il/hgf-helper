@@ -2,7 +2,7 @@ import './style.css';
 import template from './template.html?raw';
 import { ColorService } from '../../modules/shared';
 import { TwitchFacade } from '../../modules/twitch';
-import { BasicView } from '../BasicView';
+import { BasicView } from '../../../../components/shared/BasicView';
 
 interface IDebugModeCheck {
     color: string;

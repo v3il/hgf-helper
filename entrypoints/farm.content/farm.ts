@@ -1,10 +1,10 @@
+import { SettingsFacade } from '@components/shared';
 import { isDev } from './consts';
 import { TwitchFacade } from './modules/twitch';
 import { ChatFacade } from './modules/chat';
 import { StreamFacade } from './modules/stream';
 import { MiniGamesFacade } from './modules/miniGames';
 import { ExtensionContainer } from './views';
-import { SettingsFacade } from '@/components/shared';
 
 export const start = () => {
     TwitchFacade.instance.init(async () => {

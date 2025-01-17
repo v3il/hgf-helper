@@ -1,5 +1,5 @@
-import { EventEmitter } from '@/components/shared';
-import { Timing } from '../../../consts';
+import { EventEmitter } from '@components/shared';
+import { Timing } from '@farm/consts';
 import { TwitchFacade } from '../../twitch';
 
 export interface IChatMessage {

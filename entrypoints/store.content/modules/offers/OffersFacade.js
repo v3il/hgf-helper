@@ -1,5 +1,5 @@
+import { SettingsFacade } from '@components/shared';
 import { JsonBinApiService, OffersService } from './services';
-import { SettingsFacade } from '@/components/shared';
 import { OffersFactory } from './factories';
 
 export class OffersFacade {

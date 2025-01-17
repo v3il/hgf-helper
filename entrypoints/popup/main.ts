@@ -1,5 +1,5 @@
 import './style.css';
-import { SettingsFacade } from '@/components/shared';
+import { SettingsFacade } from '@components/shared';
 
 const settings = {
     jsonBinUrl: String,

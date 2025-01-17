@@ -1,12 +1,12 @@
-import { ColorService } from '../../modules/shared';
-import { StreamStatus } from '../../consts';
+import { ColorService } from '@farm/modules/shared';
+import { StreamStatus } from '@farm/consts';
+import { TwitchFacade } from '@farm/modules/twitch';
+import { BasicView } from '@components/shared';
 import { antiCheatChecks } from './antiCheatChecks';
 import './style.css';
 import template from './template.html?raw';
-import { TwitchFacade } from '../../modules/twitch';
-import { BasicView } from '../../../../components/shared/BasicView';
 
-export class StreamStatusView extends BasicView {
+export class StreamStatusService extends BasicView {
     private readonly canvasEl;
     private readonly twitchFacade;
 

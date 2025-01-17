@@ -1,16 +1,16 @@
 import './style.css';
-import template from './template.html?raw';
+import { SettingsFacade } from '@components/shared/settings';
+import { BasicView } from '@components/shared';
+import { ChatFacade } from '@farm/modules/chat';
+import { MiniGamesFacade } from '@farm/modules/miniGames';
+import { StreamFacade } from '@farm/modules/stream';
+import { TwitchFacade } from '@farm/modules/twitch';
 import {
     Commands, Timing, GlobalVariables, MessageTemplates
-} from '../../consts';
-import { ChatFacade } from '../../modules/chat';
-import { MiniGamesFacade } from '../../modules/miniGames';
-import { SettingsFacade } from '@/components/shared/settings';
-import { StreamFacade } from '../../modules/stream';
-import { TwitchFacade } from '../../modules/twitch';
+} from '@farm/consts';
+import { IPageReloader, usePageReloader } from '@farm/views/extensionContainer/usePageReloader';
+import template from './template.html?raw';
 import { DebugModeView } from '../debugMode';
-import { StreamStatusView } from '../streamStatus';
-import { BasicView } from '../BasicView';
 
 interface IParams {
     streamFacade: StreamFacade;
@@ -38,10 +38,7 @@ export class ExtensionContainer extends BasicView {
     private readonly miniGamesFacade: MiniGamesFacade;
     private readonly settingsFacade: SettingsFacade;
     private readonly twitchFacade: TwitchFacade;
-
-    private readonly streamStatusView: StreamStatusView;
-
-    private brokenVideoRounds = 0;
+    private readonly pageReloader: IPageReloader;
 
     constructor({
         streamFacade, chatFacade, miniGamesFacade, settingsFacade, twitchFacade
@@ -54,16 +51,16 @@ export class ExtensionContainer extends BasicView {
         this.settingsFacade = settingsFacade;
         this.twitchFacade = twitchFacade;
 
-        this.streamStatusView = new StreamStatusView(this.twitchFacade);
+        this.pageReloader = usePageReloader();
 
         this.#addGlobalChatListener();
         this.#handleGiveawaysCheckbox();
         this.#handleHitsquadButton();
         // this.#handleDebugMode();
-        this.#initRemoveDelayHandler();
         this.#handleHitsquadRunnerStop();
         this.handleStreamStatusCheck();
         this.initDebugMode();
+        this.initRemoveDelayHandler();
     }
 
     private initDebugMode() {
@@ -79,9 +76,9 @@ export class ExtensionContainer extends BasicView {
     }
 
     private handleStreamStatusCheck() {
-        this.streamStatusView.checkStreamStatus();
+        this.streamFacade.checkStreamStatus();
         this.renderStatus();
-        this.handleBrokenVideo();
+        this.pageReloader.handleBrokenVideo(this.streamFacade.isVideoBroken);
 
         const nextCheckDelay = this.getNextCheckDelay();
 
@@ -90,23 +87,14 @@ export class ExtensionContainer extends BasicView {
         }, nextCheckDelay);
     }
 
-    private handleBrokenVideo() {
-        const isBroken = this.streamStatusView.isVideoBroken;
-
-        if (!isBroken) {
-            this.brokenVideoRounds = 0;
-            return;
-        }
-
-        this.brokenVideoRounds++;
-
-        if (this.brokenVideoRounds >= GlobalVariables.PAGE_RELOAD_ROUNDS) {
-            window.location.reload();
-        }
+    private renderStatus() {
+        this.el.classList.toggle('broken', this.streamFacade.isVideoBroken);
+        this.el.classList.toggle('anticheat', this.streamFacade.isAntiCheatScreen);
+        this.el.classList.toggle('safe', this.streamFacade.isStreamOk);
     }
 
     getNextCheckDelay() {
-        if (this.streamStatusView.isAntiCheatScreen) {
+        if (this.streamFacade.isAntiCheatScreen) {
             return GlobalVariables.ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
         }
 
@@ -158,16 +146,6 @@ export class ExtensionContainer extends BasicView {
                 hitsquadRunnerRemainingRounds: remainingRounds
             });
         });
-
-        // this.#miniGamesFacade.onHitsquadRoundEnd(({ remainingRounds, stopped }) => {
-        //     if (stopped) {
-        //         return this.#turnOffGiveaways();
-        //     }
-        //
-        //     this.#settingsFacade.updateLocalSettings({
-        //         hitsquadRunnerRemainingRounds: remainingRounds
-        //     });
-        // });
     }
 
     #addGlobalChatListener() {
@@ -201,21 +179,15 @@ export class ExtensionContainer extends BasicView {
         const sendHitsquadButton = this.el.querySelector<HTMLButtonElement>('[data-hitsquad]')!;
 
         sendHitsquadButton.addEventListener('click', (event) => {
-            if (this.streamFacade.isAllowedToSendMessage || event.ctrlKey) {
+            if (this.streamFacade.isStreamOk || event.ctrlKey) {
                 this.chatFacade.sendMessage(Commands.HITSQUAD, event.ctrlKey);
             }
         });
     }
 
-    #initRemoveDelayHandler() {
+    initRemoveDelayHandler() {
         setInterval(() => {
             this.streamFacade.decreaseVideoDelay();
         }, GlobalVariables.DECREASE_DELAY_TIMEOUT);
-    }
-
-    renderStatus() {
-        this.el.classList.toggle('broken', this.streamStatusView.isVideoBroken);
-        this.el.classList.toggle('anticheat', this.streamStatusView.isAntiCheatScreen);
-        this.el.classList.toggle('safe', this.streamStatusView.isStreamOk);
     }
 }

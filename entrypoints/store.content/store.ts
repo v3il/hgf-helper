@@ -1,4 +1,4 @@
-import { SettingsFacade } from '@/components/shared';
+import { SettingsFacade } from '@components/shared';
 // @ts-ignore
 import { StreamElementsFacade } from './modules/streamElements';
 // @ts-ignore

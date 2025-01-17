@@ -1,8 +1,8 @@
-import { generateDelay } from '../../../utils';
+import { generateDelay } from '@farm/utils';
 import {
     Commands, MessageTemplates, Timing, GlobalVariables
-} from '../../../consts';
-import { promisifiedSetTimeout, EventEmitter } from '@/components/shared';
+} from '@farm/consts';
+import { promisifiedSetTimeout, EventEmitter } from '@components/shared';
 import { IChatMessage } from '../../chat';
 
 export interface IHitsquadRunnerRound {
