@@ -1,10 +1,10 @@
 import { GlobalVariables } from '@farm/consts';
 
-export interface IPageReloader {
+interface IPageReloader {
     handleBrokenVideo(isVideoBroken: boolean): void;
 }
 
-export const usePageReloader = () => {
+export const usePageReloader = (): IPageReloader => {
     let brokenVideoRounds = 0;
 
     function handleBrokenVideo(isVideoBroken: boolean) {
