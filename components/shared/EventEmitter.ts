@@ -11,6 +11,7 @@ export class EventEmitter<T extends Record<string, object | void>> {
         if (!this.events[event]) {
             this.events[event] = [];
         }
+
         this.events[event]!.push(handler);
 
         return () => this.off(event, handler);
