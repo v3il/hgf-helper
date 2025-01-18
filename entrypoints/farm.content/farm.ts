@@ -6,7 +6,7 @@ import { StreamFacade } from './modules/stream';
 import { MiniGamesFacade } from './modules/miniGames';
 import { ExtensionContainer } from './views';
 
-export const start = () => {
+export const main = () => {
     TwitchFacade.instance.init(async () => {
         console.clear();
         console.info(`HGF helper is running in ${isDev ? 'dev' : 'prod'} mode`);

@@ -6,9 +6,6 @@ import { MiniGamesFacade } from '@farm/modules/miniGames';
 import { StreamFacade } from '@farm/modules/stream';
 import { TwitchFacade } from '@farm/modules/twitch';
 import {
-    Commands, GlobalVariables, MessageTemplates
-} from '@farm/consts';
-import {
     useDebugMode,
     useDelayRemover,
     useHitsquadButton,

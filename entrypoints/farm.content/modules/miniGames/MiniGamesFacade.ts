@@ -1,3 +1,4 @@
+import { SettingsFacade } from '@components/shared';
 import { HitsquadRunner } from './services';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
@@ -9,7 +10,8 @@ export class MiniGamesFacade {
         if (!this._instance) {
             const hitsquadRunner = new HitsquadRunner({
                 chatFacade: ChatFacade.instance,
-                streamFacade: StreamFacade.instance
+                streamFacade: StreamFacade.instance,
+                settingsFacade: SettingsFacade.instance
             });
 
             this._instance = new MiniGamesFacade(hitsquadRunner);

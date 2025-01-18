@@ -16,25 +16,25 @@ export class TwitchPlayerService {
     }
 
     private async init() {
-        this.currentQuality = await this.#getCurrentQuality();
+        this.currentQuality = await this.getCurrentQuality();
     }
 
     async decreaseVideoDelay() {
-        await this.#gotoQualitySettings();
+        await this.gotoQualitySettings();
 
-        const qualityRadios = this.#getQualitySettingsButtonEls();
-        const nextQuality = this.#getNextQuality();
-        const qualityRadio = qualityRadios.find((radioEl) => this.#getRadioButtonQualityValue(radioEl) === nextQuality);
+        const qualityRadios = this.getQualitySettingsButtonEls();
+        const nextQuality = this.getNextQuality();
+        const qualityRadio = qualityRadios.find((radioEl) => this.getRadioButtonQualityValue(radioEl) === nextQuality);
 
         if (qualityRadio) {
             qualityRadio.click();
         }
 
-        this.#closeSettingsPopup();
+        this.closeSettingsPopup();
         this.currentQuality = nextQuality;
     }
 
-    async #gotoQualitySettings() {
+    private async gotoQualitySettings() {
         this.settingsButton.click();
         await promisifiedSetTimeout(50);
 
@@ -44,35 +44,35 @@ export class TwitchPlayerService {
         qualitySettingsButton?.click();
     }
 
-    #closeSettingsPopup() {
+    private closeSettingsPopup() {
         this.settingsButton.click();
     }
 
-    #getQualitySettingsButtonEls() {
+    private getQualitySettingsButtonEls() {
         const selector = '[name="player-settings-submenu-quality-option"]';
         return Array.from(document.querySelectorAll<HTMLInputElement>(selector));
     }
 
-    async #getCurrentQuality() {
-        await this.#gotoQualitySettings();
+    private async getCurrentQuality() {
+        await this.gotoQualitySettings();
 
-        const qualityRadios = this.#getQualitySettingsButtonEls();
+        const qualityRadios = this.getQualitySettingsButtonEls();
         const checkedRadio = qualityRadios.find((radioEl) => radioEl.checked);
 
         if (!checkedRadio) {
             return 144;
         }
 
-        this.#closeSettingsPopup();
+        this.closeSettingsPopup();
 
-        return this.#getRadioButtonQualityValue(checkedRadio);
+        return this.getRadioButtonQualityValue(checkedRadio);
     }
 
-    #getNextQuality() {
+    private getNextQuality() {
         return this.desiredQualities.find((quality) => quality !== this.currentQuality) ?? 360;
     }
 
-    #getRadioButtonQualityValue(radioEl: HTMLInputElement) {
+    private getRadioButtonQualityValue(radioEl: HTMLInputElement) {
         const labelEl = radioEl.nextSibling! as HTMLElement;
         const divEl = labelEl.querySelector('div')!;
 

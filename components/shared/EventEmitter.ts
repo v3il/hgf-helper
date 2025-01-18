@@ -7,11 +7,13 @@ export class EventEmitter<T extends Record<string, object | void>> {
 
     private events: { [K in keyof T]?: EventHandler<T[K]>[] } = {};
 
-    on<K extends keyof T>(event: K, handler: EventHandler<T[K]>): void {
+    on<K extends keyof T>(event: K, handler: EventHandler<T[K]>): () => void {
         if (!this.events[event]) {
             this.events[event] = [];
         }
         this.events[event]!.push(handler);
+
+        return () => this.off(event, handler);
     }
 
     off<K extends keyof T>(event: K, handler: EventHandler<T[K]>): void {

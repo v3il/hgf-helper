@@ -1,4 +1,4 @@
-import { isDev } from '../../../consts';
+import { isDev } from '@farm/consts';
 
 export class TwitchChatService {
     sendMessage(message: string, forced = false) {

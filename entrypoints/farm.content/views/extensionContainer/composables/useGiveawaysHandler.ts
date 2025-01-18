@@ -16,8 +16,10 @@ interface IParams {
 export const useGiveawaysHandler = ({
     el, chatFacade, twitchFacade, settingsFacade, miniGamesFacade
 }: IParams) => {
+    const toggleGiveawaysEl = el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
+
     function handleGiveawaysCheckbox() {
-        const toggleGiveawaysEl = el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
+        // const toggleGiveawaysEl = el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
         const isHitsquadRunning = settingsFacade.getLocalSetting('hitsquadRunner');
         const remainingHitsquadRounds = settingsFacade.getLocalSetting('hitsquadRunnerRemainingRounds');
 
@@ -35,7 +37,7 @@ export const useGiveawaysHandler = ({
     function handleGiveawaysOn() {
         // eslint-disable-next-line no-alert
         const gamesCount = prompt('Enter games count', `${GlobalVariables.HITSQUAD_GAMES_PER_DAY}`);
-        const toggleGiveawaysEl = el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
+        // const toggleGiveawaysEl = el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
         const numericGamesCount = Number(gamesCount);
 
         if (!gamesCount || Number.isNaN(numericGamesCount) || numericGamesCount <= 0) {
@@ -78,7 +80,7 @@ export const useGiveawaysHandler = ({
     }
 
     function turnOffGiveaways() {
-        const toggleGiveawaysEl = el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
+        // const toggleGiveawaysEl = el.querySelector<HTMLInputElement>('[data-toggle-giveaways]')!;
 
         toggleGiveawaysEl.checked = false;
 
