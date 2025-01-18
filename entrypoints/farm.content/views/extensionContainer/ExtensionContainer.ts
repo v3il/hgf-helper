@@ -21,14 +21,12 @@ interface IParams {
 }
 
 export class ExtensionContainer extends BasicView {
-    static create({
-        streamFacade, chatFacade, miniGamesFacade, twitchFacade
-    }: IParams) {
+    static create() {
         return new ExtensionContainer({
-            streamFacade,
-            chatFacade,
-            miniGamesFacade,
-            twitchFacade
+            streamFacade: StreamFacade.instance,
+            chatFacade: ChatFacade.instance,
+            miniGamesFacade: MiniGamesFacade.instance,
+            twitchFacade: TwitchFacade.instance
         });
     }
 

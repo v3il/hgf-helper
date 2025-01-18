@@ -36,6 +36,6 @@ export class ChatFacade {
     }
 
     observeChat(callback: (message: IChatMessage) => void) {
-        return this.chatObserver.events.on('message', callback);
+        return this.chatObserver.events.on('message', (message) => callback(message!));
     }
 }
