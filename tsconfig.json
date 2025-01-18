@@ -1,0 +1,9 @@
+{
+  "extends": "./.wxt/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@farm/*": ["./entrypoints/farm.content/*"],
+      "@components/*": ["./components/*"]
+    }
+  }
+}

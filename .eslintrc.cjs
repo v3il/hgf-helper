@@ -9,15 +9,31 @@ module.exports = {
         webextensions: true
     },
 
-    ignorePatterns: ["dist"],
+    ignorePatterns: [".output"],
+
+    plugins: [
+        '@typescript-eslint'
+    ],
+
+    parser: '@typescript-eslint/parser',
 
     parserOptions: {
-        sourceType: "module",
-        ecmaVersion: 14
+        ecmaVersion: 14,
+        parser: '@typescript-eslint/parser',
+        sourceType: 'module'
+    },
+
+    globals: {
+        defineUnlistedScript: 'readonly',
+        defineContentScript: 'readonly',
+        injectScript: 'readonly'
     },
 
     rules: {
         'no-console': 'off',
+        'no-useless-constructor': 'off',
+        'no-empty-function': 'off',
+        'no-use-before-define': 'off',
         indent: ['error', 4],
         'semi': [2, 'always'],
         'no-unused-vars': 'off',
