@@ -1,4 +1,4 @@
-type EventHandler<T = object> = (payload: T) => void;
+type EventHandler<T = object> = (payload?: T) => void;
 
 export class EventEmitter<T extends Record<string, object | void>> {
     static create<TEvents extends Record<string, object | void>>() {
@@ -21,7 +21,7 @@ export class EventEmitter<T extends Record<string, object | void>> {
         this.events[event] = this.events[event]!.filter((h) => h !== handler);
     }
 
-    emit<K extends keyof T>(event: K, payload: T[K]): void {
+    emit<K extends keyof T>(event: K, payload?: T[K]): void {
         if (!this.events[event]) return;
         this.events[event]!.forEach((handler) => handler(payload));
     }

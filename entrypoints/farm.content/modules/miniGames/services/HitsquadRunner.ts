@@ -1,10 +1,8 @@
 import { generateDelay } from '@farm/utils';
-import {
-    Commands, MessageTemplates, Timing, GlobalVariables
-} from '@farm/consts';
+import { Commands, Timing } from '@farm/consts';
 import { promisifiedSetTimeout, EventEmitter, SettingsFacade } from '@components/shared';
 import { StreamFacade } from '@farm/modules/stream';
-import { ChatFacade, IChatMessage } from '../../chat';
+import { ChatFacade } from '../../chat';
 
 interface IParams {
     chatFacade: ChatFacade;
@@ -12,22 +10,22 @@ interface IParams {
     settingsFacade: SettingsFacade
 }
 
-interface IHitsquadRunnerRound {
-    remainingRounds: number,
-    stopped: boolean
+interface IHitsquadRunnerState {
+    isRunning: boolean,
+    remainingRounds: number
 }
 
-export class HitsquadRunner {
-    static #ROUNDS_UNTIL_COMMAND = GlobalVariables.HITSQUAD_GAMES_ON_SCREEN - 3;
+const HITSQUAD_GAMES_ON_SCREEN = 12;
 
+export class HitsquadRunner {
     readonly events;
 
     private readonly chatFacade: ChatFacade;
     private readonly streamFacade: StreamFacade;
     private readonly settingsFacade: SettingsFacade;
 
-    private counter = { totalRounds: 0, roundsUntilCommand: 0 };
-    private unsubscribe!: () => void;
+    private state!: IHitsquadRunnerState;
+    private timeout!: number;
 
     constructor({ chatFacade, streamFacade, settingsFacade }: IParams) {
         this.chatFacade = chatFacade;
@@ -35,67 +33,76 @@ export class HitsquadRunner {
         this.settingsFacade = settingsFacade;
 
         this.events = EventEmitter.create<{
-            'hitsquadRunner:round': IHitsquadRunnerRound
+            end: void
         }>();
-    }
 
-    private listenEvents() {
-        this.unsubscribe = this.chatFacade.observeChat((data) => {
-            this.processMessage(data);
-        });
-    }
+        this.state = this.getState();
 
-    private async processMessage({ message, isSystemMessage }: IChatMessage) {
-        if (isSystemMessage && MessageTemplates.isHitsquadReward(message)) {
-            this.counter.totalRounds--;
-            this.counter.roundsUntilCommand--;
-        }
-
-        if (this.counter.totalRounds <= 0) {
-            this.stop();
-            this.#emitEvent();
-            promisifiedSetTimeout(Timing.MINUTE).then(() => this.queueCommandSend());
-
-            return;
-        }
-
-        if (this.counter.roundsUntilCommand === 1) {
-            this.counter.roundsUntilCommand = HitsquadRunner.#ROUNDS_UNTIL_COMMAND;
-            this.queueCommandSend();
-            this.#emitEvent();
+        if (this.state.isRunning) {
+            this.start();
         }
     }
 
-    async queueCommandSend() {
-        await promisifiedSetTimeout(this.#generateDelay());
-        await this.#sendCommand();
+    get isRunning() {
+        return this.state.isRunning;
     }
 
-    #generateDelay() {
-        return generateDelay(30 * Timing.SECOND, 2 * Timing.MINUTE);
-    }
-
-    #emitEvent() {
-        const remainingRounds = this.counter.totalRounds;
-
-        this.events.emit('hitsquadRunner:round', { remainingRounds, stopped: remainingRounds <= 0 });
-    }
-
-    async #sendCommand(): Promise<void> {
-        if (!this.streamFacade.isStreamOk) {
-            await promisifiedSetTimeout(20 * Timing.SECOND);
-            return this.#sendCommand();
+    start(rounds?: number) {
+        if (rounds) {
+            this.state = { isRunning: true, remainingRounds: rounds };
+            this.saveState();
         }
 
-        this.chatFacade.sendMessage(Commands.HITSQUAD);
-    }
+        console.info(`HGF helper: start Hitsquad runner with ${this.state.remainingRounds} rounds`);
 
-    start({ totalRounds }: { totalRounds: number }) {
-        this.counter = { totalRounds, roundsUntilCommand: HitsquadRunner.#ROUNDS_UNTIL_COMMAND };
-        this.listenEvents();
+        this.scheduleNextRound();
     }
 
     stop() {
-        this.unsubscribe?.();
+        this.state = { isRunning: false, remainingRounds: 0 };
+        this.saveState();
+        clearTimeout(this.timeout);
+    }
+
+    private getState(): IHitsquadRunnerState {
+        return {
+            isRunning: this.settingsFacade.getLocalSetting('hitsquad'),
+            remainingRounds: this.settingsFacade.getLocalSetting('hitsquadRounds')
+        };
+    }
+
+    private saveState() {
+        this.settingsFacade.updateLocalSettings({
+            hitsquad: this.state.isRunning,
+            hitsquadRounds: this.state.remainingRounds
+        });
+    }
+
+    private async sendCommand(): Promise<void> {
+        if (!this.streamFacade.isStreamOk) {
+            await promisifiedSetTimeout(20 * Timing.SECOND);
+            return this.sendCommand();
+        }
+
+        this.chatFacade.sendMessage(Commands.HITSQUAD);
+        this.state.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
+        this.saveState();
+    }
+
+    private getNextRoundDelay() {
+        return generateDelay(30 * Timing.SECOND, 5 * Timing.MINUTE) + 15 * Timing.MINUTE;
+    }
+
+    private scheduleNextRound() {
+        this.timeout = window.setTimeout(async () => {
+            await this.sendCommand();
+
+            if (this.state.remainingRounds > 0) {
+                return this.scheduleNextRound();
+            }
+
+            this.stop();
+            this.events.emit('end');
+        }, this.getNextRoundDelay());
     }
 }

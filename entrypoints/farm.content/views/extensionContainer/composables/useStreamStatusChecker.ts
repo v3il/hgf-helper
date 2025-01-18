@@ -1,4 +1,4 @@
-import { GlobalVariables, Timing } from '@farm/consts';
+import { Timing } from '@farm/consts';
 import { StreamFacade } from '@farm/modules/stream';
 import { usePageReloader } from './usePageReloader';
 
@@ -6,6 +6,8 @@ interface IParams {
     el: HTMLElement;
     streamFacade: StreamFacade
 }
+
+const ANTI_CHEAT_DURATION = 2 * Timing.MINUTE;
 
 export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
     const pageReloader = usePageReloader();
@@ -30,7 +32,7 @@ export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
 
     function getNextCheckDelay() {
         if (streamFacade.isAntiCheatScreen) {
-            return GlobalVariables.ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
+            return ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
         }
 
         return 5 * Timing.SECOND;

@@ -1,8 +1,8 @@
-import { GlobalVariables } from '@farm/consts';
-
 interface IPageReloader {
     handleBrokenVideo(isVideoBroken: boolean): void;
 }
+
+const PAGE_RELOAD_ROUNDS = 30;
 
 export const usePageReloader = (): IPageReloader => {
     let brokenVideoRounds = 0;
@@ -15,7 +15,7 @@ export const usePageReloader = (): IPageReloader => {
 
         brokenVideoRounds++;
 
-        if (brokenVideoRounds >= GlobalVariables.PAGE_RELOAD_ROUNDS) {
+        if (brokenVideoRounds >= PAGE_RELOAD_ROUNDS) {
             window.location.reload();
         }
     }

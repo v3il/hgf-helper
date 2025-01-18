@@ -1,4 +1,4 @@
-import { Commands, GlobalVariables } from '@farm/consts';
+import { Commands } from '@farm/consts';
 import { StreamFacade } from '@farm/modules/stream';
 import { ChatFacade } from '@farm/modules/chat';
 
@@ -9,7 +9,7 @@ interface IParams {
 }
 
 export const useHitsquadButton = ({ el, streamFacade, chatFacade }: IParams) => {
-    const sendHitsquadButton = el.querySelector<HTMLButtonElement>('[data-hitsquad]')!;
+    const sendHitsquadButton = el.querySelector<HTMLButtonElement>('[data-hitsquad-button]')!;
 
     sendHitsquadButton.addEventListener('click', (event) => {
         if (streamFacade.isStreamOk || event.ctrlKey) {

@@ -30,8 +30,12 @@ export class MiniGamesFacade {
         return this.hitsquadRunner.events;
     }
 
-    startHitsquadRunner({ totalRounds }: { totalRounds: number }) {
-        this.hitsquadRunner.start({ totalRounds });
+    get isHitsquadRunning() {
+        return this.hitsquadRunner.isRunning;
+    }
+
+    startHitsquadRunner(rounds: number) {
+        this.hitsquadRunner.start(rounds);
     }
 
     stopHitsquadRunner() {

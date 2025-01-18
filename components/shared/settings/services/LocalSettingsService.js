@@ -6,9 +6,8 @@ export class LocalSettingsService {
     static #STORAGE_KEY = 'hgf-helper.settings';
 
     static #DEFAULT_SETTINGS = {
-        hitsquadRunner: false,
-        hitsquadRunnerRemainingRounds: 0,
-        quizRunner: false
+        hitsquad: false,
+        hitsquadRounds: 0
     };
 
     #settings = {};

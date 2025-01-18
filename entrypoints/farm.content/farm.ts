@@ -15,7 +15,6 @@ export const main = () => {
 
         ExtensionContainer.create({
             twitchFacade: TwitchFacade.instance,
-            settingsFacade: SettingsFacade.instance,
             streamFacade: StreamFacade.instance,
             chatFacade: ChatFacade.instance,
             miniGamesFacade: MiniGamesFacade.instance

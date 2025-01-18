@@ -1,8 +1,10 @@
-import { GlobalVariables } from '@farm/consts';
+import { Timing } from '@farm/consts';
 import { StreamFacade } from '@farm/modules/stream';
+
+const DECREASE_DELAY_TIMEOUT = 5 * Timing.MINUTE;
 
 export const useDelayRemover = (streamFacade: StreamFacade) => {
     setInterval(() => {
         streamFacade.decreaseVideoDelay();
-    }, GlobalVariables.DECREASE_DELAY_TIMEOUT);
+    }, DECREASE_DELAY_TIMEOUT);
 };
