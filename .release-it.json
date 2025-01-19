@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/release-it/schema/release-it.json",
+
+  "github": {
+    "release": true,
+    "assets": ".output/v${version}.zip"
+  },
+
+  "hooks": {
+    "after:bump": "npm run zip",
+    "before:release": "Releasing version ${version}"
+  }
+}

@@ -1,6 +1,5 @@
 import { defineConfig } from 'wxt';
 import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
@@ -22,5 +21,9 @@ export default defineConfig({
     alias: {
         '@farm': resolve(__dirname, './entrypoints/farm.content'),
         '@components': resolve(__dirname, './components')
+    },
+
+    zip: {
+        artifactTemplate: 'v{{version}}.zip'
     }
 });
