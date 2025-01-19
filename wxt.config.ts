@@ -24,6 +24,6 @@ export default defineConfig({
     },
 
     zip: {
-        artifactTemplate: 'v{{version}}.zip'
+        artifactTemplate: 'hgf-helper@v{{version}}.zip'
     }
 });
