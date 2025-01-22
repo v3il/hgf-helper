@@ -21,9 +21,9 @@ export default defineConfig({
     alias: {
         '@farm': resolve(__dirname, './entrypoints/farm.content'),
         '@components': resolve(__dirname, './components')
-    },
-
-    zip: {
-        artifactTemplate: 'hgf-helper@v{{version}}.zip'
     }
+
+    // zip: {
+    //     artifactTemplate: 'hgf-helper@v{{version}}.zip'
+    // }
 });

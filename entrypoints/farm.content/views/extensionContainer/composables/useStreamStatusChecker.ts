@@ -28,6 +28,7 @@ export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
         el.classList.toggle('broken', streamFacade.isVideoBroken);
         el.classList.toggle('anticheat', streamFacade.isAntiCheatScreen);
         el.classList.toggle('safe', streamFacade.isStreamOk);
+        el.classList.toggle('frenzy', streamFacade.isGiveawayFrenzy);
     }
 
     function getNextCheckDelay() {

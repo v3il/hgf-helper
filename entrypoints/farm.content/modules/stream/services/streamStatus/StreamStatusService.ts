@@ -2,15 +2,15 @@ import { ColorService } from '@farm/modules/shared';
 import { StreamStatus } from '@farm/consts';
 import { TwitchFacade } from '@farm/modules/twitch';
 import { BasicView } from '@components/shared';
-import { antiCheatChecks } from './antiCheatChecks';
 import './style.css';
 import template from './template.html?raw';
+import { ICheck, antiCheatChecks, giveawayFrenzyChecks } from './checks';
 
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
     private readonly twitchFacade;
 
-    private status!: StreamStatus;
+    private statuses!: StreamStatus[];
 
     constructor(twitchFacade: TwitchFacade) {
         super(template);
@@ -24,10 +24,11 @@ export class StreamStatusService extends BasicView {
     checkStreamStatus() {
         const { activeVideoEl } = this.twitchFacade;
 
-        this.status = StreamStatus.OK;
+        this.statuses = [StreamStatus.OK];
 
         if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
-            this.status = StreamStatus.BROKEN;
+            this.statuses = [StreamStatus.BROKEN];
+            console.error(this.statuses);
             this.log('Video is broken', 'warn');
             return;
         }
@@ -35,8 +36,15 @@ export class StreamStatusService extends BasicView {
         this.renderVideoFrame(activeVideoEl);
 
         if (this.isAntiCheat()) {
-            this.status = StreamStatus.ANTI_CHEAT;
+            this.statuses = [StreamStatus.ANTI_CHEAT];
         }
+
+        if (this.isFrenzy()) {
+            console.error(`${new Date().toLocaleString()} Frenzy detected`);
+            this.statuses.push(StreamStatus.FRENZY);
+        }
+
+        console.error(this.statuses);
     }
 
     private renderVideoFrame(videoEl: HTMLVideoElement) {
@@ -49,9 +57,27 @@ export class StreamStatusService extends BasicView {
     }
 
     private isAntiCheat() {
+        const failedChecks = this.checkPoints(antiCheatChecks);
+        const isAntiCheat = (failedChecks / antiCheatChecks.length) >= 0.5;
+
+        this.log(`${failedChecks} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
+
+        return isAntiCheat;
+    }
+
+    private isFrenzy() {
+        const failedChecks = this.checkPoints(giveawayFrenzyChecks);
+        const isFrenzy = (failedChecks / giveawayFrenzyChecks.length) >= 0.5;
+
+        this.log(`${failedChecks} / ${giveawayFrenzyChecks.length}`, isFrenzy ? 'error' : 'info');
+
+        return isFrenzy;
+    }
+
+    private checkPoints(points: ICheck[]): number {
         const { width, height } = this.canvasEl;
 
-        const checksResults = antiCheatChecks.map(({ xPercent, yPercent, color }) => {
+        const checksResults = points.map(({ xPercent, yPercent, color }) => {
             const x = Math.floor((xPercent * width) / 100);
             const y = Math.floor((yPercent * height) / 100);
 
@@ -71,27 +97,27 @@ export class StreamStatusService extends BasicView {
             return isBlack ? true : similarity >= 0.85;
         });
 
-        const isAntiCheat = (failedChecks.length / antiCheatChecks.length) >= 0.5;
-
-        this.log(`${failedChecks.length} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
-
-        return isAntiCheat;
+        return failedChecks.length;
     }
 
-    log(message: string, type: 'error' | 'warn' | 'info') {
+    private log(message: string, type: 'error' | 'warn' | 'info') {
         const date = new Date().toLocaleString();
         console[type](`[${date}]: ${message}`);
     }
 
     get isVideoBroken() {
-        return this.status === StreamStatus.BROKEN;
+        return this.statuses.includes(StreamStatus.BROKEN);
     }
 
     get isAntiCheatScreen() {
-        return this.status === StreamStatus.ANTI_CHEAT;
+        return this.statuses.includes(StreamStatus.ANTI_CHEAT);
     }
 
     get isStreamOk() {
-        return this.status === StreamStatus.OK;
+        return this.statuses.includes(StreamStatus.OK);
+    }
+
+    get isGiveawayFrenzy() {
+        return this.statuses.includes(StreamStatus.FRENZY);
     }
 }

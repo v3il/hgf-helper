@@ -13,8 +13,6 @@ stats.html
 stats-*.json
 .wxt
 
-.env
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -25,3 +23,4 @@ stats-*.json
 *.njsproj
 *.sln
 *.sw?
+.env
