@@ -1,7 +1,12 @@
 import { SettingsFacade } from '@components/shared';
-import { HitsquadRunner } from './services';
+import { HitsquadRunner, AkirasDrawingRunner } from './services';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
+
+interface IParams {
+    hitsquadRunner: HitsquadRunner;
+    akiraDrawRunner: AkirasDrawingRunner;
+}
 
 export class MiniGamesFacade {
     static _instance: MiniGamesFacade;
@@ -14,16 +19,23 @@ export class MiniGamesFacade {
                 settingsFacade: SettingsFacade.instance
             });
 
-            this._instance = new MiniGamesFacade(hitsquadRunner);
+            const akiraDrawRunner = new AkirasDrawingRunner({
+                chatFacade: ChatFacade.instance,
+                settingsFacade: SettingsFacade.instance
+            });
+
+            this._instance = new MiniGamesFacade({ hitsquadRunner, akiraDrawRunner });
         }
 
         return this._instance;
     }
 
-    private hitsquadRunner;
+    private readonly hitsquadRunner;
+    private readonly akiraDrawRunner;
 
-    constructor(hitsquadRunner: HitsquadRunner) {
+    constructor({ hitsquadRunner, akiraDrawRunner }: IParams) {
         this.hitsquadRunner = hitsquadRunner;
+        this.akiraDrawRunner = akiraDrawRunner;
     }
 
     get hitsquadEvents() {
@@ -40,5 +52,17 @@ export class MiniGamesFacade {
 
     stopHitsquadRunner() {
         this.hitsquadRunner.stop();
+    }
+
+    get isAkiraDrawRunning() {
+        return this.akiraDrawRunner.isRunning;
+    }
+
+    startAkiraDrawRunner() {
+        this.akiraDrawRunner.start();
+    }
+
+    stopAkiraDrawRunner() {
+        this.akiraDrawRunner.stop();
     }
 }

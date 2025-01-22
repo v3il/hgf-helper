@@ -1,1 +1,2 @@
-export { HitsquadRunner } from './HitsquadRunner';
+export * from './HitsquadRunner';
+export * from './AkirasDrawingRunner';

@@ -7,7 +7,8 @@ export class LocalSettingsService {
 
     static #DEFAULT_SETTINGS = {
         hitsquad: false,
-        hitsquadRounds: 0
+        hitsquadRounds: 0,
+        akiraDrawing: false
     };
 
     #settings = {};

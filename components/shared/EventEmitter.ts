@@ -1,4 +1,5 @@
 type EventHandler<T = object> = (payload?: T) => void;
+export type UnsubscribeTrigger = () => void;
 
 export class EventEmitter<T extends Record<string, object | void>> {
     static create<TEvents extends Record<string, object | void>>() {
@@ -7,7 +8,7 @@ export class EventEmitter<T extends Record<string, object | void>> {
 
     private events: { [K in keyof T]?: EventHandler<T[K]>[] } = {};
 
-    on<K extends keyof T>(event: K, handler: EventHandler<T[K]>): () => void {
+    on<K extends keyof T>(event: K, handler: EventHandler<T[K]>): UnsubscribeTrigger {
         if (!this.events[event]) {
             this.events[event] = [];
         }

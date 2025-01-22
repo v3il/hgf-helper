@@ -1,5 +1,5 @@
 import { EventEmitter } from '@components/shared';
-import { Timing } from '@farm/consts';
+import { MessageTemplates, Timing } from '@farm/consts';
 import { TwitchFacade } from '../../twitch';
 
 export interface IChatMessage {
@@ -7,6 +7,7 @@ export interface IChatMessage {
     message: string;
     isSystemMessage: boolean;
     isMe: boolean;
+    isAkiraDrawReward: boolean;
 }
 
 export class TwitchChatObserver {
@@ -57,9 +58,14 @@ export class TwitchChatObserver {
         const message = messageEl!.textContent!.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather';
         const isMe = this.twitchUser.isCurrentUser(userName);
+        const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
 
         this.events.emit('message', {
-            userName, message, isSystemMessage, isMe
+            userName,
+            message,
+            isSystemMessage,
+            isMe,
+            isAkiraDrawReward
         });
     }
 }

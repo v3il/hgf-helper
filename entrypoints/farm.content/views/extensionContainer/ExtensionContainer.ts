@@ -9,7 +9,8 @@ import {
     useDelayRemover,
     useHitsquadButton,
     useStreamStatusChecker,
-    useHitsquadHandler
+    useHitsquadHandler,
+    useAkiraDrawingRunner
 } from './composables';
 import template from './template.html?raw';
 
@@ -41,6 +42,7 @@ export class ExtensionContainer extends BasicView {
         useDelayRemover(streamFacade);
         useStreamStatusChecker({ el: this.el, streamFacade });
         useHitsquadButton({ el: this.el, streamFacade, chatFacade });
+        useAkiraDrawingRunner({ el: this.el, miniGamesFacade });
         useHitsquadHandler({
             el: this.el,
             chatFacade,
