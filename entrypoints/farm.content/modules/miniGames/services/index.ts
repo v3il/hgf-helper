@@ -1,2 +1,2 @@
 export * from './HitsquadRunner';
-export * from './AkirasDrawingRunner';
+export * from './akira';

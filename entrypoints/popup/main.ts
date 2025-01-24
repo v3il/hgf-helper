@@ -1,14 +1,22 @@
 import './style.css';
 import { SettingsFacade } from '@components/shared';
 
+type SettingParser<T = string | boolean | number> = (inputEl: HTMLInputElement) => T;
+
+const stringParser = (inputEl: HTMLInputElement) => inputEl.value;
+const numberParser = (inputEl: HTMLInputElement) => Number(inputEl.value);
+const booleanParser = (inputEl: HTMLInputElement) => inputEl.checked;
+
 const settings = {
-    jsonBinUrl: String,
-    jsonBinMasterKey: String,
-    jsonBinAccessKey: String,
-    offersMaxPrice: Number
+    jsonBinUrl: stringParser,
+    jsonBinMasterKey: stringParser,
+    jsonBinAccessKey: stringParser,
+    offersMaxPrice: numberParser,
+    openAiApiToken: stringParser,
+    enableLogs: booleanParser
 };
 
-function initSettingView(settingName: string, settingNormalizer: (value: string) => String | Number) {
+function initSettingView(settingName: string, settingNormalizer: SettingParser) {
     const el = document.querySelector(`[data-setting="${settingName}"]`)!;
     const inputEl = el.querySelector('[data-input]')! as HTMLInputElement;
     const valueEl = el.querySelector('[data-value]')!;
@@ -25,7 +33,7 @@ function initSettingView(settingName: string, settingNormalizer: (value: string)
 
     inputEl.addEventListener('change', () => {
         SettingsFacade.instance.updateGlobalSettings({
-            [settingName]: settingNormalizer(inputEl.value)
+            [settingName]: settingNormalizer(inputEl)
         });
     });
 }

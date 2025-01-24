@@ -44,7 +44,7 @@ export class StreamStatusService extends BasicView {
             this.statuses.push(StreamStatus.FRENZY);
         }
 
-        console.error(this.statuses);
+        // console.error(this.statuses);
     }
 
     private renderVideoFrame(videoEl: HTMLVideoElement) {
@@ -60,7 +60,7 @@ export class StreamStatusService extends BasicView {
         const failedChecks = this.checkPoints(antiCheatChecks);
         const isAntiCheat = (failedChecks / antiCheatChecks.length) >= 0.5;
 
-        this.log(`${failedChecks} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
+        // this.log(`${failedChecks} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
 
         return isAntiCheat;
     }
@@ -69,7 +69,7 @@ export class StreamStatusService extends BasicView {
         const failedChecks = this.checkPoints(giveawayFrenzyChecks);
         const isFrenzy = (failedChecks / giveawayFrenzyChecks.length) >= 0.5;
 
-        this.log(`${failedChecks} / ${giveawayFrenzyChecks.length}`, isFrenzy ? 'error' : 'info');
+        // this.log(`${failedChecks} / ${giveawayFrenzyChecks.length}`, isFrenzy ? 'error' : 'info');
 
         return isFrenzy;
     }

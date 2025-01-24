@@ -1,4 +1,4 @@
-import { SettingsFacade } from '@components/shared';
+import { SettingsFacade, AiGeneratorService } from '@components/shared';
 import { HitsquadRunner, AkirasDrawingRunner } from './services';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
@@ -21,7 +21,8 @@ export class MiniGamesFacade {
 
             const akiraDrawRunner = new AkirasDrawingRunner({
                 chatFacade: ChatFacade.instance,
-                settingsFacade: SettingsFacade.instance
+                settingsFacade: SettingsFacade.instance,
+                aiGeneratorService: new AiGeneratorService()
             });
 
             this._instance = new MiniGamesFacade({ hitsquadRunner, akiraDrawRunner });

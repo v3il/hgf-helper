@@ -11,7 +11,9 @@ export class GlobalSettingsService {
         jsonBinUrl: '',
         jsonBinMasterKey: '',
         jsonBinAccessKey: '',
-        offersMaxPrice: 600_000
+        offersMaxPrice: 600_000,
+        openAiApiToken: '',
+        enableLogs: false
     };
 
     #settings = {};
