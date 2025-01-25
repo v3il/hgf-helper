@@ -40,7 +40,6 @@ export class StreamStatusService extends BasicView {
         }
 
         if (this.isFrenzy()) {
-            log('Frenzy detected');
             this.statuses.push(StreamStatus.FRENZY);
         }
 

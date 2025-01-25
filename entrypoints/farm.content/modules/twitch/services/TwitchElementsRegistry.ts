@@ -11,7 +11,7 @@ export class TwitchElementsRegistry {
                 videoEl
             ];
 
-            if (elements.every((element) => !!element) && this.#isVideoPlaying(videoEl!)) {
+            if (elements.every((element) => !!element) && this.#isVideoPlaying(videoEl!) && this.gameName) {
                 clearInterval(interval);
                 callback(elements);
             }
@@ -50,6 +50,10 @@ export class TwitchElementsRegistry {
 
     get chatButtonsContainerEl() {
         return this.chatContainerEl!.querySelector('.chat-input__buttons-container');
+    }
+
+    get gameName() {
+        return document.querySelector('[data-a-target="stream-game-link"] span')?.textContent?.toLowerCase() ?? '';
     }
 
     #isVideoPlaying(videoEl: HTMLVideoElement) {

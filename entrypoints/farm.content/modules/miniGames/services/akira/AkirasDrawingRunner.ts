@@ -3,11 +3,13 @@ import { Timing } from '@farm/consts';
 import {
     SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log, promisifiedSetTimeout
 } from '@components/shared';
+import { TwitchFacade } from '@farm/modules/twitch';
 import { ChatFacade } from '../../../chat';
 import { getRandomTopic } from './gameTopics';
 
 interface IParams {
     chatFacade: ChatFacade;
+    twitchFacade: TwitchFacade;
     settingsFacade: SettingsFacade,
     aiGeneratorService: AiGeneratorService
 }
@@ -20,21 +22,22 @@ export class AkirasDrawingRunner {
     private readonly chatFacade: ChatFacade;
     private readonly settingsFacade: SettingsFacade;
     private readonly aiGeneratorService: AiGeneratorService;
-
-    private readonly apiKey!: string;
+    private readonly twitchFacade: TwitchFacade;
 
     private state!: IAkiraDrawRunnerState;
     private unsubscribeTrigger!: UnsubscribeTrigger;
 
-    constructor({ chatFacade, settingsFacade, aiGeneratorService }: IParams) {
+    constructor({
+        chatFacade, settingsFacade, aiGeneratorService, twitchFacade
+    }: IParams) {
         this.chatFacade = chatFacade;
         this.settingsFacade = settingsFacade;
         this.aiGeneratorService = aiGeneratorService;
+        this.twitchFacade = twitchFacade;
 
-        this.apiKey = this.getApiKey();
         this.state = this.getState();
 
-        if (this.apiKey && this.state.isRunning) {
+        if (this.state.isRunning) {
             this.start();
         }
     }
@@ -68,10 +71,6 @@ export class AkirasDrawingRunner {
         });
     }
 
-    private getApiKey() {
-        return this.settingsFacade.globalSettings.openAiApiToken;
-    }
-
     private getState(): IAkiraDrawRunnerState {
         return {
             isRunning: this.settingsFacade.localSettings.akiraDrawing
@@ -85,7 +84,7 @@ export class AkirasDrawingRunner {
     }
 
     private async sendCommand() {
-        await promisifiedSetTimeout(this.getDelay());
+        // await promisifiedSetTimeout(this.getDelay());
 
         const question = await this.generateQuestion();
 
@@ -103,7 +102,7 @@ export class AkirasDrawingRunner {
     }
 
     private generatePrompt() {
-        const game = 'balatro';
+        const game = this.twitchFacade.gameName.toLowerCase();
         const topic = getRandomTopic();
 
         return `Generate an easy question about ${topic} in the ${game} game. 50 chars max, English only.`;

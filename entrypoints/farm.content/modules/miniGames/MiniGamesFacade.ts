@@ -1,4 +1,5 @@
 import { SettingsFacade, AiGeneratorService } from '@components/shared';
+import { TwitchFacade } from '@farm/modules/twitch';
 import { HitsquadRunner, AkirasDrawingRunner } from './services';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
@@ -22,6 +23,7 @@ export class MiniGamesFacade {
             const akiraDrawRunner = new AkirasDrawingRunner({
                 chatFacade: ChatFacade.instance,
                 settingsFacade: SettingsFacade.instance,
+                twitchFacade: TwitchFacade.instance,
                 aiGeneratorService: new AiGeneratorService()
             });
 
