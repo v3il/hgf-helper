@@ -50,7 +50,7 @@ export class AiGeneratorService {
 
             const response = await json.json();
 
-            return response.choices[0]?.message?.content?.toLowerCase() ?? '';
+            return response.choices[0]?.message?.content ?? '';
         } catch (error) {
             console.error('Error:', error);
             return '';

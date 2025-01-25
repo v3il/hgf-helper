@@ -39,8 +39,8 @@ export class TwitchFacade {
         return this.#userService.twitchUser;
     }
 
-    get gameName() {
-        return this.#elementsRegistry.gameName;
+    get currentGame() {
+        return this.#elementsRegistry.currentGame;
     }
 
     get activeVideoEl() {

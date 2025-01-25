@@ -44,7 +44,9 @@ export class ExtensionContainer extends BasicView {
         useDelayRemover(streamFacade);
         useStreamStatusChecker({ el: this.el, streamFacade });
         useHitsquadButton({ el: this.el, streamFacade, chatFacade });
-        useAkiraDrawingRunner({ el: this.el, settingsFacade, miniGamesFacade });
+        useAkiraDrawingRunner({
+            el: this.el, settingsFacade, miniGamesFacade, chatFacade
+        });
         useHitsquadHandler({
             el: this.el,
             chatFacade,

@@ -1,7 +1,7 @@
 import { generateDelay } from '@farm/utils';
 import { Timing } from '@farm/consts';
 import {
-    SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log, promisifiedSetTimeout
+    SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log
 } from '@components/shared';
 import { TwitchFacade } from '@farm/modules/twitch';
 import { ChatFacade } from '../../../chat';
@@ -14,18 +14,15 @@ interface IParams {
     aiGeneratorService: AiGeneratorService
 }
 
-interface IAkiraDrawRunnerState {
-    isRunning: boolean,
-}
-
 export class AkirasDrawingRunner {
     private readonly chatFacade: ChatFacade;
     private readonly settingsFacade: SettingsFacade;
     private readonly aiGeneratorService: AiGeneratorService;
     private readonly twitchFacade: TwitchFacade;
 
-    private state!: IAkiraDrawRunnerState;
-    private unsubscribeTrigger!: UnsubscribeTrigger;
+    private _isRunning;
+    private timeoutId!: number;
+    private unsubscribe!: UnsubscribeTrigger;
 
     constructor({
         chatFacade, settingsFacade, aiGeneratorService, twitchFacade
@@ -35,74 +32,77 @@ export class AkirasDrawingRunner {
         this.aiGeneratorService = aiGeneratorService;
         this.twitchFacade = twitchFacade;
 
-        this.state = this.getState();
+        this._isRunning = this.settingsFacade.localSettings.akiraDrawing;
 
-        if (this.state.isRunning) {
+        if (this._isRunning) {
             this.start();
         }
     }
 
     get isRunning() {
-        return this.state.isRunning;
+        return this._isRunning;
     }
 
     start() {
-        this.state.isRunning = true;
+        this._isRunning = true;
 
         log('HGF helper: start Akira drawing runner');
-
-        this.sendCommand();
 
         this.saveState();
         this.listenEvents();
     }
 
     stop() {
-        this.state = { isRunning: false };
+        clearTimeout(this.timeoutId);
+        this._isRunning = false;
         this.saveState();
-        this.unsubscribeTrigger?.();
+        this.unsubscribe?.();
+    }
+
+    participateOnce() {
+        return this.sendCommand();
     }
 
     private listenEvents() {
-        this.unsubscribeTrigger = this.chatFacade.observeChat(({ isAkiraDrawReward }) => {
+        this.unsubscribe = this.chatFacade.observeChat(async ({ isAkiraDrawReward }) => {
             if (isAkiraDrawReward) {
-                this.sendCommand();
+                this.timeoutId = window.setTimeout(() => {
+                    this.sendCommand();
+                }, this.getDelay());
             }
         });
     }
 
-    private getState(): IAkiraDrawRunnerState {
-        return {
-            isRunning: this.settingsFacade.localSettings.akiraDrawing
-        };
-    }
-
     private saveState() {
         this.settingsFacade.updateLocalSettings({
-            akiraDrawing: this.state.isRunning
+            akiraDrawing: this._isRunning
         });
     }
 
     private async sendCommand() {
-        // await promisifiedSetTimeout(this.getDelay());
-
         const question = await this.generateQuestion();
 
         log(`Question: ${question}`);
 
-        if (!question) {
-            return;
+        if (question) {
+            this.chatFacade.sendMessage(this.formatQuestion(question));
         }
-
-        this.chatFacade.sendMessage(`Akira, ${question}`);
     }
 
     private getDelay() {
-        return generateDelay(1 * Timing.MINUTE, 1.5 * Timing.MINUTE);
+        return generateDelay(1 * Timing.MINUTE, 25 * Timing.MINUTE);
+    }
+
+    private formatQuestion(question: string) {
+        if (Math.random() > 0.5) {
+            return `Akira, ${question.toLowerCase()}`;
+        }
+
+        return `${question.slice(0, -1)}, Akira?`;
     }
 
     private generatePrompt() {
-        const game = this.twitchFacade.gameName.toLowerCase();
+        const game = this.twitchFacade.currentGame.toLowerCase();
         const topic = getRandomTopic();
 
         return `Generate an easy question about ${topic} in the ${game} game. 50 chars max, English only.`;

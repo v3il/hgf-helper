@@ -68,4 +68,8 @@ export class MiniGamesFacade {
     stopAkiraDrawRunner() {
         this.akiraDrawRunner.stop();
     }
+
+    participateAkiraDrawingOnce() {
+        return this.akiraDrawRunner.participateOnce();
+    }
 }

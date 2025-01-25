@@ -50,6 +50,10 @@
     margin-right: 8px;
 }
 
+.mr-6 {
+    margin-right: 24px;
+}
+
 .hidden {
     display: none;
 }
