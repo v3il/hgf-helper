@@ -69,12 +69,12 @@ export class AkirasDrawingRunner {
     }
 
     private getApiKey() {
-        return this.settingsFacade.getGlobalSetting('openAiApiToken');
+        return this.settingsFacade.globalSettings.openAiApiToken;
     }
 
     private getState(): IAkiraDrawRunnerState {
         return {
-            isRunning: this.settingsFacade.getLocalSetting('akiraDrawing')
+            isRunning: this.settingsFacade.localSettings.akiraDrawing
         };
     }
 

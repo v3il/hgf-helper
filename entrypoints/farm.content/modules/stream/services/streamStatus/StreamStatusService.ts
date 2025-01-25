@@ -1,7 +1,7 @@
 import { ColorService } from '@farm/modules/shared';
 import { StreamStatus } from '@farm/consts';
 import { TwitchFacade } from '@farm/modules/twitch';
-import { BasicView } from '@components/shared';
+import { BasicView, log } from '@components/shared';
 import './style.css';
 import template from './template.html?raw';
 import { ICheck, antiCheatChecks, giveawayFrenzyChecks } from './checks';
@@ -28,8 +28,8 @@ export class StreamStatusService extends BasicView {
 
         if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
             this.statuses = [StreamStatus.BROKEN];
-            console.error(this.statuses);
-            this.log('Video is broken', 'warn');
+            log(this.statuses);
+            log('Video is broken');
             return;
         }
 
@@ -40,7 +40,7 @@ export class StreamStatusService extends BasicView {
         }
 
         if (this.isFrenzy()) {
-            console.error(`${new Date().toLocaleString()} Frenzy detected`);
+            log('Frenzy detected');
             this.statuses.push(StreamStatus.FRENZY);
         }
 
@@ -98,11 +98,6 @@ export class StreamStatusService extends BasicView {
         });
 
         return failedChecks.length;
-    }
-
-    private log(message: string, type: 'error' | 'warn' | 'info') {
-        const date = new Date().toLocaleString();
-        console[type](`[${date}]: ${message}`);
     }
 
     get isVideoBroken() {

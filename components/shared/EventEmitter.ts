@@ -1,8 +1,9 @@
-type EventHandler<T = object> = (payload?: T) => void;
+type HandlerPayload = object | void | string | number | boolean;
+export type EventHandler<T = HandlerPayload> = (payload?: T) => void;
 export type UnsubscribeTrigger = () => void;
 
-export class EventEmitter<T extends Record<string, object | void>> {
-    static create<TEvents extends Record<string, object | void>>() {
+export class EventEmitter<T extends Record<string, HandlerPayload>> {
+    static create<TEvents extends Record<string, HandlerPayload>>() {
         return new EventEmitter<TEvents>();
     }
 

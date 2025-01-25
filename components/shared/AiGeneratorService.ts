@@ -19,7 +19,7 @@ export class AiGeneratorService {
     private readonly apiKey!: string;
 
     constructor() {
-        this.apiKey = SettingsFacade.instance.getGlobalSetting('openAiApiToken');
+        this.apiKey = SettingsFacade.instance.globalSettings.openAiApiToken;
     }
 
     async generate(prompt: string, options: Partial<IRequestData> = {}): Promise<string> {

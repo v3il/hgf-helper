@@ -1,6 +1,8 @@
 import { generateDelay } from '@farm/utils';
 import { Commands, Timing } from '@farm/consts';
-import { promisifiedSetTimeout, EventEmitter, SettingsFacade } from '@components/shared';
+import {
+    promisifiedSetTimeout, EventEmitter, SettingsFacade, log
+} from '@components/shared';
 import { StreamFacade } from '@farm/modules/stream';
 import { ChatFacade } from '../../chat';
 
@@ -53,7 +55,7 @@ export class HitsquadRunner {
             this.saveState();
         }
 
-        console.info(`HGF helper: start Hitsquad runner with ${this.state.remainingRounds} rounds`);
+        log(`HGF helper: start Hitsquad runner with ${this.state.remainingRounds} rounds`);
 
         this.scheduleNextRound();
     }
@@ -66,8 +68,8 @@ export class HitsquadRunner {
 
     private getState(): IHitsquadRunnerState {
         return {
-            isRunning: this.settingsFacade.getLocalSetting('hitsquad'),
-            remainingRounds: this.settingsFacade.getLocalSetting('hitsquadRounds')
+            isRunning: this.settingsFacade.localSettings.hitsquad,
+            remainingRounds: this.settingsFacade.localSettings.hitsquadRounds
         };
     }
 

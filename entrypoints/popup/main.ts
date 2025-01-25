@@ -1,27 +1,28 @@
 import './style.css';
-import { SettingsFacade } from '@components/shared';
+import { SettingsFacade, GlobalSettingsKeys } from '@components/shared';
 
-type SettingParser<T = string | boolean | number> = (inputEl: HTMLInputElement) => T;
+function parseInputValue(inputEl: HTMLInputElement) {
+    if (inputEl.type === 'checkbox') {
+        return inputEl.checked;
+    }
 
-const stringParser = (inputEl: HTMLInputElement) => inputEl.value;
-const numberParser = (inputEl: HTMLInputElement) => Number(inputEl.value);
-const booleanParser = (inputEl: HTMLInputElement) => inputEl.checked;
+    if (inputEl.type === 'number' || inputEl.type === 'range') {
+        return Number(inputEl.value);
+    }
 
-const settings = {
-    jsonBinUrl: stringParser,
-    jsonBinMasterKey: stringParser,
-    jsonBinAccessKey: stringParser,
-    offersMaxPrice: numberParser,
-    openAiApiToken: stringParser,
-    enableLogs: booleanParser
-};
+    return inputEl.value;
+}
 
-function initSettingView(settingName: string, settingNormalizer: SettingParser) {
-    const el = document.querySelector(`[data-setting="${settingName}"]`)!;
+function initSettingView(el: HTMLElement) {
+    const settingName = el.dataset.setting as GlobalSettingsKeys;
     const inputEl = el.querySelector('[data-input]')! as HTMLInputElement;
-    const valueEl = el.querySelector('[data-value]')!;
+    const valueEl = el.querySelector('[data-value]');
 
-    inputEl.value = SettingsFacade.instance.getGlobalSetting(settingName);
+    if (inputEl.type === 'checkbox') {
+        inputEl.checked = SettingsFacade.instance.globalSettings[settingName] as boolean;
+    } else {
+        inputEl.value = String(SettingsFacade.instance.globalSettings[settingName]);
+    }
 
     if (valueEl) {
         valueEl.textContent = inputEl.value;
@@ -33,7 +34,7 @@ function initSettingView(settingName: string, settingNormalizer: SettingParser) 
 
     inputEl.addEventListener('change', () => {
         SettingsFacade.instance.updateGlobalSettings({
-            [settingName]: settingNormalizer(inputEl)
+            [settingName]: parseInputValue(inputEl)
         });
     });
 }
@@ -41,7 +42,5 @@ function initSettingView(settingName: string, settingNormalizer: SettingParser) 
 document.addEventListener('DOMContentLoaded', async () => {
     await SettingsFacade.instance.loadSettings();
 
-    Object.entries(settings).forEach(([settingName, settingNormalizer]) => {
-        initSettingView(settingName, settingNormalizer);
-    });
+    document.querySelectorAll<HTMLInputElement>('[data-setting]').forEach(initSettingView);
 });

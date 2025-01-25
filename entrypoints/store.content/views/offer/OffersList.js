@@ -43,7 +43,7 @@ export class OffersList {
     }
 
     #observeSettingsChange() {
-        this.#settingsFacade.onGlobalSettingChanged('offersMaxPrice', () => {
+        this.#settingsFacade.globalSettingsEvents.on('setting-changed:offersMaxPrice', (v) => {
             this.#offerViews.forEach((offerView) => offerView.toggleOffer());
         });
     }

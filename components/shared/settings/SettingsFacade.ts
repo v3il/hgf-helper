@@ -1,5 +1,6 @@
-// @ts-ignore
-import { LocalSettingsService, GlobalSettingsService } from './services';
+import {
+    LocalSettingsService, GlobalSettingsService, ILocalSettings, IGlobalSettings, GlobalSettingsKeys
+} from './services';
 
 interface ISettingsFacadeParams {
     localSettingsService: LocalSettingsService;
@@ -23,40 +24,36 @@ export class SettingsFacade {
         return this._instance;
     }
 
-    #globalSettingsService;
-    #localSettingsService;
+    private readonly globalSettingsService;
+    private readonly localSettingsService;
 
     constructor({ localSettingsService, globalSettingsService }: ISettingsFacadeParams) {
-        this.#globalSettingsService = globalSettingsService;
-        this.#localSettingsService = localSettingsService;
+        this.globalSettingsService = globalSettingsService;
+        this.localSettingsService = localSettingsService;
     }
 
     get globalSettings() {
-        return this.#globalSettingsService.settings;
+        return this.globalSettingsService.settings;
+    }
+
+    get globalSettingsEvents() {
+        return this.globalSettingsService.events;
     }
 
     async loadSettings() {
-        this.#localSettingsService.loadSettings();
-        await this.#globalSettingsService.loadSettings();
+        this.localSettingsService.loadSettings();
+        await this.globalSettingsService.loadSettings();
     }
 
-    getGlobalSetting(settingName: string) {
-        return this.#globalSettingsService.getSetting(settingName);
+    updateGlobalSettings(settings: Partial<IGlobalSettings>) {
+        this.globalSettingsService.updateSettings(settings);
     }
 
-    updateGlobalSettings(settings: Record<string, string | number | boolean>) {
-        this.#globalSettingsService.updateSettings(settings);
+    get localSettings() {
+        return this.localSettingsService.settings;
     }
 
-    onGlobalSettingChanged(settingName: string, callback: (data: object) => void) {
-        this.#globalSettingsService.events.on(`setting-changed:${settingName}`, callback);
-    }
-
-    getLocalSetting(settingName: string) {
-        return this.#localSettingsService.getSetting(settingName);
-    }
-
-    updateLocalSettings(settings: Record<string, string | number | boolean>) {
-        this.#localSettingsService.updateSettings(settings);
+    updateLocalSettings(settings: Partial<ILocalSettings>) {
+        this.localSettingsService.updateSettings(settings);
     }
 }

@@ -7,14 +7,13 @@ export class OffersFacade {
 
     static get instance() {
         if (!this._instance) {
-            const settingsFacade = SettingsFacade.instance;
-
+            const settings = SettingsFacade.instance.globalSettings;
             const offersFactory = new OffersFactory();
 
             const apiService = new JsonBinApiService({
-                jsonBinUrl: settingsFacade.getGlobalSetting('jsonBinUrl'),
-                jsonBinMasterKey: settingsFacade.getGlobalSetting('jsonBinMasterKey'),
-                jsonBinAccessKey: settingsFacade.getGlobalSetting('jsonBinAccessKey')
+                jsonBinUrl: settings.jsonBinUrl,
+                jsonBinMasterKey: settings.jsonBinMasterKey,
+                jsonBinAccessKey: settings.jsonBinAccessKey
             });
 
             const offersService = new OffersService({ apiService });

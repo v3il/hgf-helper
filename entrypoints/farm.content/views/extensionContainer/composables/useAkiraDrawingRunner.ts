@@ -26,6 +26,6 @@ export const useAkiraDrawingRunner = ({ el, miniGamesFacade, settingsFacade }: I
     });
 
     function isTokenProvided() {
-        return !!settingsFacade.getGlobalSetting('openAiApiToken');
+        return !!settingsFacade.globalSettings.openAiApiToken;
     }
 };
