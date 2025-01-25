@@ -52,8 +52,8 @@ export class TwitchFacade {
     }
 
     init(callback: () => void) {
-        this.#elementsRegistry.onElementsReady(() => {
-            this.#initUser();
+        this.#elementsRegistry.onElementsReady(async () => {
+            await this.#initUser();
             this.#enableChannelPointsClaimer();
             callback();
         });
@@ -63,8 +63,8 @@ export class TwitchFacade {
         this.#channelPointsClaimerService.enableAutoClaim();
     }
 
-    #initUser() {
-        const userName = this.#elementsRegistry.getUserName();
+    async #initUser() {
+        const userName = await this.#elementsRegistry.getUserName();
         this.#userService.initUser({ userName });
     }
 }

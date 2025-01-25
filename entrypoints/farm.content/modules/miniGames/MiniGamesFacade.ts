@@ -57,6 +57,10 @@ export class MiniGamesFacade {
         this.hitsquadRunner.stop();
     }
 
+    participateHitsquadOnce() {
+        return this.hitsquadRunner.participateOnce();
+    }
+
     get isAkiraDrawRunning() {
         return this.akiraDrawRunner.isRunning;
     }

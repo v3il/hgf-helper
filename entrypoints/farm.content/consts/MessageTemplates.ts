@@ -17,6 +17,6 @@ export const MessageTemplates = Object.freeze({
     },
 
     isAkiraDrawReward(message: string) {
-        return /\w Just Won \d+ Clams From Akiras Drawing/.test(message);
+        return /\w Just Won \d+ Clams From Akiras Drawing/i.test(message);
     }
 });

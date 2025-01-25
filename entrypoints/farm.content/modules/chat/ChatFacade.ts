@@ -31,15 +31,15 @@ export class ChatFacade {
         this.chatService = twitchChatService;
     }
 
-    sendMessage(message: string, forced?: boolean) {
-        this.chatService.sendMessage(message, forced);
+    sendMessage(message: string) {
+        this.chatService.sendMessage(message);
     }
 
     observeChat(callback: (message: IChatMessage) => void) {
         return this.chatObserver.events.on('message', (message) => callback(message!));
     }
 
-    withoutSuppression(cb: () => Promise<void>) {
+    withoutSuppression(cb: () => void | Promise<void>) {
         this.chatService.withoutSuppression(cb);
     }
 }

@@ -7,10 +7,10 @@ class TwitchChatService {
         this._sendMessageEl = sendMessageEl;
     }
 
-    sendMessage({ message, forced, isDev }) {
-        console.error('send', message, forced);
+    sendMessage({ message, suppressed }) {
+        console.error('send', message, suppressed);
 
-        if (isDev && !forced) {
+        if (suppressed) {
             return false;
         }
 

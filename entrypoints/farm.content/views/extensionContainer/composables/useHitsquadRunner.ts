@@ -2,29 +2,32 @@ import { Commands, MessageTemplates } from '@farm/consts';
 import { ChatFacade } from '@farm/modules/chat';
 import { TwitchFacade } from '@farm/modules/twitch';
 import { MiniGamesFacade } from '@farm/modules/miniGames';
+import { StreamFacade } from '@farm/modules/stream';
 
 interface IParams {
     el: HTMLElement;
     chatFacade: ChatFacade,
     twitchFacade: TwitchFacade,
-    miniGamesFacade: MiniGamesFacade
+    miniGamesFacade: MiniGamesFacade,
+    streamFacade: StreamFacade
 }
 
 const HITSQUAD_GAMES_PER_DAY = 600;
 
-export const useHitsquadHandler = ({
-    el, chatFacade, twitchFacade, miniGamesFacade
+export const useHitsquadRunner = ({
+    el, chatFacade, twitchFacade, miniGamesFacade, streamFacade
 }: IParams) => {
-    const hitsquadCheckboxEl = el.querySelector<HTMLInputElement>('[data-toggle-hitsquad]')!;
+    const checkboxEl = el.querySelector<HTMLInputElement>('[data-toggle-hitsquad]')!;
+    const buttonEl = el.querySelector<HTMLButtonElement>('[data-hitsquad-button]')!;
 
-    hitsquadCheckboxEl.checked = miniGamesFacade.isHitsquadRunning;
+    checkboxEl.checked = miniGamesFacade.isHitsquadRunning;
 
-    hitsquadCheckboxEl.addEventListener('change', () => {
-        hitsquadCheckboxEl.checked ? turnHitsquadOn() : turnHitsquadOff();
+    checkboxEl.addEventListener('change', () => {
+        checkboxEl.checked ? turnHitsquadOn() : turnHitsquadOff();
     });
 
     miniGamesFacade.hitsquadEvents.on('end', () => {
-        hitsquadCheckboxEl.checked = false;
+        checkboxEl.checked = false;
     });
 
     chatFacade.observeChat(({ message, isMe, isSystemMessage }) => {
@@ -37,8 +40,15 @@ export const useHitsquadHandler = ({
         }
     });
 
+    buttonEl.addEventListener('click', (event) => {
+        if (event.ctrlKey) {
+            chatFacade.withoutSuppression(() => miniGamesFacade.participateHitsquadOnce());
+        } else if (streamFacade.isStreamOk) {
+            miniGamesFacade.participateHitsquadOnce();
+        }
+    });
+
     function turnHitsquadOn() {
-        // eslint-disable-next-line no-alert
         const gamesCount = prompt('Enter rounds count', `${HITSQUAD_GAMES_PER_DAY}`);
         const numericGamesCount = Number(gamesCount);
 
@@ -51,6 +61,6 @@ export const useHitsquadHandler = ({
 
     function turnHitsquadOff() {
         miniGamesFacade.stopHitsquadRunner();
-        hitsquadCheckboxEl.checked = false;
+        checkboxEl.checked = false;
     }
 };

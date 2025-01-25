@@ -7,9 +7,8 @@ import { TwitchFacade } from '@farm/modules/twitch';
 import {
     useDebugMode,
     useDelayRemover,
-    useHitsquadButton,
     useStreamStatusChecker,
-    useHitsquadHandler,
+    useHitsquadRunner,
     useAkiraDrawingRunner
 } from './composables';
 import template from './template.html?raw';
@@ -43,15 +42,20 @@ export class ExtensionContainer extends BasicView {
         useDebugMode(twitchFacade);
         useDelayRemover(streamFacade);
         useStreamStatusChecker({ el: this.el, streamFacade });
-        useHitsquadButton({ el: this.el, streamFacade, chatFacade });
+
         useAkiraDrawingRunner({
-            el: this.el, settingsFacade, miniGamesFacade, chatFacade
+            el: this.el,
+            settingsFacade,
+            miniGamesFacade,
+            chatFacade
         });
-        useHitsquadHandler({
+
+        useHitsquadRunner({
             el: this.el,
             chatFacade,
             twitchFacade,
-            miniGamesFacade
+            miniGamesFacade,
+            streamFacade
         });
     }
 }

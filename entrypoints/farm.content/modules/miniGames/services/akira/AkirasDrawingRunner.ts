@@ -105,7 +105,8 @@ export class AkirasDrawingRunner {
         const game = this.twitchFacade.currentGame.toLowerCase();
         const topic = getRandomTopic();
 
-        return `Generate an easy question about ${topic} in the ${game} game. 50 chars max, English only.`;
+        // eslint-disable-next-line max-len
+        return `Generate an easy question about ${topic} in the ${game} game. 50 chars max, English only, should mandatory contain the game name.`;
     }
 
     private async generateQuestion(): Promise<string> {

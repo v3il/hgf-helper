@@ -66,6 +66,10 @@ export class HitsquadRunner {
         clearTimeout(this.timeout);
     }
 
+    participateOnce() {
+        this.chatFacade.sendMessage(Commands.HITSQUAD);
+    }
+
     private getState(): IHitsquadRunnerState {
         return {
             isRunning: this.settingsFacade.localSettings.hitsquad,
