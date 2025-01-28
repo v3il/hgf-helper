@@ -1,28 +1,26 @@
 # HGF helper
 
 ## Overview
-This is a small extension for the Chrome browser that allows you to play mini-games on the `.tv/hitsquadgodfather` channel in semi-afk mode. It consists of two parts.
+This is a small extension for the Chrome browser that allows you to play mini-games on the .tv/hitsquadgodfather channel in semi-afk mode. It consists of two parts.
 
 ### Twitch helper
 
-Overlay update that the extension works with: **Oct 26, 2024**
+Overlay update that the extension works with: **Jan 28, 2025**
 
-A widget will be placed on the stream page, allowing you to play mini-games in semi-automatic mode. The main features of the widget are
-1. automatically sends the `!hitsquad` command to the chat after several completed games, if the corresponding checkbox is enabled;
-1. automatically detects the anti-cheat screen and blocks the sending of commands. Scheduled commands will be sent automatically after the anti-cheat has finished;
+A widget is placed on the stream page that allows you to play mini-games in semi-automatic mode. The main functions of the widget are
+1. automatically sends the `!hitsquad` command to the chat if the corresponding checkbox is enabled;
+1. adds a button to easily send the `!hitsquad` command in manual mode;
+2. automatically generates a question for Akira's drawing if the corresponding checkbox is checked;
+1. adds a button to easily participate in the Akira's drawing;
+1. automatically detect the anti-cheat screen and block the sending of commands. Scheduled commands will be sent automatically after the anti-cheat has finished;
 1. automatically removes the delay on the stream once a minute;
 1. automatically collects channel points;
-1. adds a button to easily send the `!hitsquad` command in manual mode;
 1. automatically refresh the stream page if there are problems with the video;
 1. all features continue to work while showing ads;
 
 The appearance of the widget is shown in the image below:
 
 ![readme_1.png](./readme_1.png)
-
-1. Anti-cheat screen indicator. A green border around the widget indicates that the anti-cheat screen is not currently active. While the anti-cheat screen is active, the border color changes to red.
-1. Check box that allows you to automatically participate in Giveaways.
-1. Button to send the `!hitsquad` command in manual mode.
 
 ### StreamElements helper
 The widget mounts on the store page and adds several useful features:
