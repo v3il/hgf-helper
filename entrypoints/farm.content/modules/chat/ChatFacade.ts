@@ -31,8 +31,8 @@ export class ChatFacade {
         this.chatService = twitchChatService;
     }
 
-    sendMessage(message: string, forced?: boolean) {
-        this.chatService.sendMessage(message, forced);
+    sendMessage(message: string) {
+        this.chatService.sendMessage(message);
     }
 
     observeChat(callback: (message: IChatMessage) => void) {

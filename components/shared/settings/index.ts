@@ -1,2 +1,2 @@
-export { SettingsFacade } from './SettingsFacade';
-export { EventEmitter } from '../EventEmitter';
+export type { GlobalSettingsKeys } from './services';
+export * from './SettingsFacade';

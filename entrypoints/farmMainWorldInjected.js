@@ -7,13 +7,7 @@ class TwitchChatService {
         this._sendMessageEl = sendMessageEl;
     }
 
-    sendMessage({ message, forced, isDev }) {
-        console.error('send', message, forced);
-
-        if (isDev && !forced) {
-            return false;
-        }
-
+    sendMessage({ message }) {
         try {
             this._typeMessage(message);
             setTimeout(() => { this._sendMessage(); }, 0);

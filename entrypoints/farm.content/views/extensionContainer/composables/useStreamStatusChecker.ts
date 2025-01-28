@@ -1,6 +1,6 @@
 import { Timing } from '@farm/consts';
 import { StreamFacade } from '@farm/modules/stream';
-import { usePageReloader } from './usePageReloader';
+import { useBrokenStreamHandler } from './useBrokenStreamHandler';
 
 interface IParams {
     el: HTMLElement;
@@ -10,12 +10,12 @@ interface IParams {
 const ANTI_CHEAT_DURATION = 2 * Timing.MINUTE;
 
 export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
-    const pageReloader = usePageReloader();
+    const brokenStreamHandler = useBrokenStreamHandler();
 
     function handleStreamStatusCheck() {
         streamFacade.checkStreamStatus();
         renderStatus();
-        pageReloader.handleBrokenVideo(streamFacade.isVideoBroken);
+        brokenStreamHandler.handleBrokenVideo(streamFacade.isVideoBroken);
 
         const nextCheckDelay = getNextCheckDelay();
 
@@ -28,6 +28,7 @@ export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
         el.classList.toggle('broken', streamFacade.isVideoBroken);
         el.classList.toggle('anticheat', streamFacade.isAntiCheatScreen);
         el.classList.toggle('safe', streamFacade.isStreamOk);
+        el.classList.toggle('frenzy', streamFacade.isGiveawayFrenzy);
     }
 
     function getNextCheckDelay() {

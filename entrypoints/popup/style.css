@@ -22,6 +22,10 @@ body {
   margin-bottom: 16px;
 }
 
+.mr-2 {
+  margin-right: 8px;
+}
+
 .flex {
   display: flex;
 }
@@ -59,6 +63,11 @@ body {
   outline: none;
 }
 
+.input.checkbox {
+  width: auto;
+  margin-top: 0;
+}
+
 .range {
   width: 100%;
   margin-top: 8px;
@@ -69,4 +78,8 @@ body {
   display: flex;
   margin-top: 8px;
   justify-content: space-between;
+}
+
+.h3 {
+  text-decoration: underline;
 }

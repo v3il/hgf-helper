@@ -23,7 +23,7 @@ export class OfferView {
     }
 
     get #isHidden() {
-        const offersMaxPrice = this.#settingsFacade.getGlobalSetting('offersMaxPrice');
+        const { offersMaxPrice } = this.#settingsFacade.globalSettings;
 
         return this.#offer.isSoldOut
             || this.#offer.price > offersMaxPrice

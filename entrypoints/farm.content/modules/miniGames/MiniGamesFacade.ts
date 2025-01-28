@@ -1,7 +1,13 @@
-import { SettingsFacade } from '@components/shared';
-import { HitsquadRunner } from './services';
+import { SettingsFacade, AiGeneratorService } from '@components/shared';
+import { TwitchFacade } from '@farm/modules/twitch';
+import { HitsquadRunner, AkirasDrawingRunner } from './services';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
+
+interface IParams {
+    hitsquadRunner: HitsquadRunner;
+    akiraDrawRunner: AkirasDrawingRunner;
+}
 
 export class MiniGamesFacade {
     static _instance: MiniGamesFacade;
@@ -14,16 +20,25 @@ export class MiniGamesFacade {
                 settingsFacade: SettingsFacade.instance
             });
 
-            this._instance = new MiniGamesFacade(hitsquadRunner);
+            const akiraDrawRunner = new AkirasDrawingRunner({
+                chatFacade: ChatFacade.instance,
+                settingsFacade: SettingsFacade.instance,
+                twitchFacade: TwitchFacade.instance,
+                aiGeneratorService: new AiGeneratorService()
+            });
+
+            this._instance = new MiniGamesFacade({ hitsquadRunner, akiraDrawRunner });
         }
 
         return this._instance;
     }
 
-    private hitsquadRunner;
+    private readonly hitsquadRunner;
+    private readonly akiraDrawRunner;
 
-    constructor(hitsquadRunner: HitsquadRunner) {
+    constructor({ hitsquadRunner, akiraDrawRunner }: IParams) {
         this.hitsquadRunner = hitsquadRunner;
+        this.akiraDrawRunner = akiraDrawRunner;
     }
 
     get hitsquadEvents() {
@@ -34,11 +49,43 @@ export class MiniGamesFacade {
         return this.hitsquadRunner.isRunning;
     }
 
+    get timeUntilHitsquadMessage() {
+        return this.hitsquadRunner.timeUntilMessage;
+    }
+
+    get hitsquadRoundsData() {
+        return this.hitsquadRunner.roundsData;
+    }
+
     startHitsquadRunner(rounds: number) {
         this.hitsquadRunner.start(rounds);
     }
 
     stopHitsquadRunner() {
         this.hitsquadRunner.stop();
+    }
+
+    participateHitsquadOnce() {
+        return this.hitsquadRunner.participateOnce();
+    }
+
+    get isAkiraDrawRunning() {
+        return this.akiraDrawRunner.isRunning;
+    }
+
+    get timeUntilAkiraDrawingMessage() {
+        return this.akiraDrawRunner.timeUntilMessage;
+    }
+
+    startAkiraDrawRunner() {
+        this.akiraDrawRunner.start();
+    }
+
+    stopAkiraDrawRunner() {
+        this.akiraDrawRunner.stop();
+    }
+
+    participateAkiraDrawingOnce() {
+        return this.akiraDrawRunner.participateOnce();
     }
 }

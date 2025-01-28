@@ -43,6 +43,10 @@ export class StreamFacade {
         return this.streamStatusService.isStreamOk;
     }
 
+    get isGiveawayFrenzy() {
+        return this.streamStatusService.isGiveawayFrenzy;
+    }
+
     checkStreamStatus() {
         this.streamStatusService.checkStreamStatus();
     }

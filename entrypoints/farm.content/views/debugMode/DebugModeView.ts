@@ -55,8 +55,6 @@ export class DebugModeView extends BasicView {
             xPercent: (x / this.canvasEl.width) * 100,
             yPercent: (y / this.canvasEl.height) * 100
         });
-
-        console.info(`Logged: ${this.checks.length}`);
     }
 
     private enterDebugMode() {

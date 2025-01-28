@@ -1,6 +1,8 @@
+import { promisifiedSetTimeout } from '@components/shared';
+
 export class TwitchElementsRegistry {
     onElementsReady(callback: (elements: Element[]) => void) {
-        const interval = setInterval(() => {
+        const interval = setInterval(async () => {
             const videoEl = this.activeVideoEl;
 
             const elements = [
@@ -11,7 +13,12 @@ export class TwitchElementsRegistry {
                 videoEl
             ];
 
-            if (elements.every((element) => !!element) && this.#isVideoPlaying(videoEl!)) {
+            if (
+                elements.every((element) => !!element)
+                && this.#isVideoPlaying(videoEl!)
+                && this.currentGame
+                && await this.getUserName()
+            ) {
                 clearInterval(interval);
                 callback(elements);
             }
@@ -52,19 +59,26 @@ export class TwitchElementsRegistry {
         return this.chatContainerEl!.querySelector('.chat-input__buttons-container');
     }
 
+    get currentGame() {
+        return document.querySelector('[data-a-target="stream-game-link"] span')?.textContent?.toLowerCase() ?? '';
+    }
+
     #isVideoPlaying(videoEl: HTMLVideoElement) {
         return videoEl.currentTime > 0 && !videoEl.paused && !videoEl.ended && videoEl.readyState > 2;
     }
 
-    getUserName() {
+    async getUserName() {
         const userDropdownToggleEl = this.userDropdownToggleEl! as HTMLButtonElement;
 
         userDropdownToggleEl.click();
 
+        await promisifiedSetTimeout(100);
+
         const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
+        const userName = userNameEl?.textContent!.toLowerCase() ?? '';
 
         userDropdownToggleEl.click();
 
-        return userNameEl?.textContent!.toLowerCase() ?? '';
+        return userName;
     }
 }

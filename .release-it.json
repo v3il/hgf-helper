@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/release-it/schema/release-it.json",
+
+  "github": {
+    "release": true,
+    "name": "v${version}",
+    "assets": [".output/hgf-helper@v${version}.zip"]
+  },
+
+  "hooks": {
+    "after:bump": "npm run zip",
+    "before:release": "echo Releasing version ${version}"
+  }
+}
