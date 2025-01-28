@@ -90,19 +90,16 @@ export class AkirasDrawingRunner {
     }
 
     private getDelay() {
-        return generateDelay(1 * Timing.MINUTE, 25 * Timing.MINUTE);
+        return generateDelay(1 * Timing.MINUTE, 30 * Timing.MINUTE);
     }
 
     private formatQuestion(question: string) {
-        if (Math.random() > 0.5) {
-            return `Akira, ${question.toLowerCase()}`;
-        }
-
-        return `${question.slice(0, -1)}, Akira?`;
+        const hasComma = Math.random() > 0.5;
+        return `Akira${hasComma ? ',' : ''} ${question.toLowerCase()}`;
     }
 
     private generatePrompt() {
-        const game = this.twitchFacade.currentGame.toLowerCase();
+        const game = this.twitchFacade.currentGame.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '');
         const topic = getRandomTopic();
 
         // eslint-disable-next-line max-len

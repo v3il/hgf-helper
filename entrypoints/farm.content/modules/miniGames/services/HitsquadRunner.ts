@@ -1,7 +1,7 @@
 import { generateDelay } from '@farm/utils';
 import { Commands, Timing } from '@farm/consts';
 import {
-    promisifiedSetTimeout, EventEmitter, SettingsFacade, log
+    promisifiedSetTimeout, EventEmitter, SettingsFacade, log, UnsubscribeTrigger
 } from '@components/shared';
 import { StreamFacade } from '@farm/modules/stream';
 import { ChatFacade } from '../../chat';
@@ -28,6 +28,8 @@ export class HitsquadRunner {
 
     private state!: IHitsquadRunnerState;
     private timeout!: number;
+    private lastHitsquadRewardTimestamp!: number;
+    private unsubscribe!: UnsubscribeTrigger;
 
     constructor({ chatFacade, streamFacade, settingsFacade }: IParams) {
         this.chatFacade = chatFacade;
@@ -57,6 +59,7 @@ export class HitsquadRunner {
 
         log(`HGF helper: start Hitsquad runner with ${this.state.remainingRounds} rounds`);
 
+        this.listenEvents();
         this.scheduleNextRound();
     }
 
@@ -64,6 +67,7 @@ export class HitsquadRunner {
         this.state = { isRunning: false, remainingRounds: 0 };
         this.saveState();
         clearTimeout(this.timeout);
+        this.unsubscribe?.();
     }
 
     participateOnce() {
@@ -84,6 +88,18 @@ export class HitsquadRunner {
         });
     }
 
+    private listenEvents() {
+        this.unsubscribe = this.chatFacade.observeChat(({ isHitsquadReward }) => {
+            if (isHitsquadReward) {
+                this.lastHitsquadRewardTimestamp = Date.now();
+            }
+        });
+    }
+
+    private get isBotWorking() {
+        return Date.now() - this.lastHitsquadRewardTimestamp < 20 * Timing.MINUTE;
+    }
+
     private async sendCommand(): Promise<void> {
         if (!this.streamFacade.isStreamOk) {
             await promisifiedSetTimeout(20 * Timing.SECOND);
@@ -96,11 +112,16 @@ export class HitsquadRunner {
     }
 
     private getNextRoundDelay() {
-        return generateDelay(30 * Timing.SECOND, 5 * Timing.MINUTE) + 15 * Timing.MINUTE;
+        return generateDelay(30 * Timing.SECOND, 5 * Timing.MINUTE) + 10 * Timing.MINUTE;
     }
 
     private scheduleNextRound() {
         this.timeout = window.setTimeout(async () => {
+            if (!this.isBotWorking) {
+                log('Bot is not working, scheduling next round');
+                return this.scheduleNextRound();
+            }
+
             await this.sendCommand();
 
             if (this.state.remainingRounds > 0) {

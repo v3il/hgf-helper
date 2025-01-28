@@ -7,6 +7,7 @@ export interface IChatMessage {
     message: string;
     isSystemMessage: boolean;
     isMe: boolean;
+    isHitsquadReward: boolean;
     isAkiraDrawReward: boolean;
 }
 
@@ -58,6 +59,7 @@ export class TwitchChatObserver {
         const message = messageEl!.textContent!.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather';
         const isMe = this.twitchUser.isCurrentUser(userName);
+        const isHitsquadReward = isSystemMessage && MessageTemplates.isHitsquadReward(message);
         const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
 
         this.events.emit('message', {
@@ -65,6 +67,7 @@ export class TwitchChatObserver {
             message,
             isSystemMessage,
             isMe,
+            isHitsquadReward,
             isAkiraDrawReward
         });
     }
