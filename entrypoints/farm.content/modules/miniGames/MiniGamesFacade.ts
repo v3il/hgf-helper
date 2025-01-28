@@ -53,6 +53,10 @@ export class MiniGamesFacade {
         return this.hitsquadRunner.timeUntilMessage;
     }
 
+    get hitsquadRoundsData() {
+        return this.hitsquadRunner.roundsData;
+    }
+
     startHitsquadRunner(rounds: number) {
         this.hitsquadRunner.start(rounds);
     }

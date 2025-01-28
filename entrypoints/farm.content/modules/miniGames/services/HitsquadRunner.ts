@@ -17,6 +17,11 @@ interface IHitsquadRunnerState {
     remainingRounds: number
 }
 
+interface IRoundsData {
+    total: number
+    left: number
+}
+
 const HITSQUAD_GAMES_ON_SCREEN = 12;
 
 export class HitsquadRunner {
@@ -27,6 +32,7 @@ export class HitsquadRunner {
     private readonly settingsFacade: SettingsFacade;
 
     timeUntilMessage!: number;
+    private totalRounds!: number;
     private state!: IHitsquadRunnerState;
     private timeout!: number;
     private lastHitsquadRewardTimestamp!: number;
@@ -38,6 +44,7 @@ export class HitsquadRunner {
         this.settingsFacade = settingsFacade;
 
         this.events = EventEmitter.create<{
+            round: void,
             end: void
         }>();
 
@@ -52,6 +59,13 @@ export class HitsquadRunner {
         return this.state.isRunning;
     }
 
+    get roundsData(): IRoundsData {
+        return {
+            total: this.totalRounds,
+            left: this.state.remainingRounds
+        };
+    }
+
     start(rounds?: number) {
         if (rounds) {
             this.state = { isRunning: true, remainingRounds: rounds };
@@ -59,6 +73,8 @@ export class HitsquadRunner {
         }
 
         log(`HGF helper: start Hitsquad runner with ${this.state.remainingRounds} rounds`);
+
+        this.totalRounds = this.state.remainingRounds;
 
         this.listenEvents();
         this.scheduleNextRound();
@@ -113,6 +129,10 @@ export class HitsquadRunner {
         this.chatFacade.sendMessage(Commands.HITSQUAD);
         this.state.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
         this.saveState();
+
+        if (this.state.remainingRounds > 0) {
+            this.events.emit('round');
+        }
     }
 
     private getNextRoundDelay() {

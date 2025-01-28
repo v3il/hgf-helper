@@ -46,6 +46,7 @@
     display: inline-block;
 }
 
+.haf-extension-container__counter,
 .haf-extension-container__timer {
     color: #999;
 }

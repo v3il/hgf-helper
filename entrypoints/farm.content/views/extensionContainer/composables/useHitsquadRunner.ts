@@ -20,13 +20,16 @@ export const useHitsquadRunner = ({
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-toggle-hitsquad]')!;
     const buttonEl = el.querySelector<HTMLButtonElement>('[data-hitsquad-button]')!;
     const timerEl = el.querySelector<HTMLButtonElement>('[data-hitsquad-time]')!;
+    const counterEl = el.querySelector<HTMLButtonElement>('[data-hitsquad-counter]')!;
 
     let intervalId: number;
+    let unsubscribeCounter: () => void;
 
     checkboxEl.checked = miniGamesFacade.isHitsquadRunning;
 
     if (miniGamesFacade.isHitsquadRunning) {
         setupTimer();
+        setupCounter();
     }
 
     checkboxEl.addEventListener('change', () => {
@@ -34,7 +37,8 @@ export const useHitsquadRunner = ({
     });
 
     miniGamesFacade.hitsquadEvents.on('end', () => {
-        checkboxEl.checked = false;
+        console.error(22);
+        turnHitsquadOff();
     });
 
     chatFacade.observeChat(({ message, isMe, isSystemMessage }) => {
@@ -66,18 +70,24 @@ export const useHitsquadRunner = ({
         miniGamesFacade.startHitsquadRunner(numericGamesCount);
 
         setupTimer();
+        setupCounter();
     }
 
     function turnHitsquadOff() {
         miniGamesFacade.stopHitsquadRunner();
         checkboxEl.checked = false;
+
         clearInterval(intervalId);
         timerEl.classList.add('hidden');
+
+        counterEl.classList.add('hidden');
+        unsubscribeCounter?.();
     }
 
     function setupTimer() {
         timerTick();
         intervalId = window.setInterval(timerTick, Timing.SECOND);
+        timerEl.classList.remove('hidden');
     }
 
     function timerTick() {
@@ -87,10 +97,17 @@ export const useHitsquadRunner = ({
         const seconds = Math.floor((diff % Timing.MINUTE) / Timing.SECOND).toString().padStart(2, '0');
 
         timerEl.textContent = `(${minutes}:${seconds})`;
-        timerEl.classList.toggle('hidden', time <= 0);
+    }
 
-        if (time <= 0) {
-            clearInterval(intervalId);
-        }
+    function setupCounter() {
+        renderCounter();
+        unsubscribeCounter = miniGamesFacade.hitsquadEvents.on('round', renderCounter);
+        counterEl.classList.remove('hidden');
+    }
+
+    function renderCounter() {
+        const roundsData = miniGamesFacade.hitsquadRoundsData;
+
+        counterEl.textContent = `[${roundsData.left}/${roundsData.total}]`;
     }
 };

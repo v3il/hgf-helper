@@ -100,6 +100,9 @@ export class AkirasDrawingRunner {
 
     private generatePrompt() {
         const game = this.twitchFacade.currentGame.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '');
+
+        console.error(game);
+
         const topic = getRandomTopic();
 
         // eslint-disable-next-line max-len
