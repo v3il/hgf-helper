@@ -36,10 +36,7 @@ export const useHitsquadRunner = ({
         checkboxEl.checked ? turnHitsquadOn() : turnHitsquadOff();
     });
 
-    miniGamesFacade.hitsquadEvents.on('end', () => {
-        console.error(22);
-        turnHitsquadOff();
-    });
+    miniGamesFacade.hitsquadEvents.on('end', turnHitsquadOff);
 
     chatFacade.observeChat(({ message, isMe, isSystemMessage }) => {
         const twitchUserName = twitchFacade.twitchUser.userName;
@@ -80,8 +77,8 @@ export const useHitsquadRunner = ({
         clearInterval(intervalId);
         timerEl.classList.add('hidden');
 
-        counterEl.classList.add('hidden');
         unsubscribeCounter?.();
+        counterEl.classList.add('hidden');
     }
 
     function setupTimer() {

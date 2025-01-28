@@ -73,6 +73,10 @@ export class MiniGamesFacade {
         return this.akiraDrawRunner.isRunning;
     }
 
+    get timeUntilAkiraDrawingMessage() {
+        return this.akiraDrawRunner.timeUntilMessage;
+    }
+
     startAkiraDrawRunner() {
         this.akiraDrawRunner.start();
     }

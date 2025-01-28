@@ -20,6 +20,7 @@ export class AkirasDrawingRunner {
     private readonly aiGeneratorService: AiGeneratorService;
     private readonly twitchFacade: TwitchFacade;
 
+    timeUntilMessage!: number;
     private _isRunning;
     private timeoutId!: number;
     private unsubscribe!: UnsubscribeTrigger;
@@ -66,9 +67,13 @@ export class AkirasDrawingRunner {
     private listenEvents() {
         this.unsubscribe = this.chatFacade.observeChat(async ({ isAkiraDrawReward }) => {
             if (isAkiraDrawReward) {
+                const delay = this.getDelay();
+
+                this.timeUntilMessage = Date.now() + delay;
+
                 this.timeoutId = window.setTimeout(() => {
                     this.sendCommand();
-                }, this.getDelay());
+                }, delay);
             }
         });
     }
@@ -80,6 +85,8 @@ export class AkirasDrawingRunner {
     }
 
     private async sendCommand() {
+        this.timeUntilMessage = 0;
+
         const question = await this.generateQuestion();
 
         log(`Question: ${question}`);
