@@ -94,15 +94,14 @@ export class AkirasDrawingRunner {
     }
 
     private formatQuestion(question: string) {
+        const normalizedQuestion = question.replace(/[^a-zA-Z0-9 ?]/g, '').toLowerCase();
         const hasComma = Math.random() > 0.5;
-        return `Akira${hasComma ? ',' : ''} ${question.toLowerCase()}`;
+
+        return `Akira${hasComma ? ',' : ''} ${normalizedQuestion}`;
     }
 
     private generatePrompt() {
         const game = this.twitchFacade.currentGame.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '');
-
-        console.error(game);
-
         const topic = getRandomTopic();
 
         // eslint-disable-next-line max-len
