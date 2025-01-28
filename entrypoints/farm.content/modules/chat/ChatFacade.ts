@@ -38,8 +38,4 @@ export class ChatFacade {
     observeChat(callback: (message: IChatMessage) => void) {
         return this.chatObserver.events.on('message', (message) => callback(message!));
     }
-
-    withoutSuppression(cb: () => void | Promise<void>) {
-        this.chatService.withoutSuppression(cb);
-    }
 }

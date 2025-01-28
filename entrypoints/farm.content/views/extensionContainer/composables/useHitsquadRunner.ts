@@ -49,9 +49,7 @@ export const useHitsquadRunner = ({
     });
 
     buttonEl.addEventListener('click', (event) => {
-        if (event.ctrlKey) {
-            chatFacade.withoutSuppression(() => miniGamesFacade.participateHitsquadOnce());
-        } else if (streamFacade.isStreamOk) {
+        if (event.ctrlKey || streamFacade.isStreamOk) {
             miniGamesFacade.participateHitsquadOnce();
         }
     });

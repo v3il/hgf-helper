@@ -20,10 +20,10 @@ export class AkirasDrawingRunner {
     private readonly aiGeneratorService: AiGeneratorService;
     private readonly twitchFacade: TwitchFacade;
 
-    timeUntilMessage!: number;
     private _isRunning;
     private timeoutId!: number;
     private unsubscribe!: UnsubscribeTrigger;
+    timeUntilMessage: number = 0;
 
     constructor({
         chatFacade, settingsFacade, aiGeneratorService, twitchFacade
@@ -45,6 +45,7 @@ export class AkirasDrawingRunner {
     }
 
     start() {
+        this.timeUntilMessage = 0;
         this._isRunning = true;
 
         log('HGF helper: start Akira drawing runner');
@@ -56,6 +57,7 @@ export class AkirasDrawingRunner {
     stop() {
         clearTimeout(this.timeoutId);
         this._isRunning = false;
+        this.timeUntilMessage = 0;
         this.saveState();
         this.unsubscribe?.();
     }

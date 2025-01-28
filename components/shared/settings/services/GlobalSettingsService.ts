@@ -7,7 +7,6 @@ export interface IGlobalSettings {
     jsonBinAccessKey: string;
     offersMaxPrice: number;
     openAiApiToken: string;
-    enableLogs: boolean;
 }
 
 export type GlobalSettingsKeys = keyof IGlobalSettings;
@@ -39,8 +38,7 @@ export class GlobalSettingsService {
         jsonBinMasterKey: '',
         jsonBinAccessKey: '',
         offersMaxPrice: 600_000,
-        openAiApiToken: '',
-        enableLogs: false
+        openAiApiToken: ''
     };
 
     constructor({ storage, events }: IParams) {

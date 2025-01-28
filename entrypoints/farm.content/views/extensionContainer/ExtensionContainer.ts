@@ -46,8 +46,7 @@ export class ExtensionContainer extends BasicView {
         useAkiraDrawingRunner({
             el: this.el,
             settingsFacade,
-            miniGamesFacade,
-            chatFacade
+            miniGamesFacade
         });
 
         useHitsquadRunner({

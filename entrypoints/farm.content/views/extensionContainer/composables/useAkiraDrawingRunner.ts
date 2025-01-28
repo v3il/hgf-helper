@@ -1,17 +1,15 @@
 import { MiniGamesFacade } from '@farm/modules/miniGames';
 import { SettingsFacade } from '@components/shared';
-import { ChatFacade } from '@farm/modules/chat';
 import { Timing } from '@farm/consts';
 
 interface IParams {
     el: HTMLElement;
     settingsFacade: SettingsFacade;
     miniGamesFacade: MiniGamesFacade
-    chatFacade: ChatFacade
 }
 
 export const useAkiraDrawingRunner = ({
-    el, miniGamesFacade, settingsFacade, chatFacade
+    el, miniGamesFacade, settingsFacade
 }: IParams) => {
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-toggle-akira-drawing]')!;
     const buttonEl = el.querySelector<HTMLInputElement>('[data-akira-drawing]')!;
@@ -50,11 +48,7 @@ export const useAkiraDrawingRunner = ({
             return showAlert();
         }
 
-        if (event.ctrlKey) {
-            chatFacade.withoutSuppression(() => miniGamesFacade.participateAkiraDrawingOnce());
-        } else {
-            miniGamesFacade.participateAkiraDrawingOnce();
-        }
+        miniGamesFacade.participateAkiraDrawingOnce();
     });
 
     function isTokenProvided() {

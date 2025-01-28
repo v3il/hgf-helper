@@ -1,7 +1,7 @@
-import { SettingsFacade } from '@components/shared';
+import { isDev } from '@farm/consts';
 
 export const log = (message: any) => {
-    if (SettingsFacade.instance.globalSettings.enableLogs) {
+    if (isDev) {
         const time = new Date().toLocaleTimeString();
         console.log(`HGF Helper, ${time}:`, message);
     }
