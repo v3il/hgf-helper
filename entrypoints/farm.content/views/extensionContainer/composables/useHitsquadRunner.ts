@@ -1,4 +1,4 @@
-import { Commands, MessageTemplates } from '@farm/consts';
+import { Commands, MessageTemplates, Timing } from '@farm/consts';
 import { ChatFacade } from '@farm/modules/chat';
 import { TwitchFacade } from '@farm/modules/twitch';
 import { MiniGamesFacade } from '@farm/modules/miniGames';
@@ -19,8 +19,15 @@ export const useHitsquadRunner = ({
 }: IParams) => {
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-toggle-hitsquad]')!;
     const buttonEl = el.querySelector<HTMLButtonElement>('[data-hitsquad-button]')!;
+    const timerEl = el.querySelector<HTMLButtonElement>('[data-hitsquad-time]')!;
+
+    let intervalId: number;
 
     checkboxEl.checked = miniGamesFacade.isHitsquadRunning;
+
+    if (miniGamesFacade.isHitsquadRunning) {
+        setupTimer();
+    }
 
     checkboxEl.addEventListener('change', () => {
         checkboxEl.checked ? turnHitsquadOn() : turnHitsquadOff();
@@ -57,10 +64,33 @@ export const useHitsquadRunner = ({
         }
 
         miniGamesFacade.startHitsquadRunner(numericGamesCount);
+
+        setupTimer();
     }
 
     function turnHitsquadOff() {
         miniGamesFacade.stopHitsquadRunner();
         checkboxEl.checked = false;
+        clearInterval(intervalId);
+        timerEl.classList.add('hidden');
+    }
+
+    function setupTimer() {
+        timerTick();
+        intervalId = window.setInterval(timerTick, Timing.SECOND);
+    }
+
+    function timerTick() {
+        const time = miniGamesFacade.timeUntilHitsquadMessage;
+        const diff = time - Date.now();
+        const minutes = Math.floor(diff / Timing.MINUTE).toString().padStart(2, '0');
+        const seconds = Math.floor((diff % Timing.MINUTE) / Timing.SECOND).toString().padStart(2, '0');
+
+        timerEl.textContent = `(${minutes}:${seconds})`;
+        timerEl.classList.toggle('hidden', time <= 0);
+
+        if (time <= 0) {
+            clearInterval(intervalId);
+        }
     }
 };

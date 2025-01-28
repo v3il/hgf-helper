@@ -26,6 +26,7 @@ export class HitsquadRunner {
     private readonly streamFacade: StreamFacade;
     private readonly settingsFacade: SettingsFacade;
 
+    timeUntilMessage!: number;
     private state!: IHitsquadRunnerState;
     private timeout!: number;
     private lastHitsquadRewardTimestamp!: number;
@@ -102,7 +103,10 @@ export class HitsquadRunner {
 
     private async sendCommand(): Promise<void> {
         if (!this.streamFacade.isStreamOk) {
-            await promisifiedSetTimeout(20 * Timing.SECOND);
+            const delay = 20 * Timing.SECOND;
+
+            this.timeUntilMessage = Date.now() + delay;
+            await promisifiedSetTimeout(delay);
             return this.sendCommand();
         }
 
@@ -116,6 +120,10 @@ export class HitsquadRunner {
     }
 
     private scheduleNextRound() {
+        const delay = this.getNextRoundDelay();
+
+        this.timeUntilMessage = Date.now() + delay;
+
         this.timeout = window.setTimeout(async () => {
             if (!this.isBotWorking) {
                 log('Bot is not working, scheduling next round');
@@ -128,8 +136,9 @@ export class HitsquadRunner {
                 return this.scheduleNextRound();
             }
 
+            this.timeUntilMessage = 0;
             this.stop();
             this.events.emit('end');
-        }, this.getNextRoundDelay());
+        }, delay);
     }
 }
