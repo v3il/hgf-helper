@@ -43,11 +43,11 @@ export class ExtensionContainer extends BasicView {
         useDelayRemover(streamFacade);
         useStreamStatusChecker({ el: this.el, streamFacade });
 
-        useAkiraDrawingRunner({
-            el: this.el,
-            settingsFacade,
-            miniGamesFacade
-        });
+        // useAkiraDrawingRunner({
+        //     el: this.el,
+        //     settingsFacade,
+        //     miniGamesFacade
+        // });
 
         useHitsquadRunner({
             el: this.el,

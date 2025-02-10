@@ -1,4 +1,4 @@
-const hitsquadRewards = [100, 200, 1000, 2500]
+const hitsquadRewards = [50, 100, 500, 1250]
     .flatMap((reward) => [reward, reward * 2])
     .map((reward) => `Has Been Sent ${reward} Clams!`.toLowerCase());
 
