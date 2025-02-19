@@ -1,7 +1,12 @@
 import { promisifiedSetTimeout } from '@components/shared';
+import { Timing } from '@farm/consts';
 
 export class TwitchElementsRegistry {
     onElementsReady(callback: (elements: Element[]) => void) {
+        const reloadTimeout = setTimeout(() => {
+            window.location.reload();
+        }, Timing.SECOND * 30);
+
         const interval = setInterval(async () => {
             const videoEl = this.activeVideoEl;
 
@@ -20,9 +25,10 @@ export class TwitchElementsRegistry {
                 && await this.getUserName()
             ) {
                 clearInterval(interval);
+                clearTimeout(reloadTimeout);
                 callback(elements);
             }
-        }, 500);
+        }, Timing.SECOND);
     }
 
     get activeVideoEl() {
