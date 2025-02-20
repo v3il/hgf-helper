@@ -29,7 +29,6 @@ export class LocalSettingsService {
 
     constructor({ storage }: IParams) {
         this.storage = storage;
-        console.error(this.storageKey);
     }
 
     get settings() {
