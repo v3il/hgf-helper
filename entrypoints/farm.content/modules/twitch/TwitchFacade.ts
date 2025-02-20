@@ -1,8 +1,7 @@
-import { TwitchElementsRegistry, UserService, ChannelPointsClaimerService } from './services';
+import { TwitchElementsRegistry, ChannelPointsClaimerService } from './services';
 
 interface ITwitchFacadeParams {
     twitchElementsRegistry: TwitchElementsRegistry;
-    userService: UserService;
     channelPointsClaimerService: ChannelPointsClaimerService;
 }
 
@@ -12,12 +11,10 @@ export class TwitchFacade {
     static get instance() {
         if (!this._instance) {
             const twitchElementsRegistry = new TwitchElementsRegistry();
-            const userService = new UserService();
             const channelPointsClaimerService = new ChannelPointsClaimerService({ twitchElementsRegistry });
 
             this._instance = new TwitchFacade({
                 twitchElementsRegistry,
-                userService,
                 channelPointsClaimerService
             });
         }
@@ -25,46 +22,39 @@ export class TwitchFacade {
         return this._instance;
     }
 
-    #elementsRegistry;
-    #userService;
-    #channelPointsClaimerService;
+    private readonly elementsRegistry;
+    private readonly channelPointsClaimerService;
 
-    constructor({ twitchElementsRegistry, userService, channelPointsClaimerService }: ITwitchFacadeParams) {
-        this.#elementsRegistry = twitchElementsRegistry;
-        this.#userService = userService;
-        this.#channelPointsClaimerService = channelPointsClaimerService;
+    constructor({ twitchElementsRegistry, channelPointsClaimerService }: ITwitchFacadeParams) {
+        this.elementsRegistry = twitchElementsRegistry;
+        this.channelPointsClaimerService = channelPointsClaimerService;
     }
 
-    get twitchUser() {
-        return this.#userService.twitchUser;
+    get twitchUserName() {
+        return this.elementsRegistry.twitchUserName;
     }
 
     get currentGame() {
-        return this.#elementsRegistry.currentGame;
+        return this.elementsRegistry.currentGame;
     }
 
     get activeVideoEl() {
-        return this.#elementsRegistry.activeVideoEl;
+        return this.elementsRegistry.activeVideoEl;
     }
 
     get chatScrollableAreaEl() {
-        return this.#elementsRegistry.chatScrollableAreaEl;
+        return this.elementsRegistry.chatScrollableAreaEl;
     }
 
     init(callback: () => void) {
-        this.#elementsRegistry.onElementsReady(async () => {
-            await this.#initUser();
+        this.elementsRegistry.onElementsReady(() => {
+            console.error(this.twitchUserName);
             this.#enableChannelPointsClaimer();
             callback();
         });
     }
 
     #enableChannelPointsClaimer() {
-        this.#channelPointsClaimerService.enableAutoClaim();
-    }
-
-    async #initUser() {
-        const userName = await this.#elementsRegistry.getUserName();
-        this.#userService.initUser({ userName });
+        this.channelPointsClaimerService.enableAutoClaim();
     }
 }

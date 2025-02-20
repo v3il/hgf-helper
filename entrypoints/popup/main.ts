@@ -19,7 +19,7 @@ function initSettingView(el: HTMLElement) {
     const valueEl = el.querySelector('[data-value]');
 
     if (inputEl.type === 'checkbox') {
-        inputEl.checked = SettingsFacade.instance.globalSettings[settingName] as boolean;
+        inputEl.checked = SettingsFacade.instance.globalSettings[settingName] as unknown as boolean;
     } else {
         inputEl.value = String(SettingsFacade.instance.globalSettings[settingName]);
     }

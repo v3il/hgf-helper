@@ -13,7 +13,7 @@ export interface IChatMessage {
 
 export class TwitchChatObserver {
     readonly events;
-    private twitchUser;
+    private readonly twitchUserName: string;
     private observer;
 
     constructor({ twitchFacade }: {twitchFacade: TwitchFacade}) {
@@ -21,7 +21,7 @@ export class TwitchChatObserver {
             message: IChatMessage;
         }>();
 
-        this.twitchUser = twitchFacade.twitchUser;
+        this.twitchUserName = twitchFacade.twitchUserName;
         this.observer = this.#createObserver();
 
         // Skip initial messages
@@ -58,7 +58,7 @@ export class TwitchChatObserver {
         const userName = userNameEl.textContent!.toLowerCase();
         const message = messageEl!.textContent!.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather';
-        const isMe = this.twitchUser.isCurrentUser(userName);
+        const isMe = this.twitchUserName === userName;
         const isHitsquadReward = isSystemMessage && MessageTemplates.isHitsquadReward(message);
         const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
 
