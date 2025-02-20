@@ -1,7 +1,8 @@
-import { TwitchElementsRegistry, ChannelPointsClaimerService } from './services';
+import { TwitchElementsRegistry, ChannelPointsClaimerService, AdsVideoResizerService } from './services';
 
 interface ITwitchFacadeParams {
     twitchElementsRegistry: TwitchElementsRegistry;
+    adsVideoResizerService: AdsVideoResizerService;
     channelPointsClaimerService: ChannelPointsClaimerService;
 }
 
@@ -11,10 +12,12 @@ export class TwitchFacade {
     static get instance() {
         if (!this._instance) {
             const twitchElementsRegistry = new TwitchElementsRegistry();
+            const adsVideoResizerService = new AdsVideoResizerService({ twitchElementsRegistry });
             const channelPointsClaimerService = new ChannelPointsClaimerService({ twitchElementsRegistry });
 
             this._instance = new TwitchFacade({
                 twitchElementsRegistry,
+                adsVideoResizerService,
                 channelPointsClaimerService
             });
         }
@@ -24,9 +27,11 @@ export class TwitchFacade {
 
     private readonly elementsRegistry;
     private readonly channelPointsClaimerService;
+    private readonly adsVideoResizerService;
 
-    constructor({ twitchElementsRegistry, channelPointsClaimerService }: ITwitchFacadeParams) {
+    constructor({ twitchElementsRegistry, channelPointsClaimerService, adsVideoResizerService }: ITwitchFacadeParams) {
         this.elementsRegistry = twitchElementsRegistry;
+        this.adsVideoResizerService = adsVideoResizerService;
         this.channelPointsClaimerService = channelPointsClaimerService;
     }
 
@@ -48,13 +53,17 @@ export class TwitchFacade {
 
     init(callback: () => void) {
         this.elementsRegistry.onElementsReady(() => {
-            console.error(this.twitchUserName);
-            this.#enableChannelPointsClaimer();
+            this.enableChannelPointsClaimer();
+            this.enableAdsVideoResizer();
             callback();
         });
     }
 
-    #enableChannelPointsClaimer() {
+    private enableChannelPointsClaimer() {
         this.channelPointsClaimerService.enableAutoClaim();
+    }
+
+    private enableAdsVideoResizer() {
+        this.adsVideoResizerService.enableResize();
     }
 }

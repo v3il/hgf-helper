@@ -45,21 +45,20 @@ export class TwitchElementsRegistry {
         return this.isAdsPhase ? adsVideoEl : mainVideoEl;
     }
 
-    private get mainVideoEl() {
+    get mainVideoEl() {
         return document.querySelector('video');
     }
 
-    private get adsVideoEl() {
-        // Layout-sc-1xcs6mc-0 kzTTRU picture-by-picture-player picture-by-picture-player--collapsed
-        return document.querySelectorAll('video')[1];
+    get adsVideoEl() {
+        return document.querySelector<HTMLVideoElement>('.picture-by-picture-player video');
     }
 
     private get isAdsPhase() {
         return !!document.querySelector('[data-a-target="video-ad-countdown"]');
     }
 
-    get chatContainerEl() {
-        return document.querySelector('.chat-shell');
+    get chatContainerEl(): HTMLElement | null {
+        return document.querySelector('.channel-root__right-column');
     }
 
     get chatInputEl() {
