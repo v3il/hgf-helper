@@ -17,7 +17,7 @@ export class LocalSettingsService {
         });
     }
 
-    private readonly storageKey = 'hgf-helper.settings';
+    private readonly storageKey = `hgf-helper.settings-${document.title.toLowerCase().replaceAll(' ', '')}`;
 
     private readonly storage;
 
@@ -29,6 +29,7 @@ export class LocalSettingsService {
 
     constructor({ storage }: IParams) {
         this.storage = storage;
+        console.error(this.storageKey);
     }
 
     get settings() {
