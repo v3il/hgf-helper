@@ -5,7 +5,7 @@ This is a small extension for the Chrome browser that allows you to play mini-ga
 
 ### Twitch helper
 
-Overlay update that the extension works with: **Feb 18, 2025**
+Overlay update that the extension works with: **Feb 24, 2025**
 
 A widget is placed on the stream page that allows you to play mini-games in semi-automatic mode. The main functions of the widget are
 1. automatically sends the `!hitsquad` command to the chat if the corresponding checkbox is enabled;
