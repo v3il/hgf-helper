@@ -5,12 +5,15 @@ export class TwitchElementsRegistry {
     twitchUserName!: string;
 
     onElementsReady(callback: (elements: Element[]) => void) {
-        const reloadTimeout = setTimeout(() => {
-            window.location.reload();
-        }, Timing.SECOND * 30);
+        const reloadTimeout = setTimeout(() => window.location.reload(), Timing.SECOND * 30);
 
         const interval = setInterval(async () => {
             const videoEl = this.activeVideoEl;
+            const playerOverlayEl = document.querySelector<HTMLDivElement>('.home-live-player-overlay');
+
+            if (playerOverlayEl) {
+                return playerOverlayEl.click();
+            }
 
             const elements = [
                 this.chatContainerEl,

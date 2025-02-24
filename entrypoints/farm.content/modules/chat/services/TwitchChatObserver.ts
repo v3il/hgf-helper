@@ -57,8 +57,8 @@ export class TwitchChatObserver {
 
         const userName = userNameEl.textContent!.toLowerCase();
         const message = messageEl!.textContent!.toLowerCase().trim();
-        const isSystemMessage = userName === 'hitsquadgodfather';
-        const isMe = this.twitchUserName === userName;
+        const isSystemMessage = userName === 'hitsquadgodfather' || userName === 'hitsquadplays';
+        const isMe = this.twitchUser.isCurrentUser(userName);
         const isHitsquadReward = isSystemMessage && MessageTemplates.isHitsquadReward(message);
         const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
 
