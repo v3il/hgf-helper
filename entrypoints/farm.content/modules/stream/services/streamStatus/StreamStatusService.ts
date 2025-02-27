@@ -3,12 +3,15 @@ import { StreamStatus } from '@farm/consts';
 import { TwitchFacade } from '@farm/modules/twitch';
 import { BasicView, log } from '@components/shared';
 import './style.css';
+import { pipeline } from '@xenova/transformers';
+import * as tf from '@tensorflow/tfjs';
 import template from './template.html?raw';
 import { ICheck, antiCheatChecks, giveawayFrenzyChecks } from './checks';
 
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
     private readonly twitchFacade;
+    private clip: any;
 
     private statuses!: StreamStatus[];
 
