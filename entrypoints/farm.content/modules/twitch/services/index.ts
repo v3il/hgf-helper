@@ -1,3 +1,3 @@
-export { TwitchElementsRegistry } from './TwitchElementsRegistry';
-export { UserService } from './UserService';
-export { ChannelPointsClaimerService } from './ChannelPointsClaimerService';
+export * from './TwitchElementsRegistry';
+export * from './ChannelPointsClaimerService';
+export * from './AdsVideoResizerService';

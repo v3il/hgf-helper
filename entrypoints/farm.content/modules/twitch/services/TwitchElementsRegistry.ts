@@ -2,6 +2,8 @@ import { promisifiedSetTimeout } from '@components/shared';
 import { Timing } from '@farm/consts';
 
 export class TwitchElementsRegistry {
+    twitchUserName!: string;
+
     onElementsReady(callback: (elements: Element[]) => void) {
         const reloadTimeout = setTimeout(() => window.location.reload(), Timing.SECOND * 30);
 
@@ -21,35 +23,45 @@ export class TwitchElementsRegistry {
                 videoEl
             ];
 
-            if (
-                elements.every((element) => !!element)
-                && this.#isVideoPlaying(videoEl!)
-                && this.currentGame
-                && await this.getUserName()
-            ) {
+            if (!elements.every((element) => !!element)) {
+                return;
+            }
+
+            const userName = await this.getUserName();
+
+            if (this.#isVideoPlaying(videoEl!) && this.currentGame && userName) {
                 clearInterval(interval);
                 clearTimeout(reloadTimeout);
+                this.twitchUserName = userName;
                 callback(elements);
             }
         }, Timing.SECOND);
     }
 
     get activeVideoEl() {
-        const [mainVideoEl, alternativeVideoEl] = document.querySelectorAll('video');
+        const { mainVideoEl, adsVideoEl } = this;
 
-        if (this.#isAdsPhase && !alternativeVideoEl) {
+        if (this.isAdsPhase && !adsVideoEl) {
             return null;
         }
 
-        return this.#isAdsPhase ? alternativeVideoEl : mainVideoEl;
+        return this.isAdsPhase ? adsVideoEl : mainVideoEl;
     }
 
-    get #isAdsPhase() {
+    get mainVideoEl() {
+        return document.querySelector('video');
+    }
+
+    get adsVideoEl() {
+        return document.querySelector<HTMLVideoElement>('.picture-by-picture-player video');
+    }
+
+    private get isAdsPhase() {
         return !!document.querySelector('[data-a-target="video-ad-countdown"]');
     }
 
-    get chatContainerEl() {
-        return document.querySelector('.chat-shell');
+    get chatContainerEl(): HTMLElement | null {
+        return document.querySelector('.channel-root__right-column');
     }
 
     get chatInputEl() {
@@ -76,7 +88,7 @@ export class TwitchElementsRegistry {
         return videoEl.currentTime > 0 && !videoEl.paused && !videoEl.ended && videoEl.readyState > 2;
     }
 
-    async getUserName() {
+    async getUserName(): Promise<string> {
         const userDropdownToggleEl = this.userDropdownToggleEl! as HTMLButtonElement;
 
         userDropdownToggleEl.click();

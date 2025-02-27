@@ -39,7 +39,7 @@ export const useHitsquadRunner = ({
     miniGamesFacade.hitsquadEvents.on('end', turnHitsquadOff);
 
     chatFacade.observeChat(({ message, isMe, isSystemMessage }) => {
-        const twitchUserName = twitchFacade.twitchUser.userName;
+        const { twitchUserName } = twitchFacade;
         const isStopCommand = isMe && message.startsWith(Commands.HITSQUAD) && message.split(' ')[1];
         const isStrike = isSystemMessage && MessageTemplates.isTooManyStrikesNotification(message, twitchUserName);
 
