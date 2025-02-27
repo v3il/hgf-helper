@@ -49,9 +49,9 @@ export const useHitsquadRunner = ({
     });
 
     buttonEl.addEventListener('click', (event) => {
-        if (event.ctrlKey || streamFacade.isStreamOk) {
-            miniGamesFacade.participateHitsquadOnce();
-        }
+        // if (event.ctrlKey || streamFacade.isStreamOk) {
+        miniGamesFacade.participateHitsquadOnce();
+        // }
     });
 
     function turnHitsquadOn() {
