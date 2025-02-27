@@ -9,6 +9,9 @@ export const useAnticheatButton = ({ el, chatFacade }: IParams) => {
     const buttonEl = el.querySelector<HTMLButtonElement>('[data-anticheat-button]')!;
 
     buttonEl.addEventListener('click', () => {
-        chatFacade.sendMessage('!anticheat');
+        // eslint-disable-next-line no-alert
+        if (window.confirm('Are you sure you want to send !anticheat command?')) {
+            chatFacade.sendMessage('!anticheat');
+        }
     });
 };
