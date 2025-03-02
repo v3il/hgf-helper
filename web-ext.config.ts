@@ -1,5 +1,7 @@
 import { defineRunnerConfig } from 'wxt';
+import { resolve } from 'node:path';
 
 export default defineRunnerConfig({
-    disabled: true
+    chromiumProfile: resolve('.wxt/chrome-data'),
+    keepProfileChanges: true
 });

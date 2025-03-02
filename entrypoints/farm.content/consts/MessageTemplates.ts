@@ -5,6 +5,9 @@ const hitsquadRewards = [50, 100, 500, 1250]
 const TOO_MANY_STRIKES = '{{name}} You have to many strikes to participate. Redeem the strike removal reward.'
     .toLowerCase();
 
+// bbankrablo passed their activity check!
+// beautiful_life_de failed their activity check!
+
 export const MessageTemplates = Object.freeze({
     isHitsquadReward(message: string) {
         return hitsquadRewards.some((template) => message.includes(template));

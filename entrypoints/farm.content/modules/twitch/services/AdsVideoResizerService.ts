@@ -17,8 +17,8 @@ export class AdsVideoResizerService {
     }
 
     enableResize() {
-        this.observer = this.createObserver();
-        this.observer.observe(this.twitchElementsRegistry.chatContainerEl!, { childList: true, subtree: true });
+        // this.observer = this.createObserver();
+        // this.observer.observe(this.twitchElementsRegistry.chatContainerEl!, { childList: true, subtree: true });
     }
 
     private createObserver() {

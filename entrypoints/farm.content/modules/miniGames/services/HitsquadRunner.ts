@@ -119,7 +119,7 @@ export class HitsquadRunner {
 
     private async sendCommand(): Promise<void> {
         if (!this.streamFacade.isStreamOk) {
-            const delay = 20 * Timing.SECOND;
+            const delay = 5 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
             await promisifiedSetTimeout(delay);
@@ -136,7 +136,8 @@ export class HitsquadRunner {
     }
 
     private getNextRoundDelay() {
-        return generateDelay(30 * Timing.SECOND, 5 * Timing.MINUTE) + 10 * Timing.MINUTE;
+        return generateDelay(30 * Timing.SECOND, Timing.MINUTE) + 3 * Timing.MINUTE;
+        // return generateDelay(30 * Timing.SECOND, 5 * Timing.MINUTE) + 10 * Timing.MINUTE;
     }
 
     private scheduleNextRound() {

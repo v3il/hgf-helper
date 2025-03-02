@@ -1,3 +1,4 @@
+import { TextDecoderService } from '@components/shared';
 import { StreamStatusService, TwitchPlayerService } from './services';
 import { TwitchFacade } from '../twitch';
 
@@ -12,7 +13,10 @@ export class StreamFacade {
     static get instance() {
         if (!this._instance) {
             const twitchPlayerService = new TwitchPlayerService();
-            const streamStatusService = new StreamStatusService(TwitchFacade.instance);
+            const streamStatusService = new StreamStatusService({
+                twitchFacade: TwitchFacade.instance,
+                textDecoderService: new TextDecoderService()
+            });
 
             this._instance = new StreamFacade({
                 twitchPlayerService,
