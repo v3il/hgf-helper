@@ -1,7 +1,7 @@
 import { ChatFacade } from '@farm/modules/chat';
 import { generateDelay } from '@farm/utils';
 import { Timing } from '@farm/consts';
-import { log, promisifiedSetTimeout, SettingsFacade } from '@components/shared';
+import { log, SettingsFacade } from '@components/shared';
 
 interface IParams {
     chatFacade: ChatFacade;
@@ -36,10 +36,10 @@ export class ChestGameRunner {
         this.timeUntilMessage = 0;
         this._isRunning = true;
 
-        log('HGF helper: start Chest runner');
+        log('start Chest runner');
 
         this.saveState();
-        this.listenEvents();
+        this.scheduleNextRound();
     }
 
     stop() {
@@ -53,28 +53,28 @@ export class ChestGameRunner {
         return this.sendCommand();
     }
 
-    private listenEvents() {
-        const delay = this.getDelay();
-
-        this.timeUntilMessage = Date.now() + delay;
-
-        this.timeoutId = window.setTimeout(() => {
-            this.sendCommand();
-        }, delay);
-    }
-
     private saveState() {
         this.settingsFacade.updateLocalSettings({
             chestGame: this._isRunning
         });
     }
 
-    private async sendCommand() {
-        this.timeUntilMessage = 0;
+    private sendCommand() {
         this.chatFacade.sendMessage(`!chest${generateDelay(1, 8)}`);
     }
 
     private getDelay() {
-        return generateDelay(10 * Timing.SECOND, 3 * Timing.MINUTE) + 10 * Timing.MINUTE;
+        return generateDelay(10 * Timing.SECOND, Timing.MINUTE) + 10 * Timing.MINUTE;
+    }
+
+    private scheduleNextRound() {
+        const delay = this.getDelay();
+
+        this.timeUntilMessage = Date.now() + delay;
+
+        this.timeoutId = window.setTimeout(() => {
+            this.sendCommand();
+            this.scheduleNextRound();
+        }, delay);
     }
 }
