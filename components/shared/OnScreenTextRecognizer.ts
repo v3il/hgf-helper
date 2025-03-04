@@ -5,7 +5,7 @@ interface ITextDecoderOptions {
     confidence?: number;
 }
 
-export class TextDecoderService {
+export class OnScreenTextRecognizer {
     private readonly containerEl: HTMLElement;
     private worker!: Tesseract.Worker;
 
@@ -45,20 +45,20 @@ export class TextDecoderService {
         this.worker ??= await this.createWorker();
 
         const checks = [];
+        const reversedChecks = [];
         const canvas = document.createElement('canvas');
         const tempCtx = canvas.getContext('2d')!;
 
         canvas.width = imageData.width;
         canvas.height = imageData.height;
 
-        console.error();
-        console.error();
-
         tempCtx.putImageData(imageData, 0, 0);
 
         const rawResult = await this.worker.recognize(canvas.toDataURL('image/png'));
+        const normalizedRawText = this.normalizeText(rawResult.data.text);
 
-        checks.push(this.normalizeText(rawResult.data.text));
+        checks.push(normalizedRawText);
+        reversedChecks.push(this.reverseString(normalizedRawText));
 
         this.increaseContrast(imageData);
 
@@ -67,19 +67,24 @@ export class TextDecoderService {
         this.attachPreview(canvas);
 
         const contrastResult = await this.worker.recognize(canvas.toDataURL('image/png'));
+        const normalizedContrastText = this.normalizeText(contrastResult.data.text);
 
-        checks.push(this.normalizeText(contrastResult.data.text));
+        checks.push(normalizedContrastText);
+        reversedChecks.push(this.reverseString(normalizedContrastText));
 
-        const similarities = checks.map((check) => this.getStringsSimilarity(check, desiredText));
+        const similarities = [
+            ...checks.map((check) => this.getStringsSimilarity(check, desiredText)),
+            ...reversedChecks.map((check) => this.getStringsSimilarity(check, this.reverseString(desiredText)))
+        ];
 
-        console.error(checks);
+        console.error([...checks, ...reversedChecks]);
         console.error(similarities);
 
-        return similarities.some((similarity) => similarity > 0.7);
+        return similarities.some((similarity) => similarity > 0.6);
     }
 
     private normalizeText(text: string) {
-        const normalizedText = text.replace('\n', ' ').trim();
+        const normalizedText = text.toLowerCase().replace('\n', ' ').trim();
 
         if (!normalizedText.includes(' ')) {
             return normalizedText;
@@ -117,5 +122,9 @@ export class TextDecoderService {
         }
 
         return matchedChars / templateChars.length;
+    }
+
+    private reverseString(str: string) {
+        return str.split('').reverse().join('');
     }
 }

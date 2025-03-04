@@ -1,8 +1,8 @@
 import { ColorService } from '@farm/modules/shared';
-import { StreamStatus } from '@farm/consts';
+import { StreamStatus, Timing } from '@farm/consts';
 import { TwitchFacade } from '@farm/modules/twitch';
 import {
-    BasicView, log, TextDecoderService
+    BasicView, log, OnScreenTextRecognizer
 } from '@components/shared';
 import './style.css';
 import template from './template.html?raw';
@@ -10,7 +10,7 @@ import { ICheck, antiCheatChecks, giveawayFrenzyChecks } from './checks';
 
 interface IParams {
     twitchFacade: TwitchFacade;
-    textDecoderService: TextDecoderService;
+    textDecoderService: OnScreenTextRecognizer;
 }
 
 export class StreamStatusService extends BasicView {
@@ -196,5 +196,25 @@ export class StreamStatusService extends BasicView {
 
     get isGiveawayFrenzy() {
         return this.statuses.includes(StreamStatus.FRENZY);
+    }
+
+    handleStreamStatusCheck() {
+        // streamFacade.checkStreamStatus();
+        // renderStatus();
+        // brokenStreamHandler.handleBrokenVideo(streamFacade.isVideoBroken);
+
+        const nextCheckDelay = this.getNextCheckDelay();
+
+        setTimeout(() => {
+            this.handleStreamStatusCheck();
+        }, nextCheckDelay);
+    }
+
+    private getNextCheckDelay() {
+        // if (streamFacade.isAntiCheatScreen) {
+        //     return ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
+        // }
+
+        return 2 * Timing.SECOND;
     }
 }

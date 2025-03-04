@@ -1,12 +1,13 @@
 import { SettingsFacade, AiGeneratorService } from '@components/shared';
 import { TwitchFacade } from '@farm/modules/twitch';
-import { HitsquadRunner, AkirasDrawingRunner } from './services';
+import { HitsquadRunner, AkirasDrawingRunner, ChestGameRunner } from './services';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
 
 interface IParams {
     hitsquadRunner: HitsquadRunner;
     akiraDrawRunner: AkirasDrawingRunner;
+    chestGameRunner: ChestGameRunner;
 }
 
 export class MiniGamesFacade {
@@ -27,7 +28,12 @@ export class MiniGamesFacade {
                 aiGeneratorService: new AiGeneratorService()
             });
 
-            this._instance = new MiniGamesFacade({ hitsquadRunner, akiraDrawRunner });
+            const chestGameRunner = new ChestGameRunner({
+                chatFacade: ChatFacade.instance,
+                settingsFacade: SettingsFacade.instance
+            });
+
+            this._instance = new MiniGamesFacade({ hitsquadRunner, akiraDrawRunner, chestGameRunner });
         }
 
         return this._instance;
@@ -35,10 +41,12 @@ export class MiniGamesFacade {
 
     private readonly hitsquadRunner;
     private readonly akiraDrawRunner;
+    private readonly chestGameRunner;
 
-    constructor({ hitsquadRunner, akiraDrawRunner }: IParams) {
+    constructor({ hitsquadRunner, akiraDrawRunner, chestGameRunner }: IParams) {
         this.hitsquadRunner = hitsquadRunner;
         this.akiraDrawRunner = akiraDrawRunner;
+        this.chestGameRunner = chestGameRunner;
     }
 
     get hitsquadEvents() {
@@ -87,5 +95,25 @@ export class MiniGamesFacade {
 
     participateAkiraDrawingOnce() {
         return this.akiraDrawRunner.participateOnce();
+    }
+
+    get isChestGameRunning() {
+        return this.chestGameRunner.isRunning;
+    }
+
+    get timeUntilChestMessage() {
+        return this.chestGameRunner.timeUntilMessage;
+    }
+
+    startChestRunner() {
+        this.chestGameRunner.start();
+    }
+
+    stopChestRunner() {
+        this.chestGameRunner.stop();
+    }
+
+    participateChestGameOnce() {
+        return this.chestGameRunner.participateOnce();
     }
 }

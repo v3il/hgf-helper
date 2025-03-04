@@ -3,7 +3,8 @@ import { log } from '@components/shared';
 export interface ILocalSettings {
     hitsquad: boolean,
     hitsquadRounds: number,
-    akiraDrawing: boolean
+    akiraDrawing: boolean,
+    chestGame: boolean
 }
 
 interface IParams {
@@ -24,7 +25,8 @@ export class LocalSettingsService {
     private _settings: ILocalSettings = {
         hitsquad: false,
         hitsquadRounds: 0,
-        akiraDrawing: false
+        akiraDrawing: false,
+        chestGame: false
     };
 
     constructor({ storage }: IParams) {
