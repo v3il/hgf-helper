@@ -1,6 +1,8 @@
 import { SettingsFacade, AiGeneratorService } from '@components/shared';
 import { TwitchFacade } from '@farm/modules/twitch';
-import { HitsquadRunner, AkirasDrawingRunner, ChestGameRunner } from './services';
+import {
+    HitsquadRunner, AkirasDrawingRunner, ChestGameRunner, LootGameRunner
+} from './services';
 import { ChatFacade } from '../chat';
 import { StreamFacade } from '../stream';
 
@@ -8,6 +10,7 @@ interface IParams {
     hitsquadRunner: HitsquadRunner;
     akiraDrawRunner: AkirasDrawingRunner;
     chestGameRunner: ChestGameRunner;
+    lootGameRunner: LootGameRunner;
 }
 
 export class MiniGamesFacade {
@@ -18,7 +21,8 @@ export class MiniGamesFacade {
             const hitsquadRunner = new HitsquadRunner({
                 chatFacade: ChatFacade.instance,
                 streamFacade: StreamFacade.instance,
-                settingsFacade: SettingsFacade.instance
+                settingsFacade: SettingsFacade.instance,
+                twitchFacade: TwitchFacade.instance
             });
 
             const akiraDrawRunner = new AkirasDrawingRunner({
@@ -33,7 +37,14 @@ export class MiniGamesFacade {
                 settingsFacade: SettingsFacade.instance
             });
 
-            this._instance = new MiniGamesFacade({ hitsquadRunner, akiraDrawRunner, chestGameRunner });
+            const lootGameRunner = new LootGameRunner({
+                chatFacade: ChatFacade.instance,
+                settingsFacade: SettingsFacade.instance
+            });
+
+            this._instance = new MiniGamesFacade({
+                hitsquadRunner, akiraDrawRunner, chestGameRunner, lootGameRunner
+            });
         }
 
         return this._instance;
@@ -42,11 +53,15 @@ export class MiniGamesFacade {
     private readonly hitsquadRunner;
     private readonly akiraDrawRunner;
     private readonly chestGameRunner;
+    private readonly lootGameRunner;
 
-    constructor({ hitsquadRunner, akiraDrawRunner, chestGameRunner }: IParams) {
+    constructor({
+        hitsquadRunner, akiraDrawRunner, chestGameRunner, lootGameRunner
+    }: IParams) {
         this.hitsquadRunner = hitsquadRunner;
         this.akiraDrawRunner = akiraDrawRunner;
         this.chestGameRunner = chestGameRunner;
+        this.lootGameRunner = lootGameRunner;
     }
 
     get hitsquadEvents() {
@@ -115,5 +130,25 @@ export class MiniGamesFacade {
 
     participateChestGameOnce() {
         return this.chestGameRunner.participateOnce();
+    }
+
+    get isLootGameRunning() {
+        return this.lootGameRunner.isRunning;
+    }
+
+    get timeUntilLootMessage() {
+        return this.lootGameRunner.timeUntilMessage;
+    }
+
+    startLootRunner() {
+        this.lootGameRunner.start();
+    }
+
+    stopLootRunner() {
+        this.lootGameRunner.stop();
+    }
+
+    participateLootGameOnce() {
+        return this.lootGameRunner.participateOnce();
     }
 }

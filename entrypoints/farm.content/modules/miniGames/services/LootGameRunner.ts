@@ -8,7 +8,7 @@ interface IParams {
     settingsFacade: SettingsFacade;
 }
 
-export class ChestGameRunner {
+export class LootGameRunner {
     private readonly chatFacade: ChatFacade;
     private readonly settingsFacade: SettingsFacade;
 
@@ -21,7 +21,7 @@ export class ChestGameRunner {
         this.chatFacade = params.chatFacade;
         this.settingsFacade = params.settingsFacade;
 
-        this._isRunning = this.settingsFacade.localSettings.chestGame;
+        this._isRunning = this.settingsFacade.localSettings.lootGame;
 
         if (this._isRunning) {
             this.start();
@@ -36,7 +36,7 @@ export class ChestGameRunner {
         this.timeUntilMessage = 0;
         this._isRunning = true;
 
-        log('start Chest runner');
+        log('start Loot runner');
 
         this.saveState();
         this.scheduleNextRound();
@@ -55,16 +55,16 @@ export class ChestGameRunner {
 
     private saveState() {
         this.settingsFacade.updateLocalSettings({
-            chestGame: this._isRunning
+            lootGame: this._isRunning
         });
     }
 
     private sendCommand() {
-        this.chatFacade.sendMessage(`!chest${generateDelay(1, 8)}`);
+        this.chatFacade.sendMessage(`!loot${generateDelay(1, 8)}`);
     }
 
     private getDelay() {
-        return generateDelay(10 * Timing.SECOND, 2 * Timing.MINUTE) + 10 * Timing.MINUTE;
+        return generateDelay(Timing.MINUTE, 10 * Timing.MINUTE) + 20 * Timing.MINUTE;
     }
 
     private scheduleNextRound() {

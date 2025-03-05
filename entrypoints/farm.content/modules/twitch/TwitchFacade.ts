@@ -51,6 +51,10 @@ export class TwitchFacade {
         return this.elementsRegistry.chatScrollableAreaEl;
     }
 
+    get isAdsPhase() {
+        return this.elementsRegistry.isAdsPhase;
+    }
+
     init(callback: () => void) {
         this.elementsRegistry.onElementsReady(() => {
             this.enableChannelPointsClaimer();

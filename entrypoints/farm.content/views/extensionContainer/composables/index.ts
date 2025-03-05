@@ -5,3 +5,4 @@ export * from './useHitsquadRunner';
 export * from './useAkiraDrawingRunner';
 export * from './useAnticheatButton';
 export * from './useChestGameRunner';
+export * from './useLootGameRunner';

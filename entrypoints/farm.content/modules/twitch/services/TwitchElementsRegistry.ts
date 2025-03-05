@@ -56,7 +56,7 @@ export class TwitchElementsRegistry {
         return document.querySelector<HTMLVideoElement>('.picture-by-picture-player video');
     }
 
-    private get isAdsPhase() {
+    get isAdsPhase() {
         return !!document.querySelector('[data-a-target="video-ad-countdown"]');
     }
 

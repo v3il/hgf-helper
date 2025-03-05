@@ -1,4 +1,5 @@
 import { OnScreenTextRecognizer } from '@components/shared';
+import { ChatFacade } from '@farm/modules/chat';
 import { StreamStatusService, TwitchPlayerService } from './services';
 import { TwitchFacade } from '../twitch';
 
@@ -15,6 +16,7 @@ export class StreamFacade {
             const twitchPlayerService = new TwitchPlayerService();
             const streamStatusService = new StreamStatusService({
                 twitchFacade: TwitchFacade.instance,
+                chatFacade: ChatFacade.instance,
                 textDecoderService: new OnScreenTextRecognizer()
             });
 

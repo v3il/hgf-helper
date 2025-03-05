@@ -9,7 +9,7 @@ import {
     useDelayRemover,
     useStreamStatusChecker,
     useHitsquadRunner,
-    useAnticheatButton, useChestGameRunner
+    useAnticheatButton, useChestGameRunner, useLootGameRunner
 } from './composables';
 import template from './template.html?raw';
 
@@ -55,6 +55,7 @@ export class ExtensionContainer extends BasicView {
         });
 
         useChestGameRunner({ el: this.el, miniGamesFacade });
+        useLootGameRunner({ el: this.el, miniGamesFacade });
 
         useHitsquadRunner({
             el: this.el,

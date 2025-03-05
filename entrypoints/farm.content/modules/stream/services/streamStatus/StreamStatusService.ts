@@ -5,25 +5,32 @@ import {
     BasicView, log, OnScreenTextRecognizer
 } from '@components/shared';
 import './style.css';
+import { ChatFacade } from '@farm/modules/chat';
 import template from './template.html?raw';
 import { ICheck, antiCheatChecks, giveawayFrenzyChecks } from './checks';
 
 interface IParams {
     twitchFacade: TwitchFacade;
+    chatFacade: ChatFacade;
     textDecoderService: OnScreenTextRecognizer;
 }
 
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
     private readonly twitchFacade;
+    private readonly chatFacade;
     private readonly textDecoderService;
 
     private statuses!: StreamStatus[];
+
+    private isAnticheatProcessing = false;
+    private anticheatTimeout!: number;
 
     constructor(params: IParams) {
         super(template);
 
         this.twitchFacade = params.twitchFacade;
+        this.chatFacade = params.chatFacade;
         this.textDecoderService = params.textDecoderService;
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
 
@@ -44,16 +51,58 @@ export class StreamStatusService extends BasicView {
 
         this.renderVideoFrame(activeVideoEl);
 
-        if (this.isAntiCheat()) {
-            this.statuses = [StreamStatus.ANTI_CHEAT];
-            this.recognize();
+        const isAntiCheat = this.isAntiCheat();
+
+        if (!isAntiCheat) {
+            this.stopAntiCheatProcessing();
+            return;
         }
 
-        if (this.isFrenzy()) {
-            this.statuses.push(StreamStatus.FRENZY);
+        if (this.isAnticheatProcessing) {
+            this.statuses = [StreamStatus.ANTI_CHEAT];
+            return;
         }
+
+        this.startAntiCheatProcessing();
+
+        // if (this.isAntiCheat() && !this.isAnticheatProcessing) {
+        //     this.statuses = [StreamStatus.ANTI_CHEAT];
+        //     this.startAntiCheatProcessing();
+        // } else {
+        //     this.stopAntiCheatProcessing();
+        // }
 
         // console.error(this.statuses);
+    }
+
+    private startAntiCheatProcessing() {
+        this.isAnticheatProcessing = true;
+
+        let counter = 0;
+
+        console.error('Start anticheat processing!!!');
+
+        this.anticheatTimeout = window.setInterval(async () => {
+            if (await this.recognize()) {
+                counter++;
+                console.error('Anticheat Counter:', counter);
+            }
+
+            if (counter >= 5) {
+                this.chatFacade.sendMessage('!anticheat');
+                console.log('Send anticheat!!!');
+                clearInterval(this.anticheatTimeout);
+                this.isAnticheatProcessing = false;
+            }
+        }, 3 * Timing.SECOND);
+    }
+
+    private stopAntiCheatProcessing() {
+        if (!this.isAnticheatProcessing) return;
+
+        console.error('Stop anticheat processing!!!');
+        clearInterval(this.anticheatTimeout);
+        this.isAnticheatProcessing = false;
     }
 
     async recognize() {
@@ -80,53 +129,22 @@ export class StreamStatusService extends BasicView {
             }
         ];
 
-        // const points2 = [
-        //     {
-        //         color: '#ab3de5',
-        //         xPercent: 20.588235294117645,
-        //         yPercent: 87.95811518324608
-        //     },
-        //     {
-        //         color: '#bc2ba2',
-        //         xPercent: 79.70588235294119,
-        //         yPercent: 86.38743455497382
-        //     },
-        //     {
-        //         color: '#a90d41',
-        //         xPercent: 79.41176470588235,
-        //         yPercent: 97.90575916230367
-        //     },
-        //     {
-        //         color: '#c1020e',
-        //         xPercent: 20.294117647058822,
-        //         yPercent: 97.90575916230367
-        //     }
-        // ];
-
         const x = Math.floor((points[0].xPercent * this.canvasEl.width) / 100);
         const y = Math.floor((points[0].yPercent * this.canvasEl.height) / 100);
         const width = Math.floor((points[1].xPercent * this.canvasEl.width) / 100) - x;
         const height = Math.floor((points[2].yPercent * this.canvasEl.height) / 100) - y;
-
-        // const x2 = Math.floor((points2[0].xPercent * this.canvasEl.width) / 100);
-        // const y2 = Math.floor((points2[0].yPercent * this.canvasEl.height) / 100);
-        // const width2 = Math.floor((points2[1].xPercent * this.canvasEl.width) / 100) - x2;
-        // const height2 = Math.floor((points2[2].yPercent * this.canvasEl.height) / 100) - y2;
 
         const ctx = this.canvasEl.getContext('2d')!;
         const imageData = ctx.getImageData(x, y, width, height);
         const username = await this.textDecoderService.checkOnScreen(imageData, this.twitchFacade.twitchUserName);
         const username2 = await this.textDecoderService.checkOnScreen(imageData, 'mur_cha_7');
 
-        // const imageData2 = ctx.getImageData(x2, y2, width2, height2);
-        // const text = await this.textDecoderService.recognizeText(imageData2);
-
         console.error(
             username,
             username2
         );
-        // console.error();
-        // console.error(text);
+
+        return username;
     }
 
     private renderVideoFrame(videoEl: HTMLVideoElement) {
@@ -145,15 +163,6 @@ export class StreamStatusService extends BasicView {
         // this.log(`${failedChecks} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
 
         return isAntiCheat;
-    }
-
-    private isFrenzy() {
-        const failedChecks = this.checkPoints(giveawayFrenzyChecks);
-        const isFrenzy = (failedChecks / giveawayFrenzyChecks.length) >= 0.5;
-
-        // this.log(`${failedChecks} / ${giveawayFrenzyChecks.length}`, isFrenzy ? 'error' : 'info');
-
-        return isFrenzy;
     }
 
     private checkPoints(points: ICheck[]): number {
@@ -198,23 +207,23 @@ export class StreamStatusService extends BasicView {
         return this.statuses.includes(StreamStatus.FRENZY);
     }
 
-    handleStreamStatusCheck() {
-        // streamFacade.checkStreamStatus();
-        // renderStatus();
-        // brokenStreamHandler.handleBrokenVideo(streamFacade.isVideoBroken);
-
-        const nextCheckDelay = this.getNextCheckDelay();
-
-        setTimeout(() => {
-            this.handleStreamStatusCheck();
-        }, nextCheckDelay);
-    }
-
-    private getNextCheckDelay() {
-        // if (streamFacade.isAntiCheatScreen) {
-        //     return ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
-        // }
-
-        return 2 * Timing.SECOND;
-    }
+    // handleStreamStatusCheck() {
+    //     // streamFacade.checkStreamStatus();
+    //     // renderStatus();
+    //     // brokenStreamHandler.handleBrokenVideo(streamFacade.isVideoBroken);
+    //
+    //     const nextCheckDelay = this.getNextCheckDelay();
+    //
+    //     setTimeout(() => {
+    //         this.handleStreamStatusCheck();
+    //     }, nextCheckDelay);
+    // }
+    //
+    // private getNextCheckDelay() {
+    //     // if (streamFacade.isAntiCheatScreen) {
+    //     //     return ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
+    //     // }
+    //
+    //     return 2 * Timing.SECOND;
+    // }
 }
