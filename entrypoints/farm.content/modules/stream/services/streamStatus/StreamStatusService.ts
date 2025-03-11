@@ -2,12 +2,14 @@ import { ColorService } from '@farm/modules/shared';
 import { StreamStatus, Timing } from '@farm/consts';
 import { TwitchFacade } from '@farm/modules/twitch';
 import {
-    BasicView, log, OnScreenTextRecognizer
+    BasicView, EventEmitter, log, OnScreenTextRecognizer
 } from '@components/shared';
 import './style.css';
 import { ChatFacade } from '@farm/modules/chat';
 import template from './template.html?raw';
-import { ICheck, antiCheatChecks, giveawayFrenzyChecks } from './checks';
+import {
+    antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks
+} from './checks';
 
 interface IParams {
     twitchFacade: TwitchFacade;
@@ -23,8 +25,16 @@ export class StreamStatusService extends BasicView {
 
     private statuses!: StreamStatus[];
 
+    private isLootGame?: boolean;
+    private isChestGame?: boolean;
+
     private isAnticheatProcessing = false;
     private anticheatTimeout!: number;
+
+    readonly events = new EventEmitter<{
+        loot: boolean,
+        chest: boolean
+    }>();
 
     constructor(params: IParams) {
         super(template);
@@ -37,7 +47,7 @@ export class StreamStatusService extends BasicView {
         this.mount(document.body);
     }
 
-    checkStreamStatus() {
+    async checkStreamStatus() {
         const { activeVideoEl } = this.twitchFacade;
 
         this.statuses = [StreamStatus.OK];
@@ -50,6 +60,13 @@ export class StreamStatusService extends BasicView {
         }
 
         this.renderVideoFrame(activeVideoEl);
+
+        this.checkLootGame();
+        this.checkChestGame();
+
+        console.error('\n');
+        console.error('isLootGame:', this.isLootGame);
+        console.error('isChestGame:', this.isChestGame);
 
         const isAntiCheat = this.isAntiCheat();
 
@@ -64,15 +81,6 @@ export class StreamStatusService extends BasicView {
         }
 
         this.startAntiCheatProcessing();
-
-        // if (this.isAntiCheat() && !this.isAnticheatProcessing) {
-        //     this.statuses = [StreamStatus.ANTI_CHEAT];
-        //     this.startAntiCheatProcessing();
-        // } else {
-        //     this.stopAntiCheatProcessing();
-        // }
-
-        // console.error(this.statuses);
     }
 
     private startAntiCheatProcessing() {
@@ -88,7 +96,7 @@ export class StreamStatusService extends BasicView {
                 console.error('Anticheat Counter:', counter);
             }
 
-            if (counter >= 5) {
+            if (counter >= 3) {
                 this.chatFacade.sendMessage('!anticheat');
                 console.log('Send anticheat!!!');
                 clearInterval(this.anticheatTimeout);
@@ -106,29 +114,10 @@ export class StreamStatusService extends BasicView {
     }
 
     async recognize() {
-        const points = [
-            {
-                color: '#bf3bbf',
-                xPercent: 20.539546290619253,
-                yPercent: 82.00654307524536
-            },
-            {
-                color: '#be3ad2',
-                xPercent: 79.70570202329858,
-                yPercent: 88.54961832061069
-            },
-            {
-                color: '#bc2aa2',
-                xPercent: 79.82832618025752,
-                yPercent: 89.33151581243183
-            },
-            {
-                color: '#c133a2',
-                xPercent: 20.478234212139792,
-                yPercent: 89.6401308615049
-            }
-        ];
+        return this.recognizeText(anticheatName, this.twitchFacade.twitchUserName);
+    }
 
+    private async recognizeText(points: ICheck[], str: string): Promise<boolean> {
         const x = Math.floor((points[0].xPercent * this.canvasEl.width) / 100);
         const y = Math.floor((points[0].yPercent * this.canvasEl.height) / 100);
         const width = Math.floor((points[1].xPercent * this.canvasEl.width) / 100) - x;
@@ -136,15 +125,8 @@ export class StreamStatusService extends BasicView {
 
         const ctx = this.canvasEl.getContext('2d')!;
         const imageData = ctx.getImageData(x, y, width, height);
-        const username = await this.textDecoderService.checkOnScreen(imageData, this.twitchFacade.twitchUserName);
-        const username2 = await this.textDecoderService.checkOnScreen(imageData, 'mur_cha_7');
 
-        console.error(
-            username,
-            username2
-        );
-
-        return username;
+        return await this.textDecoderService.checkOnScreen(imageData, str) > 0.7;
     }
 
     private renderVideoFrame(videoEl: HTMLVideoElement) {
@@ -163,6 +145,34 @@ export class StreamStatusService extends BasicView {
         // this.log(`${failedChecks} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
 
         return isAntiCheat;
+    }
+
+    private checkLootGame() {
+        const previousStatus = this.isLootGame;
+        const failedChecks = this.checkPoints(lootGameChecks);
+        const isLootGame = (failedChecks / lootGameChecks.length) >= 0.7;
+
+        console.log(`Loot: ${failedChecks} / ${lootGameChecks.length}`, isLootGame ? 'error' : 'info');
+
+        this.isLootGame = isLootGame;
+
+        if (previousStatus !== this.isLootGame) {
+            this.events.emit('loot', this.isLootGame);
+        }
+    }
+
+    private checkChestGame() {
+        const previousStatus = this.isChestGame;
+        const failedChecks = this.checkPoints(chestGameChecks);
+        const isAntiCheat = (failedChecks / chestGameChecks.length) >= 0.7;
+
+        console.log(`Chest: ${failedChecks} / ${chestGameChecks.length}`, isAntiCheat ? 'error' : 'info');
+
+        this.isChestGame = isAntiCheat;
+
+        if (previousStatus !== this.isChestGame) {
+            this.events.emit('chest', this.isChestGame);
+        }
     }
 
     private checkPoints(points: ICheck[]): number {

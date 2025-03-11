@@ -50,10 +50,10 @@ export class MiniGamesFacade {
         return this._instance;
     }
 
-    private readonly hitsquadRunner;
-    private readonly akiraDrawRunner;
-    private readonly chestGameRunner;
-    private readonly lootGameRunner;
+    readonly hitsquadRunner;
+    readonly akiraDrawRunner;
+    readonly chestGameRunner;
+    readonly lootGameRunner;
 
     constructor({
         hitsquadRunner, akiraDrawRunner, chestGameRunner, lootGameRunner
@@ -110,45 +110,5 @@ export class MiniGamesFacade {
 
     participateAkiraDrawingOnce() {
         return this.akiraDrawRunner.participateOnce();
-    }
-
-    get isChestGameRunning() {
-        return this.chestGameRunner.isRunning;
-    }
-
-    get timeUntilChestMessage() {
-        return this.chestGameRunner.timeUntilMessage;
-    }
-
-    startChestRunner() {
-        this.chestGameRunner.start();
-    }
-
-    stopChestRunner() {
-        this.chestGameRunner.stop();
-    }
-
-    participateChestGameOnce() {
-        return this.chestGameRunner.participateOnce();
-    }
-
-    get isLootGameRunning() {
-        return this.lootGameRunner.isRunning;
-    }
-
-    get timeUntilLootMessage() {
-        return this.lootGameRunner.timeUntilMessage;
-    }
-
-    startLootRunner() {
-        this.lootGameRunner.start();
-    }
-
-    stopLootRunner() {
-        this.lootGameRunner.stop();
-    }
-
-    participateLootGameOnce() {
-        return this.lootGameRunner.participateOnce();
     }
 }

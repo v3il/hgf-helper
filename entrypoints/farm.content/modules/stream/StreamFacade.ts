@@ -37,6 +37,10 @@ export class StreamFacade {
         this.twitchPlayerService = twitchPlayerService;
     }
 
+    get streamService() {
+        return this.streamStatusService;
+    }
+
     get isVideoBroken() {
         return this.streamStatusService.isVideoBroken;
     }

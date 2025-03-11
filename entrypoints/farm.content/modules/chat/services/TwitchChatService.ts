@@ -4,7 +4,7 @@ export class TwitchChatService {
     sendMessage(message: string) {
         console.error('HGF-Helper: send', message);
 
-        // if (isDev) return;
+        if (isDev) return;
 
         const detail = { message };
         const event = new CustomEvent('hgf-helper:sendMessage', { detail });

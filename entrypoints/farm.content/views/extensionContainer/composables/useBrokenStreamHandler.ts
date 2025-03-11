@@ -16,7 +16,7 @@ export const useBrokenStreamHandler = (): IPageReloader => {
         brokenStreamRounds++;
 
         if (brokenStreamRounds >= PAGE_RELOAD_ROUNDS) {
-            // window.location.reload();
+            window.location.reload();
         }
     }
 

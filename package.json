@@ -2,7 +2,7 @@
   "name": "hitsquad-helper",
   "description": "manifest.json description",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.4.0-beta",
   "type": "module",
   "scripts": {
     "dev": "wxt -c ./wxt-dev.config.ts",

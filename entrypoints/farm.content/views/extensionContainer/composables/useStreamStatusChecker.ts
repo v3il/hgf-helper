@@ -35,7 +35,7 @@ export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
         //     return ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
         // }
 
-        return 2 * Timing.SECOND;
+        return 5 * Timing.SECOND;
     }
 
     handleStreamStatusCheck();

@@ -54,8 +54,19 @@ export class ExtensionContainer extends BasicView {
             chatFacade
         });
 
-        useChestGameRunner({ el: this.el, miniGamesFacade });
-        useLootGameRunner({ el: this.el, miniGamesFacade });
+        useChestGameRunner({
+            el: this.el,
+            miniGamesFacade,
+            streamFacade,
+            settingsFacade
+        });
+
+        useLootGameRunner({
+            el: this.el,
+            miniGamesFacade,
+            streamFacade,
+            settingsFacade
+        });
 
         useHitsquadRunner({
             el: this.el,

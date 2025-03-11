@@ -142,7 +142,6 @@ export class HitsquadRunner {
     }
 
     private getNextRoundDelay() {
-        // return generateDelay(30 * Timing.SECOND, Timing.MINUTE) + 3 * Timing.MINUTE;
         return generateDelay(30 * Timing.SECOND, 5 * Timing.MINUTE) + 8 * Timing.MINUTE;
     }
 

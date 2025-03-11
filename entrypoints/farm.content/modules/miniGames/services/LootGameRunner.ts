@@ -1,5 +1,5 @@
 import { ChatFacade } from '@farm/modules/chat';
-import { generateDelay } from '@farm/utils';
+import { getRandomNumber } from '@farm/utils';
 import { Timing } from '@farm/consts';
 import { log, SettingsFacade } from '@components/shared';
 
@@ -12,7 +12,7 @@ export class LootGameRunner {
     private readonly chatFacade: ChatFacade;
     private readonly settingsFacade: SettingsFacade;
 
-    private _isRunning!: boolean;
+    private isRunning!: boolean;
     private timeoutId!: number;
 
     timeUntilMessage!: number;
@@ -20,51 +20,31 @@ export class LootGameRunner {
     constructor(params: IParams) {
         this.chatFacade = params.chatFacade;
         this.settingsFacade = params.settingsFacade;
-
-        this._isRunning = this.settingsFacade.localSettings.lootGame;
-
-        if (this._isRunning) {
-            this.start();
-        }
-    }
-
-    get isRunning() {
-        return this._isRunning;
     }
 
     start() {
-        this.timeUntilMessage = 0;
-        this._isRunning = true;
+        log('Start Loot runner');
 
-        log('start Loot runner');
-
-        this.saveState();
+        this.isRunning = true;
         this.scheduleNextRound();
     }
 
     stop() {
         clearTimeout(this.timeoutId);
-        this._isRunning = false;
+        this.isRunning = false;
         this.timeUntilMessage = 0;
-        this.saveState();
     }
 
-    participateOnce() {
+    participate() {
         return this.sendCommand();
     }
 
-    private saveState() {
-        this.settingsFacade.updateLocalSettings({
-            lootGame: this._isRunning
-        });
-    }
-
     private sendCommand() {
-        this.chatFacade.sendMessage(`!loot${generateDelay(1, 8)}`);
+        this.chatFacade.sendMessage(`!loot${getRandomNumber(1, 8)}`);
     }
 
     private getDelay() {
-        return generateDelay(Timing.MINUTE, 10 * Timing.MINUTE) + 20 * Timing.MINUTE;
+        return getRandomNumber(Timing.MINUTE, 10 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {
@@ -74,7 +54,6 @@ export class LootGameRunner {
 
         this.timeoutId = window.setTimeout(() => {
             this.sendCommand();
-            this.scheduleNextRound();
         }, delay);
     }
 }

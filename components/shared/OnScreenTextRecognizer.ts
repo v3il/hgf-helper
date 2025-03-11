@@ -14,9 +14,14 @@ export class OnScreenTextRecognizer {
 
         this.containerEl.style.position = 'fixed';
         this.containerEl.style.bottom = '30px';
-        this.containerEl.style.left = '460px';
+        this.containerEl.style.left = '160px';
         this.containerEl.style.zIndex = '99999';
         this.containerEl.style.border = '1px solid red';
+        this.containerEl.style.display = 'flex';
+        this.containerEl.style.alignItems = 'center';
+        this.containerEl.style.gap = '8px';
+        this.containerEl.style.background = 'black';
+        this.containerEl.style.padding = '8px';
         this.containerEl.id = 'text-decoder-container';
 
         document.body.appendChild(this.containerEl);
@@ -54,45 +59,56 @@ export class OnScreenTextRecognizer {
 
         tempCtx.putImageData(imageData, 0, 0);
 
-        const rawResult = await this.worker.recognize(canvas.toDataURL('image/png'));
-        const normalizedRawText = this.normalizeText(rawResult.data.text);
+        for (let i = 0; i < 3; i++) {
+            const rawResult = await this.worker.recognize(canvas.toDataURL('image/png'));
+            const rawVariants = this.generateVariants(rawResult.data.text);
+            const reversedRawVariants = rawVariants.map((variant) => this.reverseString(variant));
 
-        checks.push(normalizedRawText);
-        reversedChecks.push(this.reverseString(normalizedRawText));
+            checks.push(...rawVariants);
+            reversedChecks.push(...reversedRawVariants);
 
-        this.increaseContrast(imageData);
+            this.increaseContrast(imageData);
 
-        tempCtx.putImageData(imageData, 0, 0);
+            tempCtx.putImageData(imageData, 0, 0);
 
-        this.attachPreview(canvas);
+            this.attachPreview(canvas);
 
-        const contrastResult = await this.worker.recognize(canvas.toDataURL('image/png'));
-        const normalizedContrastText = this.normalizeText(contrastResult.data.text);
+            const contrastResult = await this.worker.recognize(canvas.toDataURL('image/png'));
+            const contrastVariants = this.generateVariants(contrastResult.data.text);
+            const reversedContrastVariants = contrastVariants.map((variant) => this.reverseString(variant));
 
-        checks.push(normalizedContrastText);
-        reversedChecks.push(this.reverseString(normalizedContrastText));
+            checks.push(...contrastVariants);
+            reversedChecks.push(...reversedContrastVariants);
+        }
 
         const similarities = [
             ...checks.map((check) => this.getStringsSimilarity(check, desiredText)),
             ...reversedChecks.map((check) => this.getStringsSimilarity(check, this.reverseString(desiredText)))
         ];
 
-        console.error([...checks, ...reversedChecks]);
-        console.error(similarities);
+        // console.error([...checks, ...reversedChecks]);
+        // console.error(similarities);
 
-        return similarities.some((similarity) => similarity > 0.6);
+        const maxSimilarity = Math.max(...similarities);
+
+        console.error(maxSimilarity);
+
+        this.containerEl.insertAdjacentHTML('beforeend', `<div>${maxSimilarity}</div>`);
+
+        return maxSimilarity;
     }
 
-    private normalizeText(text: string) {
-        const normalizedText = text.toLowerCase().replace('\n', ' ').trim();
-
-        if (!normalizedText.includes(' ')) {
-            return normalizedText;
-        }
+    private generateVariants(text: string) {
+        const normalizedText = text
+            .replaceAll('I', 'l')
+            .toLowerCase()
+            .replace('\n', ' ')
+            .trim();
 
         const words = normalizedText.split(' ');
+        const longestWord = words.reduce((longest, word) => (word.length > longest.length ? word : longest), '');
 
-        return words.reduce((longestWord, word) => (word.length > longestWord.length ? word : longestWord), '');
+        return [longestWord, normalizedText.replaceAll(' ', '_')];
     }
 
     private increaseContrast(imageData: ImageData) {

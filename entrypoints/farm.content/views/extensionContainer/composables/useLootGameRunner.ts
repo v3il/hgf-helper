@@ -1,37 +1,57 @@
 import { MiniGamesFacade } from '@farm/modules/miniGames';
 import { Timing } from '@farm/consts';
+import { StreamFacade } from '@farm/modules/stream';
+import { SettingsFacade } from '@components/shared';
 
 interface IParams {
     el: HTMLElement;
     miniGamesFacade: MiniGamesFacade
+    streamFacade: StreamFacade
+    settingsFacade: SettingsFacade
 }
 
-export const useLootGameRunner = ({ el, miniGamesFacade }: IParams) => {
-    const checkboxEl = el.querySelector<HTMLInputElement>('[data-toggle-loot-game]')!;
+export const useLootGameRunner = ({
+    el, miniGamesFacade, streamFacade, settingsFacade
+}: IParams) => {
+    const { lootGameRunner } = miniGamesFacade;
+
+    const checkboxEl = el.querySelector<HTMLInputElement>('[data-detect-loot-game]')!;
     const buttonEl = el.querySelector<HTMLInputElement>('[data-loot-game-button]')!;
     const timerEl = el.querySelector<HTMLButtonElement>('[data-loot-time]')!;
 
     let intervalId: number;
 
-    checkboxEl.checked = miniGamesFacade.isLootGameRunning;
-
-    if (miniGamesFacade.isLootGameRunning) {
-        setupTimer();
-    }
+    checkboxEl.checked = settingsFacade.localSettings.detectLootGame;
 
     checkboxEl.addEventListener('change', () => {
-        if (checkboxEl.checked) {
-            miniGamesFacade.startLootRunner();
-            return setupTimer();
-        }
+        settingsFacade.updateLocalSettings({
+            detectLootGame: checkboxEl.checked
+        });
 
-        miniGamesFacade.stopLootRunner();
-        clearInterval(intervalId);
-        timerEl.classList.add('hidden');
+        if (!checkboxEl.checked) {
+            lootGameRunner.stop();
+            clearInterval(intervalId);
+            timerEl.classList.add('hidden');
+        }
+    });
+
+    streamFacade.streamService.events.on('loot', (isRunning) => {
+        console.error('loot', isRunning, 'detection', settingsFacade.localSettings.detectLootGame);
+
+        if (!settingsFacade.localSettings.detectLootGame) return;
+
+        if (isRunning) {
+            lootGameRunner.start();
+            setupTimer();
+        } else {
+            lootGameRunner.stop();
+            clearInterval(intervalId);
+            timerEl.classList.add('hidden');
+        }
     });
 
     buttonEl.addEventListener('click', () => {
-        miniGamesFacade.participateLootGameOnce();
+        lootGameRunner.participate();
     });
 
     function setupTimer() {
@@ -40,7 +60,7 @@ export const useLootGameRunner = ({ el, miniGamesFacade }: IParams) => {
     }
 
     function timerTick() {
-        const time = miniGamesFacade.timeUntilLootMessage;
+        const time = lootGameRunner.timeUntilMessage;
         const diff = time - Date.now();
         const minutes = Math.floor(diff / Timing.MINUTE).toString().padStart(2, '0');
         const seconds = Math.floor((diff % Timing.MINUTE) / Timing.SECOND).toString().padStart(2, '0');
