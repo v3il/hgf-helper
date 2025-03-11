@@ -36,7 +36,7 @@ export const useLootGameRunner = ({
     });
 
     streamFacade.streamService.events.on('loot', (isRunning) => {
-        console.error('loot', isRunning, 'detection', settingsFacade.localSettings.detectLootGame);
+        buttonEl.disabled = !isRunning;
 
         if (!settingsFacade.localSettings.detectLootGame) return;
 
@@ -67,5 +67,9 @@ export const useLootGameRunner = ({
 
         timerEl.textContent = `(${minutes}:${seconds})`;
         timerEl.classList.toggle('hidden', time <= 0);
+
+        if (time <= 0) {
+            clearInterval(intervalId);
+        }
     }
 };

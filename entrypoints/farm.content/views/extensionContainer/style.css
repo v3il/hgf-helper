@@ -58,3 +58,7 @@
 .hidden {
     display: none;
 }
+
+button:disabled {
+    opacity: 0.5;
+}

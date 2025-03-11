@@ -54,6 +54,7 @@ export class ChestGameRunner {
 
         this.timeoutId = window.setTimeout(() => {
             this.sendCommand();
+            this.stop();
         }, delay);
     }
 }

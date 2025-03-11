@@ -36,7 +36,7 @@ export const useChestGameRunner = ({
     });
 
     streamFacade.streamService.events.on('chest', (isRunning) => {
-        console.error('chest', isRunning, 'detection', settingsFacade.localSettings.detectChestGame);
+        buttonEl.disabled = !isRunning;
 
         if (!settingsFacade.localSettings.detectChestGame) return;
 
@@ -67,5 +67,9 @@ export const useChestGameRunner = ({
 
         timerEl.textContent = `(${minutes}:${seconds})`;
         timerEl.classList.toggle('hidden', time <= 0);
+
+        if (time <= 0) {
+            clearInterval(intervalId);
+        }
     }
 };

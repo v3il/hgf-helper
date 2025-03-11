@@ -6,6 +6,7 @@ import {
 } from '@components/shared';
 import './style.css';
 import { ChatFacade } from '@farm/modules/chat';
+import { getRandomNumber } from '@farm/utils';
 import template from './template.html?raw';
 import {
     antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks
@@ -28,13 +29,12 @@ export class StreamStatusService extends BasicView {
     private isLootGame?: boolean;
     private isChestGame?: boolean;
 
-    private isAnticheatProcessing = false;
-    private anticheatTimeout!: number;
-
     readonly events = new EventEmitter<{
         loot: boolean,
         chest: boolean
     }>();
+
+    private anticheatHandled = false;
 
     constructor(params: IParams) {
         super(template);
@@ -64,60 +64,38 @@ export class StreamStatusService extends BasicView {
         this.checkLootGame();
         this.checkChestGame();
 
-        console.error('\n');
-        console.error('isLootGame:', this.isLootGame);
-        console.error('isChestGame:', this.isChestGame);
-
         const isAntiCheat = this.isAntiCheat();
 
-        if (!isAntiCheat) {
-            this.stopAntiCheatProcessing();
-            return;
+        if (isAntiCheat) {
+            this.startAntiCheatProcessing();
+        } else {
+            this.anticheatHandled = false;
         }
-
-        if (this.isAnticheatProcessing) {
-            this.statuses = [StreamStatus.ANTI_CHEAT];
-            return;
-        }
-
-        this.startAntiCheatProcessing();
     }
 
-    private startAntiCheatProcessing() {
-        this.isAnticheatProcessing = true;
+    private async startAntiCheatProcessing() {
+        if (this.anticheatHandled) {
+            return;
+        }
 
-        let counter = 0;
+        const result = await this.recognize();
 
-        console.error('Start anticheat processing!!!');
+        console.error('AntiCheat result:', result);
 
-        this.anticheatTimeout = window.setInterval(async () => {
-            if (await this.recognize()) {
-                counter++;
-                console.error('Anticheat Counter:', counter);
-            }
-
-            if (counter >= 3) {
+        if (result > 0.8) {
+            this.anticheatHandled = true;
+            console.log('Send anticheat!');
+            setTimeout(() => {
                 this.chatFacade.sendMessage('!anticheat');
-                console.log('Send anticheat!!!');
-                clearInterval(this.anticheatTimeout);
-                this.isAnticheatProcessing = false;
-            }
-        }, 3 * Timing.SECOND);
-    }
-
-    private stopAntiCheatProcessing() {
-        if (!this.isAnticheatProcessing) return;
-
-        console.error('Stop anticheat processing!!!');
-        clearInterval(this.anticheatTimeout);
-        this.isAnticheatProcessing = false;
+            }, getRandomNumber(3 * Timing.SECOND, 15 * Timing.SECOND));
+        }
     }
 
     async recognize() {
         return this.recognizeText(anticheatName, this.twitchFacade.twitchUserName);
     }
 
-    private async recognizeText(points: ICheck[], str: string): Promise<boolean> {
+    private async recognizeText(points: ICheck[], str: string) {
         const x = Math.floor((points[0].xPercent * this.canvasEl.width) / 100);
         const y = Math.floor((points[0].yPercent * this.canvasEl.height) / 100);
         const width = Math.floor((points[1].xPercent * this.canvasEl.width) / 100) - x;
@@ -126,7 +104,7 @@ export class StreamStatusService extends BasicView {
         const ctx = this.canvasEl.getContext('2d')!;
         const imageData = ctx.getImageData(x, y, width, height);
 
-        return await this.textDecoderService.checkOnScreen(imageData, str) > 0.7;
+        return this.textDecoderService.checkOnScreen(imageData, str);
     }
 
     private renderVideoFrame(videoEl: HTMLVideoElement) {
