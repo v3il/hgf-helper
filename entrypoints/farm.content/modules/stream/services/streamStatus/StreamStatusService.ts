@@ -82,12 +82,15 @@ export class StreamStatusService extends BasicView {
 
         console.error('AntiCheat result:', result);
 
-        if (result > 0.8) {
+        if (result > 0.85) {
+            const delay = getRandomNumber(3 * Timing.SECOND, 15 * Timing.SECOND);
+
             this.anticheatHandled = true;
-            console.log('Send anticheat!');
+            console.log(`Send anticheat in ${delay}!`);
+
             setTimeout(() => {
                 this.chatFacade.sendMessage('!anticheat');
-            }, getRandomNumber(3 * Timing.SECOND, 15 * Timing.SECOND));
+            }, delay);
         }
     }
 
@@ -128,11 +131,10 @@ export class StreamStatusService extends BasicView {
     private checkLootGame() {
         const previousStatus = this.isLootGame;
         const failedChecks = this.checkPoints(lootGameChecks);
-        const isLootGame = (failedChecks / lootGameChecks.length) >= 0.7;
 
-        console.log(`Loot: ${failedChecks} / ${lootGameChecks.length}`, isLootGame ? 'error' : 'info');
+        // console.log(`Loot: ${failedChecks} / ${lootGameChecks.length}`, isLootGame ? 'error' : 'info');
 
-        this.isLootGame = isLootGame;
+        this.isLootGame = (failedChecks / lootGameChecks.length) >= 0.7;
 
         if (previousStatus !== this.isLootGame) {
             this.events.emit('loot', this.isLootGame);
@@ -142,11 +144,10 @@ export class StreamStatusService extends BasicView {
     private checkChestGame() {
         const previousStatus = this.isChestGame;
         const failedChecks = this.checkPoints(chestGameChecks);
-        const isAntiCheat = (failedChecks / chestGameChecks.length) >= 0.7;
 
-        console.log(`Chest: ${failedChecks} / ${chestGameChecks.length}`, isAntiCheat ? 'error' : 'info');
+        // console.log(`Chest: ${failedChecks} / ${chestGameChecks.length}`, isAntiCheat ? 'error' : 'info');
 
-        this.isChestGame = isAntiCheat;
+        this.isChestGame = (failedChecks / chestGameChecks.length) >= 0.7;
 
         if (previousStatus !== this.isChestGame) {
             this.events.emit('chest', this.isChestGame);

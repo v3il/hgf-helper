@@ -49,8 +49,7 @@ export class OnScreenTextRecognizer {
     async checkOnScreen(imageData: ImageData, desiredText: string) {
         this.worker ??= await this.createWorker();
 
-        const checks = [];
-        const reversedChecks = [];
+        const checks = new Set<string>();
         const canvas = document.createElement('canvas');
         const tempCtx = canvas.getContext('2d')!;
 
@@ -62,10 +61,8 @@ export class OnScreenTextRecognizer {
         for (let i = 0; i < 3; i++) {
             const rawResult = await this.worker.recognize(canvas.toDataURL('image/png'));
             const rawVariants = this.generateVariants(rawResult.data.text);
-            const reversedRawVariants = rawVariants.map((variant) => this.reverseString(variant));
 
-            checks.push(...rawVariants);
-            reversedChecks.push(...reversedRawVariants);
+            rawVariants.forEach((variant) => checks.add(variant));
 
             this.increaseContrast(imageData);
 
@@ -75,23 +72,30 @@ export class OnScreenTextRecognizer {
 
             const contrastResult = await this.worker.recognize(canvas.toDataURL('image/png'));
             const contrastVariants = this.generateVariants(contrastResult.data.text);
-            const reversedContrastVariants = contrastVariants.map((variant) => this.reverseString(variant));
 
-            checks.push(...contrastVariants);
-            reversedChecks.push(...reversedContrastVariants);
+            contrastVariants.forEach((variant) => checks.add(variant));
         }
 
-        const similarities = [
-            ...checks.map((check) => this.getStringsSimilarity(check, desiredText)),
-            ...reversedChecks.map((check) => this.getStringsSimilarity(check, this.reverseString(desiredText)))
-        ];
+        const result = [];
 
-        // console.error([...checks, ...reversedChecks]);
-        // console.error(similarities);
+        for (const check of checks) {
+            const similarity = this.getStringsSimilarity(check, desiredText);
+            const reversed = this.reverseString(check);
 
-        const maxSimilarity = Math.max(...similarities);
+            result.push({
+                check,
+                similarity
+            });
 
-        console.error(maxSimilarity);
+            result.push({
+                check: reversed,
+                similarity: this.getStringsSimilarity(reversed, this.reverseString(desiredText))
+            });
+        }
+
+        console.table(result);
+
+        const maxSimilarity = Math.max(...result.map(({ similarity }) => similarity));
 
         this.containerEl.insertAdjacentHTML('beforeend', `<div>${maxSimilarity}</div>`);
 
