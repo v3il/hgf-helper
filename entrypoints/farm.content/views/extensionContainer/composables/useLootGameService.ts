@@ -35,7 +35,7 @@ export const useLootGameService = ({ el }: IParams) => {
         }
     });
 
-    StreamFacade.instance.streamService.events.on('loot', (isRunning: boolean) => {
+    StreamFacade.instance.streamService.events.on('loot', (isRunning) => {
         buttonEl.disabled = !isRunning;
 
         if (!settingsFacade.localSettings.lootGame) return;

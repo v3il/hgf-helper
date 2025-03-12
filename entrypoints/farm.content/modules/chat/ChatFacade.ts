@@ -22,6 +22,10 @@ export class ChatFacade extends BasicFacade {
         this.chatService = container.get(TwitchChatService);
     }
 
+    static get instance(): ChatFacade {
+        return super.instance;
+    }
+
     sendMessage(message: string) {
         this.chatService.sendMessage(message);
     }

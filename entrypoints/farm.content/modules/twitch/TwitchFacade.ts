@@ -20,6 +20,10 @@ export class TwitchFacade extends BasicFacade {
         this.elementsRegistry = container.get(TwitchElementsRegistry);
     }
 
+    static get instance(): TwitchFacade {
+        return super.instance;
+    }
+
     get twitchUserName() {
         return this.elementsRegistry.twitchUserName;
     }

@@ -35,7 +35,7 @@ export const useChestGameService = ({ el }: IParams) => {
         }
     });
 
-    StreamFacade.instance.streamService.events.on('chest', (isRunning: boolean) => {
+    StreamFacade.instance.streamService.events.on('chest', (isRunning) => {
         buttonEl.disabled = !isRunning;
 
         if (!settingsFacade.localSettings.chestGame) return;

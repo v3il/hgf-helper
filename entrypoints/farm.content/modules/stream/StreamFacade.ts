@@ -26,6 +26,10 @@ export class StreamFacade extends BasicFacade {
         this.twitchPlayerService = container.get(TwitchPlayerService);
     }
 
+    static get instance(): StreamFacade {
+        return super.instance;
+    }
+
     get streamService() {
         return this.streamStatusService;
     }
