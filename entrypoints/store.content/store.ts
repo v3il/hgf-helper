@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { SettingsFacade } from '@components/shared';
 // @ts-ignore
 import { StreamElementsFacade } from './modules/streamElements';
@@ -8,7 +9,7 @@ import { OffersList } from './views/offer/OffersList';
 
 export const start = () => {
     StreamElementsFacade.instance.init(async () => {
-        console.clear();
+        // console.clear();
 
         await SettingsFacade.instance.loadSettings();
         await StreamElementsFacade.instance.sortOffersByCost();
