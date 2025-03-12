@@ -4,12 +4,10 @@ import { useBrokenStreamHandler } from './useBrokenStreamHandler';
 
 interface IParams {
     el: HTMLElement;
-    streamFacade: StreamFacade
 }
 
-const ANTI_CHEAT_DURATION = 2 * Timing.MINUTE;
-
-export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
+export const useStreamStatusChecker = ({ el }: IParams) => {
+    const streamFacade = StreamFacade.instance;
     const brokenStreamHandler = useBrokenStreamHandler();
 
     function handleStreamStatusCheck() {
@@ -17,25 +15,14 @@ export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
         renderStatus();
         brokenStreamHandler.handleBrokenVideo(streamFacade.isVideoBroken);
 
-        const nextCheckDelay = getNextCheckDelay();
-
         setTimeout(() => {
             handleStreamStatusCheck();
-        }, nextCheckDelay);
+        }, 5 * Timing.SECOND);
     }
 
     function renderStatus() {
         el.classList.toggle('broken', streamFacade.isVideoBroken);
-        el.classList.toggle('anticheat', streamFacade.isAntiCheatScreen);
         el.classList.toggle('safe', streamFacade.isStreamOk);
-    }
-
-    function getNextCheckDelay() {
-        if (streamFacade.isAntiCheatScreen) {
-            return ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
-        }
-
-        return 5 * Timing.SECOND;
     }
 
     handleStreamStatusCheck();

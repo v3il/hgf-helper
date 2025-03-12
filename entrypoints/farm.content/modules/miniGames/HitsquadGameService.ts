@@ -1,15 +1,16 @@
-import { generateDelay } from '@farm/utils';
 import { Commands, Timing } from '@farm/consts';
 import {
-    promisifiedSetTimeout, EventEmitter, SettingsFacade, log, UnsubscribeTrigger
+    promisifiedSetTimeout, EventEmitter, SettingsFacade, log, UnsubscribeTrigger, getRandomNumber
 } from '@components/shared';
 import { StreamFacade } from '@farm/modules/stream';
-import { ChatFacade } from '../../chat';
+import { TwitchFacade } from '@farm/modules/twitch';
+import { ChatFacade } from '../chat';
 
 interface IParams {
     chatFacade: ChatFacade;
     streamFacade: StreamFacade;
-    settingsFacade: SettingsFacade
+    settingsFacade: SettingsFacade;
+    twitchFacade: TwitchFacade
 }
 
 interface IHitsquadRunnerState {
@@ -24,12 +25,13 @@ interface IRoundsData {
 
 const HITSQUAD_GAMES_ON_SCREEN = 12;
 
-export class HitsquadRunner {
+export class HitsquadGameService {
     readonly events;
 
     private readonly chatFacade: ChatFacade;
     private readonly streamFacade: StreamFacade;
     private readonly settingsFacade: SettingsFacade;
+    private readonly twitchFacade: TwitchFacade;
 
     timeUntilMessage!: number;
     private totalRounds!: number;
@@ -38,10 +40,13 @@ export class HitsquadRunner {
     private lastHitsquadRewardTimestamp!: number;
     private unsubscribe!: UnsubscribeTrigger;
 
-    constructor({ chatFacade, streamFacade, settingsFacade }: IParams) {
+    constructor({
+        chatFacade, streamFacade, settingsFacade, twitchFacade
+    }: IParams) {
         this.chatFacade = chatFacade;
         this.streamFacade = streamFacade;
         this.settingsFacade = settingsFacade;
+        this.twitchFacade = twitchFacade;
 
         this.events = EventEmitter.create<{
             round: void,
@@ -72,7 +77,7 @@ export class HitsquadRunner {
             this.saveState();
         }
 
-        log(`HGF helper: start Hitsquad runner with ${this.state.remainingRounds} rounds`);
+        log(`Start Hitsquad service with ${this.state.remainingRounds} rounds`);
 
         this.totalRounds = this.state.remainingRounds;
 
@@ -87,7 +92,7 @@ export class HitsquadRunner {
         this.unsubscribe?.();
     }
 
-    participateOnce() {
+    participate() {
         this.chatFacade.sendMessage(Commands.HITSQUAD);
     }
 
@@ -118,7 +123,7 @@ export class HitsquadRunner {
     }
 
     private async sendCommand(): Promise<void> {
-        if (!this.streamFacade.isStreamOk) {
+        if (this.twitchFacade.isAdsPhase) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
@@ -136,7 +141,7 @@ export class HitsquadRunner {
     }
 
     private getNextRoundDelay() {
-        return generateDelay(30 * Timing.SECOND, 5 * Timing.MINUTE) + 10 * Timing.MINUTE;
+        return getRandomNumber(30 * Timing.SECOND, 5 * Timing.MINUTE) + 8 * Timing.MINUTE;
     }
 
     private scheduleNextRound() {

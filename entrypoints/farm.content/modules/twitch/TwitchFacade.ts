@@ -1,70 +1,62 @@
-import { TwitchElementsRegistry, UserService, ChannelPointsClaimerService } from './services';
+import { Container, ContainerInstance } from 'typedi';
+import { BasicFacade } from '@components/shared/BasicFacade';
+import { ChannelPointsClaimerService, TwitchElementsRegistry } from './services';
 
-interface ITwitchFacadeParams {
-    twitchElementsRegistry: TwitchElementsRegistry;
-    userService: UserService;
-    channelPointsClaimerService: ChannelPointsClaimerService;
-}
+export class TwitchFacade extends BasicFacade {
+    static container = Container.of('twitch');
 
-export class TwitchFacade {
-    static _instance: TwitchFacade;
+    static providers = [
+        TwitchElementsRegistry,
+        ChannelPointsClaimerService
+    ];
 
-    static get instance() {
-        if (!this._instance) {
-            const twitchElementsRegistry = new TwitchElementsRegistry();
-            const userService = new UserService();
-            const channelPointsClaimerService = new ChannelPointsClaimerService({ twitchElementsRegistry });
+    private readonly channelPointsClaimerService!: ChannelPointsClaimerService;
+    private readonly elementsRegistry!: TwitchElementsRegistry;
 
-            this._instance = new TwitchFacade({
-                twitchElementsRegistry,
-                userService,
-                channelPointsClaimerService
-            });
-        }
+    constructor(container: ContainerInstance) {
+        super();
 
-        return this._instance;
+        this.channelPointsClaimerService = container.get(ChannelPointsClaimerService);
+        this.elementsRegistry = container.get(TwitchElementsRegistry);
     }
 
-    #elementsRegistry;
-    #userService;
-    #channelPointsClaimerService;
-
-    constructor({ twitchElementsRegistry, userService, channelPointsClaimerService }: ITwitchFacadeParams) {
-        this.#elementsRegistry = twitchElementsRegistry;
-        this.#userService = userService;
-        this.#channelPointsClaimerService = channelPointsClaimerService;
+    static get instance(): TwitchFacade {
+        return super.instance;
     }
 
-    get twitchUser() {
-        return this.#userService.twitchUser;
+    get twitchUserName() {
+        return this.elementsRegistry.twitchUserName;
     }
 
     get currentGame() {
-        return this.#elementsRegistry.currentGame;
+        return this.elementsRegistry.currentGame;
     }
 
     get activeVideoEl() {
-        return this.#elementsRegistry.activeVideoEl;
+        return this.elementsRegistry.activeVideoEl;
     }
 
     get chatScrollableAreaEl() {
-        return this.#elementsRegistry.chatScrollableAreaEl;
+        return this.elementsRegistry.chatScrollableAreaEl;
+    }
+
+    get isAdsPhase() {
+        return this.elementsRegistry.isAdsPhase;
     }
 
     init(callback: () => void) {
-        this.#elementsRegistry.onElementsReady(async () => {
-            await this.#initUser();
-            this.#enableChannelPointsClaimer();
+        this.elementsRegistry.onElementsReady(() => {
+            this.enableChannelPointsClaimer();
+            // this.enableAdsVideoResizer();
             callback();
         });
     }
 
-    #enableChannelPointsClaimer() {
-        this.#channelPointsClaimerService.enableAutoClaim();
+    private enableChannelPointsClaimer() {
+        this.channelPointsClaimerService.enableAutoClaim();
     }
 
-    async #initUser() {
-        const userName = await this.#elementsRegistry.getUserName();
-        this.#userService.initUser({ userName });
+    private enableAdsVideoResizer() {
+        // this.adsVideoResizerService.enableResize();
     }
 }

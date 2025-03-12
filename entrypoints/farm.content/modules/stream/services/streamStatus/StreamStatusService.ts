@@ -1,49 +1,107 @@
 import { ColorService } from '@farm/modules/shared';
-import { StreamStatus } from '@farm/consts';
+import { StreamStatus, Timing } from '@farm/consts';
 import { TwitchFacade } from '@farm/modules/twitch';
-import { BasicView, log } from '@components/shared';
+import {
+    BasicView, EventEmitter, getRandomNumber, logDev, OnScreenTextRecognizer
+} from '@components/shared';
 import './style.css';
+import { ChatFacade } from '@farm/modules/chat';
+import { ContainerInstance } from 'typedi';
+import {
+    antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks
+} from './checks';
 import template from './template.html?raw';
-import { ICheck, antiCheatChecks, giveawayFrenzyChecks } from './checks';
 
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
-    private readonly twitchFacade;
+
+    private readonly twitchFacade!: TwitchFacade;
+    private readonly chatFacade!: ChatFacade;
+    private readonly textDecoderService!: OnScreenTextRecognizer;
 
     private statuses!: StreamStatus[];
 
-    constructor(twitchFacade: TwitchFacade) {
+    private isLootGame?: boolean;
+    private isChestGame?: boolean;
+
+    readonly events = new EventEmitter<{
+        loot: boolean,
+        chest: boolean
+    }>();
+
+    private anticheatHandled = false;
+
+    constructor(container: ContainerInstance) {
         super(template);
 
-        this.twitchFacade = twitchFacade;
+        this.twitchFacade = container.get(TwitchFacade);
+        this.chatFacade = container.get(ChatFacade);
+        this.textDecoderService = container.get(OnScreenTextRecognizer);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
 
         this.mount(document.body);
     }
 
-    checkStreamStatus() {
+    async checkStreamStatus() {
         const { activeVideoEl } = this.twitchFacade;
 
         this.statuses = [StreamStatus.OK];
 
         if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
             this.statuses = [StreamStatus.BROKEN];
-            log(this.statuses);
-            log('Video is broken');
+            logDev('Video is broken');
             return;
         }
 
         this.renderVideoFrame(activeVideoEl);
 
-        if (this.isAntiCheat()) {
-            this.statuses = [StreamStatus.ANTI_CHEAT];
+        this.checkLootGame();
+        this.checkChestGame();
+
+        const isAntiCheat = this.isAntiCheat();
+
+        if (isAntiCheat) {
+            this.startAntiCheatProcessing();
+        } else {
+            this.anticheatHandled = false;
+        }
+    }
+
+    private async startAntiCheatProcessing() {
+        if (this.anticheatHandled) {
+            return;
         }
 
-        if (this.isFrenzy()) {
-            this.statuses.push(StreamStatus.FRENZY);
-        }
+        const result = await this.recognize();
 
-        // console.error(this.statuses);
+        logDev(`Anticheat result: ${result}`);
+
+        if (result > 0.85) {
+            const delay = getRandomNumber(3 * Timing.SECOND, 15 * Timing.SECOND);
+
+            this.anticheatHandled = true;
+            logDev(`Send anticheat in ${delay}!`);
+
+            setTimeout(() => {
+                this.chatFacade.sendMessage('!anticheat');
+            }, delay);
+        }
+    }
+
+    async recognize() {
+        return this.recognizeText(anticheatName, this.twitchFacade.twitchUserName);
+    }
+
+    private async recognizeText(points: ICheck[], str: string) {
+        const x = Math.floor((points[0].xPercent * this.canvasEl.width) / 100);
+        const y = Math.floor((points[0].yPercent * this.canvasEl.height) / 100);
+        const width = Math.floor((points[1].xPercent * this.canvasEl.width) / 100) - x;
+        const height = Math.floor((points[2].yPercent * this.canvasEl.height) / 100) - y;
+
+        const ctx = this.canvasEl.getContext('2d')!;
+        const imageData = ctx.getImageData(x, y, width, height);
+
+        return this.textDecoderService.checkOnScreen(imageData, str);
     }
 
     private renderVideoFrame(videoEl: HTMLVideoElement) {
@@ -57,20 +115,30 @@ export class StreamStatusService extends BasicView {
 
     private isAntiCheat() {
         const failedChecks = this.checkPoints(antiCheatChecks);
-        const isAntiCheat = (failedChecks / antiCheatChecks.length) >= 0.5;
 
-        // this.log(`${failedChecks} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
-
-        return isAntiCheat;
+        return (failedChecks / antiCheatChecks.length) >= 0.5;
     }
 
-    private isFrenzy() {
-        const failedChecks = this.checkPoints(giveawayFrenzyChecks);
-        const isFrenzy = (failedChecks / giveawayFrenzyChecks.length) >= 0.5;
+    private checkLootGame() {
+        const previousStatus = this.isLootGame;
+        const failedChecks = this.checkPoints(lootGameChecks);
 
-        // this.log(`${failedChecks} / ${giveawayFrenzyChecks.length}`, isFrenzy ? 'error' : 'info');
+        this.isLootGame = (failedChecks / lootGameChecks.length) >= 0.7;
 
-        return isFrenzy;
+        if (previousStatus !== this.isLootGame) {
+            this.events.emit('loot', this.isLootGame);
+        }
+    }
+
+    private checkChestGame() {
+        const previousStatus = this.isChestGame;
+        const failedChecks = this.checkPoints(chestGameChecks);
+
+        this.isChestGame = (failedChecks / chestGameChecks.length) >= 0.7;
+
+        if (previousStatus !== this.isChestGame) {
+            this.events.emit('chest', this.isChestGame);
+        }
     }
 
     private checkPoints(points: ICheck[]): number {
@@ -103,15 +171,7 @@ export class StreamStatusService extends BasicView {
         return this.statuses.includes(StreamStatus.BROKEN);
     }
 
-    get isAntiCheatScreen() {
-        return this.statuses.includes(StreamStatus.ANTI_CHEAT);
-    }
-
     get isStreamOk() {
         return this.statuses.includes(StreamStatus.OK);
-    }
-
-    get isGiveawayFrenzy() {
-        return this.statuses.includes(StreamStatus.FRENZY);
     }
 }

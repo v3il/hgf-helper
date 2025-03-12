@@ -14,10 +14,6 @@
     color: white;
 }
 
-.haf-extension-container.anticheat {
-    border-color: lightcoral;
-}
-
 .haf-extension-container.safe {
     border-color: lightgreen;
 }
@@ -57,4 +53,8 @@
 
 .hidden {
     display: none;
+}
+
+button:disabled {
+    opacity: 0.5;
 }

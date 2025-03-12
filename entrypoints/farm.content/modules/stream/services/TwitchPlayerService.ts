@@ -1,11 +1,7 @@
 import { promisifiedSetTimeout } from '@components/shared';
 
 export class TwitchPlayerService {
-    static create() {
-        return new TwitchPlayerService();
-    }
-
-    private readonly desiredQualities = [360, 480] as const;
+    private readonly desiredQualities = [480, 720] as const;
     private readonly settingsButton: HTMLButtonElement;
 
     private currentQuality!: number;

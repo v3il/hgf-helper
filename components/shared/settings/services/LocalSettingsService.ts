@@ -3,7 +3,9 @@ import { log } from '@components/shared';
 export interface ILocalSettings {
     hitsquad: boolean,
     hitsquadRounds: number,
-    akiraDrawing: boolean
+    akiraDrawing: boolean,
+    chestGame: boolean
+    lootGame: boolean
 }
 
 interface IParams {
@@ -24,7 +26,9 @@ export class LocalSettingsService {
     private _settings: ILocalSettings = {
         hitsquad: false,
         hitsquadRounds: 0,
-        akiraDrawing: false
+        akiraDrawing: false,
+        chestGame: false,
+        lootGame: false
     };
 
     constructor({ storage }: IParams) {
@@ -47,7 +51,7 @@ export class LocalSettingsService {
         try {
             this._settings = { ...this._settings, ...JSON.parse(settings) };
         } catch (e) {
-            console.error('Failed to parse settings', e);
+            log(`Failed to parse local settings: ${e}`);
         }
     }
 

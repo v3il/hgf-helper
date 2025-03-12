@@ -1,10 +1,9 @@
-import { generateDelay } from '@farm/utils';
 import { Timing } from '@farm/consts';
 import {
-    SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log
+    SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log, getRandomNumber
 } from '@components/shared';
 import { TwitchFacade } from '@farm/modules/twitch';
-import { ChatFacade } from '../../../chat';
+import { ChatFacade } from '../../chat';
 import { getRandomTopic } from './gameTopics';
 
 interface IParams {
@@ -14,7 +13,7 @@ interface IParams {
     aiGeneratorService: AiGeneratorService
 }
 
-export class AkirasDrawingRunner {
+export class AkiraDrawingService {
     private readonly chatFacade: ChatFacade;
     private readonly settingsFacade: SettingsFacade;
     private readonly aiGeneratorService: AiGeneratorService;
@@ -48,7 +47,7 @@ export class AkirasDrawingRunner {
         this.timeUntilMessage = 0;
         this._isRunning = true;
 
-        log('HGF helper: start Akira drawing runner');
+        log('Start Akira drawing service');
 
         this.saveState();
         this.listenEvents();
@@ -62,7 +61,7 @@ export class AkirasDrawingRunner {
         this.unsubscribe?.();
     }
 
-    participateOnce() {
+    participate() {
         return this.sendCommand();
     }
 
@@ -99,7 +98,7 @@ export class AkirasDrawingRunner {
     }
 
     private getDelay() {
-        return generateDelay(1 * Timing.MINUTE, 30 * Timing.MINUTE);
+        return getRandomNumber(Timing.MINUTE, 30 * Timing.MINUTE);
     }
 
     private formatQuestion(question: string) {
