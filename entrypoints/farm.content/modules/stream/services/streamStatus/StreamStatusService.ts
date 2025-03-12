@@ -2,11 +2,10 @@ import { ColorService } from '@farm/modules/shared';
 import { StreamStatus, Timing } from '@farm/consts';
 import { TwitchFacade } from '@farm/modules/twitch';
 import {
-    BasicView, EventEmitter, log, OnScreenTextRecognizer
+    BasicView, EventEmitter, getRandomNumber, log, OnScreenTextRecognizer
 } from '@components/shared';
 import './style.css';
 import { ChatFacade } from '@farm/modules/chat';
-import { getRandomNumber } from '@farm/utils';
 import { ContainerInstance } from 'typedi';
 import {
     antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks

@@ -1,7 +1,6 @@
-import { generateDelay } from '@farm/utils';
 import { Timing } from '@farm/consts';
 import {
-    SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log
+    SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log, getRandomNumber
 } from '@components/shared';
 import { TwitchFacade } from '@farm/modules/twitch';
 import { ChatFacade } from '../../chat';
@@ -99,7 +98,7 @@ export class AkiraDrawingService {
     }
 
     private getDelay() {
-        return generateDelay(1 * Timing.MINUTE, 30 * Timing.MINUTE);
+        return getRandomNumber(Timing.MINUTE, 30 * Timing.MINUTE);
     }
 
     private formatQuestion(question: string) {

@@ -1,7 +1,6 @@
-import { generateDelay } from '@farm/utils';
 import { Commands, Timing } from '@farm/consts';
 import {
-    promisifiedSetTimeout, EventEmitter, SettingsFacade, log, UnsubscribeTrigger
+    promisifiedSetTimeout, EventEmitter, SettingsFacade, log, UnsubscribeTrigger, getRandomNumber
 } from '@components/shared';
 import { StreamFacade } from '@farm/modules/stream';
 import { TwitchFacade } from '@farm/modules/twitch';
@@ -142,7 +141,7 @@ export class HitsquadGameService {
     }
 
     private getNextRoundDelay() {
-        return generateDelay(30 * Timing.SECOND, 5 * Timing.MINUTE) + 8 * Timing.MINUTE;
+        return getRandomNumber(30 * Timing.SECOND, 5 * Timing.MINUTE) + 8 * Timing.MINUTE;
     }
 
     private scheduleNextRound() {

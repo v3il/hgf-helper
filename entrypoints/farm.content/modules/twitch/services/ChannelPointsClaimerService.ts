@@ -1,8 +1,7 @@
-import { debounce } from '@farm/utils';
-import { ContainerInstance, Service } from 'typedi';
+import { ContainerInstance } from 'typedi';
+import { debounce } from '@components/shared';
 import { TwitchElementsRegistry } from './TwitchElementsRegistry';
 
-@Service()
 export class ChannelPointsClaimerService {
     private readonly twitchElementsRegistry!: TwitchElementsRegistry;
     private chatInputContainerEl!: HTMLElement;

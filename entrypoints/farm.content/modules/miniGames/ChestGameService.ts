@@ -1,7 +1,6 @@
 import { ChatFacade } from '@farm/modules/chat';
-import { getRandomNumber } from '@farm/utils';
 import { Timing } from '@farm/consts';
-import { log } from '@components/shared';
+import { getRandomNumber, log } from '@components/shared';
 
 interface IParams {
     chatFacade: ChatFacade;
