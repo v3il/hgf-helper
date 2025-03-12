@@ -26,7 +26,7 @@ interface IRoundsData {
 
 const HITSQUAD_GAMES_ON_SCREEN = 12;
 
-export class HitsquadRunner {
+export class HitsquadGameService {
     readonly events;
 
     private readonly chatFacade: ChatFacade;

@@ -14,7 +14,7 @@ interface IParams {
     aiGeneratorService: AiGeneratorService
 }
 
-export class AkiraDrawingRunner {
+export class AkiraDrawingService {
     private readonly chatFacade: ChatFacade;
     private readonly settingsFacade: SettingsFacade;
     private readonly aiGeneratorService: AiGeneratorService;

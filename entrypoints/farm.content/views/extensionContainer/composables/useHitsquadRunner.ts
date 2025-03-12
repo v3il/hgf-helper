@@ -1,7 +1,7 @@
 import { Timing } from '@farm/consts';
 import { ChatFacade } from '@farm/modules/chat';
 import { TwitchFacade } from '@farm/modules/twitch';
-import { HitsquadRunner } from '@farm/modules/miniGames';
+import { HitsquadGameService } from '@farm/modules/miniGames';
 import { StreamFacade } from '@farm/modules/stream';
 import { SettingsFacade } from '@components/shared';
 
@@ -14,7 +14,7 @@ const HITSQUAD_GAMES_PER_DAY = 600;
 export const useHitsquadRunner = ({ el }: IParams) => {
     const chatFacade = ChatFacade.instance;
 
-    const gameService = new HitsquadRunner({
+    const gameService = new HitsquadGameService({
         chatFacade,
         streamFacade: StreamFacade.instance,
         twitchFacade: TwitchFacade.instance,

@@ -1,13 +1,13 @@
 import { ChatFacade } from '@farm/modules/chat';
 import { getRandomNumber } from '@farm/utils';
 import { Timing } from '@farm/consts';
-import { log, SettingsFacade } from '@components/shared';
+import { log } from '@components/shared';
 
 interface IParams {
     chatFacade: ChatFacade;
 }
 
-export class LootGameRunner {
+export class ChestGameService {
     private readonly chatFacade: ChatFacade;
 
     private isRunning!: boolean;
@@ -20,7 +20,7 @@ export class LootGameRunner {
     }
 
     start() {
-        log('Start Loot runner');
+        log('start Chest runner');
 
         this.isRunning = true;
         this.scheduleNextRound();
@@ -37,11 +37,11 @@ export class LootGameRunner {
     }
 
     private sendCommand() {
-        this.chatFacade.sendMessage(`!loot${getRandomNumber(1, 8)}`);
+        this.chatFacade.sendMessage(`!chest${getRandomNumber(1, 8)}`);
     }
 
     private getDelay() {
-        return getRandomNumber(Timing.MINUTE, 10 * Timing.MINUTE);
+        return getRandomNumber(30 * Timing.SECOND, 5 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {

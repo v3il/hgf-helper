@@ -1,4 +1,4 @@
-import { LootGameRunner } from '@farm/modules/miniGames';
+import { LootGameService } from '@farm/modules/miniGames';
 import { Timing } from '@farm/consts';
 import { StreamFacade } from '@farm/modules/stream';
 import { SettingsFacade } from '@components/shared';
@@ -11,7 +11,7 @@ interface IParams {
 export const useLootGameRunner = ({ el }: IParams) => {
     const settingsFacade = SettingsFacade.instance;
 
-    const lootGameRunner = new LootGameRunner({
+    const lootGameRunner = new LootGameService({
         chatFacade: ChatFacade.instance
     });
 

@@ -1,7 +1,7 @@
 import { Timing } from '@farm/consts';
 import { StreamFacade } from '@farm/modules/stream';
 import { SettingsFacade } from '@components/shared';
-import { ChestGameRunner } from '@farm/modules/miniGames';
+import { ChestGameService } from '@farm/modules/miniGames';
 import { ChatFacade } from '@farm/modules/chat';
 
 interface IParams {
@@ -11,7 +11,7 @@ interface IParams {
 export const useChestGameRunner = ({ el }: IParams) => {
     const settingsFacade = SettingsFacade.instance;
 
-    const chestGameRunner = new ChestGameRunner({
+    const chestGameRunner = new ChestGameService({
         chatFacade: ChatFacade.instance
     });
 

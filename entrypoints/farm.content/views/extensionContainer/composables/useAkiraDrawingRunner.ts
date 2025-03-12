@@ -1,4 +1,4 @@
-import { AkiraDrawingRunner } from '@farm/modules/miniGames';
+import { AkiraDrawingService } from '@farm/modules/miniGames';
 import { AiGeneratorService, SettingsFacade } from '@components/shared';
 import { Timing } from '@farm/consts';
 import { ChatFacade } from '@farm/modules/chat';
@@ -11,7 +11,7 @@ interface IParams {
 export const useAkiraDrawingRunner = ({ el }: IParams) => {
     const settingsFacade = SettingsFacade.instance;
 
-    const gameService = new AkiraDrawingRunner({
+    const gameService = new AkiraDrawingService({
         chatFacade: ChatFacade.instance,
         settingsFacade: SettingsFacade.instance,
         twitchFacade: TwitchFacade.instance,
