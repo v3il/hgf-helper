@@ -7,22 +7,31 @@ import {
 import './style.css';
 import { ChatFacade } from '@farm/modules/chat';
 import { getRandomNumber } from '@farm/utils';
-import template from './template.html?raw';
+import { Inject } from 'typedi';
+import { TwitchChatService } from '@farm/modules/chat/services';
+import { TwitchElementsRegistry } from '@farm/modules/twitch/services';
 import {
     antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks
 } from './checks';
+import template from './template.html?raw';
 
-interface IParams {
-    twitchFacade: TwitchFacade;
-    chatFacade: ChatFacade;
-    textDecoderService: OnScreenTextRecognizer;
-}
+// interface IParams {
+//     twitchFacade: TwitchFacade;
+//     chatFacade: ChatFacade;
+//     textDecoderService: OnScreenTextRecognizer;
+// }
 
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
-    private readonly twitchFacade;
-    private readonly chatFacade;
-    private readonly textDecoderService;
+
+    // @Inject()
+    private readonly twitchElementsRegistry!: TwitchElementsRegistry;
+
+    // @Inject()
+    private readonly twitchChatService!: TwitchChatService;
+
+    // @Inject()
+    private readonly textDecoderService!: OnScreenTextRecognizer;
 
     private statuses!: StreamStatus[];
 
@@ -36,19 +45,19 @@ export class StreamStatusService extends BasicView {
 
     private anticheatHandled = false;
 
-    constructor(params: IParams) {
+    constructor() {
         super(template);
 
-        this.twitchFacade = params.twitchFacade;
-        this.chatFacade = params.chatFacade;
-        this.textDecoderService = params.textDecoderService;
+        // this.twitchFacade = params.twitchFacade;
+        // this.chatFacade = params.chatFacade;
+        // this.textDecoderService = params.textDecoderService;
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
 
         this.mount(document.body);
     }
 
     async checkStreamStatus() {
-        const { activeVideoEl } = this.twitchFacade;
+        const { activeVideoEl } = this.twitchElementsRegistry;
 
         this.statuses = [StreamStatus.OK];
 
@@ -89,7 +98,7 @@ export class StreamStatusService extends BasicView {
             console.log(`Send anticheat in ${delay}!`);
 
             setTimeout(() => {
-                this.chatFacade.sendMessage('!anticheat');
+                this.twitchChatService.sendMessage('!anticheat');
             }, delay);
         }
     }

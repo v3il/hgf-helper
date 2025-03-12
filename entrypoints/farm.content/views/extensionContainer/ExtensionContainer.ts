@@ -41,7 +41,7 @@ export class ExtensionContainer extends BasicView {
         } = params;
 
         useDebugMode(twitchFacade);
-        useDelayRemover(streamFacade);
+        useDelayRemover();
         useStreamStatusChecker({ el: this.el, streamFacade });
 
         // useAkiraDrawingRunner({

@@ -1,38 +1,23 @@
-import { TwitchElementsRegistry, ChannelPointsClaimerService, AdsVideoResizerService } from './services';
+import { Container, ContainerInstance } from 'typedi';
+import { BasicFacade } from '@components/shared/BasicFacade';
+import { ChannelPointsClaimerService, TwitchElementsRegistry } from './services';
 
-interface ITwitchFacadeParams {
-    twitchElementsRegistry: TwitchElementsRegistry;
-    adsVideoResizerService: AdsVideoResizerService;
-    channelPointsClaimerService: ChannelPointsClaimerService;
-}
+export class TwitchFacade extends BasicFacade {
+    static container = Container.of('twitch');
 
-export class TwitchFacade {
-    static _instance: TwitchFacade;
+    static providers = [
+        TwitchElementsRegistry,
+        ChannelPointsClaimerService
+    ];
 
-    static get instance() {
-        if (!this._instance) {
-            const twitchElementsRegistry = new TwitchElementsRegistry();
-            const adsVideoResizerService = new AdsVideoResizerService({ twitchElementsRegistry });
-            const channelPointsClaimerService = new ChannelPointsClaimerService({ twitchElementsRegistry });
+    private readonly channelPointsClaimerService!: ChannelPointsClaimerService;
+    private readonly elementsRegistry!: TwitchElementsRegistry;
 
-            this._instance = new TwitchFacade({
-                twitchElementsRegistry,
-                adsVideoResizerService,
-                channelPointsClaimerService
-            });
-        }
+    constructor(container: ContainerInstance) {
+        super();
 
-        return this._instance;
-    }
-
-    private readonly elementsRegistry;
-    private readonly channelPointsClaimerService;
-    private readonly adsVideoResizerService;
-
-    constructor({ twitchElementsRegistry, channelPointsClaimerService, adsVideoResizerService }: ITwitchFacadeParams) {
-        this.elementsRegistry = twitchElementsRegistry;
-        this.adsVideoResizerService = adsVideoResizerService;
-        this.channelPointsClaimerService = channelPointsClaimerService;
+        this.channelPointsClaimerService = container.get(ChannelPointsClaimerService);
+        this.elementsRegistry = container.get(TwitchElementsRegistry);
     }
 
     get twitchUserName() {
@@ -58,7 +43,7 @@ export class TwitchFacade {
     init(callback: () => void) {
         this.elementsRegistry.onElementsReady(() => {
             this.enableChannelPointsClaimer();
-            this.enableAdsVideoResizer();
+            // this.enableAdsVideoResizer();
             callback();
         });
     }
@@ -68,6 +53,6 @@ export class TwitchFacade {
     }
 
     private enableAdsVideoResizer() {
-        this.adsVideoResizerService.enableResize();
+        // this.adsVideoResizerService.enableResize();
     }
 }

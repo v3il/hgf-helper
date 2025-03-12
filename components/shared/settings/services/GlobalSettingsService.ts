@@ -54,7 +54,7 @@ export class GlobalSettingsService {
     async loadSettings() {
         const settings = await this.storage.get([this.storageKey]);
 
-        log(`Global: ${settings[this.storageKey]}`);
+        log(`Global: ${JSON.stringify(settings[this.storageKey])}`);
 
         this._settings = {
             ...this._settings,

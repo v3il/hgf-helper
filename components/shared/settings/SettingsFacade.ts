@@ -1,35 +1,29 @@
+import { Container, ContainerInstance } from 'typedi';
 import {
-    LocalSettingsService, GlobalSettingsService, ILocalSettings, IGlobalSettings, GlobalSettingsKeys
+    LocalSettingsService, GlobalSettingsService, ILocalSettings, IGlobalSettings
 } from './services';
+import { BasicFacade } from '../BasicFacade';
 
-interface ISettingsFacadeParams {
-    localSettingsService: LocalSettingsService;
-    globalSettingsService: GlobalSettingsService;
-}
+export class SettingsFacade extends BasicFacade {
+    static container = Container.of('settings');
 
-export class SettingsFacade {
-    private static _instance: SettingsFacade;
+    static providers = [
+        { id: LocalSettingsService, factory: () => LocalSettingsService.create() },
+        { id: GlobalSettingsService, factory: () => GlobalSettingsService.create() }
+    ];
 
-    static get instance() {
-        if (!this._instance) {
-            const localSettingsService = LocalSettingsService.create();
-            const globalSettingsService = GlobalSettingsService.create();
+    private readonly globalSettingsService!: GlobalSettingsService;
+    private readonly localSettingsService!: LocalSettingsService;
 
-            this._instance = new SettingsFacade({
-                localSettingsService,
-                globalSettingsService
-            });
-        }
-
-        return this._instance;
+    static get instance(): SettingsFacade {
+        return super.instance;
     }
 
-    private readonly globalSettingsService;
-    private readonly localSettingsService;
+    constructor(container: ContainerInstance) {
+        super();
 
-    constructor({ localSettingsService, globalSettingsService }: ISettingsFacadeParams) {
-        this.globalSettingsService = globalSettingsService;
-        this.localSettingsService = localSettingsService;
+        this.globalSettingsService = container.get(GlobalSettingsService);
+        this.localSettingsService = container.get(LocalSettingsService);
     }
 
     get globalSettings() {

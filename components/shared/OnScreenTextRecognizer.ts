@@ -1,10 +1,7 @@
 import Tesseract, { OEM, PSM } from 'tesseract.js';
+import { Service } from 'typedi';
 
-interface ITextDecoderOptions {
-    rounds?: number;
-    confidence?: number;
-}
-
+@Service()
 export class OnScreenTextRecognizer {
     private readonly containerEl: HTMLElement;
     private worker!: Tesseract.Worker;

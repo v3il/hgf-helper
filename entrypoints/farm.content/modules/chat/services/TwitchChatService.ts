@@ -1,5 +1,7 @@
 import { isDev, Timing } from '@farm/consts';
+import { Service } from 'typedi';
 
+@Service()
 export class TwitchChatService {
     private readonly messageQueue: string[] = [];
 

@@ -1,3 +1,4 @@
+import { Service } from 'typedi';
 import { TwitchElementsRegistry } from './TwitchElementsRegistry';
 
 interface IAdsVideoResizerServiceParams {
@@ -7,6 +8,7 @@ interface IAdsVideoResizerServiceParams {
 const PICTURE_IN_PICTURE_CLASS = 'picture-by-picture-player';
 const PICTURE_IN_PICTURE_COLLAPSED_CLASS = 'picture-by-picture-player--collapsed';
 
+@Service()
 export class AdsVideoResizerService {
     private twitchElementsRegistry;
     private observer!: MutationObserver;

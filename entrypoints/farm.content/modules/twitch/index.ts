@@ -1,1 +1,1 @@
-export { TwitchFacade } from './TwitchFacade';
+export * from './TwitchFacade';

@@ -1,13 +1,15 @@
-import { debounce } from '../../../utils';
+import { debounce } from '@farm/utils';
+import { ContainerInstance, Service } from 'typedi';
 import { TwitchElementsRegistry } from './TwitchElementsRegistry';
 
+@Service()
 export class ChannelPointsClaimerService {
-    private twitchElementsRegistry;
+    private readonly twitchElementsRegistry!: TwitchElementsRegistry;
     private chatInputContainerEl!: HTMLElement;
     private observer!: MutationObserver;
 
-    constructor({ twitchElementsRegistry }: { twitchElementsRegistry: TwitchElementsRegistry }) {
-        this.twitchElementsRegistry = twitchElementsRegistry;
+    constructor(container: ContainerInstance) {
+        this.twitchElementsRegistry = container.get(TwitchElementsRegistry);
     }
 
     enableAutoClaim() {

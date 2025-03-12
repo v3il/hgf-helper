@@ -7,8 +7,6 @@ interface IParams {
     streamFacade: StreamFacade
 }
 
-const ANTI_CHEAT_DURATION = 2 * Timing.MINUTE;
-
 export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
     const brokenStreamHandler = useBrokenStreamHandler();
 

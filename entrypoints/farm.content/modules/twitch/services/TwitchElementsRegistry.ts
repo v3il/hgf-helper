@@ -1,6 +1,8 @@
-import { promisifiedSetTimeout } from '@components/shared';
+import { promisifiedSetTimeout } from '@components/shared/utils';
 import { Timing } from '@farm/consts';
+import { Service } from 'typedi';
 
+@Service()
 export class TwitchElementsRegistry {
     twitchUserName!: string;
 
