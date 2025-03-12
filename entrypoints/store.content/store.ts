@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { SettingsFacade } from '@components/shared';
 // @ts-ignore
 import { StreamElementsFacade } from './modules/streamElements';

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import './style.css';
 import { SettingsFacade, GlobalSettingsKeys } from '@components/shared';
 
