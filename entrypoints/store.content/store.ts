@@ -9,7 +9,7 @@ import { OffersList } from './views/offer/OffersList';
 
 export const start = () => {
     StreamElementsFacade.instance.init(async () => {
-        // console.clear();
+        console.clear();
 
         await SettingsFacade.instance.loadSettings();
         await StreamElementsFacade.instance.sortOffersByCost();
