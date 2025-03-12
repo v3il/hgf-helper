@@ -132,26 +132,3 @@ export const lootGameChecks: ICheck[] = [
         yPercent: 55.84239130434783
     }
 ];
-
-// export const lootGameChecks: ICheck[] = [
-//     {
-//         color: '#ab02f4',
-//         xPercent: 6.378600823045268,
-//         yPercent: 0.18281535648994515
-//     },
-//     {
-//         color: '#ca08f7',
-//         xPercent: 50.7201646090535,
-//         yPercent: 0.3656307129798903
-//     },
-//     {
-//         color: '#6a3abe',
-//         xPercent: 50.617283950617285,
-//         yPercent: 5.850091407678245
-//     },
-//     {
-//         color: '#6f38c5',
-//         xPercent: 10.390946502057613,
-//         yPercent: 6.032906764168191
-//     }
-// ];

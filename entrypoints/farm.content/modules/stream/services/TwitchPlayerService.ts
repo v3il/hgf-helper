@@ -1,7 +1,5 @@
 import { promisifiedSetTimeout } from '@components/shared';
-import { Service } from 'typedi';
 
-@Service()
 export class TwitchPlayerService {
     private readonly desiredQualities = [480, 720] as const;
     private readonly settingsButton: HTMLButtonElement;

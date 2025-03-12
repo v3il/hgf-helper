@@ -115,18 +115,13 @@ export class StreamStatusService extends BasicView {
 
     private isAntiCheat() {
         const failedChecks = this.checkPoints(antiCheatChecks);
-        const isAntiCheat = (failedChecks / antiCheatChecks.length) >= 0.5;
 
-        // this.log(`${failedChecks} / ${antiCheatChecks.length}`, isAntiCheat ? 'error' : 'info');
-
-        return isAntiCheat;
+        return (failedChecks / antiCheatChecks.length) >= 0.5;
     }
 
     private checkLootGame() {
         const previousStatus = this.isLootGame;
         const failedChecks = this.checkPoints(lootGameChecks);
-
-        // console.log(`Loot: ${failedChecks} / ${lootGameChecks.length}`, isLootGame ? 'error' : 'info');
 
         this.isLootGame = (failedChecks / lootGameChecks.length) >= 0.7;
 
@@ -138,8 +133,6 @@ export class StreamStatusService extends BasicView {
     private checkChestGame() {
         const previousStatus = this.isChestGame;
         const failedChecks = this.checkPoints(chestGameChecks);
-
-        // console.log(`Chest: ${failedChecks} / ${chestGameChecks.length}`, isAntiCheat ? 'error' : 'info');
 
         this.isChestGame = (failedChecks / chestGameChecks.length) >= 0.7;
 
