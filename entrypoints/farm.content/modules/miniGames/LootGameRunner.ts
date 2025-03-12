@@ -5,12 +5,10 @@ import { log, SettingsFacade } from '@components/shared';
 
 interface IParams {
     chatFacade: ChatFacade;
-    settingsFacade: SettingsFacade;
 }
 
 export class LootGameRunner {
     private readonly chatFacade: ChatFacade;
-    private readonly settingsFacade: SettingsFacade;
 
     private isRunning!: boolean;
     private timeoutId!: number;
@@ -19,7 +17,6 @@ export class LootGameRunner {
 
     constructor(params: IParams) {
         this.chatFacade = params.chatFacade;
-        this.settingsFacade = params.settingsFacade;
     }
 
     start() {

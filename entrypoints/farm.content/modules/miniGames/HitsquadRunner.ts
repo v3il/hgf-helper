@@ -5,7 +5,7 @@ import {
 } from '@components/shared';
 import { StreamFacade } from '@farm/modules/stream';
 import { TwitchFacade } from '@farm/modules/twitch';
-import { ChatFacade } from '../../chat';
+import { ChatFacade } from '../chat';
 
 interface IParams {
     chatFacade: ChatFacade;
@@ -93,7 +93,7 @@ export class HitsquadRunner {
         this.unsubscribe?.();
     }
 
-    participateOnce() {
+    participate() {
         this.chatFacade.sendMessage(Commands.HITSQUAD);
     }
 

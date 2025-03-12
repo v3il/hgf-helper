@@ -1,25 +1,32 @@
-import { MiniGamesFacade } from '@farm/modules/miniGames';
-import { SettingsFacade } from '@components/shared';
+import { AkiraDrawingRunner } from '@farm/modules/miniGames';
+import { AiGeneratorService, SettingsFacade } from '@components/shared';
 import { Timing } from '@farm/consts';
+import { ChatFacade } from '@farm/modules/chat';
+import { TwitchFacade } from '@farm/modules/twitch';
 
 interface IParams {
     el: HTMLElement;
-    settingsFacade: SettingsFacade;
-    miniGamesFacade: MiniGamesFacade
 }
 
-export const useAkiraDrawingRunner = ({
-    el, miniGamesFacade, settingsFacade
-}: IParams) => {
+export const useAkiraDrawingRunner = ({ el }: IParams) => {
+    const settingsFacade = SettingsFacade.instance;
+
+    const gameService = new AkiraDrawingRunner({
+        chatFacade: ChatFacade.instance,
+        settingsFacade: SettingsFacade.instance,
+        twitchFacade: TwitchFacade.instance,
+        aiGeneratorService: new AiGeneratorService()
+    });
+
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-toggle-akira-drawing]')!;
     const buttonEl = el.querySelector<HTMLInputElement>('[data-akira-drawing]')!;
     const timerEl = el.querySelector<HTMLButtonElement>('[data-akira-drawing-time]')!;
 
     let intervalId: number;
 
-    checkboxEl.checked = miniGamesFacade.isAkiraDrawRunning;
+    checkboxEl.checked = gameService.isRunning;
 
-    if (miniGamesFacade.isAkiraDrawRunning) {
+    if (gameService.isRunning) {
         setupTimer();
     }
 
@@ -34,11 +41,11 @@ export const useAkiraDrawingRunner = ({
         }
 
         if (checkboxEl.checked) {
-            miniGamesFacade.startAkiraDrawRunner();
+            gameService.start();
             return setupTimer();
         }
 
-        miniGamesFacade.stopAkiraDrawRunner();
+        gameService.stop();
         clearInterval(intervalId);
         timerEl.classList.add('hidden');
     });
@@ -48,7 +55,7 @@ export const useAkiraDrawingRunner = ({
             return showAlert();
         }
 
-        miniGamesFacade.participateAkiraDrawingOnce();
+        gameService.participate();
     });
 
     function isTokenProvided() {
@@ -65,7 +72,7 @@ export const useAkiraDrawingRunner = ({
     }
 
     function timerTick() {
-        const time = miniGamesFacade.timeUntilAkiraDrawingMessage;
+        const time = gameService.timeUntilMessage;
         const diff = time - Date.now();
         const minutes = Math.floor(diff / Timing.MINUTE).toString().padStart(2, '0');
         const seconds = Math.floor((diff % Timing.MINUTE) / Timing.SECOND).toString().padStart(2, '0');

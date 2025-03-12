@@ -1,19 +1,19 @@
-import { MiniGamesFacade } from '@farm/modules/miniGames';
 import { Timing } from '@farm/consts';
 import { StreamFacade } from '@farm/modules/stream';
 import { SettingsFacade } from '@components/shared';
+import { ChestGameRunner } from '@farm/modules/miniGames';
+import { ChatFacade } from '@farm/modules/chat';
 
 interface IParams {
     el: HTMLElement;
-    miniGamesFacade: MiniGamesFacade
-    streamFacade: StreamFacade;
-    settingsFacade: SettingsFacade;
 }
 
-export const useChestGameRunner = ({
-    el, miniGamesFacade, streamFacade, settingsFacade
-}: IParams) => {
-    const { chestGameRunner } = miniGamesFacade;
+export const useChestGameRunner = ({ el }: IParams) => {
+    const settingsFacade = SettingsFacade.instance;
+
+    const chestGameRunner = new ChestGameRunner({
+        chatFacade: ChatFacade.instance
+    });
 
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-detect-chest-game]')!;
     const buttonEl = el.querySelector<HTMLInputElement>('[data-chest-game-button]')!;
@@ -35,7 +35,7 @@ export const useChestGameRunner = ({
         }
     });
 
-    streamFacade.streamService.events.on('chest', (isRunning) => {
+    StreamFacade.instance.streamService.events.on('chest', (isRunning: boolean) => {
         buttonEl.disabled = !isRunning;
 
         if (!settingsFacade.localSettings.detectChestGame) return;

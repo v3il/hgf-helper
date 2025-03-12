@@ -4,7 +4,7 @@ import {
     SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log
 } from '@components/shared';
 import { TwitchFacade } from '@farm/modules/twitch';
-import { ChatFacade } from '../../../chat';
+import { ChatFacade } from '../../chat';
 import { getRandomTopic } from './gameTopics';
 
 interface IParams {
@@ -14,7 +14,7 @@ interface IParams {
     aiGeneratorService: AiGeneratorService
 }
 
-export class AkirasDrawingRunner {
+export class AkiraDrawingRunner {
     private readonly chatFacade: ChatFacade;
     private readonly settingsFacade: SettingsFacade;
     private readonly aiGeneratorService: AiGeneratorService;
@@ -62,7 +62,7 @@ export class AkirasDrawingRunner {
         this.unsubscribe?.();
     }
 
-    participateOnce() {
+    participate() {
         return this.sendCommand();
     }
 

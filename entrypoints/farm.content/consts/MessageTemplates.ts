@@ -2,19 +2,9 @@ const hitsquadRewards = [50, 100, 500, 1250]
     .flatMap((reward) => [reward, reward * 2])
     .map((reward) => `Has Been Sent ${reward} Clams!`.toLowerCase());
 
-const TOO_MANY_STRIKES = '{{name}} You have to many strikes to participate. Redeem the strike removal reward.'
-    .toLowerCase();
-
-// bbankrablo passed their activity check!
-// beautiful_life_de failed their activity check!
-
 export const MessageTemplates = Object.freeze({
     isHitsquadReward(message: string) {
         return hitsquadRewards.some((template) => message.includes(template));
-    },
-
-    isTooManyStrikesNotification(message: string, name: string) {
-        return message === TOO_MANY_STRIKES.replace('{{name}}', name);
     },
 
     isAkiraDrawReward(message: string) {

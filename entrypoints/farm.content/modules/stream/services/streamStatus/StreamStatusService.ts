@@ -7,30 +7,17 @@ import {
 import './style.css';
 import { ChatFacade } from '@farm/modules/chat';
 import { getRandomNumber } from '@farm/utils';
-import { Inject } from 'typedi';
-import { TwitchChatService } from '@farm/modules/chat/services';
-import { TwitchElementsRegistry } from '@farm/modules/twitch/services';
+import { ContainerInstance } from 'typedi';
 import {
     antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks
 } from './checks';
 import template from './template.html?raw';
 
-// interface IParams {
-//     twitchFacade: TwitchFacade;
-//     chatFacade: ChatFacade;
-//     textDecoderService: OnScreenTextRecognizer;
-// }
-
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
 
-    // @Inject()
-    private readonly twitchElementsRegistry!: TwitchElementsRegistry;
-
-    // @Inject()
-    private readonly twitchChatService!: TwitchChatService;
-
-    // @Inject()
+    private readonly twitchFacade!: TwitchFacade;
+    private readonly chatFacade!: ChatFacade;
     private readonly textDecoderService!: OnScreenTextRecognizer;
 
     private statuses!: StreamStatus[];
@@ -45,19 +32,19 @@ export class StreamStatusService extends BasicView {
 
     private anticheatHandled = false;
 
-    constructor() {
+    constructor(container: ContainerInstance) {
         super(template);
 
-        // this.twitchFacade = params.twitchFacade;
-        // this.chatFacade = params.chatFacade;
-        // this.textDecoderService = params.textDecoderService;
+        this.twitchFacade = container.get(TwitchFacade);
+        this.chatFacade = container.get(ChatFacade);
+        this.textDecoderService = container.get(OnScreenTextRecognizer);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
 
         this.mount(document.body);
     }
 
     async checkStreamStatus() {
-        const { activeVideoEl } = this.twitchElementsRegistry;
+        const { activeVideoEl } = this.twitchFacade;
 
         this.statuses = [StreamStatus.OK];
 
@@ -98,7 +85,7 @@ export class StreamStatusService extends BasicView {
             console.log(`Send anticheat in ${delay}!`);
 
             setTimeout(() => {
-                this.twitchChatService.sendMessage('!anticheat');
+                this.chatFacade.sendMessage('!anticheat');
             }, delay);
         }
     }
@@ -204,24 +191,4 @@ export class StreamStatusService extends BasicView {
     get isGiveawayFrenzy() {
         return this.statuses.includes(StreamStatus.FRENZY);
     }
-
-    // handleStreamStatusCheck() {
-    //     // streamFacade.checkStreamStatus();
-    //     // renderStatus();
-    //     // brokenStreamHandler.handleBrokenVideo(streamFacade.isVideoBroken);
-    //
-    //     const nextCheckDelay = this.getNextCheckDelay();
-    //
-    //     setTimeout(() => {
-    //         this.handleStreamStatusCheck();
-    //     }, nextCheckDelay);
-    // }
-    //
-    // private getNextCheckDelay() {
-    //     // if (streamFacade.isAntiCheatScreen) {
-    //     //     return ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
-    //     // }
-    //
-    //     return 2 * Timing.SECOND;
-    // }
 }

@@ -1,19 +1,19 @@
-import { MiniGamesFacade } from '@farm/modules/miniGames';
+import { LootGameRunner } from '@farm/modules/miniGames';
 import { Timing } from '@farm/consts';
 import { StreamFacade } from '@farm/modules/stream';
 import { SettingsFacade } from '@components/shared';
+import { ChatFacade } from '@farm/modules/chat';
 
 interface IParams {
     el: HTMLElement;
-    miniGamesFacade: MiniGamesFacade
-    streamFacade: StreamFacade
-    settingsFacade: SettingsFacade
 }
 
-export const useLootGameRunner = ({
-    el, miniGamesFacade, streamFacade, settingsFacade
-}: IParams) => {
-    const { lootGameRunner } = miniGamesFacade;
+export const useLootGameRunner = ({ el }: IParams) => {
+    const settingsFacade = SettingsFacade.instance;
+
+    const lootGameRunner = new LootGameRunner({
+        chatFacade: ChatFacade.instance
+    });
 
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-detect-loot-game]')!;
     const buttonEl = el.querySelector<HTMLInputElement>('[data-loot-game-button]')!;
@@ -35,7 +35,7 @@ export const useLootGameRunner = ({
         }
     });
 
-    streamFacade.streamService.events.on('loot', (isRunning) => {
+    StreamFacade.instance.streamService.events.on('loot', (isRunning: boolean) => {
         buttonEl.disabled = !isRunning;
 
         if (!settingsFacade.localSettings.detectLootGame) return;

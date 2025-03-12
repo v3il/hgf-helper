@@ -4,10 +4,10 @@ import { useBrokenStreamHandler } from './useBrokenStreamHandler';
 
 interface IParams {
     el: HTMLElement;
-    streamFacade: StreamFacade
 }
 
-export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
+export const useStreamStatusChecker = ({ el }: IParams) => {
+    const streamFacade = StreamFacade.instance;
     const brokenStreamHandler = useBrokenStreamHandler();
 
     function handleStreamStatusCheck() {
@@ -29,10 +29,6 @@ export const useStreamStatusChecker = ({ el, streamFacade }: IParams) => {
     }
 
     function getNextCheckDelay() {
-        // if (streamFacade.isAntiCheatScreen) {
-        //     return ANTI_CHEAT_DURATION + 10 * Timing.SECOND;
-        // }
-
         return 5 * Timing.SECOND;
     }
 

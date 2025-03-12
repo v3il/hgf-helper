@@ -1,22 +1,26 @@
-import { Commands, MessageTemplates, Timing } from '@farm/consts';
+import { Timing } from '@farm/consts';
 import { ChatFacade } from '@farm/modules/chat';
 import { TwitchFacade } from '@farm/modules/twitch';
-import { MiniGamesFacade } from '@farm/modules/miniGames';
+import { HitsquadRunner } from '@farm/modules/miniGames';
 import { StreamFacade } from '@farm/modules/stream';
+import { SettingsFacade } from '@components/shared';
 
 interface IParams {
     el: HTMLElement;
-    chatFacade: ChatFacade,
-    twitchFacade: TwitchFacade,
-    miniGamesFacade: MiniGamesFacade,
-    streamFacade: StreamFacade
 }
 
 const HITSQUAD_GAMES_PER_DAY = 600;
 
-export const useHitsquadRunner = ({
-    el, chatFacade, twitchFacade, miniGamesFacade, streamFacade
-}: IParams) => {
+export const useHitsquadRunner = ({ el }: IParams) => {
+    const chatFacade = ChatFacade.instance;
+
+    const gameService = new HitsquadRunner({
+        chatFacade,
+        streamFacade: StreamFacade.instance,
+        twitchFacade: TwitchFacade.instance,
+        settingsFacade: SettingsFacade.instance
+    });
+
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-toggle-hitsquad]')!;
     const buttonEl = el.querySelector<HTMLButtonElement>('[data-hitsquad-button]')!;
     const timerEl = el.querySelector<HTMLButtonElement>('[data-hitsquad-time]')!;
@@ -25,9 +29,9 @@ export const useHitsquadRunner = ({
     let intervalId: number;
     let unsubscribeCounter: () => void;
 
-    checkboxEl.checked = miniGamesFacade.isHitsquadRunning;
+    checkboxEl.checked = gameService.isRunning;
 
-    if (miniGamesFacade.isHitsquadRunning) {
+    if (gameService.isRunning) {
         setupTimer();
         setupCounter();
     }
@@ -36,22 +40,10 @@ export const useHitsquadRunner = ({
         checkboxEl.checked ? turnHitsquadOn() : turnHitsquadOff();
     });
 
-    miniGamesFacade.hitsquadEvents.on('end', turnHitsquadOff);
-
-    chatFacade.observeChat(({ message, isMe, isSystemMessage }) => {
-        const { twitchUserName } = twitchFacade;
-        const isStopCommand = isMe && message.startsWith(Commands.HITSQUAD) && message.split(' ')[1];
-        const isStrike = isSystemMessage && MessageTemplates.isTooManyStrikesNotification(message, twitchUserName);
-
-        if (isStopCommand || isStrike) {
-            turnHitsquadOff();
-        }
-    });
+    gameService.events.on('end', turnHitsquadOff);
 
     buttonEl.addEventListener('click', (event) => {
-        // if (event.ctrlKey || streamFacade.isStreamOk) {
-        miniGamesFacade.participateHitsquadOnce();
-        // }
+        gameService.participate();
     });
 
     function turnHitsquadOn() {
@@ -62,14 +54,14 @@ export const useHitsquadRunner = ({
             return turnHitsquadOff();
         }
 
-        miniGamesFacade.startHitsquadRunner(numericGamesCount);
+        gameService.start(numericGamesCount);
 
         setupTimer();
         setupCounter();
     }
 
     function turnHitsquadOff() {
-        miniGamesFacade.stopHitsquadRunner();
+        gameService.stop();
         checkboxEl.checked = false;
 
         clearInterval(intervalId);
@@ -86,7 +78,7 @@ export const useHitsquadRunner = ({
     }
 
     function timerTick() {
-        const time = miniGamesFacade.timeUntilHitsquadMessage;
+        const time = gameService.timeUntilMessage;
         const diff = time - Date.now();
         const minutes = Math.floor(diff / Timing.MINUTE).toString().padStart(2, '0');
         const seconds = Math.floor((diff % Timing.MINUTE) / Timing.SECOND).toString().padStart(2, '0');
@@ -96,12 +88,12 @@ export const useHitsquadRunner = ({
 
     function setupCounter() {
         renderCounter();
-        unsubscribeCounter = miniGamesFacade.hitsquadEvents.on('round', renderCounter);
+        unsubscribeCounter = gameService.events.on('round', renderCounter);
         counterEl.classList.remove('hidden');
     }
 
     function renderCounter() {
-        const roundsData = miniGamesFacade.hitsquadRoundsData;
+        const { roundsData } = gameService;
 
         counterEl.textContent = `[${roundsData.left}/${roundsData.total}]`;
     }

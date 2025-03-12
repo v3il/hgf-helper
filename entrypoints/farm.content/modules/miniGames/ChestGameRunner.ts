@@ -1,16 +1,14 @@
 import { ChatFacade } from '@farm/modules/chat';
 import { getRandomNumber } from '@farm/utils';
 import { Timing } from '@farm/consts';
-import { log, SettingsFacade } from '@components/shared';
+import { log } from '@components/shared';
 
 interface IParams {
     chatFacade: ChatFacade;
-    settingsFacade: SettingsFacade;
 }
 
 export class ChestGameRunner {
     private readonly chatFacade: ChatFacade;
-    private readonly settingsFacade: SettingsFacade;
 
     private isRunning!: boolean;
     private timeoutId!: number;
@@ -19,7 +17,6 @@ export class ChestGameRunner {
 
     constructor(params: IParams) {
         this.chatFacade = params.chatFacade;
-        this.settingsFacade = params.settingsFacade;
     }
 
     start() {

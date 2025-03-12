@@ -1,40 +1,29 @@
 import { OnScreenTextRecognizer } from '@components/shared';
+import { BasicFacade } from '@components/shared/BasicFacade';
+import { Container, ContainerInstance } from 'typedi';
 import { ChatFacade } from '@farm/modules/chat';
+import { TwitchFacade } from '@farm/modules/twitch';
 import { StreamStatusService, TwitchPlayerService } from './services';
-import { TwitchFacade } from '../twitch';
 
-interface IParams {
-    twitchPlayerService: TwitchPlayerService;
-    streamStatusService: StreamStatusService;
-}
+export class StreamFacade extends BasicFacade {
+    static container = Container.of('stream');
 
-export class StreamFacade {
-    static _instance: StreamFacade;
+    static providers = [
+        TwitchFacade,
+        ChatFacade,
+        OnScreenTextRecognizer,
+        StreamStatusService,
+        TwitchPlayerService
+    ];
 
-    static get instance() {
-        if (!this._instance) {
-            const twitchPlayerService = new TwitchPlayerService();
-            const streamStatusService = new StreamStatusService({
-                twitchFacade: TwitchFacade.instance,
-                chatFacade: ChatFacade.instance,
-                textDecoderService: new OnScreenTextRecognizer()
-            });
+    private readonly streamStatusService!: StreamStatusService;
+    private readonly twitchPlayerService!: TwitchPlayerService;
 
-            this._instance = new StreamFacade({
-                twitchPlayerService,
-                streamStatusService
-            });
-        }
+    constructor(container: ContainerInstance) {
+        super();
 
-        return this._instance;
-    }
-
-    private readonly streamStatusService;
-    private readonly twitchPlayerService;
-
-    constructor({ twitchPlayerService, streamStatusService }: IParams) {
-        this.streamStatusService = streamStatusService;
-        this.twitchPlayerService = twitchPlayerService;
+        this.streamStatusService = container.get(StreamStatusService);
+        this.twitchPlayerService = container.get(TwitchPlayerService);
     }
 
     get streamService() {
@@ -51,10 +40,6 @@ export class StreamFacade {
 
     get isStreamOk() {
         return this.streamStatusService.isStreamOk;
-    }
-
-    get isGiveawayFrenzy() {
-        return this.streamStatusService.isGiveawayFrenzy;
     }
 
     checkStreamStatus() {

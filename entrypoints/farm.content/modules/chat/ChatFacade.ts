@@ -1,34 +1,25 @@
+import { BasicFacade } from '@components/shared/BasicFacade';
+import { Container, ContainerInstance } from 'typedi';
+import { TwitchFacade } from '@farm/modules/twitch';
 import { IChatMessage, TwitchChatObserver, TwitchChatService } from './services';
-import { TwitchFacade } from '../twitch';
 
-interface IChatFacadeParams {
-    twitchChatService: TwitchChatService;
-    twitchChatObserver: TwitchChatObserver;
-}
+export class ChatFacade extends BasicFacade {
+    static container = Container.of('chat');
 
-export class ChatFacade {
-    static _instance: ChatFacade;
+    static providers = [
+        TwitchFacade,
+        TwitchChatService,
+        TwitchChatObserver
+    ];
 
-    static get instance() {
-        if (!this._instance) {
-            const twitchChatService = new TwitchChatService();
-            const twitchChatObserver = new TwitchChatObserver({ twitchFacade: TwitchFacade.instance });
+    private readonly chatObserver: TwitchChatObserver;
+    private readonly chatService: TwitchChatService;
 
-            this._instance = new ChatFacade({
-                twitchChatService,
-                twitchChatObserver
-            });
-        }
+    constructor(container: ContainerInstance) {
+        super();
 
-        return this._instance;
-    }
-
-    private chatObserver: TwitchChatObserver;
-    private chatService: TwitchChatService;
-
-    constructor({ twitchChatService, twitchChatObserver }: IChatFacadeParams) {
-        this.chatObserver = twitchChatObserver;
-        this.chatService = twitchChatService;
+        this.chatObserver = container.get(TwitchChatObserver);
+        this.chatService = container.get(TwitchChatService);
     }
 
     sendMessage(message: string) {

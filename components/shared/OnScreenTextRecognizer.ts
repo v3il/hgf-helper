@@ -1,7 +1,5 @@
 import Tesseract, { OEM, PSM } from 'tesseract.js';
-import { Service } from 'typedi';
 
-@Service()
 export class OnScreenTextRecognizer {
     private readonly containerEl: HTMLElement;
     private worker!: Tesseract.Worker;
