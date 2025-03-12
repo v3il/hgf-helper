@@ -178,15 +178,7 @@ export class StreamStatusService extends BasicView {
         return this.statuses.includes(StreamStatus.BROKEN);
     }
 
-    get isAntiCheatScreen() {
-        return this.statuses.includes(StreamStatus.ANTI_CHEAT);
-    }
-
     get isStreamOk() {
         return this.statuses.includes(StreamStatus.OK);
-    }
-
-    get isGiveawayFrenzy() {
-        return this.statuses.includes(StreamStatus.FRENZY);
     }
 }

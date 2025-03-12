@@ -15,21 +15,14 @@ export const useStreamStatusChecker = ({ el }: IParams) => {
         renderStatus();
         brokenStreamHandler.handleBrokenVideo(streamFacade.isVideoBroken);
 
-        const nextCheckDelay = getNextCheckDelay();
-
         setTimeout(() => {
             handleStreamStatusCheck();
-        }, nextCheckDelay);
+        }, 5 * Timing.SECOND);
     }
 
     function renderStatus() {
         el.classList.toggle('broken', streamFacade.isVideoBroken);
-        el.classList.toggle('anticheat', streamFacade.isAntiCheatScreen);
         el.classList.toggle('safe', streamFacade.isStreamOk);
-    }
-
-    function getNextCheckDelay() {
-        return 5 * Timing.SECOND;
     }
 
     handleStreamStatusCheck();

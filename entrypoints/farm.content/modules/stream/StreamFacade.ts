@@ -38,10 +38,6 @@ export class StreamFacade extends BasicFacade {
         return this.streamStatusService.isVideoBroken;
     }
 
-    get isAntiCheatScreen() {
-        return this.streamStatusService.isAntiCheatScreen;
-    }
-
     get isStreamOk() {
         return this.streamStatusService.isStreamOk;
     }
