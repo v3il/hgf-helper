@@ -8,7 +8,7 @@ interface IParams {
     el: HTMLElement;
 }
 
-export const useLootGameRunner = ({ el }: IParams) => {
+export const useLootGameService = ({ el }: IParams) => {
     const settingsFacade = SettingsFacade.instance;
 
     const lootGameRunner = new LootGameService({
@@ -21,11 +21,11 @@ export const useLootGameRunner = ({ el }: IParams) => {
 
     let intervalId: number;
 
-    checkboxEl.checked = settingsFacade.localSettings.detectLootGame;
+    checkboxEl.checked = settingsFacade.localSettings.lootGame;
 
     checkboxEl.addEventListener('change', () => {
         settingsFacade.updateLocalSettings({
-            detectLootGame: checkboxEl.checked
+            lootGame: checkboxEl.checked
         });
 
         if (!checkboxEl.checked) {
@@ -38,7 +38,7 @@ export const useLootGameRunner = ({ el }: IParams) => {
     StreamFacade.instance.streamService.events.on('loot', (isRunning: boolean) => {
         buttonEl.disabled = !isRunning;
 
-        if (!settingsFacade.localSettings.detectLootGame) return;
+        if (!settingsFacade.localSettings.lootGame) return;
 
         if (isRunning) {
             lootGameRunner.start();

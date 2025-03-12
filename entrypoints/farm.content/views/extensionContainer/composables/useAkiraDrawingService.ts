@@ -8,7 +8,7 @@ interface IParams {
     el: HTMLElement;
 }
 
-export const useAkiraDrawingRunner = ({ el }: IParams) => {
+export const useAkiraDrawingService = ({ el }: IParams) => {
     const settingsFacade = SettingsFacade.instance;
 
     const gameService = new AkiraDrawingService({

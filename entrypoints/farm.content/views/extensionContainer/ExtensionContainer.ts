@@ -1,11 +1,11 @@
 import './style.css';
 import { BasicView } from '@components/shared';
 import {
-    useChestGameRunner,
+    useChestGameService,
     useDebugMode,
     useDelayRemover,
-    useHitsquadRunner,
-    useLootGameRunner,
+    useHitsquadService,
+    useLootGameService,
     useStreamStatusChecker
 } from './composables';
 import template from './template.html?raw';
@@ -17,10 +17,10 @@ export class ExtensionContainer extends BasicView {
         useDebugMode();
         useDelayRemover();
         useStreamStatusChecker({ el: this.el });
-        useChestGameRunner({ el: this.el });
-        useLootGameRunner({ el: this.el });
-        useHitsquadRunner({ el: this.el });
+        useChestGameService({ el: this.el });
+        useLootGameService({ el: this.el });
+        useHitsquadService({ el: this.el });
 
-        // useAkiraDrawingRunner({ el: this.el });
+        // useAkiraDrawingService({ el: this.el });
     }
 }

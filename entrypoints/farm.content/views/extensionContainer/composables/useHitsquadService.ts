@@ -11,7 +11,7 @@ interface IParams {
 
 const HITSQUAD_GAMES_PER_DAY = 600;
 
-export const useHitsquadRunner = ({ el }: IParams) => {
+export const useHitsquadService = ({ el }: IParams) => {
     const chatFacade = ChatFacade.instance;
 
     const gameService = new HitsquadGameService({

@@ -1,22 +1,23 @@
 # HGF helper
 
 ## Overview
-This is a small extension for the Chrome browser that allows you to play mini-games on the .tv/hitsquadgodfather channel in semi-afk mode. It consists of two parts.
+This is a small extension for the Chrome-like browsers that allows you to play mini-games on the `.tv/hitsquadgodfather` channel in semi-afk mode.
 
 ### Twitch helper
 
-Overlay update that the extension works with: **Feb 24, 2025**
-
 A widget is placed on the stream page that allows you to play mini-games in semi-automatic mode. The main functions of the widget are
-1. automatically sends the `!hitsquad` command to the chat if the corresponding checkbox is enabled;
-1. adds a button to easily send the `!hitsquad` command in manual mode;
-2. automatically generates a question for Akira's drawing if the corresponding checkbox is checked;
-1. adds a button to easily participate in the Akira's drawing;
-1. automatically detect the anti-cheat screen and block the sending of commands. Scheduled commands will be sent automatically after the anti-cheat has finished;
-1. automatically removes the delay on the stream once a minute;
+1. automatically sends the `!hitsquad`, `!loot1-8`, `!chest1-8` commands to the chat if corresponding checkboxes are enabled;
+1. provides buttons to easily send the `!hitsquad`, `!loot1-8`, `!chest1-8` commands in manual mode;
+1. automatically generates a question for Akira's drawing if the corresponding checkbox is checked [*currently removed*];
+1. automatically handles the anti-cheat screen;
+1. automatically removes the delay on the stream every 5 minutes;
 1. automatically collects channel points;
 1. automatically refresh the stream page if there are problems with the video;
-1. all features continue to work while showing ads;
+1. all features keep working while showing an ads;
+
+#### Anti-cheat versions:
+- Prohibits sending commands during the anti-cheat screen - removed on Feb 27, 2025
+- Requires sending the `!anticheat' command during the anti-cheat screen - current, handled by the extension
 
 The appearance of the widget is shown in the image below:
 
@@ -51,4 +52,6 @@ Important information: Some customization is required for the widget to be avail
 4. On the extensions page (chrome://extensions/), click the "Update extensions" button.
 
 ## Disclaimer
-**The extension may stop working properly at any time. The author of the extension does not recommend leaving the stream unattended for long periods of time and is not responsible for any strikes received.**
+**The software was made to automate participation in mini-games on the channel and not to abuse. 
+It might stop working properly at any time with a new overlay update, use it at your own risk. \
+The author of the extension doesn't support account farms in any form and isn't responsible for any timeouts received.**

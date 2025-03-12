@@ -8,7 +8,7 @@ interface IParams {
     el: HTMLElement;
 }
 
-export const useChestGameRunner = ({ el }: IParams) => {
+export const useChestGameService = ({ el }: IParams) => {
     const settingsFacade = SettingsFacade.instance;
 
     const chestGameRunner = new ChestGameService({
@@ -21,11 +21,11 @@ export const useChestGameRunner = ({ el }: IParams) => {
 
     let intervalId: number;
 
-    checkboxEl.checked = settingsFacade.localSettings.detectChestGame;
+    checkboxEl.checked = settingsFacade.localSettings.chestGame;
 
     checkboxEl.addEventListener('change', () => {
         settingsFacade.updateLocalSettings({
-            detectChestGame: checkboxEl.checked
+            chestGame: checkboxEl.checked
         });
 
         if (!checkboxEl.checked) {
@@ -38,7 +38,7 @@ export const useChestGameRunner = ({ el }: IParams) => {
     StreamFacade.instance.streamService.events.on('chest', (isRunning: boolean) => {
         buttonEl.disabled = !isRunning;
 
-        if (!settingsFacade.localSettings.detectChestGame) return;
+        if (!settingsFacade.localSettings.chestGame) return;
 
         if (isRunning) {
             chestGameRunner.start();

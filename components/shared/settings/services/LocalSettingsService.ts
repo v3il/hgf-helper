@@ -4,8 +4,8 @@ export interface ILocalSettings {
     hitsquad: boolean,
     hitsquadRounds: number,
     akiraDrawing: boolean,
-    detectChestGame: boolean
-    detectLootGame: boolean
+    chestGame: boolean
+    lootGame: boolean
 }
 
 interface IParams {
@@ -27,8 +27,8 @@ export class LocalSettingsService {
         hitsquad: false,
         hitsquadRounds: 0,
         akiraDrawing: false,
-        detectChestGame: false,
-        detectLootGame: false
+        chestGame: false,
+        lootGame: false
     };
 
     constructor({ storage }: IParams) {
