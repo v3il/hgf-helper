@@ -1,5 +1,6 @@
 import { Timing } from '@farm/consts';
 import { SettingsFacade } from '@components/shared/settings';
+import { log } from '@components/shared/utils';
 
 interface IMessage {
     role: 'user';
@@ -52,9 +53,8 @@ export class AiGeneratorService {
 
             return response.choices[0]?.message?.content ?? '';
         } catch (error) {
-            console.error('Error:', error);
+            log(`AI generation error: ${error}`);
             return '';
-            // return this.generate(prompt, options);
         } finally {
             clearTimeout(timeout);
         }

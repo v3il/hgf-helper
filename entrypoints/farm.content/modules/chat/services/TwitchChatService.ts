@@ -1,7 +1,6 @@
 import { isDev, Timing } from '@farm/consts';
-import { Service } from 'typedi';
+import { log } from '@components/shared';
 
-@Service()
 export class TwitchChatService {
     private readonly messageQueue: string[] = [];
 
@@ -22,7 +21,7 @@ export class TwitchChatService {
     }
 
     private dispatchMessage(message: string) {
-        console.error('HGF-Helper: send', message);
+        log(`Send ${message}`);
 
         if (isDev) return;
 

@@ -15,7 +15,7 @@ export const useLootGameRunner = ({ el }: IParams) => {
         chatFacade: ChatFacade.instance
     });
 
-    const checkboxEl = el.querySelector<HTMLInputElement>('[data-detect-loot-game]')!;
+    const checkboxEl = el.querySelector<HTMLInputElement>('[data-loot-game]')!;
     const buttonEl = el.querySelector<HTMLInputElement>('[data-loot-game-button]')!;
     const timerEl = el.querySelector<HTMLButtonElement>('[data-loot-time]')!;
 

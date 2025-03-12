@@ -19,7 +19,7 @@ export class LootGameService {
     }
 
     start() {
-        log('Start Loot runner');
+        log('Start Loot service');
 
         this.isRunning = true;
         this.scheduleNextRound();

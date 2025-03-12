@@ -2,7 +2,7 @@ import { ColorService } from '@farm/modules/shared';
 import { StreamStatus, Timing } from '@farm/consts';
 import { TwitchFacade } from '@farm/modules/twitch';
 import {
-    BasicView, EventEmitter, getRandomNumber, log, OnScreenTextRecognizer
+    BasicView, EventEmitter, getRandomNumber, logDev, OnScreenTextRecognizer
 } from '@components/shared';
 import './style.css';
 import { ChatFacade } from '@farm/modules/chat';
@@ -49,8 +49,7 @@ export class StreamStatusService extends BasicView {
 
         if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
             this.statuses = [StreamStatus.BROKEN];
-            log(this.statuses);
-            log('Video is broken');
+            logDev('Video is broken');
             return;
         }
 
@@ -75,13 +74,13 @@ export class StreamStatusService extends BasicView {
 
         const result = await this.recognize();
 
-        console.error('AntiCheat result:', result);
+        logDev(`Anticheat result: ${result}`);
 
         if (result > 0.85) {
             const delay = getRandomNumber(3 * Timing.SECOND, 15 * Timing.SECOND);
 
             this.anticheatHandled = true;
-            console.log(`Send anticheat in ${delay}!`);
+            logDev(`Send anticheat in ${delay}!`);
 
             setTimeout(() => {
                 this.chatFacade.sendMessage('!anticheat');

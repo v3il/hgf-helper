@@ -19,7 +19,7 @@ export class ChestGameService {
     }
 
     start() {
-        log('start Chest runner');
+        log('Start Chest runner');
 
         this.isRunning = true;
         this.scheduleNextRound();

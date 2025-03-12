@@ -1,10 +1,31 @@
 import Tesseract, { OEM, PSM } from 'tesseract.js';
+import { isDev } from '@farm/consts';
 
 export class OnScreenTextRecognizer {
-    private readonly containerEl: HTMLElement;
+    private containerEl!: HTMLElement;
     private worker!: Tesseract.Worker;
 
     constructor() {
+        if (isDev) {
+            this.createPreviewContainer();
+        }
+    }
+
+    private async createWorker() {
+        const worker = await Tesseract.createWorker();
+
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        await worker.setParameters({
+            tessedit_ocr_engine_mode: OEM.LSTM_ONLY,
+            tessedit_pageseg_mode: PSM.SINGLE_LINE,
+            tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
+        });
+
+        return worker;
+    }
+
+    private createPreviewContainer() {
         this.containerEl = document.createElement('div');
 
         this.containerEl.style.position = 'fixed';
@@ -22,21 +43,11 @@ export class OnScreenTextRecognizer {
         document.body.appendChild(this.containerEl);
     }
 
-    private async createWorker() {
-        const worker = await Tesseract.createWorker();
-
-        await worker.loadLanguage('eng');
-        await worker.initialize('eng');
-        await worker.setParameters({
-            tessedit_ocr_engine_mode: OEM.LSTM_ONLY,
-            tessedit_pageseg_mode: PSM.SINGLE_LINE,
-            tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_ '
-        });
-
-        return worker;
-    }
-
     private attachPreview(canvas: HTMLCanvasElement) {
+        if (!isDev) {
+            return;
+        }
+
         this.containerEl.innerHTML = '';
         this.containerEl.appendChild(canvas);
     }
@@ -92,7 +103,7 @@ export class OnScreenTextRecognizer {
 
         const maxSimilarity = Math.max(...result.map(({ similarity }) => similarity));
 
-        this.containerEl.insertAdjacentHTML('beforeend', `<div>${maxSimilarity}</div>`);
+        this.containerEl?.insertAdjacentHTML('beforeend', `<div>${maxSimilarity}</div>`);
 
         return maxSimilarity;
     }

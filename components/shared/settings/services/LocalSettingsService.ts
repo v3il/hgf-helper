@@ -51,7 +51,7 @@ export class LocalSettingsService {
         try {
             this._settings = { ...this._settings, ...JSON.parse(settings) };
         } catch (e) {
-            console.error('Failed to parse settings', e);
+            log(`Failed to parse local settings: ${e}`);
         }
     }
 

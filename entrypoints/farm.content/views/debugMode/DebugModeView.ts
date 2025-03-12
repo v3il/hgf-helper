@@ -1,5 +1,5 @@
 import './style.css';
-import { BasicView } from '@components/shared';
+import { BasicView, log } from '@components/shared';
 import template from './template.html?raw';
 import { ColorService } from '../../modules/shared';
 import { TwitchFacade } from '../../modules/twitch';
@@ -68,7 +68,7 @@ export class DebugModeView extends BasicView {
         this.canvasEl.removeEventListener('click', this.clickHandler);
 
         if (this.checks.length) {
-            console.info(this.checks);
+            log(this.checks);
             this.checks = [];
         }
     }

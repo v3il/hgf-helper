@@ -15,7 +15,7 @@ export const useChestGameRunner = ({ el }: IParams) => {
         chatFacade: ChatFacade.instance
     });
 
-    const checkboxEl = el.querySelector<HTMLInputElement>('[data-detect-chest-game]')!;
+    const checkboxEl = el.querySelector<HTMLInputElement>('[data-chest-game]')!;
     const buttonEl = el.querySelector<HTMLInputElement>('[data-chest-game-button]')!;
     const timerEl = el.querySelector<HTMLButtonElement>('[data-chest-time]')!;
 

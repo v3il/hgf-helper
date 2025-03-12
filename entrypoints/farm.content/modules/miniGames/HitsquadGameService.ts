@@ -77,7 +77,7 @@ export class HitsquadGameService {
             this.saveState();
         }
 
-        log(`HGF helper: start Hitsquad runner with ${this.state.remainingRounds} rounds`);
+        log(`Start Hitsquad service with ${this.state.remainingRounds} rounds`);
 
         this.totalRounds = this.state.remainingRounds;
 

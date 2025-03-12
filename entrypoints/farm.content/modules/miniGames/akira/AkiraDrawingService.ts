@@ -47,7 +47,7 @@ export class AkiraDrawingService {
         this.timeUntilMessage = 0;
         this._isRunning = true;
 
-        log('HGF helper: start Akira drawing runner');
+        log('Start Akira drawing service');
 
         this.saveState();
         this.listenEvents();
