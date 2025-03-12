@@ -1,10 +1,10 @@
 import { Timing } from '@farm/consts';
-import { TwitchFacade } from '@farm/modules/twitch';
+import { StreamFacade } from '@farm/modules/stream';
 
 const DECREASE_DELAY_TIMEOUT = 5 * Timing.MINUTE;
 
 export const useDelayRemover = () => {
     setInterval(() => {
-        TwitchFacade.instance.decreaseVideoDelay();
+        StreamFacade.instance.decreaseVideoDelay();
     }, DECREASE_DELAY_TIMEOUT);
 };
