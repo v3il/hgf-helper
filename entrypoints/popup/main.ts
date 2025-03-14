@@ -15,7 +15,7 @@ import { Container } from 'typedi';
 
 const globalSettingsService = Container.get(GlobalSettingsService);
 
-setBasePath('../..'); // /assets
+setBasePath('../..'); // /public
 
 type Control = SlInput | SlRange | SlSwitch
 
