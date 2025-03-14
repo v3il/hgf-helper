@@ -16,14 +16,14 @@ export const buildConfig = ({ description, ...rest }: IParams): UserConfig => ({
 
         web_accessible_resources: [
             {
-                resources: ['farmMainWorldInjected.js'],
+                resources: ['twitchMainWorldInjected.js'],
                 matches: ['https://www.twitch.tv/*']
             }
         ]
     },
 
     alias: {
-        '@farm': resolve(__dirname, './entrypoints/farm.content'),
+        '@twitch': resolve(__dirname, './entrypoints/twitch.content'),
         '@components': resolve(__dirname, './components')
     },
 

@@ -1,4 +1,4 @@
-import { Timing } from '@farm/consts';
+import { Timing } from '@twitch/consts';
 import { SettingsFacade } from '@components/shared/settings';
 import { log } from '@components/shared/utils';
 

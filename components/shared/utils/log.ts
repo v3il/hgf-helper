@@ -1,4 +1,4 @@
-import { isDev } from '@farm/consts';
+import { isDev } from '@twitch/consts';
 
 export const log = (message: any) => {
     const time = new Date().toLocaleTimeString();

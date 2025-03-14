@@ -1,7 +1,7 @@
 import {
     OEM, PSM, createWorker, Worker
 } from 'tesseract.js';
-import { isDev } from '@farm/consts';
+import { isDev } from '@twitch/consts';
 
 export class OnScreenTextRecognizer {
     private containerEl!: HTMLElement;
