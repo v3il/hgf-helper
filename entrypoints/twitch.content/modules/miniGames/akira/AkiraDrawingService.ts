@@ -18,7 +18,7 @@ export class AkiraDrawingService {
     private readonly chatFacade: ChatFacade;
     private readonly settingsService: LocalSettingsService;
     private readonly aiGeneratorService: AiGeneratorService;
-    private readonly twitchElementsRegistry: TwitchUIService;
+    private readonly twitchUIService: TwitchUIService;
 
     private _isRunning;
     private timeoutId!: number;
@@ -30,7 +30,7 @@ export class AkiraDrawingService {
         this.settingsService = settingsService;
         this.aiGeneratorService = aiGeneratorService;
 
-        this.twitchElementsRegistry = Container.get(TwitchUIService);
+        this.twitchUIService = Container.get(TwitchUIService);
 
         this._isRunning = settingsService.settings.akiraDrawing;
 
@@ -109,7 +109,7 @@ export class AkiraDrawingService {
     }
 
     private generatePrompt() {
-        const game = this.twitchElementsRegistry.currentGame.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '');
+        const game = this.twitchUIService.currentGame.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '');
         const topic = getRandomTopic();
 
         // eslint-disable-next-line max-len

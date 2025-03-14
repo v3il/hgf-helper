@@ -14,13 +14,13 @@ export interface IChatMessage {
 }
 
 export class TwitchChatObserver {
-    private readonly twitchElementsRegistry!: TwitchUIService;
+    private readonly twitchUIService!: TwitchUIService;
 
     readonly events;
     private observer;
 
     constructor() {
-        this.twitchElementsRegistry = Container.get(TwitchUIService);
+        this.twitchUIService = Container.get(TwitchUIService);
 
         this.events = EventEmitter.create<{
             message: IChatMessage;
@@ -31,7 +31,7 @@ export class TwitchChatObserver {
         // Skip initial messages
         // todo: find a better way
         setTimeout(() => {
-            this.observer.observe(this.twitchElementsRegistry.chatScrollableAreaEl!, { childList: true });
+            this.observer.observe(this.twitchUIService.chatScrollableAreaEl!, { childList: true });
         }, 5 * Timing.SECOND);
     }
 
@@ -62,7 +62,7 @@ export class TwitchChatObserver {
         const userName = userNameEl.textContent!.toLowerCase();
         const message = messageEl!.textContent!.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather' || userName === 'hitsquadplays';
-        const isMe = this.twitchElementsRegistry.twitchUserName === userName;
+        const isMe = this.twitchUIService.twitchUserName === userName;
         const isHitsquadReward = isSystemMessage && MessageTemplates.isHitsquadReward(message);
         const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
 

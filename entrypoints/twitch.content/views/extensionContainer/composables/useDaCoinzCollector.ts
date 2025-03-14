@@ -5,9 +5,9 @@ import { GlobalSettingsService } from '@components/settings';
 
 export const useDaCoinzCollector = () => {
     let observer: MutationObserver | null = null;
-    const twitchElementsRegistry = Container.get(TwitchUIService);
+    const twitchUIService = Container.get(TwitchUIService);
     const settingsService = Container.get(GlobalSettingsService);
-    const chatInputContainerEl = twitchElementsRegistry.chatButtonsContainerEl! as HTMLElement;
+    const chatInputContainerEl = twitchUIService.chatButtonsContainerEl! as HTMLElement;
 
     const claimChannelPoints = debounce(() => {
         const claimButtonEl = chatInputContainerEl.querySelector('[aria-label="Claim Bonus"]');

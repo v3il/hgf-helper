@@ -17,7 +17,7 @@ import template from './template.html?raw';
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
 
-    private readonly twitchElementsRegistry!: TwitchUIService;
+    private readonly twitchUIService!: TwitchUIService;
     private readonly chatFacade!: ChatFacade;
     private readonly textDecoderService!: OnScreenTextRecognizer;
 
@@ -36,7 +36,7 @@ export class StreamStatusService extends BasicView {
     constructor(container: ContainerInstance) {
         super(template);
 
-        this.twitchElementsRegistry = Container.get(TwitchUIService);
+        this.twitchUIService = Container.get(TwitchUIService);
         this.chatFacade = container.get(ChatFacade);
         this.textDecoderService = container.get(OnScreenTextRecognizer);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
@@ -45,7 +45,7 @@ export class StreamStatusService extends BasicView {
     }
 
     async checkStreamStatus() {
-        const { activeVideoEl } = this.twitchElementsRegistry;
+        const { activeVideoEl } = this.twitchUIService;
 
         this.statuses = [StreamStatus.OK];
 
@@ -91,7 +91,7 @@ export class StreamStatusService extends BasicView {
     }
 
     async recognize() {
-        return this.recognizeText(anticheatName, this.twitchElementsRegistry.twitchUserName);
+        return this.recognizeText(anticheatName, this.twitchUIService.twitchUserName);
     }
 
     private async recognizeText(points: ICheck[], str: string) {

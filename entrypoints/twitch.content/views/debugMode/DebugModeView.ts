@@ -14,7 +14,7 @@ interface IDebugModeCheck {
 
 export class DebugModeView extends BasicView {
     private readonly canvasEl;
-    private readonly twitchElementsRegistry;
+    private readonly twitchUIService;
 
     private isActive = false;
     private checks: IDebugModeCheck[] = [];
@@ -22,7 +22,7 @@ export class DebugModeView extends BasicView {
     constructor() {
         super(template);
 
-        this.twitchElementsRegistry = Container.get(TwitchUIService);
+        this.twitchUIService = Container.get(TwitchUIService);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-debug-mode-canvas]')!;
         this.clickHandler = this.clickHandler.bind(this);
 
@@ -30,7 +30,7 @@ export class DebugModeView extends BasicView {
     }
 
     private renderVideoFrame() {
-        const videoEl = this.twitchElementsRegistry.activeVideoEl;
+        const videoEl = this.twitchUIService.activeVideoEl;
 
         if (!videoEl) {
             return;

@@ -32,7 +32,7 @@ export class HitsquadGameService {
     private readonly chatFacade: ChatFacade;
     private readonly streamFacade: StreamFacade;
     private readonly settingsService: LocalSettingsService;
-    private readonly twitchElementsRegistry: TwitchUIService;
+    private readonly twitchUIService: TwitchUIService;
 
     timeUntilMessage!: number;
     private totalRounds!: number;
@@ -46,7 +46,7 @@ export class HitsquadGameService {
         this.streamFacade = streamFacade;
         this.settingsService = settingsService;
 
-        this.twitchElementsRegistry = Container.get(TwitchUIService);
+        this.twitchUIService = Container.get(TwitchUIService);
 
         this.events = EventEmitter.create<{
             round: void,
@@ -123,7 +123,7 @@ export class HitsquadGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.twitchElementsRegistry.isAdsPhase) {
+        if (this.twitchUIService.isAdsPhase) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
