@@ -1,6 +1,4 @@
-import {
-    OEM, PSM, createWorker, Worker
-} from 'tesseract.js';
+import { OEM, PSM, createWorker, Worker } from 'tesseract.js';
 import { isDev } from '@components/consts';
 
 export class OnScreenTextRecognizer {
