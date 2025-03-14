@@ -1,8 +1,7 @@
 import { DebugModeView } from '@twitch/views';
-import { TwitchFacade } from '@twitch/modules/twitch';
 
 export const useDebugMode = () => {
-    const debugModeView = new DebugModeView(TwitchFacade.instance);
+    const debugModeView = new DebugModeView();
 
     window.document.addEventListener('keydown', (event) => {
         // Ctrl + 0

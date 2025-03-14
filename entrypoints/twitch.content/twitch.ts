@@ -1,11 +1,14 @@
 import 'reflect-metadata';
-import { TwitchFacade } from '@twitch/modules/twitch';
 import { isDev } from '@twitch/consts';
 import { log, SettingsFacade } from '@components/shared';
 import { ExtensionContainer } from '@twitch/views';
+import { Container } from 'typedi';
+import { TwitchElementsRegistry } from '@twitch/modules';
 
 export const main = () => {
-    TwitchFacade.instance.init(async () => {
+    const twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+
+    twitchElementsRegistry.onElementsReady(async () => {
         console.clear();
         log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 

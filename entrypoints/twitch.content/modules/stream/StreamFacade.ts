@@ -2,14 +2,12 @@ import { OnScreenTextRecognizer } from '@components/shared';
 import { BasicFacade } from '@components/shared/BasicFacade';
 import { Container, ContainerInstance } from 'typedi';
 import { ChatFacade } from '@twitch/modules/chat';
-import { TwitchFacade } from '@twitch/modules/twitch';
 import { StreamStatusService, TwitchPlayerService } from './services';
 
 export class StreamFacade extends BasicFacade {
     static container = Container.of('stream');
 
     static providers = [
-        TwitchFacade,
         ChatFacade,
         OnScreenTextRecognizer,
         StreamStatusService,

@@ -3,14 +3,14 @@ import {
     promisifiedSetTimeout, EventEmitter, SettingsFacade, log, UnsubscribeTrigger, getRandomNumber
 } from '@components/shared';
 import { StreamFacade } from '@twitch/modules/stream';
-import { TwitchFacade } from '@twitch/modules/twitch';
+import { Container } from 'typedi';
+import { TwitchElementsRegistry } from '@twitch/modules';
 import { ChatFacade } from '../chat';
 
 interface IParams {
     chatFacade: ChatFacade;
     streamFacade: StreamFacade;
     settingsFacade: SettingsFacade;
-    twitchFacade: TwitchFacade
 }
 
 interface IHitsquadRunnerState {
@@ -31,7 +31,7 @@ export class HitsquadGameService {
     private readonly chatFacade: ChatFacade;
     private readonly streamFacade: StreamFacade;
     private readonly settingsFacade: SettingsFacade;
-    private readonly twitchFacade: TwitchFacade;
+    private readonly twitchElementsRegistry: TwitchElementsRegistry;
 
     timeUntilMessage!: number;
     private totalRounds!: number;
@@ -40,13 +40,12 @@ export class HitsquadGameService {
     private lastHitsquadRewardTimestamp!: number;
     private unsubscribe!: UnsubscribeTrigger;
 
-    constructor({
-        chatFacade, streamFacade, settingsFacade, twitchFacade
-    }: IParams) {
+    constructor({ chatFacade, streamFacade, settingsFacade }: IParams) {
         this.chatFacade = chatFacade;
         this.streamFacade = streamFacade;
         this.settingsFacade = settingsFacade;
-        this.twitchFacade = twitchFacade;
+
+        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
 
         this.events = EventEmitter.create<{
             round: void,
@@ -123,7 +122,7 @@ export class HitsquadGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.twitchFacade.isAdsPhase) {
+        if (this.twitchElementsRegistry.isAdsPhase) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;

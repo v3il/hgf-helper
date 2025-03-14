@@ -1,9 +1,11 @@
 import { debounce, SettingsFacade } from '@components/shared';
-import { TwitchFacade } from '@twitch/modules/twitch';
+import { Container } from 'typedi';
+import { TwitchElementsRegistry } from '@twitch/modules';
 
 export const useDaCoinzCollector = () => {
     let observer: MutationObserver | null = null;
-    const chatInputContainerEl = TwitchFacade.instance.chatButtonsContainerEl! as HTMLElement;
+    const twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+    const chatInputContainerEl = twitchElementsRegistry.chatButtonsContainerEl! as HTMLElement;
 
     const claimChannelPoints = debounce(() => {
         const claimButtonEl = chatInputContainerEl.querySelector('[aria-label="Claim Bonus"]');

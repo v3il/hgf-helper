@@ -1,8 +1,9 @@
 import './style.css';
 import { BasicView, log } from '@components/shared';
+import { Container } from 'typedi';
+import { TwitchElementsRegistry } from '@twitch/modules';
 import template from './template.html?raw';
 import { ColorService } from '../../modules/shared';
-import { TwitchFacade } from '../../modules/twitch';
 
 interface IDebugModeCheck {
     color: string;
@@ -12,15 +13,15 @@ interface IDebugModeCheck {
 
 export class DebugModeView extends BasicView {
     private readonly canvasEl;
-    private readonly twitchFacade;
+    private readonly twitchElementsRegistry;
 
     private isActive = false;
     private checks: IDebugModeCheck[] = [];
 
-    constructor(twitchFacade: TwitchFacade) {
+    constructor() {
         super(template);
 
-        this.twitchFacade = twitchFacade;
+        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-debug-mode-canvas]')!;
         this.clickHandler = this.clickHandler.bind(this);
 
@@ -28,7 +29,7 @@ export class DebugModeView extends BasicView {
     }
 
     private renderVideoFrame() {
-        const videoEl = this.twitchFacade.activeVideoEl;
+        const videoEl = this.twitchElementsRegistry.activeVideoEl;
 
         if (!videoEl) {
             return;

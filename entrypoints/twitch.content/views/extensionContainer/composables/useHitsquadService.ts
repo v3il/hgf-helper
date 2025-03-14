@@ -1,6 +1,5 @@
 import { Timing } from '@twitch/consts';
 import { ChatFacade } from '@twitch/modules/chat';
-import { TwitchFacade } from '@twitch/modules/twitch';
 import { HitsquadGameService } from '@twitch/modules/miniGames';
 import { StreamFacade } from '@twitch/modules/stream';
 import { SettingsFacade } from '@components/shared';
@@ -17,7 +16,6 @@ export const useHitsquadService = ({ el }: IParams) => {
     const gameService = new HitsquadGameService({
         chatFacade,
         streamFacade: StreamFacade.instance,
-        twitchFacade: TwitchFacade.instance,
         settingsFacade: SettingsFacade.instance
     });
 

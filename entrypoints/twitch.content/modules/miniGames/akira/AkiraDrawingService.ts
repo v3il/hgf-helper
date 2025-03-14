@@ -2,13 +2,13 @@ import { Timing } from '@twitch/consts';
 import {
     SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log, getRandomNumber
 } from '@components/shared';
-import { TwitchFacade } from '@twitch/modules/twitch';
+import { Container } from 'typedi';
+import { TwitchElementsRegistry } from '@twitch/modules';
 import { ChatFacade } from '../../chat';
 import { getRandomTopic } from './gameTopics';
 
 interface IParams {
     chatFacade: ChatFacade;
-    twitchFacade: TwitchFacade;
     settingsFacade: SettingsFacade,
     aiGeneratorService: AiGeneratorService
 }
@@ -17,20 +17,19 @@ export class AkiraDrawingService {
     private readonly chatFacade: ChatFacade;
     private readonly settingsFacade: SettingsFacade;
     private readonly aiGeneratorService: AiGeneratorService;
-    private readonly twitchFacade: TwitchFacade;
+    private readonly twitchElementsRegistry: TwitchElementsRegistry;
 
     private _isRunning;
     private timeoutId!: number;
     private unsubscribe!: UnsubscribeTrigger;
     timeUntilMessage: number = 0;
 
-    constructor({
-        chatFacade, settingsFacade, aiGeneratorService, twitchFacade
-    }: IParams) {
+    constructor({ chatFacade, settingsFacade, aiGeneratorService }: IParams) {
         this.chatFacade = chatFacade;
         this.settingsFacade = settingsFacade;
         this.aiGeneratorService = aiGeneratorService;
-        this.twitchFacade = twitchFacade;
+
+        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
 
         this._isRunning = this.settingsFacade.localSettings.akiraDrawing;
 
@@ -109,7 +108,7 @@ export class AkiraDrawingService {
     }
 
     private generatePrompt() {
-        const game = this.twitchFacade.currentGame.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '');
+        const game = this.twitchElementsRegistry.currentGame.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '');
         const topic = getRandomTopic();
 
         // eslint-disable-next-line max-len

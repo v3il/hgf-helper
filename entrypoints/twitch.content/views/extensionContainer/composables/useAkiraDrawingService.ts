@@ -2,7 +2,6 @@ import { AkiraDrawingService } from '@twitch/modules/miniGames';
 import { AiGeneratorService, SettingsFacade } from '@components/shared';
 import { Timing } from '@twitch/consts';
 import { ChatFacade } from '@twitch/modules/chat';
-import { TwitchFacade } from '@twitch/modules/twitch';
 
 interface IParams {
     el: HTMLElement;
@@ -14,7 +13,6 @@ export const useAkiraDrawingService = ({ el }: IParams) => {
     const gameService = new AkiraDrawingService({
         chatFacade: ChatFacade.instance,
         settingsFacade: SettingsFacade.instance,
-        twitchFacade: TwitchFacade.instance,
         aiGeneratorService: new AiGeneratorService()
     });
 

@@ -1,7 +1,7 @@
 import { EventEmitter } from '@components/shared';
 import { MessageTemplates, Timing } from '@twitch/consts';
-import { ContainerInstance } from 'typedi';
-import { TwitchFacade } from '../../twitch';
+import { Container } from 'typedi';
+import { TwitchElementsRegistry } from '@twitch/modules';
 
 export interface IChatMessage {
     userName: string;
@@ -13,23 +13,24 @@ export interface IChatMessage {
 }
 
 export class TwitchChatObserver {
-    private readonly twitchFacade!: TwitchFacade;
+    private readonly twitchElementsRegistry!: TwitchElementsRegistry;
 
     readonly events;
     private observer;
 
-    constructor(container: ContainerInstance) {
+    constructor() {
+        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+
         this.events = EventEmitter.create<{
             message: IChatMessage;
         }>();
 
-        this.twitchFacade = container.get(TwitchFacade);
         this.observer = this.#createObserver();
 
         // Skip initial messages
         // todo: find a better way
         setTimeout(() => {
-            this.observer.observe(this.twitchFacade.chatScrollableAreaEl!, { childList: true });
+            this.observer.observe(this.twitchElementsRegistry.chatScrollableAreaEl!, { childList: true });
         }, 5 * Timing.SECOND);
     }
 
@@ -60,7 +61,7 @@ export class TwitchChatObserver {
         const userName = userNameEl.textContent!.toLowerCase();
         const message = messageEl!.textContent!.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather' || userName === 'hitsquadplays';
-        const isMe = this.twitchFacade.twitchUserName === userName;
+        const isMe = this.twitchElementsRegistry.twitchUserName === userName;
         const isHitsquadReward = isSystemMessage && MessageTemplates.isHitsquadReward(message);
         const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
 

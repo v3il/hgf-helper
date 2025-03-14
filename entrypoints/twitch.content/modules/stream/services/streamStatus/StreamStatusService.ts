@@ -1,12 +1,12 @@
 import { ColorService } from '@twitch/modules/shared';
 import { StreamStatus, Timing } from '@twitch/consts';
-import { TwitchFacade } from '@twitch/modules/twitch';
 import {
     BasicView, EventEmitter, getRandomNumber, logDev, OnScreenTextRecognizer
 } from '@components/shared';
 import './style.css';
 import { ChatFacade } from '@twitch/modules/chat';
-import { ContainerInstance } from 'typedi';
+import { Container, ContainerInstance } from 'typedi';
+import { TwitchElementsRegistry } from '@twitch/modules';
 import {
     antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks
 } from './checks';
@@ -15,7 +15,7 @@ import template from './template.html?raw';
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
 
-    private readonly twitchFacade!: TwitchFacade;
+    private readonly twitchElementsRegistry!: TwitchElementsRegistry;
     private readonly chatFacade!: ChatFacade;
     private readonly textDecoderService!: OnScreenTextRecognizer;
 
@@ -34,7 +34,7 @@ export class StreamStatusService extends BasicView {
     constructor(container: ContainerInstance) {
         super(template);
 
-        this.twitchFacade = container.get(TwitchFacade);
+        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
         this.chatFacade = container.get(ChatFacade);
         this.textDecoderService = container.get(OnScreenTextRecognizer);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
@@ -43,7 +43,7 @@ export class StreamStatusService extends BasicView {
     }
 
     async checkStreamStatus() {
-        const { activeVideoEl } = this.twitchFacade;
+        const { activeVideoEl } = this.twitchElementsRegistry;
 
         this.statuses = [StreamStatus.OK];
 
@@ -89,7 +89,7 @@ export class StreamStatusService extends BasicView {
     }
 
     async recognize() {
-        return this.recognizeText(anticheatName, this.twitchFacade.twitchUserName);
+        return this.recognizeText(anticheatName, this.twitchElementsRegistry.twitchUserName);
     }
 
     private async recognizeText(points: ICheck[], str: string) {

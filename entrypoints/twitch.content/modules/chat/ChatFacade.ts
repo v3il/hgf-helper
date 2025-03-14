@@ -1,13 +1,11 @@
 import { BasicFacade } from '@components/shared/BasicFacade';
 import { Container, ContainerInstance } from 'typedi';
-import { TwitchFacade } from '@twitch/modules/twitch';
 import { IChatMessage, TwitchChatObserver, TwitchChatService } from './services';
 
 export class ChatFacade extends BasicFacade {
     static container = Container.of('chat');
 
     static providers = [
-        TwitchFacade,
         TwitchChatService,
         TwitchChatObserver
     ];
