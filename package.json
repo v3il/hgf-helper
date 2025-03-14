@@ -17,19 +17,19 @@
     "lint:fix": "eslint . --ext .ts,.js --fix"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.280",
-    "@typescript-eslint/eslint-plugin": "^5.17.0",
-    "@typescript-eslint/parser": "^5.17.0",
+    "@types/chrome": "^0.0.309",
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
     "eslint": "^8.35.0",
     "eslint-config-airbnb": "^19.0.4",
-    "release-it": "^18.1.1",
-    "typescript": "^5.6.3",
+    "release-it": "^18.1.2",
+    "typescript": "^5.8.2",
     "vite-plugin-eslint": "^1.8.1",
-    "wxt": "^0.19.13"
+    "wxt": "^0.19.29"
   },
   "dependencies": {
     "reflect-metadata": "^0.2.2",
-    "tesseract.js": "^4.1.1",
+    "tesseract.js": "^6.0.0",
     "typedi": "^0.10.0"
   }
 }

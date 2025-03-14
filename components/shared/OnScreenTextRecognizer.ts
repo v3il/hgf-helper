@@ -1,9 +1,11 @@
-import Tesseract, { OEM, PSM } from 'tesseract.js';
+import {
+    OEM, PSM, createWorker, Worker
+} from 'tesseract.js';
 import { isDev } from '@farm/consts';
 
 export class OnScreenTextRecognizer {
     private containerEl!: HTMLElement;
-    private worker!: Tesseract.Worker;
+    private worker!: Worker;
 
     constructor() {
         if (isDev) {
@@ -12,10 +14,8 @@ export class OnScreenTextRecognizer {
     }
 
     private async createWorker() {
-        const worker = await Tesseract.createWorker();
+        const worker = await createWorker('eng');
 
-        await worker.loadLanguage('eng');
-        await worker.initialize('eng');
         await worker.setParameters({
             tessedit_ocr_engine_mode: OEM.LSTM_ONLY,
             tessedit_pageseg_mode: PSM.SINGLE_LINE,

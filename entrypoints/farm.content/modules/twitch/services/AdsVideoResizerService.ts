@@ -62,12 +62,12 @@ export class AdsVideoResizerService {
 
         document.body.appendChild(adsVideoEl);
 
-        adsVideoEl.style.position = 'fixed';
-        adsVideoEl.style.zIndex = '999999';
-        adsVideoEl.style.top = `${mainVideoBounds.top}px`;
-        adsVideoEl.style.left = `${mainVideoBounds.left}px`;
-        adsVideoEl.style.width = `${mainVideoBounds.width}px`;
-        adsVideoEl.style.height = `${mainVideoBounds.height}px`;
-        adsVideoEl.style.border = '2px solid red';
+        // adsVideoEl.style.position = 'fixed';
+        // adsVideoEl.style.zIndex = '999999';
+        // adsVideoEl.style.top = `${mainVideoBounds.top}px`;
+        // adsVideoEl.style.left = `${mainVideoBounds.left}px`;
+        // adsVideoEl.style.width = `${mainVideoBounds.width}px`;
+        // adsVideoEl.style.height = `${mainVideoBounds.height}px`;
+        // adsVideoEl.style.border = '2px solid red';
     }
 }

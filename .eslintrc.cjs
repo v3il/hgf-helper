@@ -30,6 +30,7 @@ module.exports = {
     },
 
     rules: {
+        'no-alert': 'off',
         'no-console': 'off',
         'no-useless-constructor': 'off',
         'no-empty-function': 'off',
