@@ -6,7 +6,8 @@ import {
     useDelayRemover,
     useHitsquadService,
     useLootGameService,
-    useStreamStatusChecker
+    useStreamStatusChecker,
+    useDaCoinzCollector
 } from './composables';
 import template from './template.html?raw';
 
@@ -16,6 +17,8 @@ export class ExtensionContainer extends BasicView {
 
         useDebugMode();
         useDelayRemover();
+        useDaCoinzCollector();
+
         useStreamStatusChecker({ el: this.el });
         useChestGameService({ el: this.el });
         useLootGameService({ el: this.el });

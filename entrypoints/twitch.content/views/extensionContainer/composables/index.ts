@@ -5,3 +5,4 @@ export * from './useHitsquadService';
 export * from './useAkiraDrawingService';
 export * from './useChestGameService';
 export * from './useLootGameService';
+export * from './useDaCoinzCollector';
