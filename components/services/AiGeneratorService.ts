@@ -1,4 +1,4 @@
-import { Timing } from '@twitch/consts';
+import { Timing } from '@components/consts';
 import { GlobalSettingsService } from '@components/settings';
 import { log } from '@components/utils';
 import { Container } from 'typedi';

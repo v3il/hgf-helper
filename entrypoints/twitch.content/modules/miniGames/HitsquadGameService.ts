@@ -1,10 +1,11 @@
-import { Commands, Timing } from '@twitch/consts';
+import { Commands } from '@twitch/consts';
 import { StreamFacade } from '@twitch/modules/stream';
 import { Container } from 'typedi';
 import { TwitchElementsRegistry } from '@twitch/modules';
 import { LocalSettingsService } from '@components/settings';
 import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
 import { getRandomNumber, log, promisifiedSetTimeout } from '@components/utils';
+import { Timing } from '@components/consts';
 import { ChatFacade } from '../chat';
 
 interface IParams {

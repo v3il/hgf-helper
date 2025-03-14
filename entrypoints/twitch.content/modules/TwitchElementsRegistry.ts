@@ -1,5 +1,5 @@
 import { promisifiedSetTimeout } from '@components/utils';
-import { Timing } from '@twitch/consts';
+import { Timing } from '@components/consts';
 import { Service } from 'typedi';
 
 @Service()

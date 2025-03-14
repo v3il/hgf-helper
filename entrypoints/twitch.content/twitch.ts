@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { isDev } from '@twitch/consts';
+import { isDev } from '@components/consts';
 import { ExtensionContainer } from '@twitch/views';
 import { Container } from 'typedi';
 import { TwitchElementsRegistry } from '@twitch/modules';

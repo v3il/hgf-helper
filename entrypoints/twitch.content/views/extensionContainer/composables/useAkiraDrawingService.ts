@@ -1,6 +1,6 @@
 import { AkiraDrawingService } from '@twitch/modules/miniGames';
 import { AiGeneratorService } from '@components/services';
-import { Timing } from '@twitch/consts';
+import { Timing } from '@components/consts';
 import { ChatFacade } from '@twitch/modules/chat';
 import { Container } from 'typedi';
 import { GlobalSettingsService, LocalSettingsService } from '@components/settings';

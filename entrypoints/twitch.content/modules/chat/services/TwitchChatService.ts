@@ -1,4 +1,4 @@
-import { isDev, Timing } from '@twitch/consts';
+import { isDev, Timing } from '@components/consts';
 import { log } from '@components/utils';
 
 export class TwitchChatService {

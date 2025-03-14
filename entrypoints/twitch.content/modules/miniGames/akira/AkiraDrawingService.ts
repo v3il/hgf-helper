@@ -1,5 +1,4 @@
-import { Timing } from '@twitch/consts';
-
+import { Timing } from '@components/consts';
 import { Container } from 'typedi';
 import { TwitchElementsRegistry } from '@twitch/modules';
 import { LocalSettingsService } from '@components/settings';

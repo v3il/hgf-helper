@@ -1,5 +1,6 @@
 import { EventEmitter } from '@components/EventEmitter';
-import { MessageTemplates, Timing } from '@twitch/consts';
+import { MessageTemplates } from '@twitch/consts';
+import { Timing } from '@components/consts';
 import { Container } from 'typedi';
 import { TwitchElementsRegistry } from '@twitch/modules';
 

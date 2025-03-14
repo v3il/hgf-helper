@@ -1,5 +1,5 @@
 import { LootGameService } from '@twitch/modules/miniGames';
-import { Timing } from '@twitch/consts';
+import { Timing } from '@components/consts';
 import { StreamFacade } from '@twitch/modules/stream';
 import { LocalSettingsService } from '@components/settings';
 import { ChatFacade } from '@twitch/modules/chat';

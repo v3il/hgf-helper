@@ -1,4 +1,4 @@
-import { Timing } from '@twitch/consts';
+import { Timing } from '@components/consts';
 import { ChatFacade } from '@twitch/modules/chat';
 import { HitsquadGameService } from '@twitch/modules/miniGames';
 import { StreamFacade } from '@twitch/modules/stream';

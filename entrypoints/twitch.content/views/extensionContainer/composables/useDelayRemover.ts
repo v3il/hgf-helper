@@ -1,4 +1,4 @@
-import { Timing } from '@twitch/consts';
+import { Timing } from '@components/consts';
 import { StreamFacade } from '@twitch/modules/stream';
 import { GlobalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
