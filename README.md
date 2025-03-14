@@ -35,7 +35,16 @@ The appearance of the widget is shown in the image below:
 
 ![readme_2.png](./readme_2.png)
 
-Important information: Some customization is required for the widget to be available (see **Installation** for details).
+**Important information**: In order for the store widget to work, you need to create a [JSONBin](https://jsonbin.io/) account, create a new bin and fill in the appropriate settings in the settings popup (your credentials will not be shared) (see **Settings Popup**).
+
+### Settings Popup
+Allows user to change global settings for the extension (more to come!).
+
+Twitch helper settings:
+![readme_3.png](./readme_3.png)
+
+StreamElements helper settings:
+![readme_4.png](./readme_4.png)
 
 ## Installation
 1. Download the latest release (hgf-helper<area>@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
@@ -43,7 +52,7 @@ Important information: Some customization is required for the widget to be avail
 3. Go to the extensions page in the Chrome browser (chrome://extensions/);
 4. Turn on developer mode;
 5. Click the "**Download unpacked extension**" button, specifying the path to the unpacked extension.
-6. **[optional]** Open the extension pop-up window, enter your [JSONBin](https://jsonbin.io/) account credentials for the StreamElements widget to work (these credentials will not be shared)
+6. **[optional]** Adjust the extension settings in the settings popup.
 
 ## Update
 1. Download the latest release (hgf-helper<area>@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);

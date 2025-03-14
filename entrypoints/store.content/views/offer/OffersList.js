@@ -1,6 +1,6 @@
 import { Container } from 'typedi';
+import { GlobalSettingsService } from '../../../../components/settings';
 import { OfferView } from './OfferView';
-import { GlobalSettingsService } from '../../../../components/shared';
 
 export class OffersList {
     #el;

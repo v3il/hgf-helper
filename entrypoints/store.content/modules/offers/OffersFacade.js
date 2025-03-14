@@ -1,7 +1,7 @@
 import { Container } from 'typedi';
+import { GlobalSettingsService } from '../../../../components/settings';
 import { JsonBinApiService, OffersService } from './services';
 import { OffersFactory } from './factories';
-import { GlobalSettingsService } from '../../../../components/shared';
 
 export class OffersFacade {
     static _instance;

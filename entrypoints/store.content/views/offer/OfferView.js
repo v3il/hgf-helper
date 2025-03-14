@@ -1,5 +1,5 @@
-import { GlobalSettingsService } from '@components/shared';
 import { Container } from 'typedi';
+import { GlobalSettingsService } from '../../../../components/settings';
 import template from './template.html?raw';
 import './styles.css';
 
