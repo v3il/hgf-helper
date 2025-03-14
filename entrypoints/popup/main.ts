@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import './style.css';
 import '@shoelace-style/shoelace/dist/themes/light.css';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
 import '@shoelace-style/shoelace/dist/components/range/range.js';
@@ -7,51 +8,31 @@ import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import './style.css';
 import { SettingsFacade, GlobalSettingsKeys } from '@components/shared';
+import { SlInput, SlRange } from '@shoelace-style/shoelace';
 
 setBasePath('../..'); // /assets
 
-function parseInputValue(inputEl: HTMLInputElement) {
-    if (inputEl.type === 'checkbox') {
-        return inputEl.checked;
-    }
+type Control = SlInput | SlRange
 
-    if (inputEl.type === 'number' || inputEl.type === 'range') {
-        return Number(inputEl.value);
-    }
-
-    return inputEl.value;
+function parseInputValue(control: Control) {
+    return control instanceof SlRange ? Number(control.value) : control.value;
 }
 
-function initSettingView(el: HTMLElement) {
-    const settingName = el.dataset.setting as GlobalSettingsKeys;
-    const inputEl = el.querySelector('[data-input]')! as HTMLInputElement;
-    const valueEl = el.querySelector('[data-value]');
+function initSettingView(control: Control) {
+    const settingName = control.dataset.setting as GlobalSettingsKeys;
 
-    if (inputEl.type === 'checkbox') {
-        inputEl.checked = SettingsFacade.instance.globalSettings[settingName] as unknown as boolean;
-    } else {
-        inputEl.value = String(SettingsFacade.instance.globalSettings[settingName]);
-    }
+    // eslint-disable-next-line no-param-reassign
+    control.value = SettingsFacade.instance.globalSettings[settingName];
 
-    if (valueEl) {
-        valueEl.textContent = inputEl.value;
-
-        inputEl.addEventListener('input', () => {
-            valueEl.textContent = inputEl.value;
-        });
-    }
-
-    inputEl.addEventListener('change', () => {
+    control.addEventListener('sl-input', () => {
         SettingsFacade.instance.updateGlobalSettings({
-            [settingName]: parseInputValue(inputEl)
+            [settingName]: parseInputValue(control)
         });
     });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     await SettingsFacade.instance.loadSettings();
-
-    // document.querySelectorAll<HTMLInputElement>('[data-setting]').forEach(initSettingView);
+    document.querySelectorAll<Control>('[data-setting]').forEach(initSettingView);
 });
