@@ -1,5 +1,7 @@
 @import './shoelace/sl-input.css';
 @import './shoelace/sl-range.css';
+@import './shoelace/sl-switch.css';
+@import './shoelace/sl-tab-panel.css';
 
 * {
   box-sizing: border-box;
@@ -13,8 +15,12 @@ html {
 }
 
 body {
-  padding: var(--sl-spacing-medium);
+  padding: var(--sl-spacing-medium) 0;
   width: 500px;
+}
+
+.hgf-popup-title {
+  padding: 0 var(--sl-spacing-large);
 }
 
 .hgf-offset-bottom--medium {

@@ -5,24 +5,25 @@
   <title>HGF-Helper</title>
 </head>
 <body>
-<h1 class="hgf-offset-bottom--medium">Settings</h1>
+<h1 class="hgf-offset-bottom--medium hgf-popup-title">Settings</h1>
 
 <sl-tab-group>
   <sl-tab slot="nav" panel="twitch">Twitch Widget</sl-tab>
   <sl-tab slot="nav" panel="stream-elements">StreamElements Widget</sl-tab>
 
   <!-- Twitch Widget -->
-  <sl-tab-panel name="twitch">
-    <sl-input help-text="Not Required" data-setting="openAiApiToken" class="sl-input">
-      <label slot="label">
-        Open AI API Token
-        <sl-icon-button name="box-arrow-up-right" label="Settings" href="https://example.com" target="_blank"></sl-icon-button>
-      </label>
-    </sl-input>
+  <sl-tab-panel name="twitch" class="sl-tab-panel">
+    <sl-switch class="sl-switch hgf-offset-bottom--medium" data-setting="collectDaCoinz">
+      Automatically collect Da Coinz
+    </sl-switch>
+
+    <sl-switch class="sl-switch" data-setting="decreaseStreamDelay">
+      Automatically decrease stream delay
+    </sl-switch>
   </sl-tab-panel>
 
   <!-- StreamElements Widget -->
-  <sl-tab-panel name="stream-elements">
+  <sl-tab-panel name="stream-elements" class="sl-tab-panel">
     <sl-input
       help-text="Not Required"
       data-setting="jsonBinUrl"

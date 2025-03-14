@@ -2,6 +2,9 @@ import { log } from '@components/shared';
 import { EventEmitter } from '../../EventEmitter';
 
 export interface IGlobalSettings {
+    collectDaCoinz: boolean;
+    decreaseStreamDelay: boolean;
+
     jsonBinUrl: string;
     jsonBinMasterKey: string;
     jsonBinAccessKey: string;
@@ -34,6 +37,9 @@ export class GlobalSettingsService {
     private readonly storage;
 
     private _settings: IGlobalSettings = {
+        collectDaCoinz: true,
+        decreaseStreamDelay: true,
+
         jsonBinUrl: '',
         jsonBinMasterKey: '',
         jsonBinAccessKey: '',
