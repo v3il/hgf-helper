@@ -1,4 +1,5 @@
-import { log } from '@components/shared';
+import { Service } from 'typedi';
+import { log } from '../utils';
 
 export interface ILocalSettings {
     hitsquad: boolean,
@@ -12,6 +13,7 @@ interface IParams {
     storage: Storage;
 }
 
+@Service({ factory: () => LocalSettingsService.create() })
 export class LocalSettingsService {
     static create() {
         return new LocalSettingsService({

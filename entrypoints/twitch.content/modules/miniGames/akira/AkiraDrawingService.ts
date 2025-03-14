@@ -1,21 +1,23 @@
 import { Timing } from '@twitch/consts';
-import {
-    SettingsFacade, UnsubscribeTrigger, AiGeneratorService, log, getRandomNumber
-} from '@components/shared';
+
 import { Container } from 'typedi';
 import { TwitchElementsRegistry } from '@twitch/modules';
-import { ChatFacade } from '../../chat';
+import { LocalSettingsService } from '@components/settings';
+import { AiGeneratorService } from '@components/services';
+import { UnsubscribeTrigger } from '@components/EventEmitter';
+import { getRandomNumber, log } from '@components/utils';
 import { getRandomTopic } from './gameTopics';
+import { ChatFacade } from '../../chat';
 
 interface IParams {
     chatFacade: ChatFacade;
-    settingsFacade: SettingsFacade,
+    settingsService: LocalSettingsService,
     aiGeneratorService: AiGeneratorService
 }
 
 export class AkiraDrawingService {
     private readonly chatFacade: ChatFacade;
-    private readonly settingsFacade: SettingsFacade;
+    private readonly settingsService: LocalSettingsService;
     private readonly aiGeneratorService: AiGeneratorService;
     private readonly twitchElementsRegistry: TwitchElementsRegistry;
 
@@ -24,14 +26,14 @@ export class AkiraDrawingService {
     private unsubscribe!: UnsubscribeTrigger;
     timeUntilMessage: number = 0;
 
-    constructor({ chatFacade, settingsFacade, aiGeneratorService }: IParams) {
+    constructor({ chatFacade, settingsService, aiGeneratorService }: IParams) {
         this.chatFacade = chatFacade;
-        this.settingsFacade = settingsFacade;
+        this.settingsService = settingsService;
         this.aiGeneratorService = aiGeneratorService;
 
         this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
 
-        this._isRunning = this.settingsFacade.localSettings.akiraDrawing;
+        this._isRunning = settingsService.settings.akiraDrawing;
 
         if (this._isRunning) {
             this.start();
@@ -79,7 +81,7 @@ export class AkiraDrawingService {
     }
 
     private saveState() {
-        this.settingsFacade.updateLocalSettings({
+        this.settingsService.updateSettings({
             akiraDrawing: this._isRunning
         });
     }

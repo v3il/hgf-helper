@@ -1,12 +1,13 @@
 import { ColorService } from '@twitch/modules/shared';
 import { StreamStatus, Timing } from '@twitch/consts';
-import {
-    BasicView, EventEmitter, getRandomNumber, logDev, OnScreenTextRecognizer
-} from '@components/shared';
 import './style.css';
 import { ChatFacade } from '@twitch/modules/chat';
 import { Container, ContainerInstance } from 'typedi';
 import { TwitchElementsRegistry } from '@twitch/modules';
+import { OnScreenTextRecognizer } from '@components/services';
+import { getRandomNumber, logDev } from '@components/utils';
+import { BasicView } from '@components/BasicView';
+import { EventEmitter } from '@components/EventEmitter';
 import {
     antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks
 } from './checks';

@@ -1,6 +1,7 @@
 import { Timing } from '@twitch/consts';
-import { SettingsFacade } from '@components/shared/settings';
-import { log } from '@components/shared/utils';
+import { GlobalSettingsService } from '@components/settings';
+import { log } from '@components/utils';
+import { Container } from 'typedi';
 
 interface IMessage {
     role: 'user';
@@ -20,7 +21,9 @@ export class AiGeneratorService {
     private readonly apiKey!: string;
 
     constructor() {
-        this.apiKey = SettingsFacade.instance.globalSettings.openAiApiToken;
+        const settingsService = Container.get(GlobalSettingsService);
+
+        this.apiKey = settingsService.settings.openAiApiToken;
     }
 
     async generate(prompt: string, options: Partial<IRequestData> = {}): Promise<string> {

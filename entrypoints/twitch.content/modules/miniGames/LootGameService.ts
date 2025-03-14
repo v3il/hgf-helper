@@ -1,6 +1,6 @@
 import { ChatFacade } from '@twitch/modules/chat';
 import { Timing } from '@twitch/consts';
-import { getRandomNumber, log } from '@components/shared';
+import { getRandomNumber, log } from '@components/utils';
 
 interface IParams {
     chatFacade: ChatFacade;

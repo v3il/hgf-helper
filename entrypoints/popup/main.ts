@@ -9,8 +9,11 @@ import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import { SettingsFacade, GlobalSettingsKeys } from '@components/shared';
+import { GlobalSettingsKeys, GlobalSettingsService } from '@components/settings';
 import { SlInput, SlRange, SlSwitch } from '@shoelace-style/shoelace';
+import { Container } from 'typedi';
+
+const globalSettingsService = Container.get(GlobalSettingsService);
 
 setBasePath('../..'); // /assets
 
@@ -28,19 +31,19 @@ function initSettingView(control: Control) {
     const settingName = control.dataset.setting as GlobalSettingsKeys;
 
     if (control instanceof SlSwitch) {
-        control.checked = SettingsFacade.instance.globalSettings[settingName] as boolean;
+        control.checked = globalSettingsService.settings[settingName] as boolean;
     } else {
-        control.value = String(SettingsFacade.instance.globalSettings[settingName]);
+        control.value = String(globalSettingsService.settings[settingName]);
     }
 
     control.addEventListener('sl-input', () => {
-        SettingsFacade.instance.updateGlobalSettings({
+        globalSettingsService.updateSettings({
             [settingName]: parseInputValue(control)
         });
     });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await SettingsFacade.instance.loadSettings();
+    await globalSettingsService.loadSettings();
     document.querySelectorAll<Control>('[data-setting]').forEach(initSettingView);
 });

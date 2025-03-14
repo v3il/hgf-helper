@@ -1,5 +1,6 @@
-import { log } from '@components/shared';
-import { EventEmitter } from '../../EventEmitter';
+import { Service } from 'typedi';
+import { log } from '../utils';
+import { EventEmitter } from '../EventEmitter';
 
 export interface IGlobalSettings {
     collectDaCoinz: boolean;
@@ -23,6 +24,7 @@ interface IParams {
     events: EventEmitter<IGlobalSettingsEvents>;
 }
 
+@Service({ factory: () => GlobalSettingsService.create() })
 export class GlobalSettingsService {
     static create() {
         return new GlobalSettingsService({

@@ -1,7 +1,8 @@
 import './style.css';
-import { BasicView, log } from '@components/shared';
 import { Container } from 'typedi';
 import { TwitchElementsRegistry } from '@twitch/modules';
+import { BasicView } from '@components/BasicView';
+import { log } from '@components/utils';
 import template from './template.html?raw';
 import { ColorService } from '../../modules/shared';
 

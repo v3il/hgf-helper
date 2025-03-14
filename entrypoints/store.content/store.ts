@@ -1,5 +1,6 @@
 import 'reflect-metadata';
-import { SettingsFacade } from '@components/shared';
+import { GlobalSettingsService } from '@components/settings';
+import { Container } from 'typedi';
 // @ts-ignore
 import { StreamElementsFacade } from './modules/streamElements';
 // @ts-ignore
@@ -8,17 +9,18 @@ import { OffersFacade } from './modules/offers';
 import { OffersList } from './views/offer/OffersList';
 
 export const start = () => {
+    const globalSettings = Container.get(GlobalSettingsService);
+
     StreamElementsFacade.instance.init(async () => {
         console.clear();
 
-        await SettingsFacade.instance.loadSettings();
+        await globalSettings.loadSettings();
         await StreamElementsFacade.instance.sortOffersByCost();
         await OffersFacade.instance.fetchHiddenOffers();
 
         new OffersList({
             el: StreamElementsFacade.instance.offersListEl,
-            offersFacade: OffersFacade.instance,
-            settingsFacade: SettingsFacade.instance
+            offersFacade: OffersFacade.instance
         });
     });
 };

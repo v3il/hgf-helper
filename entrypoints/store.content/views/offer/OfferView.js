@@ -1,3 +1,5 @@
+import { GlobalSettingsService } from '@components/shared';
+import { Container } from 'typedi';
 import template from './template.html?raw';
 import './styles.css';
 
@@ -5,15 +7,14 @@ export class OfferView {
     #offer;
     #offerEl;
     #offersFacade;
-    #settingsFacade;
+    #settingsService;
 
-    constructor({
-        offer, offerEl, offersFacade, settingsFacade
-    }) {
+    constructor({ offer, offerEl, offersFacade }) {
         this.#offer = offer;
         this.#offerEl = offerEl;
         this.#offersFacade = offersFacade;
-        this.#settingsFacade = settingsFacade;
+
+        this.#settingsService = Container.get(GlobalSettingsService);
 
         this._clickHandler = this._clickHandler.bind(this);
 
@@ -23,7 +24,7 @@ export class OfferView {
     }
 
     get #isHidden() {
-        const { offersMaxPrice } = this.#settingsFacade.globalSettings;
+        const { offersMaxPrice } = this.#settingsService.settings;
 
         return this.#offer.isSoldOut
             || this.#offer.price > offersMaxPrice

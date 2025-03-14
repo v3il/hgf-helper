@@ -1,5 +1,5 @@
 import { isDev, Timing } from '@twitch/consts';
-import { log } from '@components/shared';
+import { log } from '@components/utils';
 
 export class TwitchChatService {
     private readonly messageQueue: string[] = [];

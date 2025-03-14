@@ -1,5 +1,5 @@
 import './style.css';
-import { BasicView } from '@components/shared';
+import { BasicView } from '@components/BasicView';
 import {
     useChestGameService,
     useDebugMode,

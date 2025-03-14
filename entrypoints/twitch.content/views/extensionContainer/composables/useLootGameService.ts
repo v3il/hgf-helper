@@ -1,15 +1,16 @@
 import { LootGameService } from '@twitch/modules/miniGames';
 import { Timing } from '@twitch/consts';
 import { StreamFacade } from '@twitch/modules/stream';
-import { SettingsFacade } from '@components/shared';
+import { LocalSettingsService } from '@components/settings';
 import { ChatFacade } from '@twitch/modules/chat';
+import { Container } from 'typedi';
 
 interface IParams {
     el: HTMLElement;
 }
 
 export const useLootGameService = ({ el }: IParams) => {
-    const settingsFacade = SettingsFacade.instance;
+    const settingsService = Container.get(LocalSettingsService);
 
     const lootGameRunner = new LootGameService({
         chatFacade: ChatFacade.instance
@@ -21,10 +22,10 @@ export const useLootGameService = ({ el }: IParams) => {
 
     let intervalId: number;
 
-    checkboxEl.checked = settingsFacade.localSettings.lootGame;
+    checkboxEl.checked = settingsService.settings.lootGame;
 
     checkboxEl.addEventListener('change', () => {
-        settingsFacade.updateLocalSettings({
+        settingsService.updateSettings({
             lootGame: checkboxEl.checked
         });
 
@@ -38,7 +39,7 @@ export const useLootGameService = ({ el }: IParams) => {
     StreamFacade.instance.streamService.events.on('loot', (isRunning) => {
         buttonEl.disabled = !isRunning;
 
-        if (!settingsFacade.localSettings.lootGame) return;
+        if (!settingsService.settings.lootGame) return;
 
         if (isRunning) {
             lootGameRunner.start();

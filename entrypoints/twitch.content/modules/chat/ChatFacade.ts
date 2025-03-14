@@ -1,4 +1,4 @@
-import { BasicFacade } from '@components/shared/BasicFacade';
+import { BasicFacade } from '@components/BasicFacade';
 import { Container, ContainerInstance } from 'typedi';
 import { IChatMessage, TwitchChatObserver, TwitchChatService } from './services';
 

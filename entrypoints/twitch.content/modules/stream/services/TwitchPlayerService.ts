@@ -1,4 +1,4 @@
-import { promisifiedSetTimeout } from '@components/shared';
+import { promisifiedSetTimeout } from '@components/utils';
 
 export class TwitchPlayerService {
     private readonly desiredQualities = [480, 720] as const;

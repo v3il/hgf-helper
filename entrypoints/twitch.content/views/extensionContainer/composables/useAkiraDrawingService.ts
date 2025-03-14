@@ -1,18 +1,21 @@
 import { AkiraDrawingService } from '@twitch/modules/miniGames';
-import { AiGeneratorService, SettingsFacade } from '@components/shared';
+import { AiGeneratorService } from '@components/services';
 import { Timing } from '@twitch/consts';
 import { ChatFacade } from '@twitch/modules/chat';
+import { Container } from 'typedi';
+import { GlobalSettingsService, LocalSettingsService } from '@components/settings';
 
 interface IParams {
     el: HTMLElement;
 }
 
 export const useAkiraDrawingService = ({ el }: IParams) => {
-    const settingsFacade = SettingsFacade.instance;
+    const localSettingsService = Container.get(LocalSettingsService);
+    const globalSettingsService = Container.get(GlobalSettingsService);
 
     const gameService = new AkiraDrawingService({
+        settingsService: localSettingsService,
         chatFacade: ChatFacade.instance,
-        settingsFacade: SettingsFacade.instance,
         aiGeneratorService: new AiGeneratorService()
     });
 
@@ -57,7 +60,7 @@ export const useAkiraDrawingService = ({ el }: IParams) => {
     });
 
     function isTokenProvided() {
-        return !!settingsFacade.globalSettings.openAiApiToken;
+        return !!globalSettingsService.settings.openAiApiToken;
     }
 
     function showAlert() {

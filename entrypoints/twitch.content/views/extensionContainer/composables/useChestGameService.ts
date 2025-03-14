@@ -1,15 +1,16 @@
 import { Timing } from '@twitch/consts';
 import { StreamFacade } from '@twitch/modules/stream';
-import { SettingsFacade } from '@components/shared';
+import { LocalSettingsService } from '@components/settings';
 import { ChestGameService } from '@twitch/modules/miniGames';
 import { ChatFacade } from '@twitch/modules/chat';
+import { Container } from 'typedi';
 
 interface IParams {
     el: HTMLElement;
 }
 
 export const useChestGameService = ({ el }: IParams) => {
-    const settingsFacade = SettingsFacade.instance;
+    const settingsService = Container.get(LocalSettingsService);
 
     const chestGameRunner = new ChestGameService({
         chatFacade: ChatFacade.instance
@@ -21,10 +22,10 @@ export const useChestGameService = ({ el }: IParams) => {
 
     let intervalId: number;
 
-    checkboxEl.checked = settingsFacade.localSettings.chestGame;
+    checkboxEl.checked = settingsService.settings.chestGame;
 
     checkboxEl.addEventListener('change', () => {
-        settingsFacade.updateLocalSettings({
+        settingsService.updateSettings({
             chestGame: checkboxEl.checked
         });
 
@@ -38,7 +39,7 @@ export const useChestGameService = ({ el }: IParams) => {
     StreamFacade.instance.streamService.events.on('chest', (isRunning) => {
         buttonEl.disabled = !isRunning;
 
-        if (!settingsFacade.localSettings.chestGame) return;
+        if (!settingsService.settings.chestGame) return;
 
         if (isRunning) {
             chestGameRunner.start();

@@ -1,10 +1,12 @@
-import { debounce, SettingsFacade } from '@components/shared';
 import { Container } from 'typedi';
 import { TwitchElementsRegistry } from '@twitch/modules';
+import { debounce } from '@components/utils';
+import { GlobalSettingsService } from '@components/settings';
 
 export const useDaCoinzCollector = () => {
     let observer: MutationObserver | null = null;
     const twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+    const settingsService = Container.get(GlobalSettingsService);
     const chatInputContainerEl = twitchElementsRegistry.chatButtonsContainerEl! as HTMLElement;
 
     const claimChannelPoints = debounce(() => {
@@ -15,11 +17,11 @@ export const useDaCoinzCollector = () => {
         }
     }, 2000);
 
-    if (SettingsFacade.instance.globalSettings.collectDaCoinz) {
+    if (settingsService.settings.collectDaCoinz) {
         init();
     }
 
-    SettingsFacade.instance.globalSettingsEvents.on('setting-changed:collectDaCoinz', (isEnabled) => {
+    settingsService.events.on('setting-changed:collectDaCoinz', (isEnabled) => {
         isEnabled ? init() : destroy();
     });
 

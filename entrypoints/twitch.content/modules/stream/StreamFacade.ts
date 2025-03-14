@@ -1,5 +1,5 @@
-import { OnScreenTextRecognizer } from '@components/shared';
-import { BasicFacade } from '@components/shared/BasicFacade';
+import { OnScreenTextRecognizer } from '@components/services';
+import { BasicFacade } from '@components/BasicFacade';
 import { Container, ContainerInstance } from 'typedi';
 import { ChatFacade } from '@twitch/modules/chat';
 import { StreamStatusService, TwitchPlayerService } from './services';

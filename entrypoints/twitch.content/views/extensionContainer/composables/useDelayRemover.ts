@@ -1,15 +1,17 @@
 import { Timing } from '@twitch/consts';
 import { StreamFacade } from '@twitch/modules/stream';
-import { SettingsFacade } from '@components/shared';
+import { GlobalSettingsService } from '@components/settings';
+import { Container } from 'typedi';
 
 export const useDelayRemover = () => {
     let intervalId: number = 0;
+    const settingsService = Container.get(GlobalSettingsService);
 
-    if (SettingsFacade.instance.globalSettings.decreaseStreamDelay) {
+    if (settingsService.settings.decreaseStreamDelay) {
         init();
     }
 
-    SettingsFacade.instance.globalSettingsEvents.on('setting-changed:decreaseStreamDelay', (isEnabled) => {
+    settingsService.events.on('setting-changed:decreaseStreamDelay', (isEnabled) => {
         isEnabled ? init() : destroy();
     });
 

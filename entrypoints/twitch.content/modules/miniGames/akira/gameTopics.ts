@@ -1,4 +1,4 @@
-import { getRandomArrayItem } from '@components/shared';
+import { getRandomArrayItem } from '@components/utils';
 
 const gameTopics = [
     'storyline',
