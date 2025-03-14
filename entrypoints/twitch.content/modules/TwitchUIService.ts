@@ -3,10 +3,10 @@ import { Timing } from '@components/consts';
 import { Service } from 'typedi';
 
 @Service()
-export class TwitchElementsRegistry {
+export class TwitchUIService {
     twitchUserName!: string;
 
-    onElementsReady(callback: (elements: Element[]) => void) {
+    whenStreamReady(callback: () => void) {
         const reloadTimeout = setTimeout(() => window.location.reload(), Timing.SECOND * 30);
 
         const interval = setInterval(async () => {
@@ -35,7 +35,7 @@ export class TwitchElementsRegistry {
                 clearInterval(interval);
                 clearTimeout(reloadTimeout);
                 this.twitchUserName = userName;
-                callback(elements);
+                callback();
             }
         }, Timing.SECOND);
     }

@@ -3,7 +3,7 @@ import { StreamStatus } from '@twitch/consts';
 import './style.css';
 import { ChatFacade } from '@twitch/modules/chat';
 import { Container, ContainerInstance } from 'typedi';
-import { TwitchElementsRegistry } from '@twitch/modules';
+import { TwitchUIService } from '@twitch/modules';
 import { OnScreenTextRecognizer } from '@components/services';
 import { getRandomNumber, logDev } from '@components/utils';
 import { BasicView } from '@components/BasicView';
@@ -17,7 +17,7 @@ import template from './template.html?raw';
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
 
-    private readonly twitchElementsRegistry!: TwitchElementsRegistry;
+    private readonly twitchElementsRegistry!: TwitchUIService;
     private readonly chatFacade!: ChatFacade;
     private readonly textDecoderService!: OnScreenTextRecognizer;
 
@@ -36,7 +36,7 @@ export class StreamStatusService extends BasicView {
     constructor(container: ContainerInstance) {
         super(template);
 
-        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+        this.twitchElementsRegistry = Container.get(TwitchUIService);
         this.chatFacade = container.get(ChatFacade);
         this.textDecoderService = container.get(OnScreenTextRecognizer);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;

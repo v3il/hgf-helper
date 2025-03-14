@@ -1,7 +1,7 @@
 import { Commands } from '@twitch/consts';
 import { StreamFacade } from '@twitch/modules/stream';
 import { Container } from 'typedi';
-import { TwitchElementsRegistry } from '@twitch/modules';
+import { TwitchUIService } from '@twitch/modules';
 import { LocalSettingsService } from '@components/settings';
 import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
 import { getRandomNumber, log, promisifiedSetTimeout } from '@components/utils';
@@ -32,7 +32,7 @@ export class HitsquadGameService {
     private readonly chatFacade: ChatFacade;
     private readonly streamFacade: StreamFacade;
     private readonly settingsService: LocalSettingsService;
-    private readonly twitchElementsRegistry: TwitchElementsRegistry;
+    private readonly twitchElementsRegistry: TwitchUIService;
 
     timeUntilMessage!: number;
     private totalRounds!: number;
@@ -46,7 +46,7 @@ export class HitsquadGameService {
         this.streamFacade = streamFacade;
         this.settingsService = settingsService;
 
-        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+        this.twitchElementsRegistry = Container.get(TwitchUIService);
 
         this.events = EventEmitter.create<{
             round: void,

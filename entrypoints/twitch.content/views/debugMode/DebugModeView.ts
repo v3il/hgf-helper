@@ -1,6 +1,6 @@
 import './style.css';
 import { Container } from 'typedi';
-import { TwitchElementsRegistry } from '@twitch/modules';
+import { TwitchUIService } from '@twitch/modules';
 import { BasicView } from '@components/BasicView';
 import { log } from '@components/utils';
 import template from './template.html?raw';
@@ -22,7 +22,7 @@ export class DebugModeView extends BasicView {
     constructor() {
         super(template);
 
-        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+        this.twitchElementsRegistry = Container.get(TwitchUIService);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-debug-mode-canvas]')!;
         this.clickHandler = this.clickHandler.bind(this);
 

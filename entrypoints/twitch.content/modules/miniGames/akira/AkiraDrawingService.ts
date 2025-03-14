@@ -1,6 +1,6 @@
 import { Timing } from '@components/consts';
 import { Container } from 'typedi';
-import { TwitchElementsRegistry } from '@twitch/modules';
+import { TwitchUIService } from '@twitch/modules';
 import { LocalSettingsService } from '@components/settings';
 import { AiGeneratorService } from '@components/services';
 import { UnsubscribeTrigger } from '@components/EventEmitter';
@@ -18,7 +18,7 @@ export class AkiraDrawingService {
     private readonly chatFacade: ChatFacade;
     private readonly settingsService: LocalSettingsService;
     private readonly aiGeneratorService: AiGeneratorService;
-    private readonly twitchElementsRegistry: TwitchElementsRegistry;
+    private readonly twitchElementsRegistry: TwitchUIService;
 
     private _isRunning;
     private timeoutId!: number;
@@ -30,7 +30,7 @@ export class AkiraDrawingService {
         this.settingsService = settingsService;
         this.aiGeneratorService = aiGeneratorService;
 
-        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+        this.twitchElementsRegistry = Container.get(TwitchUIService);
 
         this._isRunning = settingsService.settings.akiraDrawing;
 

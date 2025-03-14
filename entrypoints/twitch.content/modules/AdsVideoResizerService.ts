@@ -1,8 +1,8 @@
 // import { Service } from 'typedi';
-// import { TwitchElementsRegistry } from './TwitchElementsRegistry';
+// import { TwitchUIService } from './TwitchUIService';
 //
 // interface IAdsVideoResizerServiceParams {
-//     twitchElementsRegistry: TwitchElementsRegistry;
+//     twitchElementsRegistry: TwitchUIService;
 // }
 //
 // const PICTURE_IN_PICTURE_CLASS = 'picture-by-picture-player';

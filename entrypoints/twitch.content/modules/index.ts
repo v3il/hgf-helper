@@ -1,1 +1,1 @@
-export * from './TwitchElementsRegistry';
+export * from './TwitchUIService';

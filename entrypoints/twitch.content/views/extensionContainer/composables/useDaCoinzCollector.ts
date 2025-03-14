@@ -1,11 +1,11 @@
 import { Container } from 'typedi';
-import { TwitchElementsRegistry } from '@twitch/modules';
+import { TwitchUIService } from '@twitch/modules';
 import { debounce } from '@components/utils';
 import { GlobalSettingsService } from '@components/settings';
 
 export const useDaCoinzCollector = () => {
     let observer: MutationObserver | null = null;
-    const twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+    const twitchElementsRegistry = Container.get(TwitchUIService);
     const settingsService = Container.get(GlobalSettingsService);
     const chatInputContainerEl = twitchElementsRegistry.chatButtonsContainerEl! as HTMLElement;
 

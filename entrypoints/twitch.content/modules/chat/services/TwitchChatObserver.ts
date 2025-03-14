@@ -2,7 +2,7 @@ import { EventEmitter } from '@components/EventEmitter';
 import { MessageTemplates } from '@twitch/consts';
 import { Timing } from '@components/consts';
 import { Container } from 'typedi';
-import { TwitchElementsRegistry } from '@twitch/modules';
+import { TwitchUIService } from '@twitch/modules';
 
 export interface IChatMessage {
     userName: string;
@@ -14,13 +14,13 @@ export interface IChatMessage {
 }
 
 export class TwitchChatObserver {
-    private readonly twitchElementsRegistry!: TwitchElementsRegistry;
+    private readonly twitchElementsRegistry!: TwitchUIService;
 
     readonly events;
     private observer;
 
     constructor() {
-        this.twitchElementsRegistry = Container.get(TwitchElementsRegistry);
+        this.twitchElementsRegistry = Container.get(TwitchUIService);
 
         this.events = EventEmitter.create<{
             message: IChatMessage;
