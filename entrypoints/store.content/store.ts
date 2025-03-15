@@ -1,26 +1,25 @@
 import 'reflect-metadata';
 import { GlobalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
-// @ts-ignore
-import { StreamElementsFacade } from './modules/streamElements';
-// @ts-ignore
-import { OffersFacade } from './modules/offers';
-// @ts-ignore
-import { OffersList } from './views/offer/OffersList';
+import { StreamElementsUIService, OffersFacade } from '@store/modules';
+import { OffersList } from './views';
 
 export const start = () => {
     const globalSettings = Container.get(GlobalSettingsService);
+    const streamElementsUIService = Container.get(StreamElementsUIService);
+    const offersFacade = Container.get(OffersFacade);
 
-    StreamElementsFacade.instance.init(async () => {
+    streamElementsUIService.whenOffersLoaded(async () => {
         console.clear();
 
         await globalSettings.loadSettings();
-        await StreamElementsFacade.instance.sortOffersByCost();
-        await OffersFacade.instance.fetchHiddenOffers();
 
-        new OffersList({
-            el: StreamElementsFacade.instance.offersListEl,
-            offersFacade: OffersFacade.instance
-        });
+        await offersFacade.fetchHiddenOffers()
+            .catch((error) => {
+                console.error(error);
+                alert('Failed to fetch hidden offers. Please check your JSONBin credentials in the settings popup.');
+            });
+
+        new OffersList(streamElementsUIService.offersListEl);
     });
 };

@@ -5,6 +5,7 @@
     "experimentalDecorators": true,
     "paths": {
       "@twitch/*": ["./entrypoints/twitch.content/*"],
+      "@store/*": ["./entrypoints/store.content/*"],
       "@components/*": ["./components/*"]
     }
   }
