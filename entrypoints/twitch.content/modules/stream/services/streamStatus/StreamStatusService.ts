@@ -1,24 +1,22 @@
-import { ColorService } from '@twitch/modules/shared';
 import { StreamStatus } from '@twitch/consts';
 import './style.css';
-import { ChatFacade } from '@twitch/modules/chat';
+import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container, ContainerInstance } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { OnScreenTextRecognizer } from '@components/services';
+import { ColorService, OnScreenTextRecognizer } from '@components/services';
 import { getRandomNumber, logDev } from '@components/utils';
 import { BasicView } from '@components/BasicView';
 import { EventEmitter } from '@components/EventEmitter';
 import { Timing } from '@components/consts';
-import {
-    antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks
-} from './checks';
+import { antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks } from './checks';
 import template from './template.html?raw';
 
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
 
     private readonly twitchUIService!: TwitchUIService;
-    private readonly chatFacade!: ChatFacade;
+    private readonly messageSender!: MessageSender;
+    private readonly colorService!: ColorService;
     private readonly textDecoderService!: OnScreenTextRecognizer;
 
     private statuses!: StreamStatus[];
@@ -37,7 +35,8 @@ export class StreamStatusService extends BasicView {
         super(template);
 
         this.twitchUIService = Container.get(TwitchUIService);
-        this.chatFacade = container.get(ChatFacade);
+        this.messageSender = Container.get(MessageSender);
+        this.colorService = Container.get(ColorService);
         this.textDecoderService = container.get(OnScreenTextRecognizer);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
 
@@ -85,7 +84,7 @@ export class StreamStatusService extends BasicView {
             logDev(`Send anticheat in ${delay}!`);
 
             setTimeout(() => {
-                this.chatFacade.sendMessage('!anticheat');
+                this.messageSender.sendMessage('!anticheat');
             }, delay);
         }
     }
@@ -152,12 +151,12 @@ export class StreamStatusService extends BasicView {
 
             const context = this.canvasEl.getContext('2d', { willReadFrequently: true })!;
             const [r, g, b] = context.getImageData(x, y, 1, 1).data;
-            const pixelHexColor = ColorService.rgbToHex(r, g, b);
+            const pixelHexColor = this.colorService.rgbToHex(r, g, b);
 
             return {
                 expected: color,
                 actual: pixelHexColor,
-                similarity: ColorService.getColorsSimilarity(color, pixelHexColor)
+                similarity: this.colorService.getColorsSimilarity(color, pixelHexColor)
             };
         });
 

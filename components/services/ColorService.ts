@@ -1,5 +1,8 @@
+import { Service } from 'typedi';
+
+@Service()
 export class ColorService {
-    static rgbToHex(r: number, g: number, b: number) {
+    rgbToHex(r: number, g: number, b: number) {
         if (r > 255 || g > 255 || b > 255) return '#FFFFFF';
 
         // eslint-disable-next-line no-bitwise
@@ -8,7 +11,7 @@ export class ColorService {
         return `#${hexColor.padEnd(6, '0')}`;
     }
 
-    static getColorsSimilarity(color1: string, color2: string) {
+    getColorsSimilarity(color1: string, color2: string) {
         const c1 = color1.replace('#', '');
         const r1 = parseInt(c1.substring(0, 2), 16);
         const g1 = parseInt(c1.substring(2, 4), 16);

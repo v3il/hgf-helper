@@ -2,7 +2,6 @@ import { LootGameService } from '@twitch/modules/miniGames';
 import { Timing } from '@components/consts';
 import { StreamFacade } from '@twitch/modules/stream';
 import { LocalSettingsService } from '@components/settings';
-import { ChatFacade } from '@twitch/modules/chat';
 import { Container } from 'typedi';
 
 interface IParams {
@@ -11,10 +10,7 @@ interface IParams {
 
 export const useLootGameService = ({ el }: IParams) => {
     const settingsService = Container.get(LocalSettingsService);
-
-    const lootGameRunner = new LootGameService({
-        chatFacade: ChatFacade.instance
-    });
+    const lootGameRunner = new LootGameService();
 
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-loot-game]')!;
     const buttonEl = el.querySelector<HTMLInputElement>('[data-loot-game-button]')!;

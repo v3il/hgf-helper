@@ -1,5 +1,4 @@
 import { Timing } from '@components/consts';
-import { ChatFacade } from '@twitch/modules/chat';
 import { HitsquadGameService } from '@twitch/modules/miniGames';
 import { StreamFacade } from '@twitch/modules/stream';
 import { LocalSettingsService } from '@components/settings';
@@ -12,10 +11,7 @@ interface IParams {
 const HITSQUAD_GAMES_PER_DAY = 600;
 
 export const useHitsquadService = ({ el }: IParams) => {
-    const chatFacade = ChatFacade.instance;
-
     const gameService = new HitsquadGameService({
-        chatFacade,
         streamFacade: StreamFacade.instance,
         settingsService: Container.get(LocalSettingsService)
     });

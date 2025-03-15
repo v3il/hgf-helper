@@ -3,8 +3,8 @@ import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { BasicView } from '@components/BasicView';
 import { log } from '@components/utils';
+import { ColorService } from '@components/services';
 import template from './template.html?raw';
-import { ColorService } from '../../modules/shared';
 
 interface IDebugModeCheck {
     color: string;
@@ -15,6 +15,7 @@ interface IDebugModeCheck {
 export class DebugModeView extends BasicView {
     private readonly canvasEl;
     private readonly twitchUIService;
+    private readonly colorService;
 
     private isActive = false;
     private checks: IDebugModeCheck[] = [];
@@ -23,6 +24,8 @@ export class DebugModeView extends BasicView {
         super(template);
 
         this.twitchUIService = Container.get(TwitchUIService);
+        this.colorService = Container.get(ColorService);
+
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-debug-mode-canvas]')!;
         this.clickHandler = this.clickHandler.bind(this);
 
@@ -50,7 +53,7 @@ export class DebugModeView extends BasicView {
 
         const context = this.canvasEl.getContext('2d')!;
         const [r, g, b] = context.getImageData(x, y, 1, 1).data;
-        const color = ColorService.rgbToHex(r, g, b);
+        const color = this.colorService.rgbToHex(r, g, b);
 
         this.checks.push({
             color,

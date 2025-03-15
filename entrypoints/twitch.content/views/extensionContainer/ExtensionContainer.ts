@@ -27,3 +27,6 @@ export class ExtensionContainer extends BasicView {
         // useAkiraDrawingService({ el: this.el });
     }
 }
+
+// <span class="mention-fragment mention-fragment--recipient" data-a-target="chat-message-mention"></span>
+// <div class="chat-line__message" data-a-target="chat-line-message" data-a-user="hitsquadgodfather" tabindex="0"

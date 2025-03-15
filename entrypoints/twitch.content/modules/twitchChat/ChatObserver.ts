@@ -1,7 +1,7 @@
 import { EventEmitter } from '@components/EventEmitter';
 import { MessageTemplates } from '@twitch/consts';
 import { Timing } from '@components/consts';
-import { Container } from 'typedi';
+import { Container, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 
 export interface IChatMessage {
@@ -13,7 +13,8 @@ export interface IChatMessage {
     isAkiraDrawReward: boolean;
 }
 
-export class TwitchChatObserver {
+@Service()
+export class ChatObserver {
     private readonly twitchUIService!: TwitchUIService;
 
     readonly events;
@@ -33,6 +34,10 @@ export class TwitchChatObserver {
         setTimeout(() => {
             this.observer.observe(this.twitchUIService.chatScrollableAreaEl!, { childList: true });
         }, 5 * Timing.SECOND);
+    }
+
+    observeChat(callback: (message: IChatMessage) => void) {
+        return this.events.on('message', (message) => callback(message!));
     }
 
     #createObserver() {

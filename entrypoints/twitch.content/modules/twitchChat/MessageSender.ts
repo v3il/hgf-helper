@@ -1,7 +1,9 @@
 import { isDev, Timing } from '@components/consts';
 import { log } from '@components/utils';
+import { Service } from 'typedi';
 
-export class TwitchChatService {
+@Service()
+export class MessageSender {
     private readonly messageQueue: string[] = [];
 
     constructor() {

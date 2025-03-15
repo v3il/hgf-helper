@@ -6,16 +6,16 @@ import { AiGeneratorService } from '@components/services';
 import { UnsubscribeTrigger } from '@components/EventEmitter';
 import { getRandomNumber, log } from '@components/utils';
 import { getRandomTopic } from './gameTopics';
-import { ChatFacade } from '../../chat';
+import { ChatObserver, MessageSender } from '../../twitchChat';
 
 interface IParams {
-    chatFacade: ChatFacade;
     settingsService: LocalSettingsService,
     aiGeneratorService: AiGeneratorService
 }
 
 export class AkiraDrawingService {
-    private readonly chatFacade: ChatFacade;
+    private readonly messageSender: MessageSender;
+    private readonly chatObserver: ChatObserver;
     private readonly settingsService: LocalSettingsService;
     private readonly aiGeneratorService: AiGeneratorService;
     private readonly twitchUIService: TwitchUIService;
@@ -25,12 +25,13 @@ export class AkiraDrawingService {
     private unsubscribe!: UnsubscribeTrigger;
     timeUntilMessage: number = 0;
 
-    constructor({ chatFacade, settingsService, aiGeneratorService }: IParams) {
-        this.chatFacade = chatFacade;
+    constructor({ settingsService, aiGeneratorService }: IParams) {
         this.settingsService = settingsService;
         this.aiGeneratorService = aiGeneratorService;
 
         this.twitchUIService = Container.get(TwitchUIService);
+        this.messageSender = Container.get(MessageSender);
+        this.chatObserver = Container.get(ChatObserver);
 
         this._isRunning = settingsService.settings.akiraDrawing;
 
@@ -66,7 +67,7 @@ export class AkiraDrawingService {
     }
 
     private listenEvents() {
-        this.unsubscribe = this.chatFacade.observeChat(async ({ isAkiraDrawReward }) => {
+        this.unsubscribe = this.chatObserver.observeChat(async ({ isAkiraDrawReward }) => {
             if (isAkiraDrawReward) {
                 const delay = this.getDelay();
 
@@ -93,7 +94,7 @@ export class AkiraDrawingService {
         log(`Question: ${question}`);
 
         if (question) {
-            this.chatFacade.sendMessage(this.formatQuestion(question));
+            this.messageSender.sendMessage(this.formatQuestion(question));
         }
     }
 

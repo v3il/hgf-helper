@@ -6,10 +6,9 @@ import { LocalSettingsService } from '@components/settings';
 import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
 import { getRandomNumber, log, promisifiedSetTimeout } from '@components/utils';
 import { Timing } from '@components/consts';
-import { ChatFacade } from '../chat';
+import { ChatObserver, MessageSender } from '@twitch/modules/twitchChat';
 
 interface IParams {
-    chatFacade: ChatFacade;
     streamFacade: StreamFacade;
     settingsService: LocalSettingsService;
 }
@@ -29,7 +28,8 @@ const HITSQUAD_GAMES_ON_SCREEN = 12;
 export class HitsquadGameService {
     readonly events;
 
-    private readonly chatFacade: ChatFacade;
+    private readonly messageSender: MessageSender;
+    private readonly chatObserver: ChatObserver;
     private readonly streamFacade: StreamFacade;
     private readonly settingsService: LocalSettingsService;
     private readonly twitchUIService: TwitchUIService;
@@ -41,11 +41,12 @@ export class HitsquadGameService {
     private lastHitsquadRewardTimestamp!: number;
     private unsubscribe!: UnsubscribeTrigger;
 
-    constructor({ chatFacade, streamFacade, settingsService }: IParams) {
-        this.chatFacade = chatFacade;
+    constructor({ streamFacade, settingsService }: IParams) {
         this.streamFacade = streamFacade;
         this.settingsService = settingsService;
 
+        this.messageSender = Container.get(MessageSender);
+        this.chatObserver = Container.get(ChatObserver);
         this.twitchUIService = Container.get(TwitchUIService);
 
         this.events = EventEmitter.create<{
@@ -93,7 +94,7 @@ export class HitsquadGameService {
     }
 
     participate() {
-        this.chatFacade.sendMessage(Commands.HITSQUAD);
+        this.messageSender.sendMessage(Commands.HITSQUAD);
     }
 
     private getState(): IHitsquadRunnerState {
@@ -111,7 +112,7 @@ export class HitsquadGameService {
     }
 
     private listenEvents() {
-        this.unsubscribe = this.chatFacade.observeChat(({ isHitsquadReward }) => {
+        this.unsubscribe = this.chatObserver.observeChat(({ isHitsquadReward }) => {
             if (isHitsquadReward) {
                 this.lastHitsquadRewardTimestamp = Date.now();
             }
@@ -131,7 +132,7 @@ export class HitsquadGameService {
             return this.sendCommand();
         }
 
-        this.chatFacade.sendMessage(Commands.HITSQUAD);
+        this.messageSender.sendMessage(Commands.HITSQUAD);
         this.state.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
         this.saveState();
 

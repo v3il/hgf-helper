@@ -1,21 +1,18 @@
-import { ChatFacade } from '@twitch/modules/chat';
 import { Timing } from '@components/consts';
 import { getRandomNumber, log } from '@components/utils';
-
-interface IParams {
-    chatFacade: ChatFacade;
-}
+import { MessageSender } from '@twitch/modules/twitchChat';
+import { Container } from 'typedi';
 
 export class ChestGameService {
-    private readonly chatFacade: ChatFacade;
+    private readonly messageSender: MessageSender;
 
     private isRunning!: boolean;
     private timeoutId!: number;
 
     timeUntilMessage!: number;
 
-    constructor(params: IParams) {
-        this.chatFacade = params.chatFacade;
+    constructor() {
+        this.messageSender = Container.get(MessageSender);
     }
 
     start() {
@@ -36,7 +33,7 @@ export class ChestGameService {
     }
 
     private sendCommand() {
-        this.chatFacade.sendMessage(`!chest${getRandomNumber(1, 8)}`);
+        this.messageSender.sendMessage(`!chest${getRandomNumber(1, 8)}`);
     }
 
     private getDelay() {
