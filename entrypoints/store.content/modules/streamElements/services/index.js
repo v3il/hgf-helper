@@ -1,1 +1,0 @@
-export { StreamElementsRegistry } from './StreamElementsRegistry';

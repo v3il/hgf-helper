@@ -24,6 +24,7 @@ export const buildConfig = ({ description, ...rest }: IParams): UserConfig => ({
 
     alias: {
         '@twitch': resolve(__dirname, './entrypoints/twitch.content'),
+        '@store': resolve(__dirname, './entrypoints/store.content'),
         '@components': resolve(__dirname, './components')
     },
 

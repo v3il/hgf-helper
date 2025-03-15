@@ -1,1 +1,0 @@
-export { OffersFacade } from './OffersFacade';
