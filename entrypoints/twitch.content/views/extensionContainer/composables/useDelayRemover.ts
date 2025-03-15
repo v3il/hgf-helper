@@ -1,11 +1,13 @@
 import { Timing } from '@components/consts';
-import { StreamFacade } from '@twitch/modules/stream';
+import { TwitchPlayerService } from '@twitch/modules/stream';
 import { GlobalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
 
 export const useDelayRemover = () => {
     let intervalId: number = 0;
+
     const settingsService = Container.get(GlobalSettingsService);
+    const playerService = Container.get(TwitchPlayerService);
 
     if (settingsService.settings.decreaseStreamDelay) {
         init();
@@ -17,7 +19,7 @@ export const useDelayRemover = () => {
 
     function init() {
         intervalId = window.setInterval(() => {
-            StreamFacade.instance.decreaseVideoDelay();
+            playerService.decreaseVideoDelay();
         }, 5 * Timing.MINUTE);
     }
 

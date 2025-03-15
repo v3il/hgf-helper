@@ -1,6 +1,6 @@
 import { LootGameService } from '@twitch/modules/miniGames';
 import { Timing } from '@components/consts';
-import { StreamFacade } from '@twitch/modules/stream';
+import { StreamStatusService } from '@twitch/modules/stream';
 import { LocalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
 
@@ -9,6 +9,7 @@ interface IParams {
 }
 
 export const useLootGameService = ({ el }: IParams) => {
+    const streamService = Container.get(StreamStatusService);
     const settingsService = Container.get(LocalSettingsService);
     const lootGameRunner = new LootGameService();
 
@@ -32,7 +33,7 @@ export const useLootGameService = ({ el }: IParams) => {
         }
     });
 
-    StreamFacade.instance.streamService.events.on('loot', (isRunning) => {
+    streamService.events.on('loot', (isRunning) => {
         buttonEl.disabled = !isRunning;
 
         if (!settingsService.settings.lootGame) return;

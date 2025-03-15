@@ -1,1 +1,2 @@
-export { StreamFacade } from './StreamFacade';
+export * from './TwitchPlayerService';
+export * from './streamStatus';

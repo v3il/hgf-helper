@@ -1,7 +1,7 @@
 import { StreamStatus } from '@twitch/consts';
 import './style.css';
 import { MessageSender } from '@twitch/modules/twitchChat';
-import { Container, ContainerInstance } from 'typedi';
+import { Container, ContainerInstance, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { ColorService, OnScreenTextRecognizer } from '@components/services';
 import { getRandomNumber, logDev } from '@components/utils';
@@ -11,6 +11,7 @@ import { Timing } from '@components/consts';
 import { antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks } from './checks';
 import template from './template.html?raw';
 
+@Service()
 export class StreamStatusService extends BasicView {
     private readonly canvasEl;
 

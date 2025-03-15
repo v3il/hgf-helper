@@ -1,8 +1,5 @@
 import { Timing } from '@components/consts';
 import { HitsquadGameService } from '@twitch/modules/miniGames';
-import { StreamFacade } from '@twitch/modules/stream';
-import { LocalSettingsService } from '@components/settings';
-import { Container } from 'typedi';
 
 interface IParams {
     el: HTMLElement;
@@ -11,10 +8,7 @@ interface IParams {
 const HITSQUAD_GAMES_PER_DAY = 600;
 
 export const useHitsquadService = ({ el }: IParams) => {
-    const gameService = new HitsquadGameService({
-        streamFacade: StreamFacade.instance,
-        settingsService: Container.get(LocalSettingsService)
-    });
+    const gameService = new HitsquadGameService();
 
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-toggle-hitsquad]')!;
     const buttonEl = el.querySelector<HTMLButtonElement>('[data-hitsquad-button]')!;

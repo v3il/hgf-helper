@@ -1,5 +1,5 @@
 import { Timing } from '@components/consts';
-import { StreamFacade } from '@twitch/modules/stream';
+import { StreamStatusService } from '@twitch/modules/stream';
 import { LocalSettingsService } from '@components/settings';
 import { ChestGameService } from '@twitch/modules/miniGames';
 import { Container } from 'typedi';
@@ -10,6 +10,8 @@ interface IParams {
 
 export const useChestGameService = ({ el }: IParams) => {
     const settingsService = Container.get(LocalSettingsService);
+    const streamService = Container.get(StreamStatusService);
+
     const chestGameRunner = new ChestGameService();
 
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-chest-game]')!;
@@ -32,7 +34,7 @@ export const useChestGameService = ({ el }: IParams) => {
         }
     });
 
-    StreamFacade.instance.streamService.events.on('chest', (isRunning) => {
+    streamService.events.on('chest', (isRunning) => {
         buttonEl.disabled = !isRunning;
 
         if (!settingsService.settings.chestGame) return;

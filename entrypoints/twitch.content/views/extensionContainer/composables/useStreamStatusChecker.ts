@@ -1,5 +1,6 @@
 import { Timing } from '@components/consts';
-import { StreamFacade } from '@twitch/modules/stream';
+import { StreamStatusService } from '@twitch/modules/stream';
+import { Container } from 'typedi';
 import { useBrokenStreamHandler } from './useBrokenStreamHandler';
 
 interface IParams {
@@ -7,13 +8,13 @@ interface IParams {
 }
 
 export const useStreamStatusChecker = ({ el }: IParams) => {
-    const streamFacade = StreamFacade.instance;
+    const streamService = Container.get(StreamStatusService);
     const brokenStreamHandler = useBrokenStreamHandler();
 
-    function handleStreamStatusCheck() {
-        streamFacade.checkStreamStatus();
+    async function handleStreamStatusCheck() {
+        await streamService.checkStreamStatus();
         renderStatus();
-        brokenStreamHandler.handleBrokenVideo(streamFacade.isVideoBroken);
+        brokenStreamHandler.handleBrokenVideo(streamService.isVideoBroken);
 
         setTimeout(() => {
             handleStreamStatusCheck();
@@ -21,8 +22,8 @@ export const useStreamStatusChecker = ({ el }: IParams) => {
     }
 
     function renderStatus() {
-        el.classList.toggle('broken', streamFacade.isVideoBroken);
-        el.classList.toggle('safe', streamFacade.isStreamOk);
+        el.classList.toggle('broken', streamService.isVideoBroken);
+        el.classList.toggle('safe', streamService.isStreamOk);
     }
 
     handleStreamStatusCheck();

@@ -1,6 +1,8 @@
 import { OEM, PSM, createWorker, Worker } from 'tesseract.js';
 import { isDev } from '@components/consts';
+import { Service } from 'typedi';
 
+@Service()
 export class OnScreenTextRecognizer {
     private containerEl!: HTMLElement;
     private worker!: Worker;
