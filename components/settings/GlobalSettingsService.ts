@@ -3,6 +3,7 @@ import { log } from '../utils';
 import { EventEmitter } from '../EventEmitter';
 
 export interface IGlobalSettings {
+    highlightMentions: boolean;
     collectDaCoinz: boolean;
     decreaseStreamDelay: boolean;
 
@@ -39,6 +40,7 @@ export class GlobalSettingsService {
     private readonly storage;
 
     private _settings: IGlobalSettings = {
+        highlightMentions: true,
         collectDaCoinz: true,
         decreaseStreamDelay: true,
 

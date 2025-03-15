@@ -7,7 +7,8 @@ import {
     useHitsquadService,
     useLootGameService,
     useStreamStatusChecker,
-    useDaCoinzCollector
+    useDaCoinzCollector,
+    useMentionsHighlighter
 } from './composables';
 import template from './template.html?raw';
 
@@ -18,6 +19,7 @@ export class ExtensionContainer extends BasicView {
         useDebugMode();
         useDelayRemover();
         useDaCoinzCollector();
+        useMentionsHighlighter();
 
         useStreamStatusChecker({ el: this.el });
         useChestGameService({ el: this.el });
@@ -27,6 +29,3 @@ export class ExtensionContainer extends BasicView {
         // useAkiraDrawingService({ el: this.el });
     }
 }
-
-// <span class="mention-fragment mention-fragment--recipient" data-a-target="chat-message-mention"></span>
-// <div class="chat-line__message" data-a-target="chat-line-message" data-a-user="hitsquadgodfather" tabindex="0"

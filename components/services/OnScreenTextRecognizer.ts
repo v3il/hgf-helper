@@ -14,10 +14,9 @@ export class OnScreenTextRecognizer {
     }
 
     private async createWorker() {
-        const worker = await createWorker('eng');
+        const worker = await createWorker('eng', OEM.LSTM_ONLY);
 
         await worker.setParameters({
-            tessedit_ocr_engine_mode: OEM.LSTM_ONLY,
             tessedit_pageseg_mode: PSM.SINGLE_LINE,
             tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
         });

@@ -5,12 +5,13 @@ import { Container, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 
 export interface IChatMessage {
+    messageWrapperEl: HTMLElement;
     userName: string;
     message: string;
     isSystemMessage: boolean;
-    isMe: boolean;
     isHitsquadReward: boolean;
     isAkiraDrawReward: boolean;
+    hasMyMention: boolean;
 }
 
 @Service()
@@ -51,33 +52,36 @@ export class ChatObserver {
     }
 
     #processAddedElement(addedElement: HTMLElement) {
-        const messageWrapperEl = addedElement.querySelector?.('.chat-line__message');
+        const messageWrapperEl = addedElement.querySelector?.<HTMLElement>('.chat-line__message');
 
         if (!messageWrapperEl) {
             return;
         }
 
-        const userNameEl = addedElement.querySelector('[data-a-target="chat-message-username"]');
-        const messageEl = addedElement.querySelector('[data-a-target="chat-message-text"]');
+        const userNameEl = messageWrapperEl.querySelector('[data-a-target="chat-message-username"]');
+        const messageEl = messageWrapperEl.querySelector('[data-a-target="chat-message-text"]');
 
         if (!(userNameEl && messageEl)) {
             return;
         }
 
+        const mentionEl = messageWrapperEl.querySelector('[data-a-target="chat-message-mention"]');
+
         const userName = userNameEl.textContent!.toLowerCase();
         const message = messageEl!.textContent!.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather' || userName === 'hitsquadplays';
-        const isMe = this.twitchUIService.twitchUserName === userName;
         const isHitsquadReward = isSystemMessage && MessageTemplates.isHitsquadReward(message);
         const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
+        const hasMyMention = mentionEl?.textContent?.toLowerCase().trim() === this.twitchUIService.twitchUserName;
 
         this.events.emit('message', {
+            messageWrapperEl,
             userName,
             message,
             isSystemMessage,
-            isMe,
             isHitsquadReward,
-            isAkiraDrawReward
+            isAkiraDrawReward,
+            hasMyMention
         });
     }
 }
