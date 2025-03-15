@@ -23,6 +23,6 @@ body {
   padding: 0 var(--sl-spacing-large);
 }
 
-.hgf-offset-bottom--medium {
-  margin-bottom: var(--sl-spacing-medium);
+.hgf-offset-bottom--large {
+  margin-bottom: var(--sl-spacing-large);
 }

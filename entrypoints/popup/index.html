@@ -5,7 +5,7 @@
   <title>HGF-Helper</title>
 </head>
 <body>
-<h1 class="hgf-offset-bottom--medium hgf-popup-title">Settings</h1>
+<h1 class="hgf-offset-bottom--large hgf-popup-title">Settings</h1>
 
 <sl-tab-group>
   <sl-tab slot="nav" panel="twitch">Twitch Widget</sl-tab>
@@ -13,26 +13,25 @@
 
   <!-- Twitch Widget -->
   <sl-tab-panel name="twitch" class="sl-tab-panel">
-    <sl-switch class="sl-switch hgf-offset-bottom--medium" data-setting="highlightMentions">
+    <sl-switch class="sl-switch hgf-offset-bottom--large" data-setting="highlightMentions">
       Highlighting messages mentioning me
     </sl-switch>
 
-    <sl-switch class="sl-switch hgf-offset-bottom--medium" data-setting="collectDaCoinz">
+    <sl-switch class="sl-switch hgf-offset-bottom--large" data-setting="collectDaCoinz">
       Automatically collect Da Coinz
     </sl-switch>
 
     <sl-switch class="sl-switch" data-setting="decreaseStreamDelay">
-      Automatically decrease stream delay
+      Automatically decrease stream delay every 5 minutes
     </sl-switch>
   </sl-tab-panel>
 
   <!-- StreamElements Widget -->
   <sl-tab-panel name="stream-elements" class="sl-tab-panel">
     <sl-input
-      help-text="Not Required"
       data-setting="jsonBinUrl"
       placeholder="https://api.jsonbin.io/v3/b/************************"
-      class="sl-input hgf-offset-bottom--medium"
+      class="sl-input hgf-offset-bottom--large"
     >
       <label slot="label">
         JSONBin URL
@@ -40,14 +39,14 @@
       </label>
     </sl-input>
 
-    <sl-input help-text="Not Required" data-setting="jsonBinMasterKey" class="sl-input hgf-offset-bottom--medium">
+    <sl-input data-setting="jsonBinMasterKey" class="sl-input hgf-offset-bottom--large">
       <label slot="label">
         JSONBin X-Master Key
         <sl-icon-button name="box-arrow-up-right" href="https://jsonbin.io/app/app/api-keys" target="_blank"></sl-icon-button>
       </label>
     </sl-input>
 
-    <sl-input help-text="Not Required" data-setting="jsonBinAccessKey" class="sl-input hgf-offset-bottom--medium">
+    <sl-input data-setting="jsonBinAccessKey" class="sl-input hgf-offset-bottom--large">
       <label slot="label">
         JSONBin X-Access Key
         <sl-icon-button name="box-arrow-up-right" href="https://jsonbin.io/app/app/api-keys" target="_blank"></sl-icon-button>
