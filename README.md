@@ -40,10 +40,10 @@ The appearance of the widget is shown in the image below:
 ### Settings Popup
 Allows user to change global settings for the extension (more to come!).
 
-Twitch helper settings:
+Twitch helper settings: \
 ![readme_3.png](./readme_3.png)
 
-StreamElements helper settings:
+StreamElements helper settings: \
 ![readme_4.png](./readme_4.png)
 
 ## Installation
