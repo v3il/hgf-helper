@@ -17,7 +17,7 @@ A widget is placed on the stream page that allows you to play mini-games in semi
 
 #### Anti-cheat versions:
 - Prohibits sending commands during the anti-cheat screen - removed on Feb 27, 2025
-- Requires sending the `!anticheat' command during the anti-cheat screen - current, handled by the extension
+- Requires sending the `!anticheat' command during the anti-cheat screen - current, handled automatically
 
 The appearance of the widget is shown in the image below:
 
