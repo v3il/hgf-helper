@@ -1,0 +1,12 @@
+.sl-input {
+    --sl-focus-ring-width: 0;
+}
+
+.sl-input::part(base) {
+    margin-bottom: var(--sl-spacing-2x-small);
+}
+
+.sl-input::part(form-control-label) {
+    display: block;
+    margin-bottom: var(--sl-spacing-2x-small);
+}

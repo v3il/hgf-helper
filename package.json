@@ -2,7 +2,7 @@
   "name": "hitsquad-helper",
   "description": "manifest.json description",
   "private": true,
-  "version": "1.4.1",
+  "version": "1.5.0",
   "type": "module",
   "scripts": {
     "dev": "wxt -c ./wxt-dev.config.ts",
@@ -28,6 +28,7 @@
     "wxt": "^0.19.29"
   },
   "dependencies": {
+    "@shoelace-style/shoelace": "^2.20.1",
     "reflect-metadata": "^0.2.2",
     "tesseract.js": "^6.0.0",
     "typedi": "^0.10.0"

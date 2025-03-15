@@ -4,7 +4,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@farm/*": ["./entrypoints/farm.content/*"],
+      "@twitch/*": ["./entrypoints/twitch.content/*"],
       "@components/*": ["./components/*"]
     }
   }

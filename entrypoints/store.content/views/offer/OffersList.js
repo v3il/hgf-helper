@@ -1,15 +1,17 @@
+import { Container } from 'typedi';
+import { GlobalSettingsService } from '../../../../components/settings';
 import { OfferView } from './OfferView';
 
 export class OffersList {
     #el;
     #offersFacade;
-    #settingsFacade;
+    #settingsService;
     #offerViews = [];
 
-    constructor({ el, offersFacade, settingsFacade }) {
+    constructor({ el, offersFacade }) {
         this.#el = el;
         this.#offersFacade = offersFacade;
-        this.#settingsFacade = settingsFacade;
+        this.#settingsService = Container.get(GlobalSettingsService);
 
         this.#initOfferViews();
         this.#observeSettingsChange();
@@ -36,14 +38,13 @@ export class OffersList {
             return new OfferView({
                 offerEl,
                 offer,
-                offersFacade: this.#offersFacade,
-                settingsFacade: this.#settingsFacade
+                offersFacade: this.#offersFacade
             });
         });
     }
 
     #observeSettingsChange() {
-        this.#settingsFacade.globalSettingsEvents.on('setting-changed:offersMaxPrice', (v) => {
+        this.#settingsService.events.on('setting-changed:offersMaxPrice', () => {
             this.#offerViews.forEach((offerView) => offerView.toggleOffer());
         });
     }

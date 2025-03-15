@@ -1,85 +1,28 @@
+@import './shoelace/sl-input.css';
+@import './shoelace/sl-range.css';
+@import './shoelace/sl-switch.css';
+@import './shoelace/sl-tab-panel.css';
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html {
+  font-family: var(--sl-font-sans);
+  font-size: var(--sl-font-size-small);
+}
+
 body {
-  padding: 16px;
-  width: 400px;
-  font-size: 14px;
+  padding: var(--sl-spacing-medium) 0;
+  width: 500px;
 }
 
-.mb-1 {
-  margin-bottom: 4px;
+.hgf-popup-title {
+  padding: 0 var(--sl-spacing-large);
 }
 
-.mb-2 {
-  margin-bottom: 8px;
-}
-
-.mb-4 {
-  margin-bottom: 16px;
-}
-
-.mr-2 {
-  margin-right: 8px;
-}
-
-.flex {
-  display: flex;
-}
-
-.flex-between {
-  justify-content: space-between;
-}
-
-.flex-center {
-  align-items: center;
-}
-
-.bold {
-  font-weight: bold;
-}
-
-.note {
-  color: #555555;
-  font-size: 10px;
-}
-
-.link {
-  text-decoration: none;
-}
-
-.input {
-  width: 100%;
-  margin-top: 8px;
-  color: #333;
-  padding: 8px 16px;
-  border-radius: 0.2rem;
-  background-color: rgb(255, 255, 255);
-  display: block;
-  border: 1px solid #ccc;
-  outline: none;
-}
-
-.input.checkbox {
-  width: auto;
-  margin-top: 0;
-}
-
-.range {
-  width: 100%;
-  margin-top: 8px;
-  display: block;
-}
-
-.range_grid {
-  display: flex;
-  margin-top: 8px;
-  justify-content: space-between;
-}
-
-.h3 {
-  text-decoration: underline;
+.hgf-offset-bottom--large {
+  margin-bottom: var(--sl-spacing-large);
 }

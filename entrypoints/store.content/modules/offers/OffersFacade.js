@@ -1,4 +1,5 @@
-import { SettingsFacade } from '@components/shared';
+import { Container } from 'typedi';
+import { GlobalSettingsService } from '../../../../components/settings';
 import { JsonBinApiService, OffersService } from './services';
 import { OffersFactory } from './factories';
 
@@ -7,7 +8,7 @@ export class OffersFacade {
 
     static get instance() {
         if (!this._instance) {
-            const settings = SettingsFacade.instance.globalSettings;
+            const { settings } = Container.get(GlobalSettingsService);
             const offersFactory = new OffersFactory();
 
             const apiService = new JsonBinApiService({

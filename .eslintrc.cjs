@@ -35,6 +35,8 @@ module.exports = {
         'no-useless-constructor': 'off',
         'no-empty-function': 'off',
         'no-use-before-define': 'off',
+        'no-param-reassign': 'off',
+        'object-curly-newline': 'off',
         indent: ['error', 4],
         'semi': [2, 'always'],
         'no-unused-vars': 'off',

@@ -1,1 +1,0 @@
-export { StreamFacade } from './StreamFacade';

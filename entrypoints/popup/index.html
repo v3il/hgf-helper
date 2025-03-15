@@ -2,55 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
-  <link rel="stylesheet" href="./style.css">
+  <title>HGF-Helper</title>
 </head>
 <body>
-<h2 class="h2 mb-4">HGF Helper</h2>
+<h1 class="hgf-offset-bottom--large hgf-popup-title">Settings</h1>
 
-<h3 class="h3 mb-2">Twitch Widget Settings</h3>
+<sl-tab-group>
+  <sl-tab slot="nav" panel="twitch">Twitch Widget</sl-tab>
+  <sl-tab slot="nav" panel="stream-elements">StreamElements Widget</sl-tab>
 
-<div class="label mb-4" data-setting="openAiApiToken">
-  <p class="mb-1 bold">Open AI API Token</p>
-  <p class="note mb-1">Not Required</p>
-  <input type="text" class="input" data-input>
-</div>
+  <!-- Twitch Widget -->
+  <sl-tab-panel name="twitch" class="sl-tab-panel">
+    <sl-switch class="sl-switch hgf-offset-bottom--large" data-setting="highlightMentions">
+      Highlighting messages mentioning me
+    </sl-switch>
 
-<h3 class="h3 mb-2">Stream Elements Widget Settings</h3>
+    <sl-switch class="sl-switch hgf-offset-bottom--large" data-setting="collectDaCoinz">
+      Automatically collect Da Coinz
+    </sl-switch>
 
-<div class="label mb-4" data-setting="jsonBinUrl">
-  <p class="mb-1 bold">JSONBin URL <a href="https://jsonbin.io/app/bins" target="_blank" class="link">&#10697;</a></p>
-  <p class="note mb-1">Not Required</p>
-  <input type="text" placeholder="https://api.jsonbin.io/v3/b/************************" class="input" data-input>
-</div>
+    <sl-switch class="sl-switch" data-setting="decreaseStreamDelay">
+      Automatically decrease stream delay every 5 minutes
+    </sl-switch>
+  </sl-tab-panel>
 
-<div class="label mb-4" data-setting="jsonBinMasterKey">
-  <p class="mb-1 bold">JSONBin X-Master Key <a href="https://jsonbin.io/app/app/api-keys" target="_blank" class="link">&#10697;</a></p>
-  <p class="note mb-1">Not Required</p>
-  <input type="text" class="input" data-input>
-</div>
+  <!-- StreamElements Widget -->
+  <sl-tab-panel name="stream-elements" class="sl-tab-panel">
+    <sl-input
+      data-setting="jsonBinUrl"
+      placeholder="https://api.jsonbin.io/v3/b/************************"
+      class="sl-input hgf-offset-bottom--large"
+    >
+      <label slot="label">
+        JSONBin URL
+        <sl-icon-button name="box-arrow-up-right" href="https://jsonbin.io/app/bins" target="_blank"></sl-icon-button>
+      </label>
+    </sl-input>
 
-<div class="label mb-4" data-setting="jsonBinAccessKey">
-  <p class="mb-1 bold">JSONBin X-Access Key <a href="https://jsonbin.io/app/app/api-keys" target="_blank" class="link">&#10697;</a></p>
-  <p class="note mb-1">Not Required</p>
-  <input type="text" class="input" data-input>
-</div>
+    <sl-input data-setting="jsonBinMasterKey" class="sl-input hgf-offset-bottom--large">
+      <label slot="label">
+        JSONBin X-Master Key
+        <sl-icon-button name="box-arrow-up-right" href="https://jsonbin.io/app/app/api-keys" target="_blank"></sl-icon-button>
+      </label>
+    </sl-input>
 
-<div class="label" data-setting="offersMaxPrice">
-  <p class="flex flex-between flex-center">
-    <span class="bold">Hide offers with price over</span>
-    <span data-value>0</span>
-  </p>
+    <sl-input data-setting="jsonBinAccessKey" class="sl-input hgf-offset-bottom--large">
+      <label slot="label">
+        JSONBin X-Access Key
+        <sl-icon-button name="box-arrow-up-right" href="https://jsonbin.io/app/app/api-keys" target="_blank"></sl-icon-button>
+      </label>
+    </sl-input>
 
-  <input type="range" min="0" max="600000" class="range" list="priceRange" data-input>
-
-  <datalist id="priceRange" class="range_grid">
-    <option value="0">0</option>
-    <option value="200000">200k</option>
-    <option value="400000">400k</option>
-    <option value="600000">600k</option>
-  </datalist>
-</div>
+    <sl-range
+      label="Hide offers with price over"
+      help-text="0-999999"
+      min="0"
+      max="999999"
+      data-setting="offersMaxPrice"
+      class="sl-range"
+    ></sl-range>
+  </sl-tab-panel>
+</sl-tab-group>
 
 <script src="./main.ts" type="module"></script>
 </body>
