@@ -22,6 +22,11 @@ export class OffersService {
         return this._hiddenOffers.includes(offer.name);
     }
 
+    unhideOffer(offer: string) {
+        this._hiddenOffers = this._hiddenOffers.filter((hiddenOffer) => hiddenOffer !== offer);
+        return this.apiService.updateHiddenOffers(this._hiddenOffers);
+    }
+
     hideOffer(offer: Offer) {
         this.hiddenOffers.push(offer.name);
         return this.apiService.updateHiddenOffers(this.hiddenOffers);

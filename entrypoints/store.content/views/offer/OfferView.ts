@@ -57,7 +57,7 @@ export class OfferView {
     }
 
     private async clickHandler() {
-        if (!window.confirm('Hide?')) {
+        if (!window.confirm(`Are you sure you want to hide the "${this.offer.name}" offer?`)) {
             return;
         }
 

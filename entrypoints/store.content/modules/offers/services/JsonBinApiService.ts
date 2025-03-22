@@ -13,8 +13,7 @@ export class JsonBinApiService {
     }
 
     async getHiddenOffers() {
-        const response = await this.sendRequest();
-        const { record } = await response.json();
+        const { record } = await this.sendRequest();
 
         return record.offers;
     }
@@ -31,6 +30,12 @@ export class JsonBinApiService {
         return fetch(this.jsonBinUrl, {
             headers: this.getHeaders(),
             ...options
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            return response.json();
         });
     }
 

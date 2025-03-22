@@ -11,9 +11,6 @@ export class ExtensionContainer {
 
         this.renderOfferControls();
         this.renderHiddenOffersManager();
-
-        const button = document.querySelector('sl-button');
-        console.log(button); // Перевірте, чи не null
     }
 
     private renderOfferControls() {
