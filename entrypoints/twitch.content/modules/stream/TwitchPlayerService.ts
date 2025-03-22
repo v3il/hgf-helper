@@ -1,4 +1,4 @@
-import { promisifiedSetTimeout } from '@components/utils';
+import { waitAsync } from '@components/utils';
 import { Service } from 'typedi';
 
 @Service()
@@ -34,7 +34,7 @@ export class TwitchPlayerService {
 
     private async gotoQualitySettings() {
         this.settingsButton.click();
-        await promisifiedSetTimeout(50);
+        await waitAsync(50);
 
         const selector = '[data-a-target="player-settings-menu-item-quality"]';
         const qualitySettingsButton = document.querySelector<HTMLButtonElement>(selector);

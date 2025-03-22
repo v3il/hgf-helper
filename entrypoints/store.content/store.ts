@@ -13,6 +13,7 @@ export const start = () => {
         console.clear();
 
         await globalSettings.loadSettings();
+        await streamElementsUIService.prepareStorePage();
 
         await offersFacade.fetchHiddenOffers()
             .catch((error) => {

@@ -11,6 +11,8 @@ export interface IGlobalSettings {
     jsonBinMasterKey: string;
     jsonBinAccessKey: string;
     offersMaxPrice: number;
+    sortOffersBy: '\'order\'' | '\'-cost\'' | '\'-createdAt\'';
+
     openAiApiToken: string;
 }
 
@@ -48,6 +50,8 @@ export class GlobalSettingsService {
         jsonBinMasterKey: '',
         jsonBinAccessKey: '',
         offersMaxPrice: 600_000,
+        sortOffersBy: '\'order\'',
+
         openAiApiToken: ''
     };
 
