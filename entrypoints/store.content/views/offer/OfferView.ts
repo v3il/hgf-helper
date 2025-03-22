@@ -31,11 +31,13 @@ export class OfferView {
     }
 
     private get isHidden() {
-        const { offersMaxPrice } = this.settingsService.settings;
+        const { offersMaxPrice, hideSoldOutOffers } = this.settingsService.settings;
 
-        return (this.offer.isSoldOut && false) // move to setting
-            || this.offer.price > offersMaxPrice
-            || this.offersFacade.isOfferHidden(this.offer);
+        if (hideSoldOutOffers && this.offer.isSoldOut) {
+            return true;
+        }
+
+        return this.offer.price > offersMaxPrice || this.offersFacade.isOfferHidden(this.offer);
     }
 
     renderContainer() {

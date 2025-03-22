@@ -14,8 +14,7 @@ export class OfferControls {
         this.settingsService = Container.get(GlobalSettingsService);
 
         this.initOfferViews();
-        this.listenOfferShow();
-        this.listenMaxPriceChange();
+        this.listenEvents();
     }
 
     private initOfferViews() {
@@ -43,15 +42,14 @@ export class OfferControls {
         });
     }
 
-    private listenOfferShow() {
+    private listenEvents() {
         this.offersFacade.events.on('offer-shown', () => this.renderOffers());
-    }
-
-    private listenMaxPriceChange() {
+        this.settingsService.events.on('setting-changed:hideSoldOutOffers', () => this.renderOffers());
         this.settingsService.events.on('setting-changed:offersMaxPrice', () => this.renderOffers());
     }
 
     private renderOffers() {
+        console.error('renderOffers');
         this.offerViews.forEach((offerView) => offerView.toggleVisibility());
     }
 }

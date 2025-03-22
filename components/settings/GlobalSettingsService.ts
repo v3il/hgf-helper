@@ -11,6 +11,7 @@ export interface IGlobalSettings {
     jsonBinMasterKey: string;
     jsonBinAccessKey: string;
     offersMaxPrice: number;
+    hideSoldOutOffers: boolean;
     sortOffersBy: '\'order\'' | '\'-cost\'' | '\'-createdAt\'';
     enhanceStoreHeader: boolean;
     enhanceStoreSidebar: boolean;
@@ -53,6 +54,7 @@ export class GlobalSettingsService {
         jsonBinMasterKey: '',
         jsonBinAccessKey: '',
         offersMaxPrice: 600_000,
+        hideSoldOutOffers: true,
         sortOffersBy: '\'order\'',
         enhanceStoreHeader: true,
         enhanceStoreSidebar: true,
