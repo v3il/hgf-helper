@@ -4,18 +4,22 @@ import { JsonBinApiService } from './JsonBinApiService';
 
 export class OffersService {
     private readonly apiService;
-    private hiddenOffers: string[] = [];
+    private _hiddenOffers: string[] = [];
 
     constructor(container: ContainerInstance) {
         this.apiService = container.get(JsonBinApiService);
     }
 
+    get hiddenOffers() {
+        return this._hiddenOffers;
+    }
+
     async fetchHiddenOffers() {
-        this.hiddenOffers = await this.apiService.getHiddenOffers();
+        this._hiddenOffers = await this.apiService.getHiddenOffers();
     }
 
     isOfferHidden(offer: Offer) {
-        return this.hiddenOffers.includes(offer.name);
+        return this._hiddenOffers.includes(offer.name);
     }
 
     hideOffer(offer: Offer) {

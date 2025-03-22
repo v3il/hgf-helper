@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { GlobalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
 import { StreamElementsUIService, OffersFacade } from '@store/modules';
-import { OffersList } from './views';
+import { ExtensionContainer } from './views';
 import './store.css';
 
 export const start = async () => {
@@ -24,6 +24,6 @@ export const start = async () => {
                 alert('Failed to fetch hidden offers. Please check your JSONBin credentials in the settings popup.');
             });
 
-        new OffersList(streamElementsUIService.offersListEl);
+        new ExtensionContainer();
     });
 };

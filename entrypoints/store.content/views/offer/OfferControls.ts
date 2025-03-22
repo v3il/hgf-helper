@@ -3,15 +3,13 @@ import { GlobalSettingsService } from '@components/settings';
 import { OffersFacade } from '@store/modules';
 import { OfferView } from './OfferView';
 
-export class OffersList {
-    private readonly el: HTMLElement;
+export class OfferControls {
     private readonly offersFacade;
     private readonly settingsService;
 
     private offerViews: OfferView[] = [];
 
-    constructor(el: HTMLElement) {
-        this.el = el;
+    constructor(private readonly el: HTMLElement) {
         this.offersFacade = Container.get(OffersFacade);
         this.settingsService = Container.get(GlobalSettingsService);
 

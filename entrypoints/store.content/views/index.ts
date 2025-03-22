@@ -1,1 +1,1 @@
-export * from './offer/OffersList';
+export * from './ExtensionContainer';

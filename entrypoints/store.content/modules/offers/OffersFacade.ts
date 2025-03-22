@@ -15,6 +15,10 @@ export class OffersFacade {
         this.offersService = this.container.get(OffersService);
     }
 
+    get hiddenOffers() {
+        return this.offersService.hiddenOffers;
+    }
+
     createOffer(options: IOfferParams) {
         return new Offer(options);
     }

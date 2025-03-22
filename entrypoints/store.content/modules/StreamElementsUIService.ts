@@ -27,6 +27,10 @@ export class StreamElementsUIService {
         return document.querySelector<HTMLElement>('.public-store-items')!;
     }
 
+    get userStatsEl() {
+        return document.querySelector<HTMLElement>('.usr-stats')!;
+    }
+
     enhanceStorePage() {
         this.enhanceStoreHeader();
         this.enhanceStoreSidebar();
