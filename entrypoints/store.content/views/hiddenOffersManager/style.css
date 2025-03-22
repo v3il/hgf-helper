@@ -53,6 +53,10 @@
     padding: 8px 24px;
 }
 
+.hgf-hidden-offers-manager__cell--name {
+    width: 100%;
+}
+
 .hgf-hidden-offers-manager__remove-button {
     background-color: transparent;
     border: none;

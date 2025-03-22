@@ -57,11 +57,12 @@ export class HiddenOffersManager {
 
         openDialogEl.addEventListener('click', () => {
             this.renderHiddenOffers();
-            this.toggleEmptyState();
             dialogEl.showModal();
         });
 
         closeDialogEl.addEventListener('click', () => {
+            this.searchQuery = '';
+            searchEl.value = '';
             dialogEl.close();
         });
     }
@@ -69,6 +70,7 @@ export class HiddenOffersManager {
     private renderHiddenOffers() {
         const tableEl = document.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table]')!;
         const tBodyEl = document.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table-body]')!;
+        const emptyStateEl = document.querySelector<HTMLDivElement>('[data-hgf-empty-offers]')!;
 
         tBodyEl.innerHTML = '';
 
@@ -82,7 +84,7 @@ export class HiddenOffersManager {
             rowEl.dataset.hgfOfferName = offer;
 
             rowEl.innerHTML = `
-                <td class="hgf-hidden-offers-manager__cell">${offer}</td>
+                <td class="hgf-hidden-offers-manager__cell hgf-hidden-offers-manager__cell--name">${offer}</td>
                 <td class="hgf-hidden-offers-manager__cell">
                     <button class="hgf-hidden-offers-manager__remove-button" data-hgf-unhide-offer>Remove</button>
                 </td>
@@ -92,12 +94,12 @@ export class HiddenOffersManager {
         });
 
         tBodyEl.append(...rowEls);
-        tableEl.classList.toggle('hgf-hidden-offers-manager--hidden', rowEls.length === 0);
-    }
 
-    private toggleEmptyState() {
-        const emptyStateEl = document.querySelector<HTMLDivElement>('[data-hgf-empty-offers]')!;
+        tableEl.classList.toggle('hgf-hidden-offers-manager--hidden', filteredOffers.length === 0);
+        emptyStateEl.classList.toggle('hgf-hidden-offers-manager--hidden', filteredOffers.length > 0);
 
-        emptyStateEl.classList.toggle('hgf-hidden-offers-manager--hidden', this.offersFacade.hiddenOffers.length > 0);
+        emptyStateEl.textContent = this.searchQuery
+            ? 'No offers found'
+            : 'No hidden offers or JSONBin configuration is incorrect';
     }
 }
