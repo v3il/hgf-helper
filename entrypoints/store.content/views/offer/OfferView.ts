@@ -33,7 +33,7 @@ export class OfferView {
     private get isHidden() {
         const { offersMaxPrice } = this.settingsService.settings;
 
-        return this.offer.isSoldOut // move to setting
+        return (this.offer.isSoldOut && false) // move to setting
             || this.offer.price > offersMaxPrice
             || this.offersFacade.isOfferHidden(this.offer);
     }

@@ -6,6 +6,7 @@ import './style.css';
 export class HiddenOffersManager {
     private readonly offersFacade;
     private readonly streamElementsUIService;
+    private searchQuery = '';
 
     constructor() {
         this.offersFacade = Container.get(OffersFacade);
@@ -24,6 +25,12 @@ export class HiddenOffersManager {
         const dialogEl = document.querySelector<HTMLDialogElement>('[data-hgf-hidden-offers-popup]')!;
         const closeDialogEl = document.querySelector<HTMLButtonElement>('[data-hgf-hidden-offers-close-popup]')!;
         const tBodyEl = document.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table-body]')!;
+        const searchEl = document.querySelector<HTMLInputElement>('[data-hgf-search-offer]')!;
+
+        searchEl.addEventListener('input', (event) => {
+            this.searchQuery = (event.target as HTMLInputElement).value.toLowerCase();
+            this.renderHiddenOffers();
+        });
 
         tBodyEl.addEventListener('click', async (event) => {
             const target = event.target as HTMLElement;
@@ -50,6 +57,7 @@ export class HiddenOffersManager {
 
         openDialogEl.addEventListener('click', () => {
             this.renderHiddenOffers();
+            this.toggleEmptyState();
             dialogEl.showModal();
         });
 
@@ -59,11 +67,15 @@ export class HiddenOffersManager {
     }
 
     private renderHiddenOffers() {
+        const tableEl = document.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table]')!;
         const tBodyEl = document.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table-body]')!;
 
         tBodyEl.innerHTML = '';
 
-        const rowEls = this.offersFacade.hiddenOffers.map((offer) => {
+        const filteredOffers = this.offersFacade.hiddenOffers.toReversed()
+            .filter((offer) => offer.includes(this.searchQuery));
+
+        const rowEls = filteredOffers.map((offer) => {
             const rowEl = document.createElement('tr');
 
             rowEl.classList.add('hgf-hidden-offers-manager__row');
@@ -80,5 +92,12 @@ export class HiddenOffersManager {
         });
 
         tBodyEl.append(...rowEls);
+        tableEl.classList.toggle('hgf-hidden-offers-manager--hidden', rowEls.length === 0);
+    }
+
+    private toggleEmptyState() {
+        const emptyStateEl = document.querySelector<HTMLDivElement>('[data-hgf-empty-offers]')!;
+
+        emptyStateEl.classList.toggle('hgf-hidden-offers-manager--hidden', this.offersFacade.hiddenOffers.length > 0);
     }
 }

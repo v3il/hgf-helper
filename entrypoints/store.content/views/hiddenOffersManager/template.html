@@ -3,9 +3,17 @@
 </div>
 
 <dialog class="hgf-hidden-offers-manager__dialog" data-hgf-hidden-offers-popup>
-  <table class="hgf-hidden-offers-manager__table">
-    <tbody data-hgf-hidden-offers-table-body></tbody>
-  </table>
+  <div class="hgf-hidden-offers-manager__dialog-content">
+    <input type="text" placeholder="Search..." class="hgf-hidden-offers-manager__search" data-hgf-search-offer autofocus>
+
+    <table class="hgf-hidden-offers-manager__table" data-hgf-hidden-offers-table>
+      <tbody data-hgf-hidden-offers-table-body></tbody>
+    </table>
+
+    <p class="hgf-hidden-offers-manager__empty" data-hgf-empty-offers>
+      No hidden offers or JSONBin configuration is incorrect
+    </p>
+  </div>
 
   <div class="hgf-hidden-offers-manager__footer">
     <button class="hgf-hidden-offers-manager__close-dialog" data-hgf-hidden-offers-close-popup>Close</button>
