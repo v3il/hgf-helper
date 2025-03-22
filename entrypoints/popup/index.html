@@ -5,7 +5,7 @@
   <title>HGF-Helper</title>
 </head>
 <body>
-<h1 class="hgf-offset-bottom--large hgf-popup-title">Settings</h1>
+<h1 class="hgf-popup-offset hgf-popup-title">Settings</h1>
 
 <sl-tab-group>
   <sl-tab slot="nav" panel="twitch">Twitch Widget</sl-tab>
@@ -13,11 +13,11 @@
 
   <!-- Twitch Widget -->
   <sl-tab-panel name="twitch" class="sl-tab-panel">
-    <sl-switch class="sl-switch hgf-offset-bottom--large" data-setting="highlightMentions">
+    <sl-switch class="sl-switch hgf-popup-offset" data-setting="highlightMentions">
       Highlighting messages mentioning me
     </sl-switch>
 
-    <sl-switch class="sl-switch hgf-offset-bottom--large" data-setting="collectDaCoinz">
+    <sl-switch class="sl-switch hgf-popup-offset" data-setting="collectDaCoinz">
       Automatically collect Da Coinz
     </sl-switch>
 
@@ -29,7 +29,7 @@
   <!-- StreamElements Widget -->
   <sl-tab-panel name="stream-elements" class="sl-tab-panel">
     <sl-switch
-      class="sl-switch hgf-offset-bottom--large"
+      class="sl-switch hgf-popup-offset"
       data-setting="enhanceStoreHeader"
       help-text="Hide store banner"
     >
@@ -37,24 +37,24 @@
     </sl-switch>
 
     <sl-switch
-      class="sl-switch hgf-offset-bottom--large"
+      class="sl-switch hgf-popup-offset"
       data-setting="enhanceStoreSidebar"
       help-text="Hide channel logo and Twitch actions. Make block with stats sticky"
     >
       Enhance store sidebar
     </sl-switch>
 
-    <sl-switch class="sl-switch hgf-offset-bottom--large" data-setting="hideStoreFooter">
+    <sl-switch class="sl-switch hgf-popup-offset" data-setting="hideStoreFooter">
       Hide store footer
     </sl-switch>
 
-    <sl-divider class="hgf-offset-bottom--large"></sl-divider>
+    <sl-divider class="hgf-popup-offset"></sl-divider>
 
     <sl-select
       label="Sort offers"
       help-text="Automatically sort offers when you enter the store page"
       data-setting="sortOffersBy"
-      class="sl-select hgf-offset-bottom--large"
+      class="sl-select hgf-popup-offset"
     >
       <sl-option value="'order'">Default (no sorting)</sl-option>
       <sl-option value="'-cost'">Cost (most expensive first)</sl-option>
@@ -67,19 +67,27 @@
       min="0"
       max="999999"
       data-setting="offersMaxPrice"
-      class="sl-range hgf-offset-bottom--large"
+      class="sl-range hgf-popup-offset"
     ></sl-range>
 
-    <sl-switch class="sl-switch hgf-offset-bottom--large" data-setting="hideSoldOutOffers">
+    <sl-switch class="sl-switch hgf-popup-offset" data-setting="hideSoldOutOffers">
       Hide sold out offers
     </sl-switch>
 
-    <sl-divider class="hgf-offset-bottom--large"></sl-divider>
+    <sl-switch
+      class="sl-switch hgf-popup-offset"
+      data-setting="highlightLowVolumeOffers"
+      help-text="Highlight offers with low volume (less than 10)"
+    >
+      Highlight offers with low volume
+    </sl-switch>
+
+    <sl-divider class="hgf-popup-offset"></sl-divider>
 
     <sl-input
       data-setting="jsonBinUrl"
       placeholder="https://api.jsonbin.io/v3/b/************************"
-      class="sl-input hgf-offset-bottom--large"
+      class="sl-input hgf-popup-offset"
     >
       <label slot="label">
         JSONBin URL
@@ -87,7 +95,7 @@
       </label>
     </sl-input>
 
-    <sl-input data-setting="jsonBinMasterKey" class="sl-input hgf-offset-bottom--large">
+    <sl-input data-setting="jsonBinMasterKey" class="sl-input hgf-popup-offset">
       <label slot="label">
         JSONBin X-Master Key
         <sl-icon-button name="box-arrow-up-right" href="https://jsonbin.io/app/app/api-keys" target="_blank"></sl-icon-button>

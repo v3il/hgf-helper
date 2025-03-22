@@ -1,6 +1,6 @@
 import { StreamElementsUIService } from '@store/modules';
 import { Container } from 'typedi';
-import { OfferControls } from './offer';
+import { OffersList } from './offer';
 import { HiddenOffersManager } from './hiddenOffersManager';
 
 export class ExtensionContainer {
@@ -14,7 +14,7 @@ export class ExtensionContainer {
     }
 
     private renderOfferControls() {
-        new OfferControls(this.streamElementsUIService.offersListEl);
+        new OffersList(this.streamElementsUIService.offersListEl);
     }
 
     private renderHiddenOffersManager() {

@@ -3,7 +3,7 @@ import { GlobalSettingsService } from '@components/settings';
 import { OffersFacade } from '@store/modules';
 import { OfferView } from './OfferView';
 
-export class OfferControls {
+export class OffersList {
     private readonly offersFacade;
     private readonly settingsService;
 
@@ -49,7 +49,6 @@ export class OfferControls {
     }
 
     private renderOffers() {
-        console.error('renderOffers');
         this.offerViews.forEach((offerView) => offerView.toggleVisibility());
     }
 }

@@ -57,7 +57,9 @@ export class StreamElementsUIService {
             }
         }
 
-        document.querySelector<HTMLDivElement>('.md-select-backdrop')?.click();
+        setTimeout(() => {
+            document.querySelector<HTMLDivElement>('.md-select-backdrop')?.click();
+        }, 500);
     }
 
     private initSettingsObserver() {

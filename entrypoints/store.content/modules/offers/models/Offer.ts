@@ -24,7 +24,7 @@ export class Offer {
         this.steamAppLink = this.getSteamAppLink();
     }
 
-    get isDeficiency() {
+    get isLowVolume() {
         return this.count > 0 && this.count < 10;
     }
 

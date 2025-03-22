@@ -23,11 +23,9 @@ export class OfferView {
         this.offersFacade = Container.get(OffersFacade);
         this.settingsService = Container.get(GlobalSettingsService);
 
-        this.clickHandler = this.clickHandler.bind(this);
-
         this.renderContainer();
         this.toggleVisibility();
-        this.attachHideOfferClick();
+        this.listenEvents();
     }
 
     private get isHidden() {
@@ -40,22 +38,14 @@ export class OfferView {
         return this.offer.price > offersMaxPrice || this.offersFacade.isOfferHidden(this.offer);
     }
 
-    renderContainer() {
+    private renderContainer() {
         this.offerEl.insertAdjacentHTML('beforeend', template);
 
         const steamAppLinkEl = this.offerEl.querySelector<HTMLAnchorElement>('[data-steam-app-link]')!;
 
         steamAppLinkEl.href = this.offer.steamAppLink;
 
-        if (this.offer.isDeficiency) {
-            this.offerEl.querySelector('[data-container]')!.classList.add('hgfs-container--danger');
-        }
-    }
-
-    private attachHideOfferClick() {
-        const hideButtonEl = this.offerEl.querySelector('[data-hide]')!;
-
-        hideButtonEl.addEventListener('click', this.clickHandler);
+        this.highlightLowVolumeOffer();
     }
 
     private async clickHandler() {
@@ -70,6 +60,23 @@ export class OfferView {
             alert('Failed to hide offer. Check your JSONBin configuration in the settings popup.');
             console.error(error);
         }
+    }
+
+    private highlightLowVolumeOffer() {
+        const { highlightLowVolumeOffers } = this.settingsService.settings;
+
+        this.offerEl.querySelector('[data-container]')!.classList
+            .toggle('hgfs-container--danger', this.offer.isLowVolume && highlightLowVolumeOffers);
+    }
+
+    private listenEvents() {
+        const hideButtonEl = this.offerEl.querySelector('[data-hide]')!;
+
+        hideButtonEl.addEventListener('click', () => this.clickHandler());
+
+        this.settingsService.events.on('setting-changed:highlightLowVolumeOffers', () => {
+            this.highlightLowVolumeOffer();
+        });
     }
 
     toggleVisibility() {

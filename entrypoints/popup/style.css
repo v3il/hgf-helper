@@ -24,6 +24,6 @@ body {
   padding: 0 var(--sl-spacing-large);
 }
 
-.hgf-offset-bottom--large {
+.hgf-popup-offset {
   margin-bottom: var(--sl-spacing-large);
 }
