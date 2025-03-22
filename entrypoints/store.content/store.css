@@ -1,0 +1,41 @@
+:root {
+    --hgf-header-height: 64px;
+}
+
+.navigation.element-fixed {
+    z-index: 1000;
+}
+
+.side-bar {
+    margin-top: 0 !important;
+}
+
+/* Header */
+
+.hgf--enhanced-header header.exp-header {
+    display: none;
+}
+
+.hgf--enhanced-header .userpages-wrap {
+    padding-top: var(--hgf-header-height);
+}
+
+/* Sidebar */
+
+.hgf--enhanced-sidebar .user-text-info,
+.hgf--enhanced-sidebar .twitch-actions {
+    display: none;
+}
+
+.hgf--enhanced-sidebar .side-bar {
+    position: sticky;
+    margin-top: 0;
+    top: var(--hgf-header-height);
+    padding-top: 24px;
+}
+
+/* Footer */
+
+.hgf--hide-footer dashboard-footer {
+    display: none;
+}

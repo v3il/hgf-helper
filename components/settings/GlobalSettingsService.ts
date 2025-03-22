@@ -12,6 +12,9 @@ export interface IGlobalSettings {
     jsonBinAccessKey: string;
     offersMaxPrice: number;
     sortOffersBy: '\'order\'' | '\'-cost\'' | '\'-createdAt\'';
+    enhanceStoreHeader: boolean;
+    enhanceStoreSidebar: boolean;
+    hideStoreFooter: boolean;
 
     openAiApiToken: string;
 }
@@ -51,6 +54,9 @@ export class GlobalSettingsService {
         jsonBinAccessKey: '',
         offersMaxPrice: 600_000,
         sortOffersBy: '\'order\'',
+        enhanceStoreHeader: true,
+        enhanceStoreSidebar: true,
+        hideStoreFooter: true,
 
         openAiApiToken: ''
     };

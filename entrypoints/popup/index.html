@@ -28,14 +28,27 @@
 
   <!-- StreamElements Widget -->
   <sl-tab-panel name="stream-elements" class="sl-tab-panel">
-    <sl-range
-      label="Hide offers with price over"
-      help-text="0-999999"
-      min="0"
-      max="999999"
-      data-setting="offersMaxPrice"
-      class="sl-range hgf-offset-bottom--large"
-    ></sl-range>
+    <sl-switch
+      class="sl-switch hgf-offset-bottom--large"
+      data-setting="enhanceStoreHeader"
+      help-text="Hide store banner"
+    >
+      Enhance store header
+    </sl-switch>
+
+    <sl-switch
+      class="sl-switch hgf-offset-bottom--large"
+      data-setting="enhanceStoreSidebar"
+      help-text="Hide channel logo and Twitch actions. Make block with stats sticky"
+    >
+      Enhance store sidebar
+    </sl-switch>
+
+    <sl-switch class="sl-switch hgf-offset-bottom--large" data-setting="hideStoreFooter">
+      Hide store footer
+    </sl-switch>
+
+    <sl-divider class="hgf-offset-bottom--large"></sl-divider>
 
     <sl-select
       label="Sort offers"
@@ -47,6 +60,17 @@
       <sl-option value="'-cost'">Cost (most expensive first)</sl-option>
       <sl-option value="'-createdAt'">Adding date (most recent first)</sl-option>
     </sl-select>
+
+    <sl-range
+      label="Hide offers with price over"
+      help-text="0-999999"
+      min="0"
+      max="999999"
+      data-setting="offersMaxPrice"
+      class="sl-range hgf-offset-bottom--large"
+    ></sl-range>
+
+    <sl-divider class="hgf-offset-bottom--large"></sl-divider>
 
     <sl-input
       data-setting="jsonBinUrl"

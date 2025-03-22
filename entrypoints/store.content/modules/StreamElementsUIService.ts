@@ -9,6 +9,7 @@ export class StreamElementsUIService {
 
     constructor() {
         this.globalSettingsService = Container.get(GlobalSettingsService);
+        this.initSettingsObserver();
     }
 
     whenOffersLoaded(callback: () => void) {
@@ -22,19 +23,17 @@ export class StreamElementsUIService {
         }, Timing.SECOND);
     }
 
-    private get sortOffersDropdownEl() {
-        return document.querySelector<HTMLButtonElement>('[ng-model="vm.sortBy"]');
-    }
-
     get offersListEl() {
         return document.querySelector<HTMLElement>('.public-store-items')!;
     }
 
-    async prepareStorePage() {
-        await this.sortOffers();
+    enhanceStorePage() {
+        this.enhanceStoreHeader();
+        this.enhanceStoreSidebar();
+        this.toggleStoreFooter();
     }
 
-    private async sortOffers() {
+    async sortOffers() {
         const field = this.globalSettingsService.settings.sortOffersBy;
 
         if (field === '\'order\'') {
@@ -47,12 +46,38 @@ export class StreamElementsUIService {
         const optionsContainerId = this.sortOffersDropdownEl!.getAttribute('aria-owns');
         const options = document.querySelectorAll<HTMLButtonElement>(`#${optionsContainerId} md-option`);
 
-        options.forEach((option) => {
+        for (const option of options) {
             if (option.getAttribute('ng-value') === field) {
                 option.click();
+                break;
             }
-        });
+        }
 
         document.querySelector<HTMLDivElement>('.md-select-backdrop')?.click();
+    }
+
+    private initSettingsObserver() {
+        this.globalSettingsService.events.on('setting-changed:enhanceStoreHeader', () => this.enhanceStoreHeader());
+        this.globalSettingsService.events.on('setting-changed:enhanceStoreSidebar', () => this.enhanceStoreSidebar());
+        this.globalSettingsService.events.on('setting-changed:hideStoreFooter', () => this.toggleStoreFooter());
+    }
+
+    private get sortOffersDropdownEl() {
+        return document.querySelector<HTMLButtonElement>('[ng-model="vm.sortBy"]');
+    }
+
+    private enhanceStoreHeader() {
+        document.documentElement.classList
+            .toggle('hgf--enhanced-header', this.globalSettingsService.settings.enhanceStoreHeader);
+    }
+
+    private enhanceStoreSidebar() {
+        document.documentElement.classList
+            .toggle('hgf--enhanced-sidebar', this.globalSettingsService.settings.enhanceStoreSidebar);
+    }
+
+    private toggleStoreFooter() {
+        document.documentElement.classList
+            .toggle('hgf--hide-footer', this.globalSettingsService.settings.hideStoreFooter);
     }
 }
