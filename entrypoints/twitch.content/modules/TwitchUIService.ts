@@ -1,10 +1,12 @@
-import { promisifiedSetTimeout } from '@components/utils';
+import { waitAsync } from '@components/utils';
 import { Timing } from '@components/consts';
 import { Service } from 'typedi';
 
 @Service()
 export class TwitchUIService {
     twitchUserName!: string;
+
+    // <div data-a-target="tw-core-button-label-text" class="Layout-sc-1xcs6mc-0 bFxzAY">Click Here to Reload Player</div>
 
     whenStreamReady(callback: () => void) {
         const reloadTimeout = setTimeout(() => window.location.reload(), Timing.SECOND * 30);
@@ -95,7 +97,7 @@ export class TwitchUIService {
 
         userDropdownToggleEl.click();
 
-        await promisifiedSetTimeout(100);
+        await waitAsync(100);
 
         const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
         const userName = userNameEl?.textContent!.toLowerCase() ?? '';

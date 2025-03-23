@@ -1,6 +1,7 @@
 @import './shoelace/sl-input.css';
 @import './shoelace/sl-range.css';
 @import './shoelace/sl-switch.css';
+@import './shoelace/sl-select.css';
 @import './shoelace/sl-tab-panel.css';
 
 * {
@@ -23,6 +24,6 @@ body {
   padding: 0 var(--sl-spacing-large);
 }
 
-.hgf-offset-bottom--large {
+.hgf-popup-offset {
   margin-bottom: var(--sl-spacing-large);
 }

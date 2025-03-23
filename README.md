@@ -5,7 +5,7 @@ This is a small extension for the Chrome-like browsers that allows you to play m
 
 ### Twitch helper
 
-A widget is placed on the stream page that allows you to play mini-games in semi-automatic mode. The main functions of the widget are
+A widget is placed on the stream page that allows you to play mini-games in semi-automatic mode. The main functions of the widget are:
 1. automatically sends the `!hitsquad`, `!loot1-8`, `!chest1-8` commands to the chat if corresponding checkboxes are enabled;
 1. provides buttons to easily send the `!hitsquad`, `!loot1-8`, `!chest1-8` commands in manual mode;
 1. automatically generates a question for Akira's drawing if the corresponding checkbox is checked [*currently removed*];
@@ -25,31 +25,34 @@ The appearance of the widget is shown in the image below:
 
 ### StreamElements helper
 The widget mounts on the store page and adds several useful features:
-1. automatically sorts offers by cost when you enter the page;
-1. adds a button to the offers that allows you to hide the offer (the game has already been purchased, or you already own the game);
+1. adds a button to the offers that allows you to hide the offer (requires JSONBin account);
+2. adds the ability to manage hidden offers directly from the store page;
+1. automatically sorts offers when you enter the page (can be configured in the settings popup);
 1. adds a link to the game's Steam page;
-1. adds the ability to hide offers above a certain price (from the extension popup);
-1. highlight offers with less than 10 items left (red border around)
+1. adds the ability to hide offers above a certain price (can be configured in the settings popup);
+1. highlight offers with low volume (can be configured in the settings popup);
+2. removes redundant elements from the header, sidebar and footer (can be configured in the settings popup);
 
 The appearance of the widget is shown in the image below:
 
 ![readme_2.png](./readme_2.png)
-
-**Important information**: In order for the store widget to work, you need to create a [JSONBin](https://jsonbin.io/) account, create a new bin and fill in the appropriate settings in the settings popup (your credentials will not be shared) (see **Settings Popup**).
-
-### Settings Popup
-Allows user to change global settings for the extension (more to come!).
-
-Twitch helper settings: \
 ![readme_3.png](./readme_3.png)
 
-StreamElements helper settings: \
+**Important information**: To have the ability to hide offers, you need to create a [JSONBin](https://jsonbin.io/) account, create a new bin and fill in the appropriate settings in the settings popup (your credentials will not be shared).
+
+### Settings Popup
+Allows user to change global settings for the extension.
+
+Twitch helper settings: \
 ![readme_4.png](./readme_4.png)
+
+StreamElements helper settings: \
+![readme_5.png](./readme_5.png)
 
 ## Installation
 1. Download the latest release (hgf-helper<area>@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
 2. Unzip the archive to any directory;
-3. Go to the extensions page in the Chrome browser (chrome://extensions/);
+3. Go to the extensions page in the Chrome browser [chrome://extensions/](chrome://extensions/);
 4. Turn on developer mode;
 5. Click the "**Download unpacked extension**" button, specifying the path to the unpacked extension.
 6. **[optional]** Adjust the extension settings in the settings popup.
@@ -58,7 +61,7 @@ StreamElements helper settings: \
 1. Download the latest release (hgf-helper<area>@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
 2. Extract the archive to any directory;
 3. Copy all the files of the new version of the extension into the directory of the old version, confirming the replacement of the files;
-4. On the extensions page (chrome://extensions/), click the "Update extensions" button.
+4. On the extensions page [chrome://extensions/](chrome://extensions/), click the "Update extensions" button.
 
 ## Disclaimer
 **The software was made to automate participation in mini-games on the channel and not to abuse. 

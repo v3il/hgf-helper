@@ -3,7 +3,7 @@ import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { LocalSettingsService } from '@components/settings';
 import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
-import { getRandomNumber, log, promisifiedSetTimeout } from '@components/utils';
+import { getRandomNumber, log, waitAsync } from '@components/utils';
 import { Timing } from '@components/consts';
 import { ChatObserver, MessageSender } from '@twitch/modules/twitchChat';
 
@@ -119,7 +119,7 @@ export class HitsquadGameService {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
-            await promisifiedSetTimeout(delay);
+            await waitAsync(delay);
             return this.sendCommand();
         }
 
