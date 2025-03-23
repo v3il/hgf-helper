@@ -12,22 +12,22 @@
 
 /* Header */
 
-.hgf--enhanced-header header.exp-header {
+.hgf-enhanced-header header.exp-header {
     display: none;
 }
 
-.hgf--enhanced-header .userpages-wrap {
+.hgf-enhanced-header .userpages-wrap {
     padding-top: var(--hgf-header-height);
 }
 
 /* Sidebar */
 
-.hgf--enhanced-sidebar .user-text-info,
-.hgf--enhanced-sidebar .twitch-actions {
+.hgf-enhanced-sidebar .user-text-info,
+.hgf-enhanced-sidebar .twitch-actions {
     display: none;
 }
 
-.hgf--enhanced-sidebar .side-bar {
+.hgf-enhanced-sidebar .side-bar {
     position: sticky;
     margin-top: 0;
     top: var(--hgf-header-height);
@@ -36,6 +36,6 @@
 
 /* Footer */
 
-.hgf--hide-footer dashboard-footer {
+.hgf-hide-footer dashboard-footer {
     display: none;
 }

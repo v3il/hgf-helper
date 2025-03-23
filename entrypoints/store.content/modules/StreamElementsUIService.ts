@@ -74,16 +74,16 @@ export class StreamElementsUIService {
 
     private enhanceStoreHeader() {
         document.documentElement.classList
-            .toggle('hgf--enhanced-header', this.globalSettingsService.settings.enhanceStoreHeader);
+            .toggle('hgf-enhanced-header', this.globalSettingsService.settings.enhanceStoreHeader);
     }
 
     private enhanceStoreSidebar() {
         document.documentElement.classList
-            .toggle('hgf--enhanced-sidebar', this.globalSettingsService.settings.enhanceStoreSidebar);
+            .toggle('hgf-enhanced-sidebar', this.globalSettingsService.settings.enhanceStoreSidebar);
     }
 
     private toggleStoreFooter() {
         document.documentElement.classList
-            .toggle('hgf--hide-footer', this.globalSettingsService.settings.hideStoreFooter);
+            .toggle('hgf-hide-footer', this.globalSettingsService.settings.hideStoreFooter);
     }
 }

@@ -1,4 +1,5 @@
 import { OffersFacade, StreamElementsUIService } from '@store/modules';
+import { debounce } from '@components/utils';
 import { Container } from 'typedi';
 import template from './template.html?raw';
 import './style.css';
@@ -27,33 +28,12 @@ export class HiddenOffersManager {
         const tBodyEl = document.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table-body]')!;
         const searchEl = document.querySelector<HTMLInputElement>('[data-hgf-search-offer]')!;
 
-        searchEl.addEventListener('input', (event) => {
-            this.searchQuery = (event.target as HTMLInputElement).value.toLowerCase();
+        searchEl.addEventListener('input', debounce(() => {
+            this.searchQuery = searchEl.value.toLowerCase();
             this.renderHiddenOffers();
-        });
+        }, 500));
 
-        tBodyEl.addEventListener('click', async (event) => {
-            const target = event.target as HTMLElement;
-
-            if (!target.hasAttribute('data-hgf-unhide-offer')) {
-                return;
-            }
-
-            const rowEl = target.closest<HTMLTableRowElement>('[data-hgf-offer-name]')!;
-            const offerName = rowEl.dataset.hgfOfferName!;
-
-            if (!window.confirm(`Are you sure you want to unhide the "${offerName}" offer?`)) {
-                return;
-            }
-
-            try {
-                await this.offersFacade.unhideOffer(offerName);
-                rowEl.remove();
-            } catch (error) {
-                alert('Failed to hide offer. Check your JSONBin configuration in the settings popup.');
-                console.error(error);
-            }
-        });
+        tBodyEl.addEventListener('click', (event) => this.handleUnhideOffer(event));
 
         openDialogEl.addEventListener('click', () => {
             this.renderHiddenOffers();
@@ -101,5 +81,28 @@ export class HiddenOffersManager {
         emptyStateEl.textContent = this.searchQuery
             ? 'No offers found'
             : 'No hidden offers or JSONBin configuration is incorrect';
+    }
+
+    private async handleUnhideOffer(event: Event) {
+        const target = event.target as HTMLElement;
+
+        if (!target.hasAttribute('data-hgf-unhide-offer')) {
+            return;
+        }
+
+        const rowEl = target.closest<HTMLTableRowElement>('[data-hgf-offer-name]')!;
+        const offerName = rowEl.dataset.hgfOfferName!;
+
+        if (!window.confirm(`Are you sure you want to unhide the "${offerName}" offer?`)) {
+            return;
+        }
+
+        try {
+            await this.offersFacade.unhideOffer(offerName);
+            rowEl.remove();
+        } catch (error) {
+            alert('Failed to hide offer. Check your JSONBin configuration in the settings popup.');
+            console.error(error);
+        }
     }
 }
