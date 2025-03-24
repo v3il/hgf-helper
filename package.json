@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",
+    "firebase": "^11.5.0",
     "reflect-metadata": "^0.2.2",
     "tesseract.js": "^6.0.0",
     "typedi": "^0.10.0"
