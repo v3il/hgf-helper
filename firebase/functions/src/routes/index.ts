@@ -1,3 +1,4 @@
 export * from './auth';
 export * from './authCallback';
-export * from './test';
+export * from './authSuccess';
+export * from './getUser';

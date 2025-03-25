@@ -4,6 +4,7 @@ import { sign } from 'jsonwebtoken';
 import { logger } from 'firebase-functions';
 import { REDIRECT_URI } from '../const';
 import { IUserData } from '../types';
+import { usersService } from '../services';
 
 const twitchClientId = defineSecret('TWITCH_CLIENT_ID');
 const twitchClientSecret = defineSecret('TWITCH_CLIENT_SECRET');
@@ -39,12 +40,16 @@ export const authCallback = async (request: Request, response: Response) => {
         });
 
         const userData = await userResponse.json();
-        const payload: IUserData = { id: userData.data[0].id };
+        const userId = userData.data[0].id;
+
+        await usersService.createIfNotExists(userId);
+
+        const payload: IUserData = { id: userId };
         const token = sign(payload, jwtSecret.value(), { expiresIn: '180d' });
 
-        logger.info(`User ${userData.data[0].id} authenticated`);
+        logger.info(`User ${userId} authenticated`);
 
-        response.send({ token });
+        response.redirect(`http://localhost:5001/hgf-helper/us-central1/twitchAuth/auth/success?token=${token}`);
     } catch (error) {
         logger.error(error);
         response.status(500).send('Error authenticating with Twitch');

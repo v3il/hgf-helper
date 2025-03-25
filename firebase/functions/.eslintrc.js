@@ -35,6 +35,7 @@ module.exports = {
         'consistent-return': 0,
         'comma-dangle': ['error', 'never'],
         'import/no-extraneous-dependencies': ['off'],
-        'import/extensions': 'off'
+        'import/extensions': 'off',
+        'class-methods-use-this': 'off'
     }
 };
