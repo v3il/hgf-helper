@@ -1,13 +1,22 @@
-import {onRequest} from "firebase-functions/v2/https";
-import {defineSecret} from "firebase-functions/params";
+import express from 'express';
+import { onRequest } from 'firebase-functions/v2/https';
+import { defineSecret } from 'firebase-functions/params';
+import admin from 'firebase-admin';
+import { auth, authCallback } from './routes';
 
-const twitchSecret = defineSecret("TWITCH_CLIENT_SECRET");
+if (!admin.apps.length) {
+    admin.initializeApp();
+}
+
+const app = express();
+
+app.get('/auth', auth);
+app.get('/callback', authCallback);
+
+const twitchClientId = defineSecret('TWITCH_CLIENT_ID');
+const twitchClientSecret = defineSecret('TWITCH_CLIENT_SECRET');
+const jwtSecret = defineSecret('JWT_SECRET');
 
 export const twitchAuth = onRequest({
-  secrets: [twitchSecret],
-}, (request, response) => {
-  const secretValue = twitchSecret.value();
-
-  response.send({data: secretValue});
-});
-
+    secrets: [twitchClientId, twitchClientSecret, jwtSecret]
+}, app);
