@@ -3,7 +3,7 @@ import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import admin from 'firebase-admin';
 import {
-    auth, authCallback, authSuccess, getUser
+    auth, authCallback, authSuccess, getUser, updateUser
 } from './routes';
 import { authorized } from './middlewares';
 
@@ -17,6 +17,7 @@ app.get('/auth', auth);
 app.get('/auth/callback', authCallback);
 app.get('/auth/success', authSuccess);
 app.get('/user', authorized, getUser);
+app.patch('/user', authorized, updateUser);
 
 const twitchClientId = defineSecret('TWITCH_CLIENT_ID');
 const twitchClientSecret = defineSecret('TWITCH_CLIENT_SECRET');

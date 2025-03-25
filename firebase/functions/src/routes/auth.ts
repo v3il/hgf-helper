@@ -1,6 +1,6 @@
 import { defineSecret } from 'firebase-functions/params';
 import { Request, Response } from 'express';
-import { REDIRECT_URI } from '../const';
+import { AUTH_REDIRECT_URI } from '../appUrls';
 
 const twitchClientId = defineSecret('TWITCH_CLIENT_ID');
 
@@ -9,5 +9,5 @@ export const auth = (request: Request, response: Response) => {
     const scope = 'user:read:email';
 
     // eslint-disable-next-line max-len
-    response.redirect(`https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${scope}`);
+    response.redirect(`https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${AUTH_REDIRECT_URI}&response_type=code&scope=${scope}`);
 };

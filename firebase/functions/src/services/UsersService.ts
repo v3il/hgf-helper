@@ -25,4 +25,12 @@ export class UsersService {
             });
         }
     }
+
+    async update(userId: string, payload: object) {
+        return setDoc(doc(this.db, 'users', userId), this.normalizeUpdatePayload(payload), { merge: true });
+    }
+
+    private normalizeUpdatePayload(body: object) {
+        return body; // todo
+    }
 }

@@ -2,7 +2,7 @@ import { defineSecret } from 'firebase-functions/params';
 import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 import { logger } from 'firebase-functions';
-import { REDIRECT_URI } from '../const';
+import { AUTH_REDIRECT_URI, AUTH_SUCCESS_URL } from '../appUrls';
 import { IUserData } from '../types';
 import { usersService } from '../services';
 
@@ -26,7 +26,7 @@ export const authCallback = async (request: Request, response: Response) => {
                 client_id: twitchClientId.value(),
                 client_secret: twitchClientSecret.value(),
                 grant_type: 'authorization_code',
-                redirect_uri: REDIRECT_URI
+                redirect_uri: AUTH_REDIRECT_URI
             })
         });
 
@@ -49,7 +49,7 @@ export const authCallback = async (request: Request, response: Response) => {
 
         logger.info(`User ${userId} authenticated`);
 
-        response.redirect(`http://localhost:5001/hgf-helper/us-central1/twitchAuth/auth/success?token=${token}`);
+        response.redirect(`${AUTH_SUCCESS_URL}?token=${token}`);
     } catch (error) {
         logger.error(error);
         response.status(500).send('Error authenticating with Twitch');
