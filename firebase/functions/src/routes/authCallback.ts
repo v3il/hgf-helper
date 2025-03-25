@@ -1,6 +1,6 @@
 import { defineSecret } from 'firebase-functions/params';
 import { Request, Response } from 'express';
-import { decode, sign } from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
 import { logger } from 'firebase-functions';
 import { REDIRECT_URI } from '../const';
 import { IUserData } from '../types';
@@ -40,10 +40,9 @@ export const authCallback = async (request: Request, response: Response) => {
 
         const userData = await userResponse.json();
         const payload: IUserData = { id: userData.data[0].id };
-        const token = sign(payload, jwtSecret.value(), { expiresIn: '30d' });
+        const token = sign(payload, jwtSecret.value(), { expiresIn: '180d' });
 
         logger.info(`User ${userData.data[0].id} authenticated`);
-        logger.log(decode(token));
 
         response.send({ token });
     } catch (error) {
