@@ -36,6 +36,7 @@ module.exports = {
         'comma-dangle': ['error', 'never'],
         'import/no-extraneous-dependencies': ['off'],
         'import/extensions': 'off',
-        'class-methods-use-this': 'off'
+        'class-methods-use-this': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off'
     }
 };

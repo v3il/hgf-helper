@@ -12,6 +12,15 @@ export class StreamElementsUIService {
         this.initSettingsObserver();
     }
 
+    onLayoutRendered(callback: () => void) {
+        const interval = setInterval(() => {
+            if (this.pageContentEl) {
+                clearInterval(interval);
+                callback();
+            }
+        }, 0.5 * Timing.SECOND);
+    }
+
     whenOffersLoaded(callback: () => void) {
         const interval = setInterval(async () => {
             const offerEls = document.querySelectorAll('.stream-store-list-item');
@@ -29,6 +38,10 @@ export class StreamElementsUIService {
 
     get userStatsEl() {
         return document.querySelector<HTMLElement>('.usr-stats')!;
+    }
+
+    get pageContentEl() {
+        return document.querySelector<HTMLElement>('.page-contents');
     }
 
     enhanceStorePage() {

@@ -2,6 +2,10 @@
     --hgf-header-height: 64px;
 }
 
+button, select, html, textarea, input {
+    letter-spacing: 0 !important;
+}
+
 .navigation.element-fixed {
     z-index: 1000;
 }
@@ -23,7 +27,8 @@
 /* Sidebar */
 
 .hgf-enhanced-sidebar .user-text-info,
-.hgf-enhanced-sidebar .twitch-actions {
+.hgf-enhanced-sidebar .twitch-actions,
+.hgf-enhanced-sidebar .spacer-xs {
     display: none;
 }
 

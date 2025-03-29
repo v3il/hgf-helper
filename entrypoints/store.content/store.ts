@@ -2,10 +2,12 @@ import 'reflect-metadata';
 import { GlobalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
 import { StreamElementsUIService, OffersFacade } from '@store/modules';
-import { ExtensionContainer } from './views';
+import { AuthFacade } from '@shared/settings';
+import { AuthView, ExtensionContainer } from './views';
+import 'halfmoon/css/halfmoon.min.css';
 import './store.css';
 
-export const start = async () => {
+const renderExtensionContainer = async () => {
     const globalSettings = Container.get(GlobalSettingsService);
     const streamElementsUIService = Container.get(StreamElementsUIService);
     const offersFacade = Container.get(OffersFacade);
@@ -26,4 +28,31 @@ export const start = async () => {
 
         new ExtensionContainer();
     });
+};
+
+const renderAuthView = () => {
+    const streamElementsUIService = Container.get(StreamElementsUIService);
+
+    streamElementsUIService.onLayoutRendered(() => {
+        const authView = new AuthView();
+
+        authView.mount();
+
+        authView.events.on('authorized', () => {
+            authView.destroy();
+            renderExtensionContainer();
+        });
+    });
+};
+
+export const start = async () => {
+    const authFacade = Container.get(AuthFacade);
+
+    await authFacade.auth();
+
+    if (!authFacade.isAuthenticated) {
+        return renderAuthView();
+    }
+
+    renderExtensionContainer();
 };
