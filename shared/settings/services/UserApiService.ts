@@ -1,13 +1,17 @@
 import { FUNCTION_URL } from '@shared/consts';
-import { IUser } from '@shared/settings';
+import { ISettings, IUser } from '@shared/settings';
 
 export class UserApiService {
-    readonly AUTH_URL = `${FUNCTION_URL}/auth`;
+    private token!: string;
 
-    async getUser(token: string) {
+    setToken(token: string) {
+        this.token = token;
+    }
+
+    async getUser() {
         const response = await fetch(`${FUNCTION_URL}/user`, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${this.token}`
             }
         });
 
@@ -16,14 +20,14 @@ export class UserApiService {
         return json.user as IUser;
     }
 
-    async updateSettings(token: string, settings: any) {
+    async updateSettings(settings: ISettings) {
         await fetch(`${FUNCTION_URL}/user`, {
             method: 'PATCH',
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${this.token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(settings)
+            body: JSON.stringify({ settings })
         });
     }
 }

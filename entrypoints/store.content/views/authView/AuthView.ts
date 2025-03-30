@@ -3,16 +3,17 @@ import { Container } from 'typedi';
 import { UserFacade } from '@shared/settings';
 import { AuthWindow } from '@components/AuthWindow';
 import { BasicView } from '@components/BasicView';
+import { AUTH_URL } from '@shared/consts';
 import template from './template.html?raw';
 
 export class AuthView extends BasicView {
     private readonly streamElementsUIService: StreamElementsUIService;
-    private readonly authFacade: UserFacade;
+    private readonly userFacade: UserFacade;
 
     constructor() {
         super(template);
 
-        this.authFacade = Container.get(UserFacade);
+        this.userFacade = Container.get(UserFacade);
         this.streamElementsUIService = Container.get(StreamElementsUIService);
 
         this.triggerAuth = this.triggerAuth.bind(this);
@@ -36,14 +37,14 @@ export class AuthView extends BasicView {
     private async triggerAuth() {
         try {
             const authWindow = new AuthWindow();
-            const token = await authWindow.open(this.authFacade.authUrl);
+            const token = await authWindow.open(AUTH_URL);
 
             if (!token) {
                 return;
             }
 
-            this.authFacade.setToken(token);
-            await this.authFacade.auth();
+            await this.userFacade.setToken(token);
+            await this.userFacade.auth();
             this.events.emit('authenticated');
         } catch (error) {
             console.error(error);

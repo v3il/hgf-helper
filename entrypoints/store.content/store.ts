@@ -36,6 +36,8 @@ const renderAuthView = () => {
     const streamElementsUIService = Container.get(StreamElementsUIService);
 
     streamElementsUIService.onLayoutRendered(() => {
+        // console.clear();
+
         const authView = new AuthView();
 
         authView.mount();
@@ -50,7 +52,7 @@ const renderAuthView = () => {
 };
 
 export const start = async () => {
-    console.clear();
+    // console.clear();
 
     const userFacade = Container.get(UserFacade);
 

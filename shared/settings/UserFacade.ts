@@ -1,11 +1,12 @@
 import { Container, Service } from 'typedi';
-import { ISettings } from '@shared/settings/types';
 import { EventHandler } from '@components/EventEmitter';
-import { UserService, UserApiService, GlobalSettingsKeys, ISettingsEvents } from './services';
+import { ISettings } from '@shared/settings/types';
+import { SettingsService, UserApiService, GlobalSettingsKeys, ISettingsEvents, UserService } from './services';
 
 @Service()
 export class UserFacade {
-    private authService!: UserService;
+    private userService!: UserService;
+    private settingsService!: SettingsService;
 
     private container = Container.of('auth');
 
@@ -13,46 +14,43 @@ export class UserFacade {
         this.initProviders();
     }
 
-    get authUrl() {
-        return this.authService.authUrl;
-    }
-
     get isAuthenticated() {
-        return this.authService.isAuthenticated;
+        return this.userService.isAuthenticated;
     }
 
     get user() {
-        return this.authService.user;
+        return this.userService.user;
     }
 
     get settings() {
-        return this.authService.settings;
+        return this.settingsService.settings;
     }
 
     auth() {
-        return this.authService.auth();
+        return this.userService.auth();
     }
 
     setToken(token: string) {
-        this.authService.setToken(token);
+        console.error(token);
+        return this.userService.setToken(token);
     }
 
-    updateSettings(settings: Partial<any>) {
-        return this.authService.updateSettings(settings);
+    updateSettings(settings: Partial<ISettings>) {
+        return this.settingsService.updateSettings(settings);
     }
 
     onSettingChanged<
         K extends GlobalSettingsKeys
     >(key: K, callback: EventHandler<ISettingsEvents[`setting-changed:${K}`]>) {
-        this.authService.events.on(`setting-changed:${key}`, callback);
+        this.settingsService.events.on(`setting-changed:${key}`, callback);
     }
 
     private initProviders() {
+        this.container.set({ id: SettingsService, type: SettingsService });
         this.container.set({ id: UserService, type: UserService });
         this.container.set({ id: UserApiService, type: UserApiService });
-        // this.container.set({ id: SettingsService, type: SettingsService });
 
-        this.authService = this.container.get(UserService);
-        // this.settingsService = this.container.get(SettingsService);
+        this.settingsService = this.container.get(SettingsService);
+        this.userService = this.container.get(UserService);
     }
 }

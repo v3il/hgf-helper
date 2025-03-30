@@ -86,6 +86,7 @@ export class StreamElementsUIService {
     }
 
     private enhanceStoreHeader() {
+        console.error('Enhancing store header');
         document.documentElement.classList
             .toggle('hgf-enhanced-header', this.userFacade.settings.enhanceStoreHeader);
     }

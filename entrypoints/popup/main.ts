@@ -11,11 +11,13 @@ import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import { GlobalSettingsKeys, GlobalSettingsService } from '@components/settings';
+import 'bootstrap/dist/css/bootstrap.css';
+import { GlobalSettingsKeys, UserFacade } from '@shared/settings';
 import { SlInput, SlRange, SlSwitch, SlSelect } from '@shoelace-style/shoelace';
 import { Container } from 'typedi';
+import { debounce } from '@utils';
 
-const globalSettingsService = Container.get(GlobalSettingsService);
+const userFacade = Container.get(UserFacade);
 
 setBasePath('../..'); // /public
 
@@ -33,19 +35,21 @@ function initSettingView(control: Control) {
     const settingName = control.dataset.setting as GlobalSettingsKeys;
 
     if (control instanceof SlSwitch) {
-        control.checked = globalSettingsService.settings[settingName] as boolean;
+        control.checked = userFacade.settings[settingName] as boolean;
     } else {
-        control.value = String(globalSettingsService.settings[settingName]);
+        control.value = String(userFacade.settings[settingName]);
     }
 
-    control.addEventListener('sl-input', () => {
-        globalSettingsService.updateSettings({
+    control.addEventListener('sl-input', debounce(() => {
+        userFacade.updateSettings({
             [settingName]: parseInputValue(control)
         });
-    });
+    }, 200));
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await globalSettingsService.loadSettings();
+    // eslint-disable-next-line max-len
+    // userFacade.setToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyNjA4NTA4OSIsImlhdCI6MTc0MzMzMTEzNCwiZXhwIjoxNzU4ODgzMTM0fQ.OrFCpth7I4jYt6s28f-B_EmBl_ST3rjJ0OoSeOLexpc');
+    await userFacade.auth();
     document.querySelectorAll<Control>('[data-setting]').forEach(initSettingView);
 });

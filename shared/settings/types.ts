@@ -12,13 +12,13 @@ export interface ISettings {
     decreaseStreamDelay: boolean;
 
     // Store
-    jsonBinUrl: string;
-    jsonBinMasterKey: string;
-    jsonBinAccessKey: string;
+    // jsonBinUrl: string;
+    // jsonBinMasterKey: string;
+    // jsonBinAccessKey: string;
     offersMaxPrice: number;
     hideSoldOutOffers: boolean;
     highlightLowVolumeOffers: boolean;
-    sortOffersBy: '\'order\'' | '\'-cost\'' | '\'-createdAt\'';
+    sortOffersBy: string;
     enhanceStoreHeader: boolean;
     enhanceStoreSidebar: boolean;
     hideStoreFooter: boolean;
