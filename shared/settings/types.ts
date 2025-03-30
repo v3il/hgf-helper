@@ -1,8 +1,17 @@
 export interface ISettings {
+    // Mini-games
+    hitsquad: boolean;
+    hitsquadRounds: number;
+    akiraDrawing: boolean;
+    chestGame: boolean;
+    lootGame: boolean;
+
+    // Twitch
     highlightMentions: boolean;
     collectDaCoinz: boolean;
     decreaseStreamDelay: boolean;
 
+    // Store
     jsonBinUrl: string;
     jsonBinMasterKey: string;
     jsonBinAccessKey: string;
@@ -14,6 +23,7 @@ export interface ISettings {
     enhanceStoreSidebar: boolean;
     hideStoreFooter: boolean;
 
+    // Misc
     openAiApiToken: string;
 }
 

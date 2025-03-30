@@ -20,8 +20,8 @@ export class UsersService {
 
         if (!user) {
             await setDoc(doc(this.db, 'users', userId), {
-                settings: { theme: 'dark', notifications: true },
-                products: ['apple', 'banana']
+                settings: {},
+                hiddenOffers: []
             });
         }
     }

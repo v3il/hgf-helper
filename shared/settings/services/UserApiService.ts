@@ -1,6 +1,7 @@
 import { FUNCTION_URL } from '@shared/consts';
+import { IUser } from '@shared/settings';
 
-export class AuthApiService {
+export class UserApiService {
     readonly AUTH_URL = `${FUNCTION_URL}/auth`;
 
     async getUser(token: string) {
@@ -12,7 +13,7 @@ export class AuthApiService {
 
         const json = await response.json();
 
-        return json.user;
+        return json.user as IUser;
     }
 
     async updateSettings(token: string, settings: any) {

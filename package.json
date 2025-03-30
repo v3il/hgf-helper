@@ -17,20 +17,23 @@
     "lint:fix": "eslint . --ext .ts,.js --fix"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
     "@types/chrome": "^0.0.309",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "eslint": "^8.35.0",
     "eslint-config-airbnb": "^19.0.4",
     "release-it": "^18.1.2",
+    "sass": "^1.86.0",
     "typescript": "^5.8.2",
     "vite-plugin-eslint": "^1.8.1",
     "wxt": "^0.19.29"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "@shoelace-style/shoelace": "^2.20.1",
+    "bootstrap": "^5.3.3",
     "firebase": "^11.5.0",
-    "halfmoon": "^2.0.2",
     "reflect-metadata": "^0.2.2",
     "tesseract.js": "^6.0.0",
     "typedi": "^0.10.0"

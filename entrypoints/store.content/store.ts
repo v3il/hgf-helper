@@ -2,12 +2,14 @@ import 'reflect-metadata';
 import { GlobalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
 import { StreamElementsUIService, OffersFacade } from '@store/modules';
-import { AuthFacade } from '@shared/settings';
+import { UserFacade } from '@shared/settings';
+import { log, showToast } from '@utils';
 import { AuthView, ExtensionContainer } from './views';
-import 'halfmoon/css/halfmoon.min.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import './store.css';
 
 const renderExtensionContainer = async () => {
+    const userFacade = Container.get(UserFacade);
     const globalSettings = Container.get(GlobalSettingsService);
     const streamElementsUIService = Container.get(StreamElementsUIService);
     const offersFacade = Container.get(OffersFacade);
@@ -16,14 +18,14 @@ const renderExtensionContainer = async () => {
     streamElementsUIService.enhanceStorePage();
 
     streamElementsUIService.whenOffersLoaded(async () => {
-        console.clear();
+        // console.clear();
 
         await streamElementsUIService.sortOffers();
 
         await offersFacade.fetchHiddenOffers()
             .catch((error) => {
                 console.error(error);
-                alert('Failed to fetch hidden offers. Please check your JSONBin credentials in the settings popup.');
+                // alert('Failed to fetch hidden offers. Please check your JSONBin credentials in the settings popup.');
             });
 
         new ExtensionContainer();
@@ -38,7 +40,9 @@ const renderAuthView = () => {
 
         authView.mount();
 
-        authView.events.on('authorized', () => {
+        authView.events.on('authenticated', async () => {
+            showToast('User authenticated', { type: 'success' });
+            log('User authenticated');
             authView.destroy();
             renderExtensionContainer();
         });
@@ -46,11 +50,14 @@ const renderAuthView = () => {
 };
 
 export const start = async () => {
-    const authFacade = Container.get(AuthFacade);
+    console.clear();
 
-    await authFacade.auth();
+    const userFacade = Container.get(UserFacade);
 
-    if (!authFacade.isAuthenticated) {
+    await userFacade.auth();
+
+    if (!userFacade.isAuthenticated) {
+        log('User not authenticated');
         return renderAuthView();
     }
 

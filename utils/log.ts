@@ -1,4 +1,4 @@
-import { isDev } from '../consts';
+import { isDev } from '@shared/consts';
 
 export const log = (message: any) => {
     const time = new Date().toLocaleTimeString();
