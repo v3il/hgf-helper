@@ -1,13 +1,7 @@
 import { ContainerInstance } from 'typedi';
-import { ISettings } from '@shared/settings';
 import { EventEmitter } from '@components/EventEmitter';
+import { GlobalSettingsKeys, ISettings, ISettingsEvents } from '../types';
 import { UserApiService } from './UserApiService';
-
-export type GlobalSettingsKeys = keyof ISettings;
-
-export type ISettingsEvents = {
-    [K in keyof ISettings as `setting-changed:${K}`]: ISettings[K];
-};
 
 export class SettingsService {
     private readonly apiService: UserApiService;
@@ -16,7 +10,7 @@ export class SettingsService {
 
     readonly events = EventEmitter.create<ISettingsEvents>();
 
-    private readonly settingsKey = 'hgf-helper.settings';
+    private readonly settingsKey = 'hgf-helper.settings_v2';
     private readonly storage = chrome.storage.local;
 
     constructor(container: ContainerInstance) {
@@ -44,6 +38,8 @@ export class SettingsService {
 
     private initObserver() {
         this.storage.onChanged.addListener((changes) => {
+            if (!changes[this.settingsKey]) return;
+
             const { oldValue, newValue } = changes[this.settingsKey];
 
             this._settings = { ...newValue };

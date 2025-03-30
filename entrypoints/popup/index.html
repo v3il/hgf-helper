@@ -4,8 +4,54 @@
   <meta charset="UTF-8">
   <title>HGF-Helper</title>
 </head>
-<body>
-<h1 class="hgf-popup-offset hgf-popup-title">Settings</h1>
+<body class="p-4">
+<h1 class="hgf-popup-offset hgf-popup-title1">Settings</h1>
+
+<!--<ul class="nav nav-tabs mb-4" id="myTab" role="tablist">-->
+<!--  <li class="nav-item" role="presentation">-->
+<!--    <button class="nav-link active" id="twitch-tab" data-bs-toggle="tab" data-bs-target="#twitch-widget" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">-->
+<!--      Twitch Widget-->
+<!--    </button>-->
+<!--  </li>-->
+<!--  <li class="nav-item" role="presentation">-->
+<!--    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">-->
+<!--      Profile-->
+<!--    </button>-->
+<!--  </li>-->
+<!--</ul>-->
+
+<!--<div class="tab-content" id="myTabContent">-->
+<!--  &lt;!&ndash; Twitch Widget &ndash;&gt;-->
+<!--  <div class="tab-pane fade show active" id="twitch-widget" role="tabpanel" aria-labelledby="twitch-tab" tabindex="0">-->
+<!--    <div class="form-check form-switch mb-4" data-setting="highlightMentions">-->
+<!--      <input class="form-check-input" type="checkbox" role="switch" id="highlightMentions">-->
+<!--      <label class="form-check-label" for="highlightMentions">-->
+<!--        Highlighting messages mentioning me-->
+<!--      </label>-->
+<!--    </div>-->
+
+<!--    <div class="form-check form-switch mb-4" data-setting="collectDaCoinz">-->
+<!--      <input class="form-check-input" type="checkbox" role="switch" id="collectDaCoinz">-->
+<!--      <label class="form-check-label" for="collectDaCoinz">-->
+<!--        Automatically collect Da Coinz-->
+<!--      </label>-->
+<!--    </div>-->
+
+<!--    <div class="form-check form-switch" data-setting="decreaseStreamDelay">-->
+<!--      <input class="form-check-input" type="checkbox" role="switch" id="decreaseStreamDelay">-->
+<!--      <label class="form-check-label" for="decreaseStreamDelay">-->
+<!--        Automatically decrease stream delay every 5 minutes-->
+<!--      </label>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; StreamElements Widget &ndash;&gt;-->
+<!--  <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">-->
+<!--    2-->
+<!--  </div>-->
+<!--</div>-->
+
+
 
 <sl-tab-group>
   <sl-tab slot="nav" panel="twitch">Twitch Widget</sl-tab>
@@ -110,6 +156,8 @@
 <!--    </sl-input>-->
   </sl-tab-panel>
 </sl-tab-group>
+
+<button type="button" class="btn btn-link" data-logout>Logout</button>
 
 <script src="./main.ts" type="module"></script>
 </body>

@@ -1,4 +1,2 @@
-export * from './LocalSettingsService';
-export * from './GlobalSettingsService';
-export * from './types';
 export * from './UserFacade';
+export * from './types';

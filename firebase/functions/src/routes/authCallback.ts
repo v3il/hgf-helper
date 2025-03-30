@@ -41,10 +41,11 @@ export const authCallback = async (request: Request, response: Response) => {
 
         const userData = await userResponse.json();
         const userId = userData.data[0].id;
+        const userName = userData.data[0].display_name;
 
-        await usersService.createIfNotExists(userId);
+        await usersService.createIfNotExists(userId, userName);
 
-        const payload: IUserData = { id: userId };
+        const payload: IUserData = { userId, userName, rnd: Math.random() };
         const token = sign(payload, jwtSecret.value(), { expiresIn: '180d' });
 
         logger.info(`User ${userId} authenticated`);

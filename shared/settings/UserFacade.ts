@@ -1,12 +1,13 @@
 import { Container, Service } from 'typedi';
 import { EventHandler } from '@components/EventEmitter';
-import { ISettings } from '@shared/settings/types';
-import { SettingsService, UserApiService, GlobalSettingsKeys, ISettingsEvents, UserService } from './services';
+import { GlobalSettingsKeys, ISettings, ISettingsEvents } from './types';
+import { SettingsService, UserApiService, UserService, HiddenOffersService } from './services';
 
 @Service()
 export class UserFacade {
     private userService!: UserService;
     private settingsService!: SettingsService;
+    private hiddenOffersService!: HiddenOffersService;
 
     private container = Container.of('auth');
 
@@ -18,8 +19,8 @@ export class UserFacade {
         return this.userService.isAuthenticated;
     }
 
-    get user() {
-        return this.userService.user;
+    get userName() {
+        return this.userService.userName;
     }
 
     get settings() {
@@ -49,8 +50,14 @@ export class UserFacade {
         this.container.set({ id: SettingsService, type: SettingsService });
         this.container.set({ id: UserService, type: UserService });
         this.container.set({ id: UserApiService, type: UserApiService });
+        this.container.set({ id: HiddenOffersService, type: HiddenOffersService });
 
         this.settingsService = this.container.get(SettingsService);
         this.userService = this.container.get(UserService);
+        this.hiddenOffersService = this.container.get(HiddenOffersService);
+    }
+
+    logout() {
+        return this.userService.logout();
     }
 }

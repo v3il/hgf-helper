@@ -21,13 +21,21 @@ export class UserApiService {
     }
 
     async updateSettings(settings: ISettings) {
-        await fetch(`${FUNCTION_URL}/user`, {
+        await this.sendUpdateRequest({ settings });
+    }
+
+    async updateHiddenOffers(hiddenOffers: string[]) {
+        await this.sendUpdateRequest({ hiddenOffers });
+    }
+
+    private sendUpdateRequest(payload: object) {
+        return fetch(`${FUNCTION_URL}/user`, {
             method: 'PATCH',
             headers: {
                 Authorization: `Bearer ${this.token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ settings })
+            body: JSON.stringify(payload)
         });
     }
 }

@@ -15,11 +15,12 @@ export class UsersService {
         return userSnap.exists() ? userSnap.data() : null;
     }
 
-    async createIfNotExists(userId: string) {
+    async createIfNotExists(userId: string, userName: string) {
         const user = await this.get(userId);
 
         if (!user) {
             await setDoc(doc(this.db, 'users', userId), {
+                userName,
                 settings: {},
                 hiddenOffers: []
             });

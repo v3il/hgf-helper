@@ -12,9 +12,6 @@ export interface ISettings {
     decreaseStreamDelay: boolean;
 
     // Store
-    // jsonBinUrl: string;
-    // jsonBinMasterKey: string;
-    // jsonBinAccessKey: string;
     offersMaxPrice: number;
     hideSoldOutOffers: boolean;
     highlightLowVolumeOffers: boolean;
@@ -28,6 +25,13 @@ export interface ISettings {
 }
 
 export interface IUser {
+    userName: string;
     settings: ISettings;
     hiddenOffers: string[];
 }
+
+export type GlobalSettingsKeys = keyof ISettings;
+
+export type ISettingsEvents = {
+    [K in keyof ISettings as `setting-changed:${K}`]: ISettings[K];
+};

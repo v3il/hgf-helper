@@ -16,6 +16,7 @@ import { GlobalSettingsKeys, UserFacade } from '@shared/settings';
 import { SlInput, SlRange, SlSwitch, SlSelect } from '@shoelace-style/shoelace';
 import { Container } from 'typedi';
 import { debounce } from '@utils';
+import { Tab } from 'bootstrap';
 
 const userFacade = Container.get(UserFacade);
 
@@ -48,8 +49,10 @@ function initSettingView(control: Control) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // eslint-disable-next-line max-len
-    // userFacade.setToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyNjA4NTA4OSIsImlhdCI6MTc0MzMzMTEzNCwiZXhwIjoxNzU4ODgzMTM0fQ.OrFCpth7I4jYt6s28f-B_EmBl_ST3rjJ0OoSeOLexpc');
     await userFacade.auth();
     document.querySelectorAll<Control>('[data-setting]').forEach(initSettingView);
+
+    document.querySelector<HTMLButtonElement>('[data-logout]')!.addEventListener('click', () => {
+        userFacade.logout();
+    });
 });

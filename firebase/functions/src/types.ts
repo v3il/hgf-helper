@@ -1,5 +1,7 @@
 export interface IUserData {
-    id: string;
+    userId: string;
+    userName: string,
+    rnd: number
 }
 
 declare module 'express' {

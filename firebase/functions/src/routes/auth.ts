@@ -4,7 +4,7 @@ import { AUTH_REDIRECT_URI } from '../appUrls';
 
 const twitchClientId = defineSecret('TWITCH_CLIENT_ID');
 
-export const auth = (request: Request, response: Response) => {
+export const auth = (_: Request, response: Response) => {
     const clientId = twitchClientId.value();
     const scope = 'user:read:email';
 

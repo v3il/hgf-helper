@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { GlobalSettingsService } from '@components/settings';
+// import { GlobalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
 import { StreamElementsUIService, OffersFacade } from '@store/modules';
 import { UserFacade } from '@shared/settings';
@@ -7,14 +7,17 @@ import { log, showToast } from '@utils';
 import { AuthView, ExtensionContainer } from './views';
 import 'bootstrap/dist/css/bootstrap.css';
 import './store.css';
+import '@shared/styles/index.css';
+
+document.documentElement.classList.add('sl-theme-dark');
 
 const renderExtensionContainer = async () => {
-    const userFacade = Container.get(UserFacade);
-    const globalSettings = Container.get(GlobalSettingsService);
+    // const userFacade = Container.get(UserFacade);
+    // const globalSettings = Container.get(GlobalSettingsService);
     const streamElementsUIService = Container.get(StreamElementsUIService);
     const offersFacade = Container.get(OffersFacade);
 
-    await globalSettings.loadSettings();
+    // await globalSettings.loadSettings();
     streamElementsUIService.enhanceStorePage();
 
     streamElementsUIService.whenOffersLoaded(async () => {
@@ -43,7 +46,7 @@ const renderAuthView = () => {
         authView.mount();
 
         authView.events.on('authenticated', async () => {
-            showToast('User authenticated', { type: 'success' });
+            showToast({ message: 'User authenticated', variant: 'success' });
             log('User authenticated');
             authView.destroy();
             renderExtensionContainer();
