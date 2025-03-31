@@ -11,12 +11,10 @@ import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import 'bootstrap/dist/css/bootstrap.css';
 import { GlobalSettingsKeys, UserFacade } from '@shared/settings';
 import { SlInput, SlRange, SlSwitch, SlSelect } from '@shoelace-style/shoelace';
 import { Container } from 'typedi';
 import { debounce } from '@utils';
-import { Tab } from 'bootstrap';
 
 const userFacade = Container.get(UserFacade);
 

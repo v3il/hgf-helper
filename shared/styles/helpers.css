@@ -1,11 +1,19 @@
-/*.flex {*/
-/*    display: flex;*/
-/*}*/
+.hgf-bt-primary {
+    border-top: 2px solid rgb(30, 135, 240);
+}
 
-/*.justify-content-between {*/
-/*    justify-content: space-between;*/
-/*}*/
+.hgf-color-white {
+    color: white !important;
+}
 
-/*.w-full {*/
-/*    width: 100%;*/
-/*}*/
+.hgf-w-full {
+    width: 100% !important;
+}
+
+.hgf-mb-8 {
+    margin-bottom: 8px !important;
+}
+
+.hgf-mb-16 {
+    margin-bottom: 16px !important;
+}

@@ -5,7 +5,7 @@ export const updateUser = async (request: Request, response: Response) => {
     const { body } = request;
 
     try {
-        await usersService.update(request.user!.id, body);
+        await usersService.update(request.user!.userId, body);
         response.sendStatus(200);
     } catch (error) {
         console.error('Update user error', error);

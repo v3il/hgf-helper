@@ -4,7 +4,7 @@ import { UserApiService } from './UserApiService';
 export class HiddenOffersService {
     private readonly apiService: UserApiService;
 
-    private _hiddenOffers!: string[];
+    private _hiddenOffers: string[] = [];
 
     constructor(container: ContainerInstance) {
         this.apiService = container.get(UserApiService);
@@ -24,7 +24,7 @@ export class HiddenOffersService {
     }
 
     hideOffer(offer: string) {
-        this.hiddenOffers.push(offer);
+        this._hiddenOffers.push(offer);
         return this.apiService.updateHiddenOffers(this.hiddenOffers);
     }
 

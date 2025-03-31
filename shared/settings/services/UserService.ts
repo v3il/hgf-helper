@@ -2,10 +2,12 @@ import { ContainerInstance } from 'typedi';
 import { IUser } from '../types';
 import { SettingsService } from './SettingsService';
 import { UserApiService } from './UserApiService';
+import { HiddenOffersService } from './HiddenOffersService';
 
 export class UserService {
     private readonly apiService: UserApiService;
     private readonly settingsService: SettingsService;
+    private readonly hiddenOffersService: HiddenOffersService;
 
     private _user: IUser | null = null;
 
@@ -15,6 +17,7 @@ export class UserService {
     constructor(container: ContainerInstance) {
         this.apiService = container.get(UserApiService);
         this.settingsService = container.get(SettingsService);
+        this.hiddenOffersService = container.get(HiddenOffersService);
     }
 
     get userName() {
@@ -37,6 +40,7 @@ export class UserService {
 
         this._user = await this.apiService.getUser();
         await this.settingsService.setSettings(this._user!.settings);
+        this.hiddenOffersService.setHiddenOffers(this._user!.hiddenOffers);
 
         console.error('User', this._user);
     }

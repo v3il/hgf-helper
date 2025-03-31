@@ -60,4 +60,20 @@ export class UserFacade {
     logout() {
         return this.userService.logout();
     }
+
+    get hiddenOffers() {
+        return this.hiddenOffersService.hiddenOffers;
+    }
+
+    isOfferHidden(offer: string) {
+        return this.hiddenOffersService.isOfferHidden(offer);
+    }
+
+    hideOffer(offer: string) {
+        return this.hiddenOffersService.hideOffer(offer);
+    }
+
+    unhideOffer(offer: string) {
+        return this.hiddenOffersService.unhideOffer(offer);
+    }
 }

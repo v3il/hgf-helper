@@ -25,7 +25,7 @@ export class StreamElementsUIService {
         const interval = setInterval(async () => {
             const offerEls = document.querySelectorAll('.stream-store-list-item');
 
-            if (this.sortOffersDropdownEl && offerEls.length > 0) {
+            if (this.sortOffersDropdownEl && this.userStatsEl && offerEls.length > 0) {
                 clearInterval(interval);
                 callback();
             }
@@ -86,7 +86,6 @@ export class StreamElementsUIService {
     }
 
     private enhanceStoreHeader() {
-        console.error('Enhancing store header');
         document.documentElement.classList
             .toggle('hgf-enhanced-header', this.userFacade.settings.enhanceStoreHeader);
     }

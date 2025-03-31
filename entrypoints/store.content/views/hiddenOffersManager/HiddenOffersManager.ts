@@ -64,9 +64,9 @@ export class HiddenOffersManager {
             rowEl.dataset.hgfOfferName = offer;
 
             rowEl.innerHTML = `
-                <td class="hgf-hidden-offers-manager__cell hgf-hidden-offers-manager__cell--name">${offer}</td>
+                <td class="hgf-hidden-offers-manager__cell hgf-w-full">${offer}</td>
                 <td class="hgf-hidden-offers-manager__cell">
-                    <button class="hgf-hidden-offers-manager__remove-button" data-hgf-unhide-offer>Remove</button>
+                    <button class="hgf-hidden-offers-manager__remove-button" data-hgf-unhide-offer>Unhide</button>
                 </td>
             `;
 
@@ -78,9 +78,7 @@ export class HiddenOffersManager {
         tableEl.classList.toggle('hgf-hidden-offers-manager--hidden', filteredOffers.length === 0);
         emptyStateEl.classList.toggle('hgf-hidden-offers-manager--hidden', filteredOffers.length > 0);
 
-        emptyStateEl.textContent = this.searchQuery
-            ? 'No offers found'
-            : 'No hidden offers or JSONBin configuration is incorrect';
+        emptyStateEl.textContent = this.searchQuery ? 'No offers found' : 'No hidden offers';
     }
 
     private async handleUnhideOffer(event: Event) {
@@ -101,7 +99,7 @@ export class HiddenOffersManager {
             await this.offersFacade.unhideOffer(offerName);
             rowEl.remove();
         } catch (error) {
-            alert('Failed to hide offer. Check your JSONBin configuration in the settings popup.');
+            alert('Failed to hide offer');
             console.error(error);
         }
     }

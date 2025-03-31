@@ -1,36 +1,20 @@
 import 'reflect-metadata';
-// import { GlobalSettingsService } from '@components/settings';
+import UIkit from 'uikit/dist/js/uikit.js';
 import { Container } from 'typedi';
-import { StreamElementsUIService, OffersFacade } from '@store/modules';
+import { StreamElementsUIService } from '@store/modules';
 import { UserFacade } from '@shared/settings';
-import { log, showToast } from '@utils';
 import { AuthView, ExtensionContainer } from './views';
-import 'bootstrap/dist/css/bootstrap.css';
 import './store.css';
 import '@shared/styles/index.css';
 
-document.documentElement.classList.add('sl-theme-dark');
-
 const renderExtensionContainer = async () => {
-    // const userFacade = Container.get(UserFacade);
-    // const globalSettings = Container.get(GlobalSettingsService);
     const streamElementsUIService = Container.get(StreamElementsUIService);
-    const offersFacade = Container.get(OffersFacade);
 
-    // await globalSettings.loadSettings();
     streamElementsUIService.enhanceStorePage();
 
     streamElementsUIService.whenOffersLoaded(async () => {
-        // console.clear();
-
+        console.clear();
         await streamElementsUIService.sortOffers();
-
-        await offersFacade.fetchHiddenOffers()
-            .catch((error) => {
-                console.error(error);
-                // alert('Failed to fetch hidden offers. Please check your JSONBin credentials in the settings popup.');
-            });
-
         new ExtensionContainer();
     });
 };
@@ -39,15 +23,18 @@ const renderAuthView = () => {
     const streamElementsUIService = Container.get(StreamElementsUIService);
 
     streamElementsUIService.onLayoutRendered(() => {
-        // console.clear();
-
         const authView = new AuthView();
 
         authView.mount();
 
         authView.events.on('authenticated', async () => {
-            showToast({ message: 'User authenticated', variant: 'success' });
-            log('User authenticated');
+            UIkit.notification({
+                message: 'User authenticated',
+                status: 'success',
+                pos: 'bottom-right',
+                timeout: 5000
+            });
+
             authView.destroy();
             renderExtensionContainer();
         });
@@ -55,16 +42,15 @@ const renderAuthView = () => {
 };
 
 export const start = async () => {
-    // console.clear();
-
     const userFacade = Container.get(UserFacade);
 
     await userFacade.auth();
 
-    if (!userFacade.isAuthenticated) {
-        log('User not authenticated');
-        return renderAuthView();
-    }
+    console.clear();
 
-    renderExtensionContainer();
+    if (userFacade.isAuthenticated) {
+        renderExtensionContainer();
+    } else {
+        renderAuthView();
+    }
 };

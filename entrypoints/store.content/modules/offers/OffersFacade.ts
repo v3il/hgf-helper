@@ -1,47 +1,38 @@
 import { Container, Service } from 'typedi';
 import { EventEmitter } from '@components/EventEmitter';
-import { JsonBinApiService, OffersService } from './services';
+import { UserFacade } from '@shared/settings';
 import { Offer, IOfferParams } from './models';
 
 @Service()
 export class OffersFacade {
-    private readonly offersService: OffersService;
-
-    private container = Container.of('offers');
+    private readonly userFacade: UserFacade;
 
     readonly events = new EventEmitter<{
         'offer-shown': void;
     }>();
 
     constructor() {
-        this.container.set({ id: OffersService, type: OffersService });
-        this.container.set({ id: JsonBinApiService, type: JsonBinApiService });
-
-        this.offersService = this.container.get(OffersService);
+        this.userFacade = Container.get(UserFacade);
     }
 
     get hiddenOffers() {
-        return this.offersService.hiddenOffers;
+        return this.userFacade.hiddenOffers;
     }
 
     createOffer(options: IOfferParams) {
         return new Offer(options);
     }
 
-    fetchHiddenOffers() {
-        return this.offersService.fetchHiddenOffers();
-    }
-
     isOfferHidden(offer: Offer) {
-        return this.offersService.isOfferHidden(offer);
+        return this.userFacade.isOfferHidden(offer.name);
     }
 
     async unhideOffer(offer: string) {
-        await this.offersService.unhideOffer(offer);
+        await this.userFacade.unhideOffer(offer);
         this.events.emit('offer-shown');
     }
 
     hideOffer(offer: Offer) {
-        return this.offersService.hideOffer(offer);
+        return this.userFacade.hideOffer(offer.name);
     }
 }
