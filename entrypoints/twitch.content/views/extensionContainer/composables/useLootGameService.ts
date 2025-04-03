@@ -11,7 +11,8 @@ interface IParams {
 export const useLootGameService = ({ el }: IParams) => {
     const streamService = Container.get(StreamStatusService);
     const settingsService = Container.get(LocalSettingsService);
-    const lootGameRunner = new LootGameService();
+
+    const lootGameService = new LootGameService();
 
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-loot-game]')!;
     const buttonEl = el.querySelector<HTMLInputElement>('[data-loot-game-button]')!;
@@ -27,7 +28,7 @@ export const useLootGameService = ({ el }: IParams) => {
         });
 
         if (!checkboxEl.checked) {
-            lootGameRunner.stop();
+            lootGameService.stop();
             clearInterval(intervalId);
             timerEl.classList.add('hidden');
         }
@@ -39,35 +40,36 @@ export const useLootGameService = ({ el }: IParams) => {
         if (!settingsService.settings.lootGame) return;
 
         if (isRunning) {
-            lootGameRunner.start();
+            lootGameService.start();
             setupTimer();
         } else {
-            lootGameRunner.stop();
+            lootGameService.stop();
             clearInterval(intervalId);
             timerEl.classList.add('hidden');
         }
     });
 
+    lootGameService.events.on('roundCompleted', () => {
+        timerEl.classList.add('hidden');
+        clearInterval(intervalId);
+    });
+
     buttonEl.addEventListener('click', () => {
-        lootGameRunner.participate();
+        lootGameService.participate();
     });
 
     function setupTimer() {
         timerTick();
+        timerEl.classList.remove('hidden');
         intervalId = window.setInterval(timerTick, Timing.SECOND);
     }
 
     function timerTick() {
-        const time = lootGameRunner.timeUntilMessage;
-        const diff = time - Date.now();
+        const time = lootGameService.timeUntilMessage;
+        const diff = Math.max(time - Date.now(), 0);
         const minutes = Math.floor(diff / Timing.MINUTE).toString().padStart(2, '0');
         const seconds = Math.floor((diff % Timing.MINUTE) / Timing.SECOND).toString().padStart(2, '0');
 
         timerEl.textContent = `(${minutes}:${seconds})`;
-        timerEl.classList.toggle('hidden', time <= 0);
-
-        if (time <= 0) {
-            clearInterval(intervalId);
-        }
     }
 };

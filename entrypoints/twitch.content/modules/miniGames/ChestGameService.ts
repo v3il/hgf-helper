@@ -4,6 +4,7 @@ import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { StreamStatusService } from '@twitch/modules/stream';
+import { EventEmitter } from '@components/EventEmitter';
 
 const COMMAND = '!chest';
 
@@ -15,6 +16,10 @@ export class ChestGameService {
     private timeoutId!: number;
 
     timeUntilMessage!: number;
+
+    events = EventEmitter.create<{
+        roundCompleted: void,
+    }>();
 
     constructor() {
         this.messageSender = Container.get(MessageSender);
@@ -46,6 +51,8 @@ export class ChestGameService {
         }
 
         this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
+        this.events.emit('roundCompleted');
+        this.stop();
     }
 
     private getDelay() {
@@ -59,7 +66,6 @@ export class ChestGameService {
 
         this.timeoutId = window.setTimeout(() => {
             this.sendCommand();
-            this.stop();
         }, delay);
     }
 }

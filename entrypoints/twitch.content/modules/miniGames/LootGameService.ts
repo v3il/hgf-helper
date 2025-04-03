@@ -4,6 +4,7 @@ import { Container } from 'typedi';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { TwitchUIService } from '@twitch/modules';
 import { StreamStatusService } from '@twitch/modules/stream';
+import { EventEmitter } from '@components/EventEmitter';
 
 const COMMAND = '!loot';
 
@@ -15,6 +16,10 @@ export class LootGameService {
     private timeoutId!: number;
 
     timeUntilMessage!: number;
+
+    events = EventEmitter.create<{
+        roundCompleted: void,
+    }>();
 
     constructor() {
         this.messageSender = Container.get(MessageSender);
@@ -46,10 +51,12 @@ export class LootGameService {
         }
 
         this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
+        this.events.emit('roundCompleted');
+        this.stop();
     }
 
     private getDelay() {
-        return getRandomNumber(Timing.MINUTE, 2 * Timing.MINUTE);
+        return getRandomNumber(Timing.MINUTE, 10 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {
@@ -59,7 +66,6 @@ export class LootGameService {
 
         this.timeoutId = window.setTimeout(() => {
             this.sendCommand();
-            this.stop();
         }, delay);
     }
 }
