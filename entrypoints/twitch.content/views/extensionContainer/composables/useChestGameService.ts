@@ -49,26 +49,27 @@ export const useChestGameService = ({ el }: IParams) => {
         }
     });
 
+    chestGameRunner.events.on('roundCompleted', () => {
+        timerEl.classList.add('hidden');
+        clearInterval(intervalId);
+    });
+
     buttonEl.addEventListener('click', () => {
         chestGameRunner.participate();
     });
 
     function setupTimer() {
         timerTick();
+        timerEl.classList.remove('hidden');
         intervalId = window.setInterval(timerTick, Timing.SECOND);
     }
 
     function timerTick() {
         const time = chestGameRunner.timeUntilMessage;
-        const diff = time - Date.now();
+        const diff = Math.max(time - Date.now(), 0);
         const minutes = Math.floor(diff / Timing.MINUTE).toString().padStart(2, '0');
         const seconds = Math.floor((diff % Timing.MINUTE) / Timing.SECOND).toString().padStart(2, '0');
 
         timerEl.textContent = `(${minutes}:${seconds})`;
-        timerEl.classList.toggle('hidden', time <= 0);
-
-        if (time <= 0) {
-            clearInterval(intervalId);
-        }
     }
 };

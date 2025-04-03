@@ -1,4 +1,3 @@
-import { Commands } from '@twitch/consts';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { LocalSettingsService } from '@components/settings';
@@ -6,6 +5,7 @@ import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
 import { getRandomNumber, log, waitAsync } from '@components/utils';
 import { Timing } from '@components/consts';
 import { ChatObserver, MessageSender } from '@twitch/modules/twitchChat';
+import { StreamStatusService } from '@twitch/modules/stream';
 
 interface IHitsquadRunnerState {
     isRunning: boolean,
@@ -18,6 +18,7 @@ interface IRoundsData {
 }
 
 const HITSQUAD_GAMES_ON_SCREEN = 12;
+const COMMAND = '!hitsquad';
 
 export class HitsquadGameService {
     readonly events;
@@ -26,6 +27,7 @@ export class HitsquadGameService {
     private readonly chatObserver: ChatObserver;
     private readonly settingsService: LocalSettingsService;
     private readonly twitchUIService: TwitchUIService;
+    private readonly streamStatusService: StreamStatusService;
 
     timeUntilMessage!: number;
     private totalRounds!: number;
@@ -39,6 +41,7 @@ export class HitsquadGameService {
         this.messageSender = Container.get(MessageSender);
         this.chatObserver = Container.get(ChatObserver);
         this.twitchUIService = Container.get(TwitchUIService);
+        this.streamStatusService = Container.get(StreamStatusService);
 
         this.events = EventEmitter.create<{
             round: void,
@@ -85,7 +88,7 @@ export class HitsquadGameService {
     }
 
     participate() {
-        this.messageSender.sendMessage(Commands.HITSQUAD);
+        this.messageSender.sendMessage(COMMAND);
     }
 
     private getState(): IHitsquadRunnerState {
@@ -115,7 +118,7 @@ export class HitsquadGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.twitchUIService.isAdsPhase) {
+        if (this.twitchUIService.isAdsPhase || this.streamStatusService.isVideoBroken) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
@@ -123,7 +126,7 @@ export class HitsquadGameService {
             return this.sendCommand();
         }
 
-        this.messageSender.sendMessage(Commands.HITSQUAD);
+        this.messageSender.sendMessage(COMMAND);
         this.state.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
         this.saveState();
 
