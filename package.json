@@ -2,7 +2,7 @@
   "name": "hgf-helper",
   "description": "A small extension for the Chrome-like browsers that allows you to play mini-games on the .tv/hitsquadgodfather channel",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.6.1",
   "type": "module",
   "scripts": {
     "dev": "wxt -c ./wxt-dev.config.ts",

@@ -108,16 +108,19 @@ export class OnScreenTextRecognizer {
     }
 
     private generateVariants(text: string) {
-        const normalizedText = text
-            .replaceAll('I', 'l')
-            .toLowerCase()
-            .replace('\n', ' ')
-            .trim();
+        const withoutLineEnding = text.replace('\n', ' ').trim();
+        const normalizedText = withoutLineEnding.replaceAll('I', 'l').toLowerCase();
 
         const words = normalizedText.split(' ');
         const longestWord = words.reduce((longest, word) => (word.length > longest.length ? word : longest), '');
 
-        return [longestWord, normalizedText.replaceAll(' ', '_')];
+        return [
+            withoutLineEnding,
+            withoutLineEnding.replaceAll(' ', '_'),
+            longestWord,
+            normalizedText,
+            normalizedText.replaceAll(' ', '_')
+        ].filter(Boolean);
     }
 
     private increaseContrast(imageData: ImageData) {

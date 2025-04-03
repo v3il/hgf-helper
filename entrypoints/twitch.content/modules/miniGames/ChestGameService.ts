@@ -1,39 +1,58 @@
 import { Timing } from '@components/consts';
-import { getRandomNumber, log } from '@components/utils';
+import { getRandomNumber, log, waitAsync } from '@components/utils';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container } from 'typedi';
+import { TwitchUIService } from '@twitch/modules';
+import { StreamStatusService } from '@twitch/modules/stream';
+import { EventEmitter } from '@components/EventEmitter';
+
+const COMMAND = '!chest';
 
 export class ChestGameService {
     private readonly messageSender: MessageSender;
+    private readonly twitchUIService: TwitchUIService;
+    private readonly streamStatusService: StreamStatusService;
 
-    private isRunning!: boolean;
     private timeoutId!: number;
 
     timeUntilMessage!: number;
 
+    events = EventEmitter.create<{
+        roundCompleted: void,
+    }>();
+
     constructor() {
         this.messageSender = Container.get(MessageSender);
+        this.twitchUIService = Container.get(TwitchUIService);
+        this.streamStatusService = Container.get(StreamStatusService);
     }
 
     start() {
         log('Start Chest runner');
-
-        this.isRunning = true;
         this.scheduleNextRound();
     }
 
     stop() {
         clearTimeout(this.timeoutId);
-        this.isRunning = false;
         this.timeUntilMessage = 0;
     }
 
     participate() {
-        return this.sendCommand();
+        this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
     }
 
-    private sendCommand() {
-        this.messageSender.sendMessage(`!chest${getRandomNumber(1, 8)}`);
+    private async sendCommand(): Promise<void> {
+        if (this.twitchUIService.isAdsPhase || this.streamStatusService.isVideoBroken) {
+            const delay = 20 * Timing.SECOND;
+
+            this.timeUntilMessage = Date.now() + delay;
+            await waitAsync(delay);
+            return this.sendCommand();
+        }
+
+        this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
+        this.events.emit('roundCompleted');
+        this.stop();
     }
 
     private getDelay() {
@@ -47,7 +66,6 @@ export class ChestGameService {
 
         this.timeoutId = window.setTimeout(() => {
             this.sendCommand();
-            this.stop();
         }, delay);
     }
 }
