@@ -5,6 +5,8 @@ import { MessageSender } from '@twitch/modules/twitchChat';
 import { TwitchUIService } from '@twitch/modules';
 import { StreamStatusService } from '@twitch/modules/stream';
 
+const COMMAND = '!loot';
+
 export class LootGameService {
     private readonly messageSender: MessageSender;
     private readonly twitchUIService: TwitchUIService;
@@ -31,7 +33,7 @@ export class LootGameService {
     }
 
     participate() {
-        return this.sendCommand();
+        this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
     }
 
     private async sendCommand(): Promise<void> {
@@ -43,11 +45,11 @@ export class LootGameService {
             return this.sendCommand();
         }
 
-        this.messageSender.sendMessage(`!loot${getRandomNumber(1, 8)}`);
+        this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
     }
 
     private getDelay() {
-        return getRandomNumber(Timing.MINUTE, 10 * Timing.MINUTE);
+        return getRandomNumber(Timing.MINUTE, 2 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {

@@ -5,6 +5,8 @@ import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { StreamStatusService } from '@twitch/modules/stream';
 
+const COMMAND = '!chest';
+
 export class ChestGameService {
     private readonly messageSender: MessageSender;
     private readonly twitchUIService: TwitchUIService;
@@ -31,7 +33,7 @@ export class ChestGameService {
     }
 
     participate() {
-        return this.sendCommand();
+        this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
     }
 
     private async sendCommand(): Promise<void> {
@@ -43,11 +45,11 @@ export class ChestGameService {
             return this.sendCommand();
         }
 
-        this.messageSender.sendMessage(`!chest${getRandomNumber(1, 8)}`);
+        this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
     }
 
     private getDelay() {
-        return getRandomNumber(30 * Timing.SECOND, 1 * Timing.MINUTE);
+        return getRandomNumber(30 * Timing.SECOND, 5 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {

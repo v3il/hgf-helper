@@ -18,6 +18,7 @@ interface IRoundsData {
 }
 
 const HITSQUAD_GAMES_ON_SCREEN = 12;
+const COMMAND = '!hitsquad';
 
 export class HitsquadGameService {
     readonly events;
@@ -87,7 +88,7 @@ export class HitsquadGameService {
     }
 
     participate() {
-        this.messageSender.sendMessage('!hitsquad');
+        this.messageSender.sendMessage(COMMAND);
     }
 
     private getState(): IHitsquadRunnerState {
@@ -125,7 +126,7 @@ export class HitsquadGameService {
             return this.sendCommand();
         }
 
-        this.messageSender.sendMessage('!hitsquad');
+        this.messageSender.sendMessage(COMMAND);
         this.state.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
         this.saveState();
 
