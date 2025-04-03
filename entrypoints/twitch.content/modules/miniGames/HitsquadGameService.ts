@@ -6,6 +6,7 @@ import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
 import { getRandomNumber, log, waitAsync } from '@components/utils';
 import { Timing } from '@components/consts';
 import { ChatObserver, MessageSender } from '@twitch/modules/twitchChat';
+import { StreamStatusService } from '@twitch/modules/stream';
 
 interface IHitsquadRunnerState {
     isRunning: boolean,
@@ -26,6 +27,7 @@ export class HitsquadGameService {
     private readonly chatObserver: ChatObserver;
     private readonly settingsService: LocalSettingsService;
     private readonly twitchUIService: TwitchUIService;
+    private readonly streamStatusService: StreamStatusService;
 
     timeUntilMessage!: number;
     private totalRounds!: number;
@@ -39,6 +41,7 @@ export class HitsquadGameService {
         this.messageSender = Container.get(MessageSender);
         this.chatObserver = Container.get(ChatObserver);
         this.twitchUIService = Container.get(TwitchUIService);
+        this.streamStatusService = Container.get(StreamStatusService);
 
         this.events = EventEmitter.create<{
             round: void,
@@ -115,7 +118,7 @@ export class HitsquadGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.twitchUIService.isAdsPhase) {
+        if (this.twitchUIService.isAdsPhase || this.streamStatusService.isVideoBroken) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;

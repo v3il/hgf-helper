@@ -1,30 +1,32 @@
 import { Timing } from '@components/consts';
-import { getRandomNumber, log } from '@components/utils';
+import { getRandomNumber, log, waitAsync } from '@components/utils';
 import { Container } from 'typedi';
 import { MessageSender } from '@twitch/modules/twitchChat';
+import { TwitchUIService } from '@twitch/modules';
+import { StreamStatusService } from '@twitch/modules/stream';
 
 export class LootGameService {
     private readonly messageSender: MessageSender;
+    private readonly twitchUIService: TwitchUIService;
+    private readonly streamStatusService: StreamStatusService;
 
-    private isRunning!: boolean;
     private timeoutId!: number;
 
     timeUntilMessage!: number;
 
     constructor() {
         this.messageSender = Container.get(MessageSender);
+        this.twitchUIService = Container.get(TwitchUIService);
+        this.streamStatusService = Container.get(StreamStatusService);
     }
 
     start() {
         log('Start Loot service');
-
-        this.isRunning = true;
         this.scheduleNextRound();
     }
 
     stop() {
         clearTimeout(this.timeoutId);
-        this.isRunning = false;
         this.timeUntilMessage = 0;
     }
 
@@ -32,7 +34,15 @@ export class LootGameService {
         return this.sendCommand();
     }
 
-    private sendCommand() {
+    private async sendCommand(): Promise<void> {
+        if (this.twitchUIService.isAdsPhase || this.streamStatusService.isVideoBroken) {
+            const delay = 20 * Timing.SECOND;
+
+            this.timeUntilMessage = Date.now() + delay;
+            await waitAsync(delay);
+            return this.sendCommand();
+        }
+
         this.messageSender.sendMessage(`!loot${getRandomNumber(1, 8)}`);
     }
 
