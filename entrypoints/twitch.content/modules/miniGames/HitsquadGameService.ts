@@ -1,4 +1,3 @@
-import { Commands } from '@twitch/consts';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { LocalSettingsService } from '@components/settings';
@@ -88,7 +87,7 @@ export class HitsquadGameService {
     }
 
     participate() {
-        this.messageSender.sendMessage(Commands.HITSQUAD);
+        this.messageSender.sendMessage('!hitsquad');
     }
 
     private getState(): IHitsquadRunnerState {
@@ -126,7 +125,7 @@ export class HitsquadGameService {
             return this.sendCommand();
         }
 
-        this.messageSender.sendMessage(Commands.HITSQUAD);
+        this.messageSender.sendMessage('!hitsquad');
         this.state.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
         this.saveState();
 
