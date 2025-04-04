@@ -1,6 +1,6 @@
 import { StreamElementsUIService } from '@store/modules';
 import { Container } from 'typedi';
-import { UserFacade } from '@shared/settings';
+import { AuthFacade } from '@shared/modules';
 import { AuthWindow } from '@components/AuthWindow';
 import { BasicView } from '@components/BasicView';
 import { AUTH_URL } from '@shared/consts';
@@ -8,12 +8,12 @@ import template from './template.html?raw';
 
 export class AuthView extends BasicView {
     private readonly streamElementsUIService: StreamElementsUIService;
-    private readonly userFacade: UserFacade;
+    private readonly authFacade: AuthFacade;
 
     constructor() {
         super(template);
 
-        this.userFacade = Container.get(UserFacade);
+        this.authFacade = Container.get(AuthFacade);
         this.streamElementsUIService = Container.get(StreamElementsUIService);
 
         this.triggerAuth = this.triggerAuth.bind(this);
@@ -43,8 +43,8 @@ export class AuthView extends BasicView {
                 return;
             }
 
-            await this.userFacade.setToken(token);
-            await this.userFacade.auth();
+            await this.authFacade.setToken(token);
+            await this.authFacade.auth();
             this.events.emit('authenticated');
         } catch (error) {
             console.error(error);

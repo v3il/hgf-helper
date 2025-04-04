@@ -1,14 +1,14 @@
 import { waitAsync } from '@components/utils';
 import { Container, Service } from 'typedi';
 import { Timing } from '@components/consts';
-import { UserFacade } from '@shared/settings';
+import { SettingsFacade } from '@shared/modules';
 
 @Service()
 export class StreamElementsUIService {
-    private readonly userFacade: UserFacade;
+    private readonly settingsFacade: SettingsFacade;
 
     constructor() {
-        this.userFacade = Container.get(UserFacade);
+        this.settingsFacade = Container.get(SettingsFacade);
         this.initSettingsObserver();
     }
 
@@ -51,7 +51,7 @@ export class StreamElementsUIService {
     }
 
     async sortOffers() {
-        const field = this.userFacade.settings.sortOffersBy;
+        const field = this.settingsFacade.settings.sortOffersBy;
 
         if (field === '\'order\'') {
             return;
@@ -76,9 +76,9 @@ export class StreamElementsUIService {
     }
 
     private initSettingsObserver() {
-        this.userFacade.onSettingChanged('enhanceStoreHeader', () => this.enhanceStoreHeader());
-        this.userFacade.onSettingChanged('enhanceStoreSidebar', () => this.enhanceStoreSidebar());
-        this.userFacade.onSettingChanged('hideStoreFooter', () => this.toggleStoreFooter());
+        this.settingsFacade.onSettingChanged('enhanceStoreHeader', () => this.enhanceStoreHeader());
+        this.settingsFacade.onSettingChanged('enhanceStoreSidebar', () => this.enhanceStoreSidebar());
+        this.settingsFacade.onSettingChanged('hideStoreFooter', () => this.toggleStoreFooter());
     }
 
     private get sortOffersDropdownEl() {
@@ -87,16 +87,16 @@ export class StreamElementsUIService {
 
     private enhanceStoreHeader() {
         document.documentElement.classList
-            .toggle('hgf-enhanced-header', this.userFacade.settings.enhanceStoreHeader);
+            .toggle('hgf-enhanced-header', this.settingsFacade.settings.enhanceStoreHeader);
     }
 
     private enhanceStoreSidebar() {
         document.documentElement.classList
-            .toggle('hgf-enhanced-sidebar', this.userFacade.settings.enhanceStoreSidebar);
+            .toggle('hgf-enhanced-sidebar', this.settingsFacade.settings.enhanceStoreSidebar);
     }
 
     private toggleStoreFooter() {
         document.documentElement.classList
-            .toggle('hgf-hide-footer', this.userFacade.settings.hideStoreFooter);
+            .toggle('hgf-hide-footer', this.settingsFacade.settings.hideStoreFooter);
     }
 }

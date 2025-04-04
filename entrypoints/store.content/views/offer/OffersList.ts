@@ -1,16 +1,16 @@
 import { Container } from 'typedi';
 import { OffersFacade } from '@store/modules';
-import { UserFacade } from '@shared/settings';
+import { SettingsFacade } from '@shared/modules';
 import { OfferView } from './OfferView';
 
 export class OffersList {
-    private readonly userFacade;
+    private readonly settingsFacade;
     private readonly offersFacade;
 
     private offerViews: OfferView[] = [];
 
     constructor(private readonly el: HTMLElement) {
-        this.userFacade = Container.get(UserFacade);
+        this.settingsFacade = Container.get(SettingsFacade);
         this.offersFacade = Container.get(OffersFacade);
 
         this.renderOffers = this.renderOffers.bind(this);
@@ -46,8 +46,8 @@ export class OffersList {
 
     private listenEvents() {
         this.offersFacade.events.on('offer-shown', this.renderOffers);
-        this.userFacade.onSettingChanged('hideSoldOutOffers', this.renderOffers);
-        this.userFacade.onSettingChanged('offersMaxPrice', this.renderOffers);
+        this.settingsFacade.onSettingChanged('hideSoldOutOffers', this.renderOffers);
+        this.settingsFacade.onSettingChanged('offersMaxPrice', this.renderOffers);
     }
 
     private renderOffers() {

@@ -1,18 +1,18 @@
 import { Container, Service } from 'typedi';
 import { EventEmitter } from '@components/EventEmitter';
-import { UserFacade } from '@shared/settings';
+import { HiddenOffersFacade } from '@shared/modules';
 import { Offer, IOfferParams } from './models';
 
 @Service()
 export class OffersFacade {
-    private readonly userFacade: UserFacade;
+    private readonly userFacade: HiddenOffersFacade;
 
     readonly events = new EventEmitter<{
         'offer-shown': void;
     }>();
 
     constructor() {
-        this.userFacade = Container.get(UserFacade);
+        this.userFacade = Container.get(HiddenOffersFacade);
     }
 
     get hiddenOffers() {

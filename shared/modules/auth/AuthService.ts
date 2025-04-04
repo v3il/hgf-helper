@@ -1,13 +1,13 @@
 import { ContainerInstance } from 'typedi';
 import { IUser } from '../types';
-import { SettingsService } from './SettingsService';
-import { UserApiService } from './UserApiService';
-import { HiddenOffersService } from './HiddenOffersService';
+import { SettingsFacade } from '../settings';
+import { FirebaseApiService } from '../FirebaseApiService';
+import { HiddenOffersFacade } from '../hiddenOffers';
 
-export class UserService {
-    private readonly apiService: UserApiService;
-    private readonly settingsService: SettingsService;
-    private readonly hiddenOffersService: HiddenOffersService;
+export class AuthService {
+    private readonly apiService: FirebaseApiService;
+    private readonly settingsFacade: SettingsFacade;
+    private readonly hiddenOffersService: HiddenOffersFacade;
 
     private _user: IUser | null = null;
 
@@ -15,9 +15,9 @@ export class UserService {
     private readonly storage = chrome.storage.local;
 
     constructor(container: ContainerInstance) {
-        this.apiService = container.get(UserApiService);
-        this.settingsService = container.get(SettingsService);
-        this.hiddenOffersService = container.get(HiddenOffersService);
+        this.apiService = container.get(FirebaseApiService);
+        this.settingsFacade = container.get(SettingsFacade);
+        this.hiddenOffersService = container.get(HiddenOffersFacade);
     }
 
     get userName() {
@@ -39,7 +39,7 @@ export class UserService {
         this.apiService.setToken(token);
 
         this._user = await this.apiService.getUser();
-        await this.settingsService.setSettings(this._user!.settings);
+        await this.settingsFacade.setSettings(this._user!.settings);
         this.hiddenOffersService.setHiddenOffers(this._user!.hiddenOffers);
 
         console.error('User', this._user);

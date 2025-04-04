@@ -1,13 +1,13 @@
 import { ContainerInstance } from 'typedi';
-import { UserApiService } from './UserApiService';
+import { FirebaseApiService } from '../FirebaseApiService';
 
 export class HiddenOffersService {
-    private readonly apiService: UserApiService;
+    private readonly apiService: FirebaseApiService;
 
     private _hiddenOffers: string[] = [];
 
     constructor(container: ContainerInstance) {
-        this.apiService = container.get(UserApiService);
+        this.apiService = container.get(FirebaseApiService);
     }
 
     get hiddenOffers() {

@@ -2,7 +2,7 @@ import { Container } from 'typedi';
 import './styles.css';
 import { Offer } from '@store/modules/offers/models';
 import { OffersFacade } from '@store/modules';
-import { UserFacade } from '@shared/settings';
+import { SettingsFacade } from '@shared/modules';
 import template from './template.html?raw';
 
 interface IParams {
@@ -14,14 +14,14 @@ export class OfferView {
     private readonly offer;
     private readonly offerEl;
     private readonly offersFacade;
-    private readonly userFacade;
+    private readonly settingsFacade;
 
     constructor({ offer, offerEl }: IParams) {
         this.offer = offer;
         this.offerEl = offerEl;
 
         this.offersFacade = Container.get(OffersFacade);
-        this.userFacade = Container.get(UserFacade);
+        this.settingsFacade = Container.get(SettingsFacade);
 
         this.renderContainer();
         this.toggleVisibility();
@@ -29,7 +29,7 @@ export class OfferView {
     }
 
     private get isHidden() {
-        const { offersMaxPrice, hideSoldOutOffers } = this.userFacade.settings;
+        const { offersMaxPrice, hideSoldOutOffers } = this.settingsFacade.settings;
 
         if (hideSoldOutOffers && this.offer.isSoldOut) {
             return true;
@@ -63,7 +63,7 @@ export class OfferView {
     }
 
     private highlightLowVolumeOffer() {
-        const { highlightLowVolumeOffers } = this.userFacade.settings;
+        const { highlightLowVolumeOffers } = this.settingsFacade.settings;
 
         this.offerEl.querySelector('[data-container]')!.classList
             .toggle('hgfs-container--danger', this.offer.isLowVolume && highlightLowVolumeOffers);
@@ -74,7 +74,7 @@ export class OfferView {
 
         hideButtonEl.addEventListener('click', () => this.clickHandler());
 
-        this.userFacade.onSettingChanged('highlightLowVolumeOffers', () => {
+        this.settingsFacade.onSettingChanged('highlightLowVolumeOffers', () => {
             this.highlightLowVolumeOffer();
         });
     }

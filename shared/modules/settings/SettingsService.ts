@@ -1,10 +1,10 @@
 import { ContainerInstance } from 'typedi';
 import { EventEmitter } from '@components/EventEmitter';
 import { GlobalSettingsKeys, ISettings, ISettingsEvents } from '../types';
-import { UserApiService } from './UserApiService';
+import { FirebaseApiService } from '../FirebaseApiService';
 
 export class SettingsService {
-    private readonly apiService: UserApiService;
+    private readonly apiService: FirebaseApiService;
 
     private _settings: ISettings;
 
@@ -15,7 +15,7 @@ export class SettingsService {
 
     constructor(container: ContainerInstance) {
         this._settings = this.getDefaultSettings();
-        this.apiService = container.get(UserApiService);
+        this.apiService = container.get(FirebaseApiService);
 
         this.initObserver();
     }

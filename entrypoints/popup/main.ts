@@ -11,12 +11,13 @@ import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import { GlobalSettingsKeys, UserFacade } from '@shared/settings';
+import { GlobalSettingsKeys, SettingsFacade, AuthFacade } from '@shared/modules';
 import { SlInput, SlRange, SlSwitch, SlSelect } from '@shoelace-style/shoelace';
 import { Container } from 'typedi';
 import { debounce } from '@utils';
 
-const userFacade = Container.get(UserFacade);
+const settingsFacade = Container.get(SettingsFacade);
+const authFacade = Container.get(AuthFacade);
 
 setBasePath('../..'); // /public
 
@@ -34,23 +35,23 @@ function initSettingView(control: Control) {
     const settingName = control.dataset.setting as GlobalSettingsKeys;
 
     if (control instanceof SlSwitch) {
-        control.checked = userFacade.settings[settingName] as boolean;
+        control.checked = settingsFacade.settings[settingName] as boolean;
     } else {
-        control.value = String(userFacade.settings[settingName]);
+        control.value = String(settingsFacade.settings[settingName]);
     }
 
     control.addEventListener('sl-input', debounce(() => {
-        userFacade.updateSettings({
+        settingsFacade.updateSettings({
             [settingName]: parseInputValue(control)
         });
     }, 200));
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await userFacade.auth();
+    await authFacade.auth();
     document.querySelectorAll<Control>('[data-setting]').forEach(initSettingView);
 
     document.querySelector<HTMLButtonElement>('[data-logout]')!.addEventListener('click', () => {
-        userFacade.logout();
+        authFacade.logout();
     });
 });

@@ -1,7 +1,9 @@
-import { FUNCTION_URL } from '@shared/consts';
-import { ISettings, IUser } from '@shared/settings';
+import { Service } from 'typedi';
+import { FUNCTION_URL } from '../consts';
+import { ISettings, IUser } from './types';
 
-export class UserApiService {
+@Service()
+export class FirebaseApiService {
     private token!: string;
 
     setToken(token: string) {

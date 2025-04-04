@@ -2,12 +2,12 @@ import 'reflect-metadata';
 import UIkit from 'uikit/dist/js/uikit.js';
 import { Container } from 'typedi';
 import { StreamElementsUIService } from '@store/modules';
-import { UserFacade } from '@shared/settings';
+import { AuthFacade } from '@shared/modules';
 import { AuthView, ExtensionContainer } from './views';
 import './store.css';
 import '@shared/styles/index.css';
 
-const renderExtensionContainer = async () => {
+const renderExtensionContainer = () => {
     const streamElementsUIService = Container.get(StreamElementsUIService);
 
     streamElementsUIService.enhanceStorePage();
@@ -42,15 +42,20 @@ const renderAuthView = () => {
 };
 
 export const start = async () => {
-    const userFacade = Container.get(UserFacade);
+    const authFacade = Container.get(AuthFacade);
 
-    await userFacade.auth();
+    try {
+        await authFacade.auth();
 
-    console.clear();
+        console.clear();
 
-    if (userFacade.isAuthenticated) {
-        renderExtensionContainer();
-    } else {
+        if (authFacade.isAuthenticated) {
+            renderExtensionContainer();
+        } else {
+            renderAuthView();
+        }
+    } catch (error) {
         renderAuthView();
+        console.error('Error during authentication:', error);
     }
 };
