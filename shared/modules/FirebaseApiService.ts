@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
 import { FUNCTION_URL } from '../consts';
 import { ISettings, IUser } from './types';
+import { UnauthorizedError } from './UnauthorizedError';
 
 @Service()
 export class FirebaseApiService {
@@ -30,8 +31,8 @@ export class FirebaseApiService {
         await this.sendUpdateRequest({ hiddenOffers });
     }
 
-    private sendUpdateRequest(payload: object) {
-        return fetch(`${FUNCTION_URL}/user`, {
+    private async sendUpdateRequest(payload: object) {
+        const response = await fetch(`${FUNCTION_URL}/user`, {
             method: 'PATCH',
             headers: {
                 Authorization: `Bearer ${this.token}`,
@@ -39,5 +40,13 @@ export class FirebaseApiService {
             },
             body: JSON.stringify(payload)
         });
+
+        if (response.ok) {
+            return response;
+        }
+
+        if (response.status === 401) {
+            throw new UnauthorizedError();
+        }
     }
 }

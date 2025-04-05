@@ -36,9 +36,11 @@ export class AuthFacade {
     }
 
     private initProviders() {
-        this.container.set({ id: FirebaseApiService, type: FirebaseApiService });
+        this.container.set({ id: FirebaseApiService, value: Container.get(FirebaseApiService) });
         this.container.set({ id: AuthService, type: AuthService });
-        this.container.set({ id: SettingsFacade, type: SettingsFacade });
-        this.container.set({ id: HiddenOffersFacade, type: HiddenOffersFacade });
+        this.container.set({ id: SettingsFacade, value: Container.get(SettingsFacade) });
+        this.container.set({ id: HiddenOffersFacade, value: Container.get(HiddenOffersFacade) });
+
+        this.authService = this.container.get(AuthService);
     }
 }

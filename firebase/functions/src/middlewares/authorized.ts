@@ -16,7 +16,7 @@ export const authorized = (request: Request, response: Response, next: NextFunct
     const [type, token] = authorization!.split(' ');
 
     if (!(token && type === 'Bearer')) {
-        response.status(403).send({ error: 'Forbidden' });
+        response.status(401).send({ error: 'Unauthorized' });
         return;
     }
 

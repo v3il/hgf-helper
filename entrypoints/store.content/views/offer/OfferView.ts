@@ -57,7 +57,7 @@ export class OfferView {
             await this.offersFacade.hideOffer(this.offer);
             this.hideOffer();
         } catch (error) {
-            alert('Failed to hide offer. Check your JSONBin configuration in the settings popup.');
+            alert('Failed to hide offer');
             console.error(error);
         }
     }

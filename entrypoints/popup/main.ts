@@ -49,6 +49,7 @@ function initSettingView(control: Control) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     await authFacade.auth();
+
     document.querySelectorAll<Control>('[data-setting]').forEach(initSettingView);
 
     document.querySelector<HTMLButtonElement>('[data-logout]')!.addEventListener('click', () => {

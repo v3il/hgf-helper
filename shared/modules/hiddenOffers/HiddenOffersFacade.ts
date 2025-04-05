@@ -13,7 +13,7 @@ export class HiddenOffersFacade {
     }
 
     private initProviders() {
-        this.container.set({ id: FirebaseApiService, type: FirebaseApiService });
+        this.container.set({ id: FirebaseApiService, value: Container.get(FirebaseApiService) });
         this.container.set({ id: HiddenOffersService, type: HiddenOffersService });
 
         this.hiddenOffersService = this.container.get(HiddenOffersService);

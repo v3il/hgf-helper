@@ -47,7 +47,7 @@ export const start = async () => {
     try {
         await authFacade.auth();
 
-        console.clear();
+        // console.clear();
 
         if (authFacade.isAuthenticated) {
             renderExtensionContainer();

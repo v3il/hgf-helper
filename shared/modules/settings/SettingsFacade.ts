@@ -34,7 +34,7 @@ export class SettingsFacade {
 
     private initProviders() {
         this.container.set({ id: SettingsService, type: SettingsService });
-        this.container.set({ id: FirebaseApiService, type: FirebaseApiService });
+        this.container.set({ id: FirebaseApiService, value: Container.get(FirebaseApiService) });
 
         this.settingsService = this.container.get(SettingsService);
     }
