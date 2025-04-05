@@ -1,5 +1,10 @@
-export class BasicView {
+import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
+
+export abstract class BasicView {
+    protected listeners: UnsubscribeTrigger[] = [];
     protected readonly el: HTMLElement;
+
+    readonly events = EventEmitter.create();
 
     constructor(template: string) {
         this.el = this.createElement(template);
@@ -12,7 +17,11 @@ export class BasicView {
         return containerEl.firstChild! as HTMLElement;
     }
 
-    mount(rootEl: HTMLElement) {
-        rootEl.appendChild(this.el);
+    abstract render(rootEl: HTMLElement): void;
+
+    destroy() {
+        this.listeners.forEach((unsubscribe) => unsubscribe());
+        this.listeners = [];
+        this.el.remove();
     }
 }

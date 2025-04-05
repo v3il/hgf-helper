@@ -1,25 +1,21 @@
 import { ContainerInstance } from 'typedi';
-import { Offer } from '../models';
-import { JsonBinApiService } from './JsonBinApiService';
+import { FirebaseApiService } from '../FirebaseApiService';
 
-export class OffersService {
-    private readonly apiService;
+export class HiddenOffersService {
+    private readonly apiService: FirebaseApiService;
+
     private _hiddenOffers: string[] = [];
 
     constructor(container: ContainerInstance) {
-        this.apiService = container.get(JsonBinApiService);
+        this.apiService = container.get(FirebaseApiService);
     }
 
     get hiddenOffers() {
         return this._hiddenOffers;
     }
 
-    async fetchHiddenOffers() {
-        this._hiddenOffers = await this.apiService.getHiddenOffers();
-    }
-
-    isOfferHidden(offer: Offer) {
-        return this._hiddenOffers.includes(offer.name);
+    isOfferHidden(offer: string) {
+        return this._hiddenOffers.includes(offer);
     }
 
     unhideOffer(offer: string) {
@@ -27,8 +23,12 @@ export class OffersService {
         return this.apiService.updateHiddenOffers(this._hiddenOffers);
     }
 
-    hideOffer(offer: Offer) {
-        this.hiddenOffers.push(offer.name);
+    hideOffer(offer: string) {
+        this._hiddenOffers.push(offer);
         return this.apiService.updateHiddenOffers(this.hiddenOffers);
+    }
+
+    setHiddenOffers(hiddenOffers: string[]) {
+        this._hiddenOffers = hiddenOffers;
     }
 }

@@ -1,29 +1,14 @@
 import 'reflect-metadata';
-import { GlobalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
-import { StreamElementsUIService, OffersFacade } from '@store/modules';
+import { AuthFacade } from '@shared/modules';
 import { ExtensionContainer } from './views';
 import './store.css';
+import '@shared/styles/index.css';
 
 export const start = async () => {
-    const globalSettings = Container.get(GlobalSettingsService);
-    const streamElementsUIService = Container.get(StreamElementsUIService);
-    const offersFacade = Container.get(OffersFacade);
+    const authFacade = Container.get(AuthFacade);
 
-    await globalSettings.loadSettings();
-    streamElementsUIService.enhanceStorePage();
-
-    streamElementsUIService.whenOffersLoaded(async () => {
-        console.clear();
-
-        await streamElementsUIService.sortOffers();
-
-        await offersFacade.fetchHiddenOffers()
-            .catch((error) => {
-                console.error(error);
-                alert('Failed to fetch hidden offers. Please check your JSONBin credentials in the settings popup.');
-            });
-
-        new ExtensionContainer();
-    });
+    authFacade.auth()
+        .catch((error) => console.error('Error during authentication:', error))
+        .finally(() => new ExtensionContainer());
 };

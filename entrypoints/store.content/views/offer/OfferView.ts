@@ -1,8 +1,9 @@
 import { Container } from 'typedi';
-import { GlobalSettingsService } from '@components/settings';
 import './styles.css';
 import { Offer } from '@store/modules/offers/models';
 import { OffersFacade } from '@store/modules';
+import { SettingsFacade } from '@shared/modules';
+import { BasicView } from '@components/BasicView';
 import template from './template.html?raw';
 
 interface IParams {
@@ -10,26 +11,29 @@ interface IParams {
     offerEl: HTMLElement;
 }
 
-export class OfferView {
+export class OfferView extends BasicView {
     private readonly offer;
     private readonly offerEl;
     private readonly offersFacade;
-    private readonly settingsService;
+    private readonly settingsFacade;
 
     constructor({ offer, offerEl }: IParams) {
+        super(template);
         this.offer = offer;
         this.offerEl = offerEl;
 
         this.offersFacade = Container.get(OffersFacade);
-        this.settingsService = Container.get(GlobalSettingsService);
+        this.settingsFacade = Container.get(SettingsFacade);
 
-        this.renderContainer();
+        this.hideOfferHandler = this.hideOfferHandler.bind(this);
+
+        this.render();
         this.toggleVisibility();
         this.listenEvents();
     }
 
     private get isHidden() {
-        const { offersMaxPrice, hideSoldOutOffers } = this.settingsService.settings;
+        const { offersMaxPrice, hideSoldOutOffers } = this.settingsFacade.settings;
 
         if (hideSoldOutOffers && this.offer.isSoldOut) {
             return true;
@@ -38,17 +42,17 @@ export class OfferView {
         return this.offer.price > offersMaxPrice || this.offersFacade.isOfferHidden(this.offer);
     }
 
-    private renderContainer() {
-        this.offerEl.insertAdjacentHTML('beforeend', template);
+    render() {
+        this.offerEl.insertAdjacentElement('beforeend', this.el);
 
-        const steamAppLinkEl = this.offerEl.querySelector<HTMLAnchorElement>('[data-steam-app-link]')!;
+        const steamAppLinkEl = this.el.querySelector<HTMLAnchorElement>('[data-steam-app-link]')!;
 
         steamAppLinkEl.href = this.offer.steamAppLink;
 
         this.highlightLowVolumeOffer();
     }
 
-    private async clickHandler() {
+    private async hideOfferHandler() {
         if (!window.confirm(`Are you sure you want to hide the "${this.offer.name}" offer?`)) {
             return;
         }
@@ -57,26 +61,27 @@ export class OfferView {
             await this.offersFacade.hideOffer(this.offer);
             this.hideOffer();
         } catch (error) {
-            alert('Failed to hide offer. Check your JSONBin configuration in the settings popup.');
+            alert('Failed to hide offer');
             console.error(error);
         }
     }
 
     private highlightLowVolumeOffer() {
-        const { highlightLowVolumeOffers } = this.settingsService.settings;
+        const { highlightLowVolumeOffers } = this.settingsFacade.settings;
 
-        this.offerEl.querySelector('[data-container]')!.classList
-            .toggle('hgfs-container--danger', this.offer.isLowVolume && highlightLowVolumeOffers);
+        this.el.classList.toggle('hgfs-container--danger', this.offer.isLowVolume && highlightLowVolumeOffers);
     }
 
     private listenEvents() {
-        const hideButtonEl = this.offerEl.querySelector('[data-hide]')!;
+        const hideButtonEl = this.el.querySelector('[data-hide]')!;
 
-        hideButtonEl.addEventListener('click', () => this.clickHandler());
+        hideButtonEl.addEventListener('click', this.hideOfferHandler);
 
-        this.settingsService.events.on('setting-changed:highlightLowVolumeOffers', () => {
+        const unsubscribe = this.settingsFacade.onSettingChanged('highlightLowVolumeOffers', () => {
             this.highlightLowVolumeOffer();
         });
+
+        this.listeners.push(unsubscribe);
     }
 
     toggleVisibility() {
@@ -89,5 +94,14 @@ export class OfferView {
 
     private showOffer() {
         this.offerEl.classList.remove('hgfs-offer--hidden');
+    }
+
+    destroy() {
+        const hideButtonEl = this.el.querySelector('[data-hide]')!;
+
+        hideButtonEl.removeEventListener('click', this.hideOfferHandler);
+
+        this.showOffer();
+        super.destroy();
     }
 }

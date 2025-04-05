@@ -1,22 +1,31 @@
 import { waitAsync } from '@components/utils';
 import { Container, Service } from 'typedi';
 import { Timing } from '@components/consts';
-import { GlobalSettingsService } from '@components/settings';
+import { SettingsFacade } from '@shared/modules';
 
 @Service()
 export class StreamElementsUIService {
-    private readonly globalSettingsService: GlobalSettingsService;
+    private readonly settingsFacade: SettingsFacade;
 
     constructor() {
-        this.globalSettingsService = Container.get(GlobalSettingsService);
+        this.settingsFacade = Container.get(SettingsFacade);
         this.initSettingsObserver();
+    }
+
+    onLayoutRendered(callback: () => void) {
+        const interval = setInterval(() => {
+            if (this.pageContentEl) {
+                clearInterval(interval);
+                callback();
+            }
+        }, 0.5 * Timing.SECOND);
     }
 
     whenOffersLoaded(callback: () => void) {
         const interval = setInterval(async () => {
             const offerEls = document.querySelectorAll('.stream-store-list-item');
 
-            if (this.sortOffersDropdownEl && offerEls.length > 0) {
+            if (this.sortOffersDropdownEl && this.userStatsEl && offerEls.length > 0) {
                 clearInterval(interval);
                 callback();
             }
@@ -31,6 +40,10 @@ export class StreamElementsUIService {
         return document.querySelector<HTMLElement>('.usr-stats')!;
     }
 
+    get pageContentEl() {
+        return document.querySelector<HTMLElement>('.page-contents');
+    }
+
     enhanceStorePage() {
         this.enhanceStoreHeader();
         this.enhanceStoreSidebar();
@@ -38,7 +51,7 @@ export class StreamElementsUIService {
     }
 
     async sortOffers() {
-        const field = this.globalSettingsService.settings.sortOffersBy;
+        const field = this.settingsFacade.settings.sortOffersBy;
 
         if (field === '\'order\'') {
             return;
@@ -63,9 +76,9 @@ export class StreamElementsUIService {
     }
 
     private initSettingsObserver() {
-        this.globalSettingsService.events.on('setting-changed:enhanceStoreHeader', () => this.enhanceStoreHeader());
-        this.globalSettingsService.events.on('setting-changed:enhanceStoreSidebar', () => this.enhanceStoreSidebar());
-        this.globalSettingsService.events.on('setting-changed:hideStoreFooter', () => this.toggleStoreFooter());
+        this.settingsFacade.onSettingChanged('enhanceStoreHeader', () => this.enhanceStoreHeader());
+        this.settingsFacade.onSettingChanged('enhanceStoreSidebar', () => this.enhanceStoreSidebar());
+        this.settingsFacade.onSettingChanged('hideStoreFooter', () => this.toggleStoreFooter());
     }
 
     private get sortOffersDropdownEl() {
@@ -74,16 +87,16 @@ export class StreamElementsUIService {
 
     private enhanceStoreHeader() {
         document.documentElement.classList
-            .toggle('hgf-enhanced-header', this.globalSettingsService.settings.enhanceStoreHeader);
+            .toggle('hgf-enhanced-header', this.settingsFacade.settings.enhanceStoreHeader);
     }
 
     private enhanceStoreSidebar() {
         document.documentElement.classList
-            .toggle('hgf-enhanced-sidebar', this.globalSettingsService.settings.enhanceStoreSidebar);
+            .toggle('hgf-enhanced-sidebar', this.settingsFacade.settings.enhanceStoreSidebar);
     }
 
     private toggleStoreFooter() {
         document.documentElement.classList
-            .toggle('hgf-hide-footer', this.globalSettingsService.settings.hideStoreFooter);
+            .toggle('hgf-hide-footer', this.settingsFacade.settings.hideStoreFooter);
     }
 }
