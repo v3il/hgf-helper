@@ -6,6 +6,15 @@ button, select, html, textarea, input {
     letter-spacing: 0 !important;
 }
 
+h1:not(.uk-h1),
+h2:not(.uk-h2),
+h3:not(.uk-h3),
+h4:not(.uk-h4),
+h5:not(.uk-h5),
+h6:not(.uk-h6) {
+    color: inherit;
+}
+
 .navigation.element-fixed {
     z-index: 1000;
 }

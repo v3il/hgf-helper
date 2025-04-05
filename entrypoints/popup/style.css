@@ -1,9 +1,3 @@
-@import './shoelace/sl-input.css';
-@import './shoelace/sl-range.css';
-@import './shoelace/sl-switch.css';
-@import './shoelace/sl-select.css';
-@import './shoelace/sl-tab-panel.css';
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -11,19 +5,25 @@
 }
 
 html {
-  font-family: var(--sl-font-sans);
-  font-size: var(--sl-font-size-small);
+  font-size: 14px;
 }
 
 body {
-  padding: var(--sl-spacing-medium) 0;
-  width: 400px;
+  padding: 16px 0;
+  width: 450px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
 }
 
 .hgf-popup-title {
-  padding: 0 var(--sl-spacing-large);
+  padding: 0 16px;
+  font-size: 18px;
+  margin-bottom: 16px;
+  font-weight: bold;
 }
 
-.hgf-popup-offset {
-  margin-bottom: var(--sl-spacing-large);
+.hgf-popup-description {
+  margin-top: 0;
+  color: rgb(108, 108, 108);
+  font-size: 12px;
 }

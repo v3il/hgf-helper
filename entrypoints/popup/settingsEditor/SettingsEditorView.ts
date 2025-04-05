@@ -1,11 +1,10 @@
 import { BasicView } from '@components/BasicView';
 import { AuthFacade, GlobalSettingsKeys, SettingsFacade } from '@shared/modules';
-import { SlInput, SlRange, SlSelect, SlSwitch } from '@shoelace-style/shoelace';
 import { debounce } from '@utils';
 import { Container } from 'typedi';
 import template from './template.html?raw';
 
-type Control = SlInput | SlRange | SlSwitch | SlSelect;
+type Control = HTMLInputElement | HTMLSelectElement;
 
 export class SettingsEditorView extends BasicView {
     private readonly authFacade: AuthFacade;
@@ -25,8 +24,6 @@ export class SettingsEditorView extends BasicView {
     }
 
     render() {
-        console.error(this.authFacade.userName);
-
         this.appEl.appendChild(this.el);
         this.el.querySelector('[data-username]')!.textContent = this.authFacade.userName;
         this.el.querySelectorAll<Control>('[data-setting]').forEach((control) => this.initSettingView(control));
@@ -41,13 +38,13 @@ export class SettingsEditorView extends BasicView {
     initSettingView(control: Control) {
         const settingName = control.dataset.setting as GlobalSettingsKeys;
 
-        if (control instanceof SlSwitch) {
+        if (control instanceof HTMLInputElement && control.type === 'checkbox') {
             control.checked = this.settingsFacade.settings[settingName] as boolean;
         } else {
             control.value = String(this.settingsFacade.settings[settingName]);
         }
 
-        control.addEventListener('sl-input', debounce(() => {
+        control.addEventListener('change', debounce(() => {
             this.settingsFacade.updateSettings({
                 [settingName]: this.parseInputValue(control)
             });
@@ -55,10 +52,14 @@ export class SettingsEditorView extends BasicView {
     }
 
     parseInputValue(control: Control) {
-        if (control instanceof SlSwitch) {
+        if (control instanceof HTMLInputElement && control.type === 'checkbox') {
             return control.checked;
         }
 
-        return control instanceof SlRange ? Number(control.value) : control.value;
+        if (control instanceof HTMLInputElement && control.type === 'range') {
+            return Number(control.value);
+        }
+
+        return control.value;
     }
 }

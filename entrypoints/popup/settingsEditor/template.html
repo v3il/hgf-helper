@@ -1,83 +1,102 @@
 <div>
-    <sl-tab-group>
-        <sl-tab slot="nav" panel="twitch">Twitch Widget</sl-tab>
-        <sl-tab slot="nav" panel="stream-elements">StreamElements Widget</sl-tab>
+    <ul uk-tab class="hgf-mb-0">
+        <li class="uk-active"><a href="#">Twitch Widget</a></li>
+        <li><a href="#">StreamElements Widget</a></li>
+    </ul>
 
+    <div class="uk-switcher hgf-p-16">
         <!-- Twitch Widget -->
-        <sl-tab-panel name="twitch" class="sl-tab-panel">
-            <sl-switch class="sl-switch hgf-popup-offset" data-setting="highlightMentions">
+        <div>
+            <label class="uk-switch hgf-mb-16">
+                <input type="checkbox" data-setting="highlightMentions">
+                <div class="uk-switch-slider"></div>
+
                 Highlighting messages mentioning me
-            </sl-switch>
+            </label>
 
-            <sl-switch class="sl-switch hgf-popup-offset" data-setting="collectDaCoinz">
+            <label class="uk-switch hgf-mb-16">
+                <input type="checkbox" data-setting="highlightMentions">
+                <div class="uk-switch-slider"></div>
+
                 Automatically collect Da Coinz
-            </sl-switch>
+            </label>
 
-            <sl-switch class="sl-switch" data-setting="decreaseStreamDelay">
+            <label class="uk-switch">
+                <input type="checkbox" data-setting="highlightMentions">
+                <div class="uk-switch-slider"></div>
+
                 Automatically decrease stream delay every 5 minutes
-            </sl-switch>
-        </sl-tab-panel>
+            </label>
+        </div>
 
         <!-- StreamElements Widget -->
-        <sl-tab-panel name="stream-elements" class="sl-tab-panel">
-            <sl-switch
-                    class="sl-switch hgf-popup-offset"
-                    data-setting="enhanceStoreHeader"
-                    help-text="Hide store banner"
-            >
+        <div>
+            <label class="uk-switch hgf-mb-8">
+                <input type="checkbox" data-setting="enhanceStoreHeader">
+                <div class="uk-switch-slider"></div>
+
                 Enhance store header
-            </sl-switch>
+            </label>
 
-            <sl-switch
-                    class="sl-switch hgf-popup-offset"
-                    data-setting="enhanceStoreSidebar"
-                    help-text="Hide channel logo and Twitch actions. Make block with stats sticky"
-            >
+            <p class="hgf-mb-16 hgf-popup-description">Hide store banner</p>
+
+            <label class="uk-switch hgf-mb-8">
+                <input type="checkbox" data-setting="enhanceStoreSidebar">
+                <div class="uk-switch-slider"></div>
+
                 Enhance store sidebar
-            </sl-switch>
+            </label>
 
-            <sl-switch class="sl-switch hgf-popup-offset" data-setting="hideStoreFooter">
+            <p class="hgf-mb-16 hgf-popup-description">Hide channel logo and Twitch actions. Make block with stats sticky</p>
+
+            <label class="uk-switch hgf-mb-8">
+                <input type="checkbox" data-setting="hideStoreFooter">
+                <div class="uk-switch-slider"></div>
+
                 Hide store footer
-            </sl-switch>
+            </label>
 
-            <sl-divider class="hgf-popup-offset"></sl-divider>
+            <hr>
 
-            <sl-select
-                    label="Sort offers"
-                    help-text="Automatically sort offers when you enter the store page"
-                    data-setting="sortOffersBy"
-                    class="sl-select hgf-popup-offset"
-            >
-                <sl-option value="'order'">Default (no sorting)</sl-option>
-                <sl-option value="'-cost'">Cost (most expensive first)</sl-option>
-                <sl-option value="'-createdAt'">Adding date (most recent first)</sl-option>
-            </sl-select>
+            <label class="hgf-mb-4 uk-display-block">
+                <span class="hgf-mb-4 uk-display-inline-block">Sort offers</span>
 
-            <sl-range
-                    label="Hide offers with price over"
-                    help-text="0-999999"
-                    min="0"
-                    max="999999"
-                    data-setting="offersMaxPrice"
-                    class="sl-range hgf-popup-offset"
-            ></sl-range>
+                <select class="uk-select" data-setting="sortOffersBy">
+                    <option value="'order'">Default (no sorting)</option>
+                    <option value="'-cost'">Cost (most expensive first)</option>
+                    <option value="'-createdAt'">Adding date (most recent first)</option>
+                </select>
+            </label>
 
-            <sl-switch class="sl-switch hgf-popup-offset" data-setting="hideSoldOutOffers">
+            <p class="hgf-mb-16 hgf-popup-description">Automatically sort offers when you enter the store page</p>
+
+            <label class="uk-display-block">
+                Hide offers with price over
+                <input class="uk-range" type="range" min="0" max="999999" step="1" data-setting="offersMaxPrice">
+            </label>
+
+            <p class="hgf-mb-16 hgf-popup-description">0-999999</p>
+
+            <label class="uk-switch hgf-mb-16">
+                <input type="checkbox" data-setting="hideSoldOutOffers">
+                <div class="uk-switch-slider"></div>
+
                 Hide sold out offers
-            </sl-switch>
+            </label>
 
-            <sl-switch
-                    class="sl-switch"
-                    data-setting="highlightLowVolumeOffers"
-                    help-text="Highlight offers with low volume (less than 10)"
-            >
+            <label class="uk-switch hgf-mb-8">
+                <input type="checkbox" data-setting="highlightLowVolumeOffers">
+                <div class="uk-switch-slider"></div>
+
                 Highlight offers with low volume
-            </sl-switch>
-        </sl-tab-panel>
-    </sl-tab-group>
+            </label>
 
-    <div>
-        Authenticated as <span data-username></span>
-        <button type="button" class="btn btn-link" data-logout>Logout</button>
+            <p class="hgf-mb-8 hgf-popup-description">Highlight offers with low volume (less than 10)</p>
+        </div>
+    </div>
+
+    <div class="hgf-ph-16">
+        <span class="uk-display-block hgf-mb-8">Authenticated as&nbsp;<b data-username></b></span>
+        <button class="uk-button uk-button-danger uk-text-capitalize uk-text-bold" data-logout>Logout</button>
     </div>
 </div>

@@ -10,10 +10,36 @@
     width: 100% !important;
 }
 
+.hgf-mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.hgf-mb-4 {
+    margin-bottom: 4px !important;
+}
+
 .hgf-mb-8 {
     margin-bottom: 8px !important;
 }
 
 .hgf-mb-16 {
     margin-bottom: 16px !important;
+}
+
+.hgf-ml-8 {
+    margin-left: 8px !important;
+}
+
+.hgf-pv-8 {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+.hgf-ph-16 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+}
+
+.hgf-p-16 {
+    padding: 16px !important;
 }
