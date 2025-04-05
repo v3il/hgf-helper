@@ -19,6 +19,9 @@ export class SettingsEditorView extends BasicView {
         this.authFacade = Container.get(AuthFacade);
         this.settingsFacade = Container.get(SettingsFacade);
 
+        this.updateSetting = debounce(this.updateSetting.bind(this), 200);
+        this.logout = this.logout.bind(this);
+
         this.render();
         this.listenEvents();
     }
@@ -30,12 +33,10 @@ export class SettingsEditorView extends BasicView {
     }
 
     private listenEvents() {
-        this.el.querySelector('[data-logout]')!.addEventListener('click', () => {
-            this.authFacade.logout();
-        });
+        this.el.querySelector('[data-logout]')!.addEventListener('click', this.logout);
     }
 
-    initSettingView(control: Control) {
+    private initSettingView(control: Control) {
         const settingName = control.dataset.setting as GlobalSettingsKeys;
 
         if (control instanceof HTMLInputElement && control.type === 'checkbox') {
@@ -44,14 +45,23 @@ export class SettingsEditorView extends BasicView {
             control.value = String(this.settingsFacade.settings[settingName]);
         }
 
-        control.addEventListener('change', debounce(() => {
-            this.settingsFacade.updateSettings({
-                [settingName]: this.parseInputValue(control)
-            });
-        }, 200));
+        control.addEventListener('change', this.updateSetting);
     }
 
-    parseInputValue(control: Control) {
+    private updateSetting(event: Event) {
+        const control = event.target as Control;
+        const settingName = control.dataset.setting as GlobalSettingsKeys;
+
+        this.settingsFacade.updateSettings({
+            [settingName]: this.parseInputValue(control)
+        });
+    }
+
+    private logout() {
+        this.authFacade.logout();
+    }
+
+    private parseInputValue(control: Control) {
         if (control instanceof HTMLInputElement && control.type === 'checkbox') {
             return control.checked;
         }
@@ -61,5 +71,15 @@ export class SettingsEditorView extends BasicView {
         }
 
         return control.value;
+    }
+
+    destroy() {
+        this.el.querySelector('[data-logout]')!.removeEventListener('click', this.logout);
+
+        this.el.querySelectorAll<Control>('[data-setting]').forEach((control) => {
+            control.removeEventListener('change', this.updateSetting);
+        });
+
+        super.destroy();
     }
 }

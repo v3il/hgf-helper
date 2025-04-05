@@ -1,5 +1,5 @@
 // @ts-nocheck
-export const debounce = (callback: () => void, timeout: number) => {
+export const debounce = (callback: (_?: any) => void, timeout: number) => {
     let timer: number;
 
     return (...args: Parameters<any>) => {

@@ -24,7 +24,7 @@ export class AuthView extends BasicView {
     }
 
     private listenEvents() {
-        this.el.querySelector('[data-signin]')!.addEventListener('click', async () => {
+        this.el.querySelector('[data-authorize]')!.addEventListener('click', async () => {
             try {
                 const authWindow = new AuthWindow();
                 const token = await authWindow.open(AUTH_URL);
