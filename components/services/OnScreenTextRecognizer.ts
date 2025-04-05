@@ -65,6 +65,9 @@ export class OnScreenTextRecognizer {
 
         for (let i = 0; i < 3; i++) {
             const rawResult = await this.worker.recognize(canvas.toDataURL('image/png'));
+
+            console.error('Raw1', rawResult);
+
             const rawVariants = this.generateVariants(rawResult.data.text);
 
             rawVariants.forEach((variant) => checks.add(variant));
@@ -76,6 +79,9 @@ export class OnScreenTextRecognizer {
             this.attachPreview(canvas);
 
             const contrastResult = await this.worker.recognize(canvas.toDataURL('image/png'));
+
+            console.error('Raw2', contrastResult);
+
             const contrastVariants = this.generateVariants(contrastResult.data.text);
 
             contrastVariants.forEach((variant) => checks.add(variant));

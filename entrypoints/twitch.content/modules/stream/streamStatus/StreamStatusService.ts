@@ -78,8 +78,8 @@ export class StreamStatusService extends BasicView {
 
         logDev(`Anticheat result: ${result}`);
 
-        if (result > 0.85) {
-            const delay = getRandomNumber(2 * Timing.SECOND, 10 * Timing.SECOND);
+        if (result > 0.7) {
+            const delay = getRandomNumber(2 * Timing.SECOND, 8 * Timing.SECOND);
 
             this.anticheatHandled = true;
             logDev(`Send anticheat in ${delay}!`);
