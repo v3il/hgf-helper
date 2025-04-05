@@ -1,26 +1,32 @@
 import { Container } from 'typedi';
 import { OffersFacade } from '@store/modules';
 import { SettingsFacade } from '@shared/modules';
+import { BasicView } from '@components/BasicView';
 import { OfferView } from './OfferView';
 
-export class OffersList {
+export class OffersList extends BasicView {
     private readonly settingsFacade;
     private readonly offersFacade;
+    private readonly offersEl!: HTMLElement;
 
     private offerViews: OfferView[] = [];
 
-    constructor(private readonly el: HTMLElement) {
+    constructor(offersEl: HTMLElement) {
+        super('<div></div>');
+
+        this.offersEl = offersEl;
+
         this.settingsFacade = Container.get(SettingsFacade);
         this.offersFacade = Container.get(OffersFacade);
 
         this.renderOffers = this.renderOffers.bind(this);
 
-        this.initOfferViews();
+        this.render();
         this.listenEvents();
     }
 
-    private initOfferViews() {
-        const offerViews = Array.from(this.el.querySelectorAll<HTMLElement>('.stream-store-list-item'));
+    render() {
+        const offerViews = Array.from(this.offersEl.querySelectorAll<HTMLElement>('.stream-store-list-item'));
 
         this.offerViews = offerViews.map((offerEl) => {
             const gameNameEl = offerEl.querySelector<HTMLHeadingElement>('.item-title')!;
@@ -45,12 +51,19 @@ export class OffersList {
     }
 
     private listenEvents() {
-        this.offersFacade.events.on('offer-shown', this.renderOffers);
-        this.settingsFacade.onSettingChanged('hideSoldOutOffers', this.renderOffers);
-        this.settingsFacade.onSettingChanged('offersMaxPrice', this.renderOffers);
+        const unsubscribe1 = this.offersFacade.events.on('offer-shown', this.renderOffers);
+        const unsubscribe2 = this.settingsFacade.onSettingChanged('hideSoldOutOffers', this.renderOffers);
+        const unsubscribe3 = this.settingsFacade.onSettingChanged('offersMaxPrice', this.renderOffers);
+
+        this.listeners.push(unsubscribe1, unsubscribe2, unsubscribe3);
     }
 
     private renderOffers() {
         this.offerViews.forEach((offerView) => offerView.toggleVisibility());
+    }
+
+    destroy() {
+        this.offerViews.forEach((view) => view.destroy());
+        super.destroy();
     }
 }

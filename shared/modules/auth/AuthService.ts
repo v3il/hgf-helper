@@ -1,4 +1,5 @@
 import { ContainerInstance } from 'typedi';
+import { EventEmitter } from '@components/EventEmitter';
 import { IUser } from '../types';
 import { SettingsFacade } from '../settings';
 import { FirebaseApiService } from '../FirebaseApiService';
@@ -10,6 +11,11 @@ export class AuthService {
     private readonly hiddenOffersService: HiddenOffersFacade;
 
     private _user: IUser | null = null;
+    private _isAuthenticated = false;
+    readonly events = new EventEmitter<{
+        authenticated: void;
+        logout: void;
+    }>();
 
     private readonly storageKey = 'hgf-helper.settings_v2u';
     private readonly storage = chrome.storage.local;
@@ -18,6 +24,8 @@ export class AuthService {
         this.apiService = container.get(FirebaseApiService);
         this.settingsFacade = container.get(SettingsFacade);
         this.hiddenOffersService = container.get(HiddenOffersFacade);
+
+        this.initObserver();
     }
 
     get userName() {
@@ -25,7 +33,7 @@ export class AuthService {
     }
 
     get isAuthenticated() {
-        return !!this._user;
+        return this._isAuthenticated;
     }
 
     async auth() {
@@ -39,8 +47,12 @@ export class AuthService {
         this.apiService.setToken(token);
 
         this._user = await this.apiService.getUser();
+        this._isAuthenticated = true;
+
         await this.settingsFacade.setSettings(this._user!.settings);
         this.hiddenOffersService.setHiddenOffers(this._user!.hiddenOffers);
+
+        this.events.emit('authenticated');
 
         console.error('User', this._user);
     }
@@ -53,5 +65,18 @@ export class AuthService {
     async logout() {
         this._user = null;
         await this.storage.remove([this.storageKey]);
+    }
+
+    private initObserver() {
+        this.storage.onChanged.addListener((changes) => {
+            if (!changes[this.storageKey]) return;
+
+            const { newValue } = changes[this.storageKey];
+
+            if (!newValue) {
+                this._isAuthenticated = false;
+                this.events.emit('logout');
+            }
+        });
     }
 }

@@ -1,55 +1,83 @@
 import { OffersFacade, StreamElementsUIService } from '@store/modules';
 import { debounce } from '@components/utils';
 import { Container } from 'typedi';
+import { BasicView } from '@components/BasicView';
 import template from './template.html?raw';
 import './style.css';
 
-export class HiddenOffersManager {
+export class HiddenOffersManager extends BasicView {
     private readonly offersFacade;
     private readonly streamElementsUIService;
     private searchQuery = '';
 
+    private readonly openDialogEl: HTMLButtonElement;
+    private readonly closeDialogEl: HTMLButtonElement;
+    private readonly tableEl: HTMLTableElement;
+    private readonly searchEl: HTMLInputElement;
+    private readonly dialogEl: HTMLDialogElement;
+
     constructor() {
+        super(template);
         this.offersFacade = Container.get(OffersFacade);
         this.streamElementsUIService = Container.get(StreamElementsUIService);
 
-        this.renderContainer();
+        this.render();
+
+        this.openDialogEl = document.querySelector<HTMLButtonElement>('[data-hgf-manage-button]')!;
+        this.closeDialogEl = document.querySelector<HTMLButtonElement>('[data-hgf-hidden-offers-close-popup]')!;
+        this.tableEl = document.querySelector<HTMLTableElement>('[data-hgf-hidden-offers-table]')!;
+        this.searchEl = document.querySelector<HTMLInputElement>('[data-hgf-search-offer]')!;
+        this.dialogEl = document.querySelector<HTMLDialogElement>('[data-hgf-hidden-offers-popup]')!;
+
+        this.onSearch = debounce(this.onSearch.bind(this), 500);
+        this.onOpenDialog = this.onOpenDialog.bind(this);
+        this.handleUnhideOffer = this.handleUnhideOffer.bind(this);
+        this.onDialogClose = this.onDialogClose.bind(this);
+
         this.listenEvents();
     }
 
-    private renderContainer() {
-        this.streamElementsUIService.userStatsEl.insertAdjacentHTML('beforebegin', template);
+    render() {
+        this.streamElementsUIService.userStatsEl.insertAdjacentElement('beforebegin', this.el);
+    }
+
+    destroy() {
+        this.openDialogEl.removeEventListener('click', this.onOpenDialog);
+        this.closeDialogEl.removeEventListener('click', this.onDialogClose);
+        this.tableEl.removeEventListener('click', this.handleUnhideOffer);
+        this.searchEl.removeEventListener('input', this.onSearch);
+
+        super.destroy();
     }
 
     private listenEvents() {
-        const openDialogEl = document.querySelector<HTMLButtonElement>('[data-hgf-manage-button]')!;
+        this.searchEl.addEventListener('input', this.onSearch);
+        this.tableEl.addEventListener('click', this.handleUnhideOffer);
+        this.openDialogEl.addEventListener('click', this.onOpenDialog);
+        this.closeDialogEl.addEventListener('click', this.onDialogClose);
+    }
+
+    private onSearch() {
+        this.searchQuery = this.searchEl.value.toLowerCase();
+        this.renderHiddenOffers();
+    }
+
+    private onOpenDialog() {
+        this.renderHiddenOffers();
+        this.dialogEl.showModal();
+    }
+
+    private onDialogClose() {
         const dialogEl = document.querySelector<HTMLDialogElement>('[data-hgf-hidden-offers-popup]')!;
-        const closeDialogEl = document.querySelector<HTMLButtonElement>('[data-hgf-hidden-offers-close-popup]')!;
-        const tBodyEl = document.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table-body]')!;
         const searchEl = document.querySelector<HTMLInputElement>('[data-hgf-search-offer]')!;
 
-        searchEl.addEventListener('input', debounce(() => {
-            this.searchQuery = searchEl.value.toLowerCase();
-            this.renderHiddenOffers();
-        }, 500));
-
-        tBodyEl.addEventListener('click', (event) => this.handleUnhideOffer(event));
-
-        openDialogEl.addEventListener('click', () => {
-            this.renderHiddenOffers();
-            dialogEl.showModal();
-        });
-
-        closeDialogEl.addEventListener('click', () => {
-            this.searchQuery = '';
-            searchEl.value = '';
-            dialogEl.close();
-        });
+        this.searchQuery = '';
+        searchEl.value = '';
+        dialogEl.close();
     }
 
     private renderHiddenOffers() {
-        const tableEl = document.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table]')!;
-        const tBodyEl = document.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table-body]')!;
+        const tBodyEl = this.tableEl.querySelector<HTMLTableSectionElement>('[data-hgf-hidden-offers-table-body]')!;
         const emptyStateEl = document.querySelector<HTMLDivElement>('[data-hgf-empty-offers]')!;
 
         tBodyEl.innerHTML = '';
@@ -75,7 +103,7 @@ export class HiddenOffersManager {
 
         tBodyEl.append(...rowEls);
 
-        tableEl.classList.toggle('hgf-hidden-offers-manager--hidden', filteredOffers.length === 0);
+        this.tableEl.classList.toggle('hgf-hidden-offers-manager--hidden', filteredOffers.length === 0);
         emptyStateEl.classList.toggle('hgf-hidden-offers-manager--hidden', filteredOffers.length > 0);
 
         emptyStateEl.textContent = this.searchQuery ? 'No offers found' : 'No hidden offers';

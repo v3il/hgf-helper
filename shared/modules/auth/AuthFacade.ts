@@ -35,6 +35,14 @@ export class AuthFacade {
         return this.authService.logout();
     }
 
+    onAuthenticated(callback: () => void) {
+        this.authService.events.on('authenticated', callback);
+    }
+
+    onLogout(callback: () => void) {
+        this.authService.events.on('logout', callback);
+    }
+
     private initProviders() {
         this.container.set({ id: FirebaseApiService, value: Container.get(FirebaseApiService) });
         this.container.set({ id: AuthService, type: AuthService });

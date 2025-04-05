@@ -29,7 +29,7 @@ export class SettingsFacade {
     onSettingChanged<
         K extends GlobalSettingsKeys
     >(key: K, callback: EventHandler<ISettingsEvents[`setting-changed:${K}`]>) {
-        this.settingsService.events.on(`setting-changed:${key}`, callback);
+        return this.settingsService.events.on(`setting-changed:${key}`, callback);
     }
 
     private initProviders() {
