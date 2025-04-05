@@ -18,10 +18,11 @@ export class AuthView extends BasicView {
 
         this.triggerAuth = this.triggerAuth.bind(this);
 
+        this.render();
         this.listenEvents();
     }
 
-    mount() {
+    render() {
         this.streamElementsUIService.pageContentEl!.insertAdjacentElement('afterbegin', this.el);
     }
 
@@ -39,13 +40,9 @@ export class AuthView extends BasicView {
             const authWindow = new AuthWindow();
             const token = await authWindow.open(AUTH_URL);
 
-            if (!token) {
-                return;
+            if (token) {
+                await this.authFacade.auth(token);
             }
-
-            await this.authFacade.setToken(token);
-            await this.authFacade.auth();
-            this.events.emit('authenticated');
         } catch (error) {
             console.error(error);
         }

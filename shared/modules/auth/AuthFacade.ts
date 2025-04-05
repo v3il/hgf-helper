@@ -22,13 +22,8 @@ export class AuthFacade {
         return this.authService.userName;
     }
 
-    auth() {
-        return this.authService.auth();
-    }
-
-    setToken(token: string) {
-        console.error(token);
-        return this.authService.setToken(token);
+    auth(token?: string) {
+        return this.authService.auth(token);
     }
 
     logout() {

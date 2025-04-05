@@ -35,7 +35,7 @@ export class ExtensionContainer extends BasicView {
     private listenEvents() {
         this.authFacade.onAuthenticated(() => {
             UIkit.notification({
-                message: 'User authenticated',
+                message: 'Successfully authenticated',
                 status: 'success',
                 pos: 'bottom-right',
                 timeout: 5000
@@ -47,7 +47,7 @@ export class ExtensionContainer extends BasicView {
 
         this.authFacade.onLogout(() => {
             UIkit.notification({
-                message: 'User logged out',
+                message: 'Successfully logged out',
                 status: 'success',
                 pos: 'bottom-right',
                 timeout: 5000
@@ -65,8 +65,6 @@ export class ExtensionContainer extends BasicView {
 
         streamElementsUIService.onLayoutRendered(() => {
             this.authView = new AuthView();
-
-            this.authView.mount();
         });
     }
 
@@ -76,7 +74,6 @@ export class ExtensionContainer extends BasicView {
         this.streamElementsUIService.enhanceStorePage();
 
         this.streamElementsUIService.whenOffersLoaded(async () => {
-            // console.clear();
             await streamElementsUIService.sortOffers();
 
             this.offersList = new OffersList(this.streamElementsUIService.offersListEl);

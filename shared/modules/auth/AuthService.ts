@@ -36,9 +36,10 @@ export class AuthService {
         return this._isAuthenticated;
     }
 
-    async auth() {
+    async auth(token?: string) {
         const storageRecord = await this.storage.get([this.storageKey]);
-        const { token } = storageRecord[this.storageKey] ?? { token: '' } as { token: string };
+
+        token ??= storageRecord[this.storageKey]?.token;
 
         if (!token) {
             return;
@@ -52,14 +53,9 @@ export class AuthService {
         await this.settingsFacade.setSettings(this._user!.settings);
         this.hiddenOffersService.setHiddenOffers(this._user!.hiddenOffers);
 
-        this.events.emit('authenticated');
+        await this.storage.set({ [this.storageKey]: { token } });
 
         console.error('User', this._user);
-    }
-
-    async setToken(token: string) {
-        this.apiService.setToken(token);
-        await this.storage.set({ [this.storageKey]: { token } });
     }
 
     async logout() {
@@ -73,8 +69,11 @@ export class AuthService {
 
             const { newValue } = changes[this.storageKey];
 
-            if (!newValue) {
-                this._isAuthenticated = false;
+            this._isAuthenticated = !!newValue;
+
+            if (newValue) {
+                this.events.emit('authenticated');
+            } else {
                 this.events.emit('logout');
             }
         });
