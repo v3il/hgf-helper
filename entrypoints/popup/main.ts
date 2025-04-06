@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     let settingsEditorView: SettingsEditorView;
     let authView: AuthView;
 
-    await authFacade.auth();
+    await authFacade.auth().catch((error) => console.error('Error during authentication:', error));
+
+    console.error(authFacade.isAuthenticated);
 
     if (authFacade.isAuthenticated) {
         settingsEditorView = new SettingsEditorView(appEl);

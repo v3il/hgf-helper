@@ -51,20 +51,23 @@ export class StreamElementsUIService {
     }
 
     async sortOffers() {
-        const field = this.settingsFacade.settings.sortOffersBy;
-
-        if (field === '\'order\'') {
-            return;
-        }
+        const { sortOffersBy } = this.settingsFacade.settings;
 
         this.sortOffersDropdownEl!.click();
         await waitAsync(300);
 
         const optionsContainerId = this.sortOffersDropdownEl!.getAttribute('aria-owns');
-        const options = document.querySelectorAll<HTMLButtonElement>(`#${optionsContainerId} md-option`);
+        const options = document.querySelectorAll<HTMLOptionElement>(`#${optionsContainerId} md-option`);
+        const selectedOption = Array.from(options).find((option) => option.hasAttribute('selected'));
+        const selectedOptionValue = selectedOption?.getAttribute('ng-value');
+
+        if (selectedOptionValue === sortOffersBy) {
+            document.querySelector<HTMLDivElement>('.md-select-backdrop')?.click();
+            return;
+        }
 
         for (const option of options) {
-            if (option.getAttribute('ng-value') === field) {
+            if (option.getAttribute('ng-value') === sortOffersBy) {
                 option.click();
                 break;
             }
@@ -79,6 +82,7 @@ export class StreamElementsUIService {
         this.settingsFacade.onSettingChanged('enhanceStoreHeader', () => this.enhanceStoreHeader());
         this.settingsFacade.onSettingChanged('enhanceStoreSidebar', () => this.enhanceStoreSidebar());
         this.settingsFacade.onSettingChanged('hideStoreFooter', () => this.toggleStoreFooter());
+        this.settingsFacade.onSettingChanged('sortOffersBy', () => this.sortOffers());
     }
 
     private get sortOffersDropdownEl() {

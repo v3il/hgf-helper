@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { FUNCTION_URL } from '../consts';
 import { ISettings, IUser } from './types';
-import { UnauthorizedError } from './UnauthorizedError';
+import { UnauthenticatedError } from './UnauthenticatedError';
 
 @Service()
 export class FirebaseApiService {
@@ -17,6 +17,10 @@ export class FirebaseApiService {
                 Authorization: `Bearer ${this.token}`
             }
         });
+
+        if (!response.ok) {
+            throw new UnauthenticatedError();
+        }
 
         const json = await response.json();
 
@@ -46,7 +50,7 @@ export class FirebaseApiService {
         }
 
         if (response.status === 401) {
-            throw new UnauthorizedError();
+            throw new UnauthenticatedError();
         }
     }
 }
