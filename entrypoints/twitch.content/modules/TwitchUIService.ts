@@ -1,5 +1,5 @@
-import { waitAsync } from '@components/utils';
-import { Timing } from '@components/consts';
+import { waitAsync } from '@utils';
+import { Timing } from '@shared/consts';
 import { Service } from 'typedi';
 
 @Service()

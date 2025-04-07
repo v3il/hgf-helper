@@ -1,4 +1,4 @@
-import { getRandomArrayItem } from '@components/utils';
+import { getRandomArrayItem } from '@utils';
 
 const gameTopics = [
     'storyline',

@@ -1,13 +1,25 @@
 import { DebugModeView } from '@twitch/views';
 
-export const useDebugMode = () => {
+export interface IDebugMode {
+    destroy: () => void;
+}
+
+export const useDebugMode = (): IDebugMode => {
     const debugModeView = new DebugModeView();
 
-    window.document.addEventListener('keydown', (event) => {
-        // Ctrl + 0
+    function keyDownHandler(event: KeyboardEvent) {
         if (event.ctrlKey && event.key === '0') {
             event.preventDefault();
             debugModeView.toggle();
         }
-    });
+    }
+
+    window.document.addEventListener('keydown', keyDownHandler);
+
+    return {
+        destroy: () => {
+            window.document.removeEventListener('keydown', keyDownHandler);
+            debugModeView.destroy();
+        }
+    };
 };

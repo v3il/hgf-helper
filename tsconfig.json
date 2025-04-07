@@ -7,7 +7,6 @@
       "@twitch/*": ["./entrypoints/twitch.content/*"],
       "@store/*": ["./entrypoints/store.content/*"],
       "@shared/*": ["./shared/*"],
-      "@components/*": ["./components/*"],
       "@utils": ["./utils/index.ts"],
     }
   }

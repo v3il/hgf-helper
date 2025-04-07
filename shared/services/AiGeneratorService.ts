@@ -1,7 +1,7 @@
-import { Timing } from '@components/consts';
-import { GlobalSettingsService } from '@components/settings';
-import { log } from '@components/utils';
+import { Timing } from '@shared/consts';
+import { log } from '@utils';
 import { Container } from 'typedi';
+import { SettingsFacade } from '@shared/modules';
 
 interface IMessage {
     role: 'user';
@@ -21,9 +21,9 @@ export class AiGeneratorService {
     private readonly apiKey!: string;
 
     constructor() {
-        const settingsService = Container.get(GlobalSettingsService);
+        const settingsFacade = Container.get(SettingsFacade);
 
-        this.apiKey = settingsService.settings.openAiApiToken;
+        this.apiKey = settingsFacade.settings.openAiApiToken;
     }
 
     async generate(prompt: string, options: Partial<IRequestData> = {}): Promise<string> {

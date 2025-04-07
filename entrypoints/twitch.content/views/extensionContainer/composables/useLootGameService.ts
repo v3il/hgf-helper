@@ -1,16 +1,20 @@
 import { LootGameService } from '@twitch/modules/miniGames';
-import { Timing } from '@components/consts';
+import { Timing } from '@shared/consts';
 import { StreamStatusService } from '@twitch/modules/stream';
-import { LocalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
+import { SettingsFacade } from '@shared/modules';
 
 interface IParams {
     el: HTMLElement;
 }
 
-export const useLootGameService = ({ el }: IParams) => {
+export interface ILootGameService {
+    destroy: () => void;
+}
+
+export const useLootGameService = ({ el }: IParams): ILootGameService => {
+    const settingsFacade = Container.get(SettingsFacade);
     const streamService = Container.get(StreamStatusService);
-    const settingsService = Container.get(LocalSettingsService);
 
     const lootGameService = new LootGameService();
 
@@ -20,10 +24,10 @@ export const useLootGameService = ({ el }: IParams) => {
 
     let intervalId: number;
 
-    checkboxEl.checked = settingsService.settings.lootGame;
+    checkboxEl.checked = settingsFacade.settings.lootGame;
 
-    checkboxEl.addEventListener('change', () => {
-        settingsService.updateSettings({
+    const checkboxChangeHandler = async () => {
+        await settingsFacade.updateSettings({
             lootGame: checkboxEl.checked
         });
 
@@ -32,12 +36,18 @@ export const useLootGameService = ({ el }: IParams) => {
             clearInterval(intervalId);
             timerEl.classList.add('hidden');
         }
-    });
+    };
 
-    streamService.events.on('loot', (isRunning) => {
+    const buttonClickHandler = () => {
+        lootGameService.participate();
+    };
+
+    checkboxEl.addEventListener('change', checkboxChangeHandler);
+
+    const unsubscribeLoot = streamService.events.on('loot', (isRunning) => {
         buttonEl.disabled = !isRunning;
 
-        if (!settingsService.settings.lootGame) return;
+        if (!settingsFacade.settings.lootGame) return;
 
         if (isRunning) {
             lootGameService.start();
@@ -49,14 +59,12 @@ export const useLootGameService = ({ el }: IParams) => {
         }
     });
 
-    lootGameService.events.on('roundCompleted', () => {
+    const unsubscribeRoundCompleted = lootGameService.events.on('roundCompleted', () => {
         timerEl.classList.add('hidden');
         clearInterval(intervalId);
     });
 
-    buttonEl.addEventListener('click', () => {
-        lootGameService.participate();
-    });
+    buttonEl.addEventListener('click', buttonClickHandler);
 
     function setupTimer() {
         timerTick();
@@ -72,4 +80,15 @@ export const useLootGameService = ({ el }: IParams) => {
 
         timerEl.textContent = `(${minutes}:${seconds})`;
     }
+
+    return {
+        destroy: () => {
+            clearInterval(intervalId);
+            lootGameService.stop();
+            unsubscribeLoot();
+            unsubscribeRoundCompleted();
+            checkboxEl.removeEventListener('change', checkboxChangeHandler);
+            buttonEl.removeEventListener('click', buttonClickHandler);
+        }
+    };
 };

@@ -1,4 +1,4 @@
-import { BasicView } from '@components/BasicView';
+import { BasicView } from '@shared/views';
 import { AuthFacade, GlobalSettingsKeys, SettingsFacade } from '@shared/modules';
 import { debounce } from '@utils';
 import { Container } from 'typedi';

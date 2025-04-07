@@ -1,31 +1,38 @@
 import { Container } from 'typedi';
-import { GlobalSettingsService } from '@components/settings';
 import { ChatObserver } from '@twitch/modules/twitchChat';
-import { UnsubscribeTrigger } from '@components/EventEmitter';
+import { UnsubscribeTrigger } from '@shared/EventEmitter';
+import { SettingsFacade } from '@shared/modules';
 
-export const useMentionsHighlighter = () => {
-    let unsubscribe: UnsubscribeTrigger | undefined;
+export interface IMentionsHighlighter {
+    destroy: () => void;
+}
 
-    const settingsService = Container.get(GlobalSettingsService);
+export const useMentionsHighlighter = (): IMentionsHighlighter => {
+    let destroyChatObserver: UnsubscribeTrigger | undefined;
+
+    const settingsFacade = Container.get(SettingsFacade);
     const chatObserver = Container.get(ChatObserver);
 
-    if (settingsService.settings.highlightMentions) {
-        init();
+    if (settingsFacade.settings.highlightMentions) {
+        initChatObserver();
     }
 
-    settingsService.events.on('setting-changed:highlightMentions', (isEnabled) => {
-        isEnabled ? init() : destroy();
+    const destroySettingObserver = settingsFacade.onSettingChanged('highlightMentions', (isEnabled) => {
+        isEnabled ? initChatObserver() : destroyChatObserver?.();
     });
 
-    function init() {
-        unsubscribe = chatObserver.observeChat(({ messageWrapperEl, hasMyMention }) => {
+    function initChatObserver() {
+        destroyChatObserver = chatObserver.observeChat(({ messageWrapperEl, hasMyMention }) => {
             if (hasMyMention) {
                 messageWrapperEl.style.backgroundColor = 'darkred';
             }
         });
     }
 
-    function destroy() {
-        unsubscribe?.();
-    }
+    return {
+        destroy: () => {
+            destroySettingObserver();
+            destroyChatObserver?.();
+        }
+    };
 };

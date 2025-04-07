@@ -1,11 +1,11 @@
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { LocalSettingsService } from '@components/settings';
-import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
-import { getRandomNumber, log, waitAsync } from '@components/utils';
-import { Timing } from '@components/consts';
+import { EventEmitter, UnsubscribeTrigger } from '@shared/EventEmitter';
+import { getRandomNumber, log, waitAsync } from '@utils';
+import { Timing } from '@shared/consts';
 import { ChatObserver, MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
+import { SettingsFacade } from '@shared/modules';
 
 interface IHitsquadRunnerState {
     isRunning: boolean,
@@ -25,9 +25,9 @@ export class HitsquadGameService {
 
     private readonly messageSender: MessageSender;
     private readonly chatObserver: ChatObserver;
-    private readonly settingsService: LocalSettingsService;
     private readonly twitchUIService: TwitchUIService;
     private readonly streamStatusService: StreamStatusService;
+    private readonly settingsFacade: SettingsFacade;
 
     timeUntilMessage!: number;
     private totalRounds!: number;
@@ -37,7 +37,7 @@ export class HitsquadGameService {
     private unsubscribe!: UnsubscribeTrigger;
 
     constructor() {
-        this.settingsService = Container.get(LocalSettingsService);
+        this.settingsFacade = Container.get(SettingsFacade);
         this.messageSender = Container.get(MessageSender);
         this.chatObserver = Container.get(ChatObserver);
         this.twitchUIService = Container.get(TwitchUIService);
@@ -93,13 +93,13 @@ export class HitsquadGameService {
 
     private getState(): IHitsquadRunnerState {
         return {
-            isRunning: this.settingsService.settings.hitsquad,
-            remainingRounds: this.settingsService.settings.hitsquadRounds
+            isRunning: this.settingsFacade.settings.hitsquad,
+            remainingRounds: this.settingsFacade.settings.hitsquadRounds
         };
     }
 
     private saveState() {
-        this.settingsService.updateSettings({
+        this.settingsFacade.updateSettings({
             hitsquad: this.state.isRunning,
             hitsquadRounds: this.state.remainingRounds
         });

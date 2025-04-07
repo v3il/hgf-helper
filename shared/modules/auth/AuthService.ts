@@ -1,5 +1,5 @@
 import { ContainerInstance } from 'typedi';
-import { EventEmitter } from '@components/EventEmitter';
+import { EventEmitter } from '@shared/EventEmitter';
 import { IUser } from '../types';
 import { SettingsFacade } from '../settings';
 import { FirebaseApiService } from '../FirebaseApiService';

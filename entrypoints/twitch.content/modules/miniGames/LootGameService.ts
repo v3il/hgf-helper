@@ -1,10 +1,10 @@
-import { Timing } from '@components/consts';
-import { getRandomNumber, log, waitAsync } from '@components/utils';
+import { Timing } from '@shared/consts';
+import { getRandomNumber, log, waitAsync } from '@utils';
 import { Container } from 'typedi';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { TwitchUIService } from '@twitch/modules';
 import { StreamStatusService } from '@twitch/modules/stream';
-import { EventEmitter } from '@components/EventEmitter';
+import { EventEmitter } from '@shared/EventEmitter';
 
 const COMMAND = '!loot';
 

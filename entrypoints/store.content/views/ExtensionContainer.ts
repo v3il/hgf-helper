@@ -3,7 +3,7 @@ import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import { AuthView } from '@store/views/authView';
 import UIkit from 'uikit/dist/js/uikit';
-import { BasicView } from '@components/BasicView';
+import { BasicView } from '@shared/views';
 import { OffersList } from './offer';
 import { HiddenOffersManager } from './hiddenOffersManager';
 

@@ -1,5 +1,5 @@
 import { Container, Service } from 'typedi';
-import { EventEmitter } from '@components/EventEmitter';
+import { EventEmitter } from '@shared/EventEmitter';
 import { HiddenOffersFacade } from '@shared/modules';
 import { Offer, IOfferParams } from './models';
 

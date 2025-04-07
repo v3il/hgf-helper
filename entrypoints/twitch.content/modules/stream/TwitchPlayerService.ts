@@ -1,4 +1,4 @@
-import { waitAsync } from '@components/utils';
+import { waitAsync } from '@utils';
 import { Service } from 'typedi';
 
 @Service()

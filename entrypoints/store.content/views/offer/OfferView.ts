@@ -3,7 +3,7 @@ import './styles.css';
 import { Offer } from '@store/modules/offers/models';
 import { OffersFacade } from '@store/modules';
 import { SettingsFacade } from '@shared/modules';
-import { BasicView } from '@components/BasicView';
+import { BasicView } from '@shared/views';
 import template from './template.html?raw';
 
 interface IParams {

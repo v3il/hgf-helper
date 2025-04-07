@@ -1,19 +1,23 @@
-import { Timing } from '@components/consts';
+import { Timing } from '@shared/consts';
 import { TwitchPlayerService } from '@twitch/modules/stream';
-import { GlobalSettingsService } from '@components/settings';
 import { Container } from 'typedi';
+import { SettingsFacade } from '@shared/modules';
+
+export interface IDelayRemover {
+    destroy: () => void;
+}
 
 export const useDelayRemover = () => {
     let intervalId: number = 0;
 
-    const settingsService = Container.get(GlobalSettingsService);
+    const settingsFacade = Container.get(SettingsFacade);
     const playerService = Container.get(TwitchPlayerService);
 
-    if (settingsService.settings.decreaseStreamDelay) {
+    if (settingsFacade.settings.decreaseStreamDelay) {
         init();
     }
 
-    settingsService.events.on('setting-changed:decreaseStreamDelay', (isEnabled) => {
+    const unsubscribe = settingsFacade.onSettingChanged('decreaseStreamDelay', (isEnabled) => {
         isEnabled ? init() : destroy();
     });
 
@@ -26,4 +30,11 @@ export const useDelayRemover = () => {
     function destroy() {
         clearInterval(intervalId);
     }
+
+    return {
+        destroy: () => {
+            unsubscribe();
+            destroy();
+        }
+    };
 };

@@ -1,5 +1,5 @@
 import { ContainerInstance } from 'typedi';
-import { EventEmitter } from '@components/EventEmitter';
+import { EventEmitter } from '@shared/EventEmitter';
 import { GlobalSettingsKeys, ISettings, ISettingsEvents } from '../types';
 import { FirebaseApiService } from '../FirebaseApiService';
 

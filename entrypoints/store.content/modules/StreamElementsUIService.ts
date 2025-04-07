@@ -1,6 +1,6 @@
-import { waitAsync } from '@components/utils';
+import { waitAsync } from '@utils';
 import { Container, Service } from 'typedi';
-import { Timing } from '@components/consts';
+import { Timing } from '@shared/consts';
 import { SettingsFacade } from '@shared/modules';
 
 @Service()
@@ -56,13 +56,14 @@ export class StreamElementsUIService {
         this.sortOffersDropdownEl!.click();
         await waitAsync(300);
 
+        const backdropEl = document.querySelector<HTMLElement>('.md-select-backdrop');
         const optionsContainerId = this.sortOffersDropdownEl!.getAttribute('aria-owns');
         const options = document.querySelectorAll<HTMLOptionElement>(`#${optionsContainerId} md-option`);
         const selectedOption = Array.from(options).find((option) => option.hasAttribute('selected'));
-        const selectedOptionValue = selectedOption?.getAttribute('ng-value');
+        const currentSort = selectedOption?.getAttribute('ng-value');
 
-        if (selectedOptionValue === sortOffersBy) {
-            document.querySelector<HTMLDivElement>('.md-select-backdrop')?.click();
+        if (currentSort === sortOffersBy) {
+            backdropEl?.click();
             return;
         }
 
@@ -74,7 +75,7 @@ export class StreamElementsUIService {
         }
 
         setTimeout(() => {
-            document.querySelector<HTMLDivElement>('.md-select-backdrop')?.click();
+            backdropEl?.click();
         }, 500);
     }
 

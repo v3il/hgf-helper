@@ -1,23 +1,35 @@
 import 'reflect-metadata';
-import { isDev } from '@components/consts';
 import { ExtensionContainer } from '@twitch/views';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { GlobalSettingsService, LocalSettingsService } from '@components/settings';
-import { log } from '@components/utils';
+import { AuthFacade } from '@shared/modules';
+import { isDev } from '@shared/consts';
+import { log } from '@utils';
 
-export const main = () => {
+let extensionContainer: ExtensionContainer | null = null;
+
+export const main = async () => {
     const twitchUIService = Container.get(TwitchUIService);
-    const globalSettings = Container.get(GlobalSettingsService);
-    const localSettings = Container.get(LocalSettingsService);
+    const authFacade = Container.get(AuthFacade);
 
-    twitchUIService.whenStreamReady(async () => {
-        console.clear();
-        log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
+    await authFacade
+        .auth()
+        .catch((error) => console.error('Error during authentication:', error));
 
-        localSettings.loadSettings();
-        await globalSettings.loadSettings();
+    console.clear();
+    log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 
-        new ExtensionContainer().mount(document.body);
+    if (authFacade.isAuthenticated) {
+        twitchUIService.whenStreamReady(async () => {
+            extensionContainer = new ExtensionContainer();
+        });
+    }
+
+    authFacade.onAuthenticated(() => {
+        extensionContainer = new ExtensionContainer();
+    });
+
+    authFacade.onLogout(() => {
+        extensionContainer?.destroy();
     });
 };

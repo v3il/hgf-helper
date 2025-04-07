@@ -9,3 +9,8 @@ export const FUNCTION_URL = isDev
     : FUNCTION_DOMAIN;
 
 export const AUTH_URL = `${FUNCTION_URL}/auth`;
+
+export enum Timing {
+    SECOND = 1000,
+    MINUTE = 60 * 1000
+}

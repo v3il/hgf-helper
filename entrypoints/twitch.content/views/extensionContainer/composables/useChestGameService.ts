@@ -1,15 +1,19 @@
-import { Timing } from '@components/consts';
+import { Timing } from '@shared/consts';
 import { StreamStatusService } from '@twitch/modules/stream';
-import { LocalSettingsService } from '@components/settings';
 import { ChestGameService } from '@twitch/modules/miniGames';
 import { Container } from 'typedi';
+import { SettingsFacade } from '@shared/modules';
 
 interface IParams {
     el: HTMLElement;
 }
 
-export const useChestGameService = ({ el }: IParams) => {
-    const settingsService = Container.get(LocalSettingsService);
+export interface IChestGameService {
+    destroy: () => void;
+}
+
+export const useChestGameService = ({ el }: IParams): IChestGameService => {
+    const settingsFacade = Container.get(SettingsFacade);
     const streamService = Container.get(StreamStatusService);
 
     const chestGameRunner = new ChestGameService();
@@ -20,10 +24,10 @@ export const useChestGameService = ({ el }: IParams) => {
 
     let intervalId: number;
 
-    checkboxEl.checked = settingsService.settings.chestGame;
+    checkboxEl.checked = settingsFacade.settings.chestGame;
 
-    checkboxEl.addEventListener('change', () => {
-        settingsService.updateSettings({
+    const checkboxChangeHandler = async () => {
+        await settingsFacade.updateSettings({
             chestGame: checkboxEl.checked
         });
 
@@ -32,12 +36,14 @@ export const useChestGameService = ({ el }: IParams) => {
             clearInterval(intervalId);
             timerEl.classList.add('hidden');
         }
-    });
+    };
 
-    streamService.events.on('chest', (isRunning) => {
+    checkboxEl.addEventListener('change', checkboxChangeHandler);
+
+    const unsubscribeChest = streamService.events.on('chest', (isRunning) => {
         buttonEl.disabled = !isRunning;
 
-        if (!settingsService.settings.chestGame) return;
+        if (!settingsFacade.settings.chestGame) return;
 
         if (isRunning) {
             chestGameRunner.start();
@@ -49,14 +55,16 @@ export const useChestGameService = ({ el }: IParams) => {
         }
     });
 
-    chestGameRunner.events.on('roundCompleted', () => {
+    const buttonClickHandler = () => {
+        chestGameRunner.participate();
+    };
+
+    const unsubscribeRoundCompleted = chestGameRunner.events.on('roundCompleted', () => {
         timerEl.classList.add('hidden');
         clearInterval(intervalId);
     });
 
-    buttonEl.addEventListener('click', () => {
-        chestGameRunner.participate();
-    });
+    buttonEl.addEventListener('click', buttonClickHandler);
 
     function setupTimer() {
         timerTick();
@@ -72,4 +80,15 @@ export const useChestGameService = ({ el }: IParams) => {
 
         timerEl.textContent = `(${minutes}:${seconds})`;
     }
+
+    return {
+        destroy: () => {
+            clearInterval(intervalId);
+            chestGameRunner.stop();
+            unsubscribeChest();
+            unsubscribeRoundCompleted();
+            checkboxEl.removeEventListener('change', checkboxChangeHandler);
+            buttonEl.removeEventListener('click', buttonClickHandler);
+        }
+    };
 };

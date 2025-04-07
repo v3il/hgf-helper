@@ -1,7 +1,7 @@
 import { Container } from 'typedi';
 import { OffersFacade } from '@store/modules';
 import { SettingsFacade } from '@shared/modules';
-import { BasicView } from '@components/BasicView';
+import { BasicView } from '@shared/views';
 import { OfferView } from './OfferView';
 
 export class OffersList extends BasicView {

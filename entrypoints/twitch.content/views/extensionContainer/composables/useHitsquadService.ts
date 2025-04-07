@@ -1,13 +1,17 @@
-import { Timing } from '@components/consts';
+import { Timing } from '@shared/consts';
 import { HitsquadGameService } from '@twitch/modules/miniGames';
 
 interface IParams {
     el: HTMLElement;
 }
 
+export interface IHitsquadService {
+    destroy: () => void;
+}
+
 const HITSQUAD_GAMES_PER_DAY = 600;
 
-export const useHitsquadService = ({ el }: IParams) => {
+export const useHitsquadService = ({ el }: IParams): IHitsquadService => {
     const gameService = new HitsquadGameService();
 
     const checkboxEl = el.querySelector<HTMLInputElement>('[data-toggle-hitsquad]')!;
@@ -25,15 +29,18 @@ export const useHitsquadService = ({ el }: IParams) => {
         setupCounter();
     }
 
-    checkboxEl.addEventListener('change', () => {
+    const checkboxChangeHandler = () => {
         checkboxEl.checked ? turnHitsquadOn() : turnHitsquadOff();
-    });
+    };
 
-    gameService.events.on('end', turnHitsquadOff);
-
-    buttonEl.addEventListener('click', (event) => {
+    const buttonClickHandler = () => {
         gameService.participate();
-    });
+    };
+
+    checkboxEl.addEventListener('change', checkboxChangeHandler);
+    buttonEl.addEventListener('click', buttonClickHandler);
+
+    const unsubscribeEndEvent = gameService.events.on('end', turnHitsquadOff);
 
     function turnHitsquadOn() {
         const gamesCount = prompt('Enter rounds count', `${HITSQUAD_GAMES_PER_DAY}`);
@@ -86,4 +93,17 @@ export const useHitsquadService = ({ el }: IParams) => {
 
         counterEl.textContent = `[${roundsData.left}/${roundsData.total}]`;
     }
+
+    return {
+        destroy: () => {
+            gameService.stop();
+            clearInterval(intervalId);
+            unsubscribeCounter?.();
+            unsubscribeEndEvent();
+
+            gameService.events.off('end', turnHitsquadOff);
+            checkboxEl.removeEventListener('change', checkboxChangeHandler);
+            buttonEl.removeEventListener('click', buttonClickHandler);
+        }
+    };
 };

@@ -1,5 +1,5 @@
 import { OEM, PSM, createWorker, Worker } from 'tesseract.js';
-import { isDev } from '@components/consts';
+import { isDev } from '@shared/consts';
 import { Service } from 'typedi';
 
 @Service()

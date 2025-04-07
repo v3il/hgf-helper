@@ -1,5 +1,5 @@
-import { isDev, Timing } from '@components/consts';
-import { log } from '@components/utils';
+import { isDev, Timing } from '@shared/consts';
+import { log } from '@utils';
 import { Service } from 'typedi';
 
 @Service()

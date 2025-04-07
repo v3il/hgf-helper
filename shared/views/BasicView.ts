@@ -1,10 +1,8 @@
-import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
+import { UnsubscribeTrigger } from '@shared/EventEmitter';
 
 export abstract class BasicView {
     protected listeners: UnsubscribeTrigger[] = [];
     protected readonly el: HTMLElement;
-
-    readonly events = EventEmitter.create();
 
     constructor(template: string) {
         this.el = this.createElement(template);

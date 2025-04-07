@@ -1,8 +1,7 @@
 import { StreamElementsUIService } from '@store/modules';
 import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
-import { AuthWindow } from '@components/AuthWindow';
-import { BasicView } from '@components/BasicView';
+import { BasicView, AuthWindow } from '@shared/views';
 import { AUTH_URL } from '@shared/consts';
 import template from './template.html?raw';
 

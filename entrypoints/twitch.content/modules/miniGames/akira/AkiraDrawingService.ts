@@ -1,22 +1,21 @@
-import { Timing } from '@components/consts';
+import { Timing } from '@shared/consts';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { LocalSettingsService } from '@components/settings';
-import { AiGeneratorService } from '@components/services';
-import { UnsubscribeTrigger } from '@components/EventEmitter';
-import { getRandomNumber, log } from '@components/utils';
+import { AiGeneratorService } from '@shared/services';
+import { UnsubscribeTrigger } from '@shared/EventEmitter';
+import { getRandomNumber, log } from '@utils';
+import { SettingsFacade } from '@shared/modules';
 import { getRandomTopic } from './gameTopics';
 import { ChatObserver, MessageSender } from '../../twitchChat';
 
 interface IParams {
-    settingsService: LocalSettingsService,
     aiGeneratorService: AiGeneratorService
 }
 
 export class AkiraDrawingService {
+    private readonly settingsFacade: SettingsFacade;
     private readonly messageSender: MessageSender;
     private readonly chatObserver: ChatObserver;
-    private readonly settingsService: LocalSettingsService;
     private readonly aiGeneratorService: AiGeneratorService;
     private readonly twitchUIService: TwitchUIService;
 
@@ -25,15 +24,15 @@ export class AkiraDrawingService {
     private unsubscribe!: UnsubscribeTrigger;
     timeUntilMessage: number = 0;
 
-    constructor({ settingsService, aiGeneratorService }: IParams) {
-        this.settingsService = settingsService;
+    constructor({ aiGeneratorService }: IParams) {
         this.aiGeneratorService = aiGeneratorService;
 
+        this.settingsFacade = Container.get(SettingsFacade);
         this.twitchUIService = Container.get(TwitchUIService);
         this.messageSender = Container.get(MessageSender);
         this.chatObserver = Container.get(ChatObserver);
 
-        this._isRunning = settingsService.settings.akiraDrawing;
+        this._isRunning = this.settingsFacade.settings.akiraDrawing;
 
         if (this._isRunning) {
             this.start();
@@ -81,7 +80,7 @@ export class AkiraDrawingService {
     }
 
     private saveState() {
-        this.settingsService.updateSettings({
+        this.settingsFacade.updateSettings({
             akiraDrawing: this._isRunning
         });
     }

@@ -1,9 +1,9 @@
 import './style.css';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { BasicView } from '@components/BasicView';
-import { log } from '@components/utils';
-import { ColorService } from '@components/services';
+import { BasicView } from '@shared/views';
+import { log } from '@utils';
+import { ColorService } from '@shared/services';
 import template from './template.html?raw';
 
 interface IDebugModeCheck {
@@ -29,7 +29,11 @@ export class DebugModeView extends BasicView {
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-debug-mode-canvas]')!;
         this.clickHandler = this.clickHandler.bind(this);
 
-        this.mount(document.body);
+        this.render();
+    }
+
+    render() {
+        document.body.appendChild(this.el);
     }
 
     private renderVideoFrame() {

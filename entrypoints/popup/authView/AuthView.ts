@@ -1,7 +1,6 @@
-import { BasicView } from '@components/BasicView';
+import { BasicView, AuthWindow } from '@shared/views';
 import { AuthFacade } from '@shared/modules';
 import { Container } from 'typedi';
-import { AuthWindow } from '@components/AuthWindow';
 import { AUTH_URL } from '@shared/consts';
 import template from './template.html?raw';
 

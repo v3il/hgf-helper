@@ -1,5 +1,5 @@
 import { Container, Service } from 'typedi';
-import { EventHandler } from '@components/EventEmitter';
+import { EventHandler } from '@shared/EventEmitter';
 import { GlobalSettingsKeys, ISettings, ISettingsEvents } from '../types';
 import { FirebaseApiService } from '../FirebaseApiService';
 import { SettingsService } from './SettingsService';

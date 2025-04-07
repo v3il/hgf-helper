@@ -1,7 +1,7 @@
 import { OffersFacade, StreamElementsUIService } from '@store/modules';
-import { debounce } from '@components/utils';
+import { debounce } from '@utils';
 import { Container } from 'typedi';
-import { BasicView } from '@components/BasicView';
+import { BasicView } from '@shared/views';
 import template from './template.html?raw';
 import './style.css';
 

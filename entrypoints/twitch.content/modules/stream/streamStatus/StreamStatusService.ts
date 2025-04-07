@@ -3,11 +3,11 @@ import './style.css';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container, ContainerInstance, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { ColorService, OnScreenTextRecognizer } from '@components/services';
-import { getRandomNumber, logDev } from '@components/utils';
-import { BasicView } from '@components/BasicView';
-import { EventEmitter } from '@components/EventEmitter';
-import { Timing } from '@components/consts';
+import { ColorService, OnScreenTextRecognizer } from '@shared/services';
+import { getRandomNumber, logDev } from '@utils';
+import { BasicView } from '@shared/views';
+import { EventEmitter } from '@shared/EventEmitter';
+import { Timing } from '@shared/consts';
 import { antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks } from './checks';
 import template from './template.html?raw';
 
@@ -41,7 +41,11 @@ export class StreamStatusService extends BasicView {
         this.textDecoderService = container.get(OnScreenTextRecognizer);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
 
-        this.mount(document.body);
+        this.render();
+    }
+
+    render() {
+        document.body.appendChild(this.el);
     }
 
     async checkStreamStatus() {

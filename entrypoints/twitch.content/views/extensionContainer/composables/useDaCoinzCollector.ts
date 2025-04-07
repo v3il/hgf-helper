@@ -1,12 +1,16 @@
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { debounce } from '@components/utils';
-import { GlobalSettingsService } from '@components/settings';
+import { debounce } from '@utils';
+import { SettingsFacade } from '@shared/modules';
 
-export const useDaCoinzCollector = () => {
+export interface IDaCoinzCollector {
+    destroy: () => void;
+}
+
+export const useDaCoinzCollector = (): IDaCoinzCollector => {
     let observer: MutationObserver | null = null;
+    const settingsFacade = Container.get(SettingsFacade);
     const twitchUIService = Container.get(TwitchUIService);
-    const settingsService = Container.get(GlobalSettingsService);
     const chatInputContainerEl = twitchUIService.chatButtonsContainerEl! as HTMLElement;
 
     const claimChannelPoints = debounce(() => {
@@ -17,11 +21,11 @@ export const useDaCoinzCollector = () => {
         }
     }, 2000);
 
-    if (settingsService.settings.collectDaCoinz) {
+    if (settingsFacade.settings.collectDaCoinz) {
         init();
     }
 
-    settingsService.events.on('setting-changed:collectDaCoinz', (isEnabled) => {
+    const unsubscribe = settingsFacade.onSettingChanged('collectDaCoinz', (isEnabled) => {
         isEnabled ? init() : destroy();
     });
 
@@ -44,4 +48,11 @@ export const useDaCoinzCollector = () => {
     function destroy() {
         observer?.disconnect();
     }
+
+    return {
+        destroy: () => {
+            unsubscribe();
+            destroy();
+        }
+    };
 };
