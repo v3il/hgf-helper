@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@wxt-dev/module-svelte": "^2.0.3",
+    "clsx": "^2.1.1",
     "firebase": "^11.5.0",
     "reflect-metadata": "^0.2.2",
     "tesseract.js": "^6.0.0",

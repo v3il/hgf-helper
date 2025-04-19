@@ -1,56 +1,103 @@
-<div class="hgfs-container" data-container>
-    <a href="/" class="hgfs-container__steam" target="_blank" data-steam-app-link>Steam</a>
-    <button class="hgfs-container__hide" data-hide>Hide</button>
+<div class={classes}>
+    <a href={offer.steamAppLink} class="hgf-container__steam" target="_blank" rel="noreferrer">Steam</a>
+    <button class="hgf-container__hide" onclick={hideOfferHandler}>Hide</button>
 </div>
 
 <script lang="ts">
-    import { Offer } from "@store/modules/offers/models";
+import { Offer } from "@store/modules/offers/models";
+import { Container } from 'typedi';
+import { OffersFacade } from '@store/modules';
+import { SettingsFacade } from '@shared/modules';
+import clsx from 'clsx';
 
-    interface Props {
-        offer: Offer;
-        offerEl: HTMLElement;
+interface Props {
+    offer: Offer;
+    offerEl: HTMLElement;
+}
+
+const { offer, offerEl }: Props = $props();
+
+const offersFacade = Container.get(OffersFacade);
+const settingsFacade = Container.get(SettingsFacade);
+
+let isOfferHidden = $state(isHidden());
+let isLowVolumeHighlighted = $state(offer.isLowVolume && settingsFacade.settings.highlightLowVolumeOffers);
+
+const classes = $derived(
+    clsx({
+        'hgf-container': true,
+        'hgf-container--low-volume': isLowVolumeHighlighted,
+    })
+)
+
+$effect(() => {
+    offerEl.classList.toggle('hgf-hidden', isOfferHidden);
+});
+
+function isHidden() {
+    const { offersMaxPrice, hideSoldOutOffers } = settingsFacade.settings;
+
+    if (hideSoldOutOffers && offer.isSoldOut) {
+        return true;
     }
 
-    const {offer}: Props = $props();
+    return offer.price > offersMaxPrice || offersFacade.isOfferHidden(offer);
+}
+
+export function toggleOfferVisibility() {
+    isOfferHidden = isHidden();
+}
+
+export function toggleVolumeIndicator() {
+    isLowVolumeHighlighted = offer.isLowVolume && settingsFacade.settings.highlightLowVolumeOffers;
+}
+
+async function hideOfferHandler() {
+    if (!window.confirm(`Are you sure you want to hide the "${offer.name}" offer?`)) {
+        return;
+    }
+
+    try {
+        await offersFacade.hideOffer(offer);
+        toggleOfferVisibility();
+    } catch (error) {
+        alert('Failed to hide offer');
+        console.error(error);
+    }
+}
 </script>;
 
 <style>
-    /*todo: refactor styles*/
+.hgf-container {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    padding: 8px;
+    background-color: #121212;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 3px solid #555;
+}
 
-    .hgfs-container {
-        position: absolute;
-        right: 0;
-        left: 0;
-        top: 0;
-        padding: 8px;
-        background-color: #121212;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border: 3px solid #555;
-    }
+.hgf-container--low-volume {
+    border-color: indianred;
+}
 
-    .hgfs-container--danger {
-        border-color: indianred;
-    }
+.hgf-container__hide {
+    font-size: 12px;
+    display: block;
+}
 
-    .hgfs-container__hide {
-        font-size: 12px;
-        display: block;
-    }
+.hgf-container__steam {
+    font-size: 12px;
+    display: block;
+    color: #ccc;
+    font-weight: bold;
+}
 
-    .hgfs-offer--hidden.hgfs-offer--hidden.hgfs-offer--hidden {
-        display: none !important;
-    }
-
-    .hgfs-container__steam {
-        font-size: 12px;
-        display: block;
-        color: #ccc;
-        font-weight: bold;
-    }
-
-    .hgfs-container__steam:hover {
-        text-decoration: underline;
-    }
+.hgf-container__steam:hover {
+    text-decoration: underline;
+}
 </style>

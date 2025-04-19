@@ -1,2 +1,1 @@
-export * from './ExtensionContainer';
-export * from './authView';
+export { default as StoreExtension } from './StoreExtension.svelte';

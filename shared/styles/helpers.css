@@ -43,3 +43,7 @@
 .hgf-p-16 {
     padding: 16px !important;
 }
+
+.hgf-hidden {
+    display: none !important;
+}
