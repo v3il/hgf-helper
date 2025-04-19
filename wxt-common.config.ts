@@ -8,6 +8,7 @@ interface IParams extends UserConfig {
 // See https://wxt.dev/api/config.html
 export const buildConfig = ({ description, ...rest }: IParams): UserConfig => ({
     extensionApi: 'chrome',
+    modules: ['@wxt-dev/module-svelte'],
 
     manifest: {
         description,
