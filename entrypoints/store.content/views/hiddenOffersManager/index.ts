@@ -1,1 +1,1 @@
-export * from './HiddenOffersManager';
+export { default as HiddenOffersManager } from './HiddenOffersManager.svelte';

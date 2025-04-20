@@ -42,10 +42,15 @@ h6:not(.uk-h6) {
 }
 
 .hgf-enhanced-sidebar .side-bar {
-    position: sticky;
     margin-top: 0;
-    top: var(--hgf-header-height);
     padding-top: 24px;
+}
+
+@media (min-width: 1280px) {
+    .hgf-enhanced-sidebar .side-bar {
+        position: sticky;
+        top: var(--hgf-header-height);
+    }
 }
 
 /* Footer */

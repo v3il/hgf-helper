@@ -1,8 +1,8 @@
 <script lang="ts">
-import { Container } from "typedi";
-import { OffersFacade, StreamElementsUIService } from "@store/modules";
-import OffersListItem from "@store/views/OffersListItem.svelte";
-import { mount, onDestroy, unmount } from "svelte";
+import { Container } from 'typedi';
+import { OffersFacade, StreamElementsUIService } from '@store/modules';
+import OffersListItem from './OffersListItem.svelte';
+import { mount, onDestroy, unmount } from 'svelte';
 import { SettingsFacade } from '@shared/modules';
 
 const offersFacade = Container.get(OffersFacade);

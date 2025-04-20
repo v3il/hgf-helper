@@ -4,10 +4,10 @@
 </div>
 
 <script lang="ts">
-import { AuthFacade } from "@shared/modules";
-import { Container } from "typedi";
-import { AuthWindow } from "@shared/views";
-import { AUTH_URL } from "@shared/consts.js";
+import { AuthFacade } from '@shared/modules';
+import { Container } from 'typedi';
+import { AuthWindow } from '@shared/views';
+import { AUTH_URL } from '@shared/consts';
 
 const authFacade = Container.get(AuthFacade);
 

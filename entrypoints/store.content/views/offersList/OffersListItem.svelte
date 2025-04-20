@@ -4,7 +4,7 @@
 </div>
 
 <script lang="ts">
-import { Offer } from "@store/modules/offers/models";
+import { Offer } from '@store/modules/offers/models';
 import { Container } from 'typedi';
 import { OffersFacade } from '@store/modules';
 import { SettingsFacade } from '@shared/modules';
