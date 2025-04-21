@@ -34,6 +34,10 @@
     margin-left: 8px !important;
 }
 
+.hgf-mr-32 {
+    margin-right: 32px !important;
+}
+
 .hgf-pv-8 {
     padding-top: 8px !important;
     padding-bottom: 8px !important;
@@ -54,4 +58,8 @@
 
 .hgf-hidden {
     display: none !important;
+}
+
+.hgf-inline-block {
+    display: inline-block !important;
 }

@@ -1,12 +1,12 @@
 import 'reflect-metadata';
-import { ExtensionContainer } from '@twitch/views';
+import { TwitchExtension } from '@twitch/views';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { AuthFacade } from '@shared/modules';
 import { isDev } from '@shared/consts';
 import { log } from '@utils';
-
-let extensionContainer: ExtensionContainer | null = null;
+import { mount } from 'svelte';
+import '@shared/styles/index.css';
 
 export const main = async () => {
     const twitchUIService = Container.get(TwitchUIService);
@@ -19,17 +19,9 @@ export const main = async () => {
     console.clear();
     log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 
-    if (authFacade.isAuthenticated) {
-        twitchUIService.whenStreamReady(async () => {
-            extensionContainer = new ExtensionContainer();
+    twitchUIService.whenStreamReady(async () => {
+        mount(TwitchExtension, {
+            target: document.body
         });
-    }
-
-    authFacade.onAuthenticated(() => {
-        extensionContainer = new ExtensionContainer();
-    });
-
-    authFacade.onLogout(() => {
-        extensionContainer?.destroy();
     });
 };

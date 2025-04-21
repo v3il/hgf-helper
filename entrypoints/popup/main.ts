@@ -13,6 +13,6 @@ await authFacade.auth()
     .catch((error) => console.error('Error during authentication:', error))
     .finally(() => {
         mount(PopupView, {
-            target: document.getElementById('app')!,
+            target: document.body,
         })
     });

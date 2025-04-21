@@ -12,3 +12,7 @@
     padding-right: 16px;
     text-transform: none;
 }
+
+canvas, img, svg, video {
+    max-width: none;
+}
