@@ -177,7 +177,7 @@ function parseInputValue(control: HTMLInputElement | HTMLSelectElement) {
 }
 
 function updateSetting(event: Event) {
-    const target = event.target as HTMLInputElement;
+    const target = event.target as HTMLInputElement | HTMLSelectElement;
     const setting = target.dataset.setting as GlobalSettingsKeys;
 
     settingsFacade.updateSettings({
