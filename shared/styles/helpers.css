@@ -6,6 +6,10 @@
     color: white !important;
 }
 
+.hgf-color-red {
+    color: #f0506e !important;
+}
+
 .hgf-w-full {
     width: 100% !important;
 }
@@ -42,6 +46,10 @@
 
 .hgf-p-16 {
     padding: 16px !important;
+}
+
+.hgf-pt-16 {
+    padding-top: 16px !important;
 }
 
 .hgf-hidden {
