@@ -20,8 +20,17 @@ const { offer, offerEl }: Props = $props();
 const offersFacade = Container.get(OffersFacade);
 const settingsFacade = Container.get(SettingsFacade);
 
-let isOfferHidden = $state(isHidden());
-let isLowVolumeHighlighted = $state(offer.isLowVolume && settingsFacade.settings.highlightLowVolumeOffers);
+const isOfferHidden = $derived.by(() => {
+    const { offersMaxPrice, hideSoldOutOffers } = settingsFacade.settings;
+
+    if (hideSoldOutOffers && offer.isSoldOut) {
+        return true;
+    }
+
+    return offer.price > offersMaxPrice || offersFacade.isOfferHidden(offer);
+});
+
+const isLowVolumeHighlighted = $derived.by(() => offer.isLowVolume && settingsFacade.settings.highlightLowVolumeOffers);
 
 const classes = $derived(
     clsx({
@@ -34,24 +43,6 @@ $effect(() => {
     offerEl.classList.toggle('hgf-hidden', isOfferHidden);
 });
 
-function isHidden() {
-    const { offersMaxPrice, hideSoldOutOffers } = settingsFacade.settings;
-
-    if (hideSoldOutOffers && offer.isSoldOut) {
-        return true;
-    }
-
-    return offer.price > offersMaxPrice || offersFacade.isOfferHidden(offer);
-}
-
-export function toggleOfferVisibility() {
-    isOfferHidden = isHidden();
-}
-
-export function toggleVolumeIndicator() {
-    isLowVolumeHighlighted = offer.isLowVolume && settingsFacade.settings.highlightLowVolumeOffers;
-}
-
 async function hideOfferHandler() {
     if (!window.confirm(`Are you sure you want to hide the "${offer.name}" offer?`)) {
         return;
@@ -59,7 +50,6 @@ async function hideOfferHandler() {
 
     try {
         await offersFacade.hideOffer(offer);
-        toggleOfferVisibility();
     } catch (error) {
         alert('Failed to hide offer');
         console.error(error);

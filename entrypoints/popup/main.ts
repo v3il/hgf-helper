@@ -6,6 +6,8 @@ import { SettingsEditorView } from './settingsEditor';
 import { AuthView } from './authView';
 import '@shared/styles/index.css';
 import 'uikit';
+import PopupView from './views/PopupView.svelte';
+import { mount } from 'svelte';
 
 const authFacade = Container.get(AuthFacade);
 
@@ -35,3 +37,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         authView = new AuthView(appEl);
     });
 });
+
+const div = document.createElement('div');
+
+document.body.appendChild(div)
+
+mount(PopupView, {
+    target: div,
+})

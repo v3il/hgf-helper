@@ -10,8 +10,8 @@ export class AuthService {
     private readonly settingsFacade: SettingsFacade;
     private readonly hiddenOffersService: HiddenOffersFacade;
 
-    private _user: IUser | null = null;
-    private _isAuthenticated = false;
+    private _user: IUser | null = $state(null);
+    private _isAuthenticated = $state(false);
     readonly events = new EventEmitter<{
         authenticated: void;
         logout: void;

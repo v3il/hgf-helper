@@ -1,5 +1,5 @@
 import { Container, Service } from 'typedi';
-import { HiddenOffersService } from './HiddenOffersService';
+import { HiddenOffersService } from './HiddenOffersService.svelte';
 import { FirebaseApiService } from '../FirebaseApiService';
 
 @Service()

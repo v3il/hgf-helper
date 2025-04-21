@@ -6,7 +6,7 @@ import { FirebaseApiService } from '../FirebaseApiService';
 export class SettingsService {
     private readonly apiService: FirebaseApiService;
 
-    private _settings: ISettings;
+    private _settings: ISettings = $state(this.getDefaultSettings());
 
     readonly events = EventEmitter.create<ISettingsEvents>();
 
@@ -14,7 +14,6 @@ export class SettingsService {
     private readonly storage = chrome.storage.local;
 
     constructor(container: ContainerInstance) {
-        this._settings = this.getDefaultSettings();
         this.apiService = container.get(FirebaseApiService);
 
         this.initObserver();

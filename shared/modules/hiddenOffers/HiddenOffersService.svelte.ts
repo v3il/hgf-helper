@@ -4,7 +4,7 @@ import { FirebaseApiService } from '../FirebaseApiService';
 export class HiddenOffersService {
     private readonly apiService: FirebaseApiService;
 
-    private _hiddenOffers: string[] = [];
+    private _hiddenOffers: string[] = $state([]);
 
     constructor(container: ContainerInstance) {
         this.apiService = container.get(FirebaseApiService);

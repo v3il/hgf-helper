@@ -1,5 +1,5 @@
 import { Container, Service } from 'typedi';
-import { AuthService } from './AuthService';
+import { AuthService } from './AuthService.svelte';
 import { SettingsFacade } from '../settings';
 import { HiddenOffersFacade } from '../hiddenOffers';
 import { FirebaseApiService } from '../FirebaseApiService';

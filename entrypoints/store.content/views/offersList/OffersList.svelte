@@ -3,10 +3,8 @@ import { Container } from 'typedi';
 import { OffersFacade, StreamElementsUIService } from '@store/modules';
 import OffersListItem from './OffersListItem.svelte';
 import { mount, onDestroy, unmount } from 'svelte';
-import { SettingsFacade } from '@shared/modules';
 
 const offersFacade = Container.get(OffersFacade);
-const settingsFacade = Container.get(SettingsFacade);
 const streamElementsUIService = Container.get(StreamElementsUIService);
 
 const offerViews = Array.from(streamElementsUIService.offersListEl.querySelectorAll<HTMLElement>('.stream-store-list-item'));
@@ -37,23 +35,6 @@ const children = offerViews.map((offerEl) => {
         }
     });
 });
-
-function toggleOffersVisibility() {
-    children.forEach((child) => {
-        child.toggleOfferVisibility();
-    })
-}
-
-function toggleVolumeIndicator() {
-    children.forEach((child) => {
-        child.toggleVolumeIndicator();
-    })
-}
-
-offersFacade.events.on('offer-shown', toggleOffersVisibility);
-settingsFacade.onSettingChanged('hideSoldOutOffers', toggleOffersVisibility);
-settingsFacade.onSettingChanged('offersMaxPrice', toggleOffersVisibility);
-settingsFacade.onSettingChanged('highlightLowVolumeOffers', toggleVolumeIndicator);
 
 onDestroy(() => {
     children.forEach((child) => {

@@ -37,11 +37,9 @@ let dialogRef: HTMLDialogElement | null = null;
 let inputRef: HTMLInputElement | null = null;
 
 let query = $state('');
-let offers = $state(offersFacade.hiddenOffers); // todo: make reactive
 
 $effect(() => {
     if (isOpened) {
-        offers = offersFacade.hiddenOffers;
         inputRef?.focus();
     }
 
@@ -50,7 +48,7 @@ $effect(() => {
 })
 
 const displayedOffers = $derived.by(() => {
-    return offers.toReversed().filter((offer) => offer.includes(query));
+    return offersFacade.hiddenOffers.toReversed().filter((offer) => offer.includes(query));
 });
 
 function handleDialogClose() {
@@ -65,7 +63,6 @@ async function onOfferRemove(offer: string) {
 
     try {
         await offersFacade.unhideOffer(offer);
-        offers = offersFacade.hiddenOffers;
     } catch (error) {
         alert('Failed to hide offer');
         console.error(error);
