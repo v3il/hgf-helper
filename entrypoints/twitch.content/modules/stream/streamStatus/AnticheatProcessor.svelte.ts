@@ -12,7 +12,7 @@ import { antiCheatChecks, anticheatName, chestGameChecks, ICheck, lootGameChecks
 import template from './template.html?raw';
 
 @Service()
-export class StreamStatusService extends BasicView {
+export class AnticheatProcessorSvelte extends BasicView {
     private readonly canvasEl;
 
     private readonly twitchUIService!: TwitchUIService;
@@ -21,8 +21,9 @@ export class StreamStatusService extends BasicView {
     private readonly textDecoderService!: OnScreenTextRecognizer;
 
     private statuses!: StreamStatus[];
+    private timeoutId!: number;
 
-    private isLootGame?: boolean;
+    isLootGame = false;
     private isChestGame?: boolean;
 
     readonly events = new EventEmitter<{
@@ -42,13 +43,18 @@ export class StreamStatusService extends BasicView {
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
 
         this.render();
+        this.checkStreamStatus(true);
+
+        this.timeoutId = window.setInterval(() => {
+            this.checkStreamStatus(false);
+        }, 5 * Timing.SECOND);
     }
 
     render() {
         document.body.appendChild(this.el);
     }
 
-    async checkStreamStatus() {
+    checkStreamStatus(silent: boolean) {
         const { activeVideoEl } = this.twitchUIService;
 
         this.statuses = [StreamStatus.OK];
@@ -61,7 +67,7 @@ export class StreamStatusService extends BasicView {
 
         this.renderVideoFrame(activeVideoEl);
 
-        this.checkLootGame();
+        this.checkLootGame(silent);
         this.checkChestGame();
 
         const isAntiCheat = this.isAntiCheat();
@@ -104,7 +110,7 @@ export class StreamStatusService extends BasicView {
         const width = Math.floor((points[1].xPercent * this.canvasEl.width) / 100) - x;
         const height = Math.floor((points[2].yPercent * this.canvasEl.height) / 100) - y;
 
-        const ctx = this.canvasEl.getContext('2d')!;
+        const ctx = this.canvasEl.getContext('2d', { willReadFrequently: true })!;
         const imageData = ctx.getImageData(x, y, width, height);
 
         return this.textDecoderService.checkOnScreen(imageData, str);
@@ -114,7 +120,7 @@ export class StreamStatusService extends BasicView {
         this.canvasEl.width = videoEl.clientWidth;
         this.canvasEl.height = videoEl.clientHeight;
 
-        const ctx = this.canvasEl.getContext('2d')!;
+        const ctx = this.canvasEl.getContext('2d', { willReadFrequently: true })!;
 
         ctx.drawImage(videoEl, 0, 0, this.canvasEl.width, this.canvasEl.height);
     }
@@ -125,13 +131,15 @@ export class StreamStatusService extends BasicView {
         return (failedChecks / antiCheatChecks.length) >= 0.5;
     }
 
-    private checkLootGame() {
+    private checkLootGame(silent: boolean) {
         const previousStatus = this.isLootGame;
         const failedChecks = this.checkPoints(lootGameChecks);
 
+        console.error(`Loot game checks: ${failedChecks} / ${lootGameChecks.length}`);
+
         this.isLootGame = (failedChecks / lootGameChecks.length) >= 0.7;
 
-        if (previousStatus !== this.isLootGame) {
+        if (previousStatus !== this.isLootGame && !silent) {
             this.events.emit('loot', this.isLootGame);
         }
     }
@@ -179,5 +187,9 @@ export class StreamStatusService extends BasicView {
 
     get isStreamOk() {
         return this.statuses.includes(StreamStatus.OK);
+    }
+
+    get isAdsPhase() {
+        return !!this.twitchUIService.adsVideoEl;
     }
 }

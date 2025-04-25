@@ -1,5 +1,5 @@
 <span class={['hgf-twitch-extension-text', props.class]}>
-    {@render props.children?.()}
+    {@render props.children()}
 </span>
 
 <script lang="ts">

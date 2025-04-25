@@ -1,1 +1,1 @@
-export * from './StreamStatusService';
+export * from './StreamStatusService.svelte';

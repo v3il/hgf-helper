@@ -1,40 +1,53 @@
 import { Timing } from '@shared/consts';
-import { getRandomNumber, log, waitAsync } from '@utils';
+import { getRandomNumber, waitAsync } from '@utils';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container } from 'typedi';
-import { TwitchUIService } from '@twitch/modules';
 import { StreamStatusService } from '@twitch/modules/stream';
-import { EventEmitter } from '@shared/EventEmitter';
+import { UnsubscribeTrigger } from '@shared/EventEmitter';
+import { SettingsFacade } from '@shared/modules';
 
 const COMMAND = '!chest';
 
 export class ChestGameService {
     private readonly messageSender: MessageSender;
-    private readonly twitchUIService: TwitchUIService;
+    private readonly settingsFacade: SettingsFacade;
     private readonly streamStatusService: StreamStatusService;
 
     private timeoutId!: number;
+    private unsubscribe!: UnsubscribeTrigger;
 
-    timeUntilMessage!: number;
-
-    events = EventEmitter.create<{
-        roundCompleted: void,
-    }>();
+    isGamePhase = $state(false);
+    isRoundRunning = $state(false);
+    timeUntilMessage = $state(0);
 
     constructor() {
         this.messageSender = Container.get(MessageSender);
-        this.twitchUIService = Container.get(TwitchUIService);
+        this.settingsFacade = Container.get(SettingsFacade);
         this.streamStatusService = Container.get(StreamStatusService);
+
+        this.isGamePhase = this.streamStatusService.isChestGame;
+
+        this.unsubscribe = this.streamStatusService.events.on('chest', (isGamePhase?: boolean) => {
+            this.isGamePhase = !!isGamePhase;
+
+            if (this.settingsFacade.settings.chestGame) {
+                this.isGamePhase ? this.start() : this.stop();
+            }
+        });
     }
 
     start() {
-        log('Start Chest runner');
         this.scheduleNextRound();
     }
 
     stop() {
         clearTimeout(this.timeoutId);
-        this.timeUntilMessage = 0;
+        this.isRoundRunning = false;
+    }
+
+    destroy() {
+        this.stop();
+        this.unsubscribe();
     }
 
     participate() {
@@ -42,7 +55,7 @@ export class ChestGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.twitchUIService.isAdsPhase || this.streamStatusService.isVideoBroken) {
+        if (this.streamStatusService.isVideoBroken) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
@@ -51,8 +64,7 @@ export class ChestGameService {
         }
 
         this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
-        this.events.emit('roundCompleted');
-        this.stop();
+        this.isRoundRunning = false;
     }
 
     private getDelay() {
@@ -62,6 +74,7 @@ export class ChestGameService {
     private scheduleNextRound() {
         const delay = this.getDelay();
 
+        this.isRoundRunning = true;
         this.timeUntilMessage = Date.now() + delay;
 
         this.timeoutId = window.setTimeout(() => {

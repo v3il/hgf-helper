@@ -1,4 +1,4 @@
 export * from './HitsquadGameService';
-export * from './ChestGameService';
-export * from './LootGameService';
+export * from './ChestGameService.svelte';
+export * from './LootGameService.svelte';
 export * from './akira';

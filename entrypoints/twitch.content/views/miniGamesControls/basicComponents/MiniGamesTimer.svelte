@@ -1,9 +1,34 @@
-<MiniGamesText {...props}>
-    (12:20)
+<MiniGamesText {...rest}>
+    ({formattedTime})
 </MiniGamesText>
 
 <script lang="ts">
 import MiniGamesText from './MiniGamesText.svelte';
+import { Timing } from '@shared/consts';
+import { onDestroy } from 'svelte';
 
-const props = $props();
+interface Props {
+    timeout: number;
+    class?: string;
+}
+
+const { timeout, ...rest }: Props = $props();
+
+let formattedTime = $state('');
+
+const intervalId = window.setInterval(tick, Timing.SECOND);
+
+tick();
+
+function tick() {
+    const diff = Math.max(timeout - Date.now(), 0);
+    const minutes = Math.floor(diff / Timing.MINUTE).toString().padStart(2, '0');
+    const seconds = Math.floor((diff % Timing.MINUTE) / Timing.SECOND).toString().padStart(2, '0');
+
+    formattedTime = `${minutes}:${seconds}`;
+}
+
+onDestroy(() => {
+    clearInterval(intervalId);
+})
 </script>

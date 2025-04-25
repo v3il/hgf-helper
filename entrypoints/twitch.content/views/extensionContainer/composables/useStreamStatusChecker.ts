@@ -16,8 +16,8 @@ export const useStreamStatusChecker = ({ el }: IParams): IStreamStatusChecker =>
     const brokenStreamHandler = useBrokenStreamHandler();
     let timeoutId: number;
 
-    async function handleStreamStatusCheck() {
-        await streamService.checkStreamStatus();
+    function handleStreamStatusCheck() {
+        streamService.checkStreamStatus();
         renderStatus();
         brokenStreamHandler.handleBrokenVideo(streamService.isVideoBroken);
 

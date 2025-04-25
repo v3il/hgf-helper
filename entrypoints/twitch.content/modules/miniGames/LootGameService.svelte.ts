@@ -1,40 +1,53 @@
 import { Timing } from '@shared/consts';
-import { getRandomNumber, log, waitAsync } from '@utils';
+import { getRandomNumber, waitAsync } from '@utils';
 import { Container } from 'typedi';
 import { MessageSender } from '@twitch/modules/twitchChat';
-import { TwitchUIService } from '@twitch/modules';
 import { StreamStatusService } from '@twitch/modules/stream';
-import { EventEmitter } from '@shared/EventEmitter';
+import { UnsubscribeTrigger } from '@shared/EventEmitter';
+import { SettingsFacade } from '@shared/modules';
 
 const COMMAND = '!loot';
 
 export class LootGameService {
     private readonly messageSender: MessageSender;
-    private readonly twitchUIService: TwitchUIService;
+    private readonly settingsFacade: SettingsFacade;
     private readonly streamStatusService: StreamStatusService;
 
     private timeoutId!: number;
+    private unsubscribe!: UnsubscribeTrigger;
 
-    timeUntilMessage!: number;
-
-    events = EventEmitter.create<{
-        roundCompleted: void,
-    }>();
+    isGamePhase = $state(false);
+    isRoundRunning = $state(false);
+    timeUntilMessage = $state(0);
 
     constructor() {
         this.messageSender = Container.get(MessageSender);
-        this.twitchUIService = Container.get(TwitchUIService);
+        this.settingsFacade = Container.get(SettingsFacade);
         this.streamStatusService = Container.get(StreamStatusService);
+
+        this.isGamePhase = this.streamStatusService.isLootGame;
+
+        this.unsubscribe = this.streamStatusService.events.on('loot', (isGamePhase?: boolean) => {
+            this.isGamePhase = !!isGamePhase;
+
+            if (this.settingsFacade.settings.lootGame) {
+                this.isGamePhase ? this.start() : this.stop();
+            }
+        });
     }
 
     start() {
-        log('Start Loot service');
         this.scheduleNextRound();
     }
 
     stop() {
         clearTimeout(this.timeoutId);
-        this.timeUntilMessage = 0;
+        this.isRoundRunning = false;
+    }
+
+    destroy() {
+        this.stop();
+        this.unsubscribe();
     }
 
     participate() {
@@ -42,7 +55,7 @@ export class LootGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.twitchUIService.isAdsPhase || this.streamStatusService.isVideoBroken) {
+        if (this.streamStatusService.isVideoBroken) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
@@ -51,17 +64,17 @@ export class LootGameService {
         }
 
         this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
-        this.events.emit('roundCompleted');
-        this.stop();
+        this.isRoundRunning = false;
     }
 
     private getDelay() {
-        return getRandomNumber(Timing.MINUTE, 10 * Timing.MINUTE);
+        return getRandomNumber(Timing.MINUTE, 15 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {
         const delay = this.getDelay();
 
+        this.isRoundRunning = true;
         this.timeUntilMessage = Date.now() + delay;
 
         this.timeoutId = window.setTimeout(() => {

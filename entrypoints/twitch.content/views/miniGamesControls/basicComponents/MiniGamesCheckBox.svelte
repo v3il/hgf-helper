@@ -1,10 +1,22 @@
 <label class="hgf-twitch-extension-label">
     <span class="hgf-twitch-extension-label__text">
-        <slot />
+        {@render children()}
     </span>
 
-    <input type="checkbox">
+    <input type="checkbox" {checked} {onchange}>
 </label>
+
+<script lang="ts">
+import { type Snippet } from 'svelte';
+
+interface Props {
+    checked: boolean;
+    onchange: (event: Event) => void;
+    children: Snippet;
+}
+
+const { checked, onchange, children }: Props = $props();
+</script>
 
 <style>
 .hgf-twitch-extension-label {
