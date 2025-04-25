@@ -2,7 +2,7 @@
     <span>Loot game</span>
 
     {#if gameService.isRoundRunning}
-        <MiniGamesTimer timeout={gameService.timeUntilMessage} class="hgf-ml-8" />
+        <MiniGamesTimer timeout={gameService.timeUntilMessage} class="hgf-ml-4" />
     {/if}
 </MiniGamesCheckBox>
 

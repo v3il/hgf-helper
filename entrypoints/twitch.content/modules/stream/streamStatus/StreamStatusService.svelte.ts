@@ -1,9 +1,8 @@
 import { StreamStatus } from '@twitch/consts';
 import './style.css';
-import { MessageSender } from '@twitch/modules/twitchChat';
-import { Container, ContainerInstance, Service } from 'typedi';
+import { Container, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { ColorService, OnScreenTextRecognizer } from '@shared/services';
+import { ColorService } from '@shared/services';
 import { logDev } from '@utils';
 import { BasicView } from '@shared/views';
 import { EventEmitter } from '@shared/EventEmitter';

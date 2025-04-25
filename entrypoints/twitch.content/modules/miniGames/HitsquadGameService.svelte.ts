@@ -1,37 +1,28 @@
 import { Container } from 'typedi';
-import { TwitchUIService } from '@twitch/modules';
-import { EventEmitter, UnsubscribeTrigger } from '@shared/EventEmitter';
+import { UnsubscribeTrigger } from '@shared/EventEmitter';
 import { getRandomNumber, log, waitAsync } from '@utils';
 import { Timing } from '@shared/consts';
 import { ChatObserver, MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
 import { SettingsFacade } from '@shared/modules';
 
-interface IHitsquadRunnerState {
-    isRunning: boolean,
-    remainingRounds: number
-}
-
-interface IRoundsData {
-    total: number
-    left: number
-}
-
 const HITSQUAD_GAMES_ON_SCREEN = 12;
 const COMMAND = '!hitsquad';
 
 export class HitsquadGameService {
-    readonly events;
+    static readonly HITSQUAD_GAMES_PER_DAY = 600;
 
     private readonly messageSender: MessageSender;
     private readonly chatObserver: ChatObserver;
-    private readonly twitchUIService: TwitchUIService;
     private readonly streamStatusService: StreamStatusService;
     private readonly settingsFacade: SettingsFacade;
 
-    timeUntilMessage!: number;
-    private totalRounds!: number;
-    private state!: IHitsquadRunnerState;
+    isRunning = $state(false);
+    remainingRounds = $state(0);
+    totalRounds = $state(0);
+    timeUntilMessage = $state(0);
+
+
     private timeout!: number;
     private lastHitsquadRewardTimestamp!: number;
     private unsubscribe!: UnsubscribeTrigger;
@@ -40,68 +31,53 @@ export class HitsquadGameService {
         this.settingsFacade = Container.get(SettingsFacade);
         this.messageSender = Container.get(MessageSender);
         this.chatObserver = Container.get(ChatObserver);
-        this.twitchUIService = Container.get(TwitchUIService);
         this.streamStatusService = Container.get(StreamStatusService);
 
-        this.events = EventEmitter.create<{
-            round: void,
-            end: void
-        }>();
+        this.isRunning = this.settingsFacade.settings.hitsquad;
+        this.remainingRounds = this.settingsFacade.settings.hitsquadRounds;
 
-        this.state = this.getState();
-
-        if (this.state.isRunning) {
+        if (this.isRunning) {
             this.start();
         }
     }
 
-    get isRunning() {
-        return this.state.isRunning;
-    }
-
-    get roundsData(): IRoundsData {
-        return {
-            total: this.totalRounds,
-            left: this.state.remainingRounds
-        };
-    }
-
     start(rounds?: number) {
         if (rounds) {
-            this.state = { isRunning: true, remainingRounds: rounds };
+            this.isRunning = true;
+            this.remainingRounds = rounds;
             this.saveState();
         }
 
-        log(`Start Hitsquad service with ${this.state.remainingRounds} rounds`);
+        log(`Start Hitsquad service with ${this.remainingRounds} rounds`);
 
-        this.totalRounds = this.state.remainingRounds;
+        this.totalRounds = this.remainingRounds;
 
         this.listenEvents();
         this.scheduleNextRound();
     }
 
     stop() {
-        this.state = { isRunning: false, remainingRounds: 0 };
+        this.isRunning = false;
+        this.remainingRounds = 0;
+
         this.saveState();
-        clearTimeout(this.timeout);
         this.unsubscribe?.();
+
+        clearTimeout(this.timeout);
     }
 
     participate() {
         this.messageSender.sendMessage(COMMAND);
     }
 
-    private getState(): IHitsquadRunnerState {
-        return {
-            isRunning: this.settingsFacade.settings.hitsquad,
-            remainingRounds: this.settingsFacade.settings.hitsquadRounds
-        };
+    destroy() {
+        this.stop();
     }
 
     private saveState() {
         this.settingsFacade.updateSettings({
-            hitsquad: this.state.isRunning,
-            hitsquadRounds: this.state.remainingRounds
+            hitsquad: this.isRunning,
+            hitsquadRounds: this.remainingRounds
         });
     }
 
@@ -118,7 +94,7 @@ export class HitsquadGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.twitchUIService.isAdsPhase || this.streamStatusService.isVideoBroken) {
+        if (this.streamStatusService.isVideoBroken) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
@@ -127,12 +103,8 @@ export class HitsquadGameService {
         }
 
         this.messageSender.sendMessage(COMMAND);
-        this.state.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
+        this.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
         this.saveState();
-
-        if (this.state.remainingRounds > 0) {
-            this.events.emit('round');
-        }
     }
 
     private getNextRoundDelay() {
@@ -152,13 +124,11 @@ export class HitsquadGameService {
 
             await this.sendCommand();
 
-            if (this.state.remainingRounds > 0) {
+            if (this.remainingRounds > 0) {
                 return this.scheduleNextRound();
             }
 
-            this.timeUntilMessage = 0;
             this.stop();
-            this.events.emit('end');
         }, delay);
     }
 }
