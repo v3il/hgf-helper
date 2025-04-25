@@ -2,13 +2,10 @@ import { Timing } from '@shared/consts';
 import { TwitchPlayerService } from '@twitch/modules/stream';
 import { Container } from 'typedi';
 import { SettingsFacade } from '@shared/modules';
-
-export interface IDelayRemover {
-    destroy: () => void;
-}
+import { onDestroy } from 'svelte';
 
 export const useDelayRemover = () => {
-    let intervalId: number = 0;
+    let intervalId: number;
 
     const settingsFacade = Container.get(SettingsFacade);
     const playerService = Container.get(TwitchPlayerService);
@@ -31,10 +28,8 @@ export const useDelayRemover = () => {
         clearInterval(intervalId);
     }
 
-    return {
-        destroy: () => {
-            unsubscribe();
-            destroy();
-        }
-    };
+    onDestroy(() => {
+        destroy();
+        unsubscribe();
+    });
 };

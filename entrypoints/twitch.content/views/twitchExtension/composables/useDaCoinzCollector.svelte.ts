@@ -2,22 +2,19 @@ import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { debounce } from '@utils';
 import { SettingsFacade } from '@shared/modules';
+import { onDestroy } from 'svelte';
 
-export interface IDaCoinzCollector {
-    destroy: () => void;
-}
-
-export const useDaCoinzCollector = (): IDaCoinzCollector => {
+export const useDaCoinzCollector = () => {
     let observer: MutationObserver | null = null;
     const settingsFacade = Container.get(SettingsFacade);
     const twitchUIService = Container.get(TwitchUIService);
     const chatInputContainerEl = twitchUIService.chatButtonsContainerEl! as HTMLElement;
 
     const claimChannelPoints = debounce(() => {
-        const claimButtonEl = chatInputContainerEl.querySelector('[aria-label="Claim Bonus"]');
+        const claimButtonEl = chatInputContainerEl.querySelector<HTMLButtonElement>('[aria-label="Claim Bonus"]');
 
         if (claimButtonEl) {
-            (claimButtonEl as HTMLButtonElement).click();
+            claimButtonEl.click();
         }
     }, 2000);
 
@@ -49,10 +46,8 @@ export const useDaCoinzCollector = (): IDaCoinzCollector => {
         observer?.disconnect();
     }
 
-    return {
-        destroy: () => {
-            unsubscribe();
-            destroy();
-        }
-    };
+    onDestroy(() => {
+        destroy();
+        unsubscribe();
+    });
 };

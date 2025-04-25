@@ -1,5 +1,5 @@
 import { Timing } from '@shared/consts';
-import { getRandomNumber, waitAsync } from '@utils';
+import { getRandomNumber, log, waitAsync } from '@utils';
 import { Container } from 'typedi';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
@@ -78,6 +78,11 @@ export class LootGameService {
         this.timeUntilMessage = Date.now() + delay;
 
         this.timeoutId = window.setTimeout(() => {
+            if (!this.streamStatusService.isBotWorking) {
+                this.isRoundRunning = false;
+                return;
+            }
+
             this.sendCommand();
         }, delay);
     }

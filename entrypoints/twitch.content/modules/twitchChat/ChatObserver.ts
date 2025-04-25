@@ -9,7 +9,7 @@ export interface IChatMessage {
     userName: string;
     message: string;
     isSystemMessage: boolean;
-    isHitsquadReward: boolean;
+    isReward: boolean;
     isAkiraDrawReward: boolean;
     hasMyMention: boolean;
 }
@@ -70,7 +70,7 @@ export class ChatObserver {
         const userName = userNameEl.textContent!.toLowerCase();
         const message = messageEl!.textContent!.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather' || userName === 'hitsquadplays';
-        const isHitsquadReward = isSystemMessage && MessageTemplates.isHitsquadReward(message);
+        const isReward = isSystemMessage && MessageTemplates.isReward(message);
         const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
         const hasMyMention = mentionEl?.textContent?.toLowerCase().trim() === this.twitchUIService.twitchUserName;
 
@@ -79,7 +79,7 @@ export class ChatObserver {
             userName,
             message,
             isSystemMessage,
-            isHitsquadReward,
+            isReward,
             isAkiraDrawReward,
             hasMyMention
         });

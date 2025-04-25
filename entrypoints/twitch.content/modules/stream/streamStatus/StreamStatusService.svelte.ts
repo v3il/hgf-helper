@@ -5,10 +5,11 @@ import { TwitchUIService } from '@twitch/modules';
 import { ColorService } from '@shared/services';
 import { logDev } from '@utils';
 import { BasicView } from '@shared/views';
-import { EventEmitter } from '@shared/EventEmitter';
+import { EventEmitter, UnsubscribeTrigger } from '@shared/EventEmitter';
 import { Timing } from '@shared/consts';
 import { antiCheatChecks, chestGameChecks, ICheck, lootGameChecks } from './checks';
 import template from './template.html?raw';
+import { ChatObserver } from '@twitch/modules/twitchChat';
 
 @Service()
 export class StreamStatusService extends BasicView {
@@ -16,8 +17,12 @@ export class StreamStatusService extends BasicView {
 
     private readonly twitchUIService!: TwitchUIService;
     private readonly colorService!: ColorService;
+    private readonly chatObserver: ChatObserver;
 
     private timeoutId!: number;
+    private streamReloadTimeoutId!: number;
+    private lastRewardTimestamp!: number;
+    private unsubscribe!: UnsubscribeTrigger;
     private statuses!: StreamStatus[];
 
     isLootGame = false;
@@ -35,14 +40,20 @@ export class StreamStatusService extends BasicView {
 
         this.twitchUIService = Container.get(TwitchUIService);
         this.colorService = Container.get(ColorService);
+        this.chatObserver = Container.get(ChatObserver);
         this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
 
         this.render();
+        this.listenEvents();
         this.checkStreamStatus(true);
 
         this.timeoutId = window.setInterval(() => {
             this.checkStreamStatus(false);
         }, 5 * Timing.SECOND);
+    }
+
+    get isBotWorking() {
+        return Date.now() - this.lastRewardTimestamp < 10 * Timing.MINUTE;
     }
 
     render() {
@@ -56,17 +67,30 @@ export class StreamStatusService extends BasicView {
 
         if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
             this.statuses = [StreamStatus.BROKEN];
+
+            this.streamReloadTimeoutId = window.setTimeout(() => {
+                location.reload();
+            }, Timing.MINUTE);
+
             logDev('Video is broken');
             return;
         }
+
+        clearTimeout(this.streamReloadTimeoutId);
 
         this.renderVideoFrame(activeVideoEl);
 
         this.checkLootGame(silent);
         this.checkChestGame(silent);
         this.checkAntiCheat(silent);
+    }
 
-        console.error('\n')
+    private listenEvents() {
+        this.unsubscribe = this.chatObserver.observeChat(({ isReward }) => {
+            if (isReward) {
+                this.lastRewardTimestamp = Date.now();
+            }
+        });
     }
 
     private renderVideoFrame(videoEl: HTMLVideoElement) {
@@ -82,8 +106,6 @@ export class StreamStatusService extends BasicView {
         const previousStatus = this.isAntiCheat;
         const matchedChecks = this.checkPoints(antiCheatChecks);
 
-        console.error(`Anticheat checks: ${matchedChecks} / ${antiCheatChecks.length}`);
-
         this.isAntiCheat = (matchedChecks / antiCheatChecks.length) >= 0.5;
 
         if (previousStatus !== this.isAntiCheat && !silent) {
@@ -95,8 +117,6 @@ export class StreamStatusService extends BasicView {
         const previousStatus = this.isLootGame;
         const matchedChecks = this.checkPoints(lootGameChecks);
 
-        console.error(`Loot game checks: ${matchedChecks} / ${lootGameChecks.length}`);
-
         this.isLootGame = (matchedChecks / lootGameChecks.length) >= 0.7;
 
         if (previousStatus !== this.isLootGame && !silent) {
@@ -107,8 +127,6 @@ export class StreamStatusService extends BasicView {
     private checkChestGame(silent: boolean) {
         const previousStatus = this.isChestGame;
         const matchedChecks = this.checkPoints(chestGameChecks);
-
-        console.error(`Chest game checks: ${matchedChecks} / ${chestGameChecks.length}`);
 
         this.isChestGame = (matchedChecks / chestGameChecks.length) >= 0.7;
 
@@ -130,16 +148,13 @@ export class StreamStatusService extends BasicView {
 
             return {
                 expected: color,
-                actual: pixelHexColor,
                 similarity: this.colorService.getColorsSimilarity(color, pixelHexColor)
             };
         });
 
-        const failedChecks = checksResults.filter(({ similarity }) => {
-            return similarity >= 0.85;
-        });
+        const matchedChecks = checksResults.filter(({ similarity }) => similarity >= 0.85);
 
-        return failedChecks.length;
+        return matchedChecks.length;
     }
 
     get isVideoBroken() {

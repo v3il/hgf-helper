@@ -11,7 +11,7 @@
 import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import AuthView from './AuthView.svelte';
-import { MiniGamesControls } from './miniGamesControls';
+import { MiniGamesControls } from './twitchExtension/miniGames';
 
 const authFacade = Container.get(AuthFacade);
 </script>

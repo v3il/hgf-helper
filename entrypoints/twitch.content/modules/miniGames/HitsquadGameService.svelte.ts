@@ -13,7 +13,6 @@ export class HitsquadGameService {
     static readonly HITSQUAD_GAMES_PER_DAY = 600;
 
     private readonly messageSender: MessageSender;
-    private readonly chatObserver: ChatObserver;
     private readonly streamStatusService: StreamStatusService;
     private readonly settingsFacade: SettingsFacade;
 
@@ -22,7 +21,6 @@ export class HitsquadGameService {
     totalRounds = $state(0);
     timeUntilMessage = $state(0);
 
-
     private timeout!: number;
     private lastHitsquadRewardTimestamp!: number;
     private unsubscribe!: UnsubscribeTrigger;
@@ -30,7 +28,6 @@ export class HitsquadGameService {
     constructor() {
         this.settingsFacade = Container.get(SettingsFacade);
         this.messageSender = Container.get(MessageSender);
-        this.chatObserver = Container.get(ChatObserver);
         this.streamStatusService = Container.get(StreamStatusService);
 
         this.isRunning = this.settingsFacade.settings.hitsquad;
@@ -52,7 +49,6 @@ export class HitsquadGameService {
 
         this.totalRounds = this.remainingRounds;
 
-        this.listenEvents();
         this.scheduleNextRound();
     }
 
@@ -81,18 +77,6 @@ export class HitsquadGameService {
         });
     }
 
-    private listenEvents() {
-        this.unsubscribe = this.chatObserver.observeChat(({ isHitsquadReward }) => {
-            if (isHitsquadReward) {
-                this.lastHitsquadRewardTimestamp = Date.now();
-            }
-        });
-    }
-
-    private get isBotWorking() {
-        return Date.now() - this.lastHitsquadRewardTimestamp < 20 * Timing.MINUTE;
-    }
-
     private async sendCommand(): Promise<void> {
         if (this.streamStatusService.isVideoBroken) {
             const delay = 20 * Timing.SECOND;
@@ -117,7 +101,7 @@ export class HitsquadGameService {
         this.timeUntilMessage = Date.now() + delay;
 
         this.timeout = window.setTimeout(async () => {
-            if (!this.isBotWorking) {
+            if (!this.streamStatusService.isBotWorking) {
                 log('Bot is not working, scheduling next round');
                 return this.scheduleNextRound();
             }

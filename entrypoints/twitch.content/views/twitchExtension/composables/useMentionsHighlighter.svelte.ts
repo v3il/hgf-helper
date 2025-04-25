@@ -1,17 +1,14 @@
 import { Container } from 'typedi';
+import { SettingsFacade } from '@shared/modules';
 import { ChatObserver } from '@twitch/modules/twitchChat';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
-import { SettingsFacade } from '@shared/modules';
+import { onDestroy } from 'svelte';
 
-export interface IMentionsHighlighter {
-    destroy: () => void;
-}
-
-export const useMentionsHighlighter = (): IMentionsHighlighter => {
-    let destroyChatObserver: UnsubscribeTrigger | undefined;
-
+export const useMentionsHighlighter = () => {
     const settingsFacade = Container.get(SettingsFacade);
     const chatObserver = Container.get(ChatObserver);
+
+    let destroyChatObserver: UnsubscribeTrigger | undefined;
 
     if (settingsFacade.settings.highlightMentions) {
         initChatObserver();
@@ -29,10 +26,8 @@ export const useMentionsHighlighter = (): IMentionsHighlighter => {
         });
     }
 
-    return {
-        destroy: () => {
-            destroySettingObserver();
-            destroyChatObserver?.();
-        }
-    };
-};
+    onDestroy(() => {
+        destroyChatObserver?.();
+        destroySettingObserver();
+    })
+}
