@@ -1,5 +1,6 @@
 import { resolve } from 'node:path';
 import { UserConfig } from 'wxt';
+import tailwindcss from '@tailwindcss/vite';
 
 interface IParams extends UserConfig {
     description: string;
@@ -9,6 +10,12 @@ interface IParams extends UserConfig {
 export const buildConfig = ({ description, ...rest }: IParams): UserConfig => ({
     extensionApi: 'chrome',
     modules: ['@wxt-dev/module-svelte'],
+
+    vite: () => ({
+        plugins: [
+            tailwindcss(),
+        ],
+    }),
 
     manifest: {
         description,

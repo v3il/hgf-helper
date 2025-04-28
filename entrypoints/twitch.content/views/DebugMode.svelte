@@ -51,7 +51,7 @@ function clickHandler({ pageX, pageY }: MouseEvent) {
     }];
 }
 
-document.addEventListener('keydown', (event) => {
+function keydownHandler(event: KeyboardEvent) {
     if (event.key === '0' && event.ctrlKey) {
         isVisible = !isVisible;
 
@@ -62,6 +62,12 @@ document.addEventListener('keydown', (event) => {
             checks = [];
         }
     }
+}
+
+document.addEventListener('keydown', keydownHandler);
+
+onDestroy(() => {
+    document.removeEventListener('keydown', keydownHandler);
 });
 </script>
 

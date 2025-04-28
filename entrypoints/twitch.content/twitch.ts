@@ -20,8 +20,13 @@ export const main = async () => {
     log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 
     twitchUIService.whenStreamReady(async () => {
+        const extensionTargetEl = document.createElement('div');
+
+        // extensionTargetEl.classList.add('hgf-helper', 'revert-all');
+        twitchUIService.streamInfoEl!.insertAdjacentElement('afterbegin', extensionTargetEl);
+
         mount(TwitchExtension, {
-            target: document.body
+            target: extensionTargetEl
         });
     });
 };

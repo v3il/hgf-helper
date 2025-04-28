@@ -24,6 +24,7 @@ export class TwitchUIService {
                 this.chatInputEl,
                 this.chatScrollableAreaEl,
                 this.userDropdownToggleEl,
+                this.streamInfoEl,
                 videoEl
             ];
 
@@ -86,6 +87,10 @@ export class TwitchUIService {
 
     get currentGame() {
         return document.querySelector('[data-a-target="stream-game-link"] span')?.textContent?.toLowerCase() ?? '';
+    }
+
+    get streamInfoEl() {
+        return document.querySelector('.channel-info-content');
     }
 
     #isVideoPlaying(videoEl: HTMLVideoElement) {

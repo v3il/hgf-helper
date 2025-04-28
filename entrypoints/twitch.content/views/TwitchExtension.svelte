@@ -22,14 +22,8 @@ const authFacade = Container.get(AuthFacade);
 .hgf-twitch-extension {
     display: flex;
     align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 50px;
-    z-index: 100000;
-    background: #121212;
+    justify-content: space-between;
     padding: 16px;
     color: white;
-    border: 3px solid lightgreen;
 }
 </style>

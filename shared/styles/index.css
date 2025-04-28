@@ -1,3 +1,4 @@
-@import "helpers.css";
-@import "uikit.css";
-@import "uk-switch.css";
+@import "./helpers.css";
+/*@import "./uikit.css";*/
+@import "./uk-switch.css";
+@import "tailwindcss" important;

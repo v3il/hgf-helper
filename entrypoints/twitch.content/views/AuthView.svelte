@@ -1,9 +1,19 @@
-<div class="uk-flex uk-flex-between uk-flex-middle uk-panel hgf-color-white">
-    <p class="hgf-mr-32 hgf-inline-block">Sign in to unlock all the HGF-Helper functions</p>
-    <AuthButton class="uk-button-small" />
+<div class="flex flex-row items-center justify-between gap-8 w-full bg-[#18181b]/80 backdrop-blur-sm shadow-lg border border-[#27272a] rounded-xl p-8">
+    <div class="flex-1">
+        <div class="mb-4 flex gap-[8px] items-baseline">
+            <Logo />
+            <h2 class="font-semibold text-[#d4d4d8] text-4xl">HGF-Helper</h2>
+        </div>
+
+        <p class="text-[#a1a1aa]">
+            Sign in to unlock all the HGF-Helper functions
+        </p>
+    </div>
+
+    <AuthButton />
 </div>
 
-<script>
-import {AuthButton} from "@shared/components";
+<script lang="ts">
+import { AuthButton, Logo } from '@shared/components';
 </script>
 

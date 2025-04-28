@@ -1,14 +1,7 @@
-<span class={['hgf-twitch-extension-text', props.class]}>
+<span class="font-mono font-bold text-[#71717a] text-[12px] leading-none">
     {@render props.children()}
 </span>
 
 <script lang="ts">
 const props = $props();
 </script>
-
-<style>
-.hgf-twitch-extension-text {
-    display: inline-block;
-    color: #999;
-}
-</style>
