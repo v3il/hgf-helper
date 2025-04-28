@@ -6,8 +6,8 @@
 
     <div class="bg-[#18181b]/80 backdrop-blur-sm border-x border-[#27272a]">
         <HitsquadControls />
-<!--        <LootControls />-->
-<!--        <ChestControls />-->
+        <LootControls />
+        <ChestControls />
     </div>
 </div>
 
@@ -17,7 +17,6 @@ import LootControls from './LootControls.svelte';
 import ChestControls from './ChestControls.svelte';
 import StreamStatus from './StreamStatus.svelte';
 import { useDaCoinzCollector, useMentionsHighlighter, useDelayRemover } from '../composables';
-import { Logo } from '@shared/components';
 
 useDelayRemover();
 useDaCoinzCollector();

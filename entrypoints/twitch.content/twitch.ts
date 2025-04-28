@@ -22,7 +22,6 @@ export const main = async () => {
     twitchUIService.whenStreamReady(async () => {
         const extensionTargetEl = document.createElement('div');
 
-        // extensionTargetEl.classList.add('hgf-helper', 'revert-all');
         twitchUIService.streamInfoEl!.insertAdjacentElement('afterbegin', extensionTargetEl);
 
         mount(TwitchExtension, {
