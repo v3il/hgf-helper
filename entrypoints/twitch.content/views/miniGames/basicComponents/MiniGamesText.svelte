@@ -1,4 +1,4 @@
-<span class="font-mono font-bold text-[#71717a] text-[12px] leading-none">
+<span class="font-mono font-bold text-[#71717a] text-[14px] leading-none">
     {@render props.children()}
 </span>
 

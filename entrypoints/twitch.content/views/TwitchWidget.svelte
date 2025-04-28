@@ -11,12 +11,10 @@
     </div>
 </div>
 
-<script>
-import HitsquadControls from './HitsquadControls.svelte';
-import LootControls from './LootControls.svelte';
-import ChestControls from './ChestControls.svelte';
-import StreamStatus from './StreamStatus.svelte';
-import { useDaCoinzCollector, useMentionsHighlighter, useDelayRemover } from '../composables';
+<script lang="ts">
+import { StreamStatus } from './streamStatus';
+import { useDaCoinzCollector, useMentionsHighlighter, useDelayRemover } from './composables';
+import { HitsquadControls, ChestControls, LootControls } from './miniGames'
 
 useDelayRemover();
 useDaCoinzCollector();

@@ -1,6 +1,6 @@
 <div class="hgf-twitch-extension">
     {#if authFacade.isAuthenticated}
-        <MiniGamesControls />
+        <TwitchWidget />
         <DebugMode />
     {:else}
         <AuthView />
@@ -13,7 +13,7 @@ import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import AuthView from './AuthView.svelte';
 import DebugMode from './DebugMode.svelte';
-import { MiniGamesControls } from './twitchExtension/miniGames';
+import TwitchWidget from './TwitchWidget.svelte';
 
 const authFacade = Container.get(AuthFacade);
 </script>

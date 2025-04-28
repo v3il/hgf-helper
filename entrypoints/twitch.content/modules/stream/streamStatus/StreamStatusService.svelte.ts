@@ -1,4 +1,3 @@
-import { StreamStatus } from '@twitch/consts';
 import './style.css';
 import { Container, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
@@ -21,13 +20,14 @@ export class StreamStatusService extends BasicView {
 
     private timeoutId!: number;
     private streamReloadTimeoutId!: number;
-    private lastRewardTimestamp!: number;
+    private lastRewardTimestamp: number = Date.now();
     private unsubscribe!: UnsubscribeTrigger;
-    private statuses!: StreamStatus[];
 
     isLootGame = false;
     isAntiCheat = false;
     isChestGame = false;
+    isBotWorking = $state(true);
+    isStreamOk = $state(true);
 
     readonly events = new EventEmitter<{
         loot: boolean,
@@ -52,10 +52,6 @@ export class StreamStatusService extends BasicView {
         }, 5 * Timing.SECOND);
     }
 
-    get isBotWorking() {
-        return Date.now() - this.lastRewardTimestamp < 10 * Timing.MINUTE;
-    }
-
     render() {
         document.body.appendChild(this.el);
     }
@@ -63,10 +59,8 @@ export class StreamStatusService extends BasicView {
     checkStreamStatus(silent: boolean) {
         const { activeVideoEl } = this.twitchUIService;
 
-        this.statuses = [StreamStatus.OK];
-
         if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
-            this.statuses = [StreamStatus.BROKEN];
+            this.isStreamOk = false;
 
             this.streamReloadTimeoutId = window.setTimeout(() => {
                 location.reload();
@@ -83,6 +77,9 @@ export class StreamStatusService extends BasicView {
         this.checkLootGame(silent);
         this.checkChestGame(silent);
         this.checkAntiCheat(silent);
+
+        this.isStreamOk = true;
+        this.isBotWorking = (Date.now() - this.lastRewardTimestamp) < 10 * Timing.MINUTE;
     }
 
     private listenEvents() {
@@ -158,10 +155,6 @@ export class StreamStatusService extends BasicView {
     }
 
     get isVideoBroken() {
-        return this.statuses.includes(StreamStatus.BROKEN) || this.twitchUIService.isAdsPhase;
-    }
-
-    get isStreamOk() {
-        return this.statuses.includes(StreamStatus.OK);
+        return this.isStreamOk || this.twitchUIService.isAdsPhase;
     }
 }

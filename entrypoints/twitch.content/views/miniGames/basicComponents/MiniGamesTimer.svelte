@@ -1,4 +1,4 @@
-<MiniGamesText {...rest}>
+<MiniGamesText>
     ({formattedTime})
 </MiniGamesText>
 
@@ -9,10 +9,9 @@ import { onDestroy } from 'svelte';
 
 interface Props {
     timeout: number;
-    class?: string;
 }
 
-const { timeout, ...rest }: Props = $props();
+const { timeout }: Props = $props();
 
 let formattedTime = $state('');
 
@@ -30,5 +29,5 @@ function tick() {
 
 onDestroy(() => {
     clearInterval(intervalId);
-})
+});
 </script>
