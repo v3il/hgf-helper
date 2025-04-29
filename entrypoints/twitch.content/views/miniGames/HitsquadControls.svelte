@@ -1,7 +1,10 @@
-<MiniGamesPanel isRunning={gameService.isRunning} {onCheckboxChange} {participate} Icon={Gift} name="Giveaways">
+<MiniGamesPanel isRunning={gameService.isRunning} {onCheckboxChange} {participate} Icon={Gift} name="Giveaways" {...props}>
     {#snippet gameIndicators()}
         {#if gameService.isRunning}
-            <MiniGamesTimer timeout={gameService.timeUntilMessage} />
+            <MiniGamesText>
+                (<MiniGamesTimer timeout={gameService.timeUntilMessage} />)
+            </MiniGamesText>
+
             <MiniGamesText>[{gameService.remainingRounds}/{gameService.totalRounds}]</MiniGamesText>
         {/if}
     {/snippet}
@@ -11,9 +14,11 @@
 import { MiniGamesTimer, MiniGamesText, MiniGamesPanel } from './basicComponents';
 import { HitsquadGameService } from '@twitch/modules/miniGames';
 import { Gift } from '@lucide/svelte'
-import { onDestroy } from 'svelte';
+import { getContext } from 'svelte';
 
-const gameService = new HitsquadGameService();
+const props = $props();
+
+const gameService = getContext<HitsquadGameService>('hitsquad');
 
 function participate() {
     gameService.participate();
@@ -33,8 +38,4 @@ function onCheckboxChange(isEnabled: boolean) {
 
     gameService.start(numericGamesCount);
 }
-
-onDestroy(() => {
-    gameService.destroy();
-});
 </script>

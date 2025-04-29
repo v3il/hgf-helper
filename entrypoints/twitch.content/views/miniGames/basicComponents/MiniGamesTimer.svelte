@@ -1,9 +1,6 @@
-<MiniGamesText>
-    ({formattedTime})
-</MiniGamesText>
+{formattedTime}
 
 <script lang="ts">
-import MiniGamesText from './MiniGamesText.svelte';
 import { Timing } from '@shared/consts';
 import { onDestroy } from 'svelte';
 

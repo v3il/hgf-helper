@@ -1,4 +1,4 @@
-<div class="flex items-center gap-[16px] ml-[16px]">
+<div class="flex items-center gap-[16px]">
     <StreamStatusItem Icon={Bot} isOk={streamStatusService.isBotWorking} name="Mini-games bot" />
     <StreamStatusItem Icon={Activity} isOk={streamStatusService.isStreamOk} name="Stream" />
 </div>

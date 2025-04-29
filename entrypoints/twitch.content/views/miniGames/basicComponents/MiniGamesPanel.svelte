@@ -1,4 +1,4 @@
-<div class="w-full bg-[#18181b]/80 backdrop-blur-sm shadow-lg space-x-4 flex items-center justify-between border-x-0 border-t-0 border-b border-[#27272a] px-[16px] py-[8px]">
+<div class={classes}>
     <div class="flex items-center gap-3">
         <Icon size="20" class="text-[#9b87f5]" />
         <h4 class="font-semibold text-[#a1a1aa] text-[16px]">{name}</h4>
@@ -13,8 +13,9 @@
 
         <button
             onclick={participate}
-            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-[40px] px-[16px] py-[8px] uppercase text-[#a1a1aa] hover:bg-[#27272a]/50 hover:text-[#d4d4d8] text-[14px]"
+            class="inline-flex items-center justify-center gap-[8px] whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-[40px] px-[16px] py-[8px] uppercase text-[#a1a1aa] hover:bg-[#27272a]/50 hover:text-[#d4d4d8] text-[14px]"
         >
+            <Play size="16" class="text-green-500" />
             SEND
         </button>
     </div>
@@ -23,6 +24,8 @@
 <script lang="ts">
 import { Switch } from '@shared/components';
 import type { Component, Snippet } from 'svelte';
+import clsx from 'clsx';
+import { Play } from '@lucide/svelte';
 
 interface Props {
     isRunning: boolean;
@@ -31,7 +34,15 @@ interface Props {
     participate: () => void;
     gameIndicators: Snippet;
     Icon: Component;
+    class?: string;
 }
 
-let { gameIndicators, Icon, onCheckboxChange, participate, isRunning, name }: Props = $props();
+let { gameIndicators, Icon, onCheckboxChange, participate, isRunning, name, ...rest }: Props = $props();
+
+const classes = $derived(
+    clsx([
+        'w-full bg-[#18181b]/80 backdrop-blur-sm shadow-lg space-x-4 flex items-center justify-between px-[16px] py-[8px]',
+        rest.class ?? ''
+    ])
+);
 </script>

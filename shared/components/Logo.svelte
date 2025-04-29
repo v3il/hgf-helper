@@ -1,4 +1,4 @@
-<HeartHandshake size="20" class="text-[#9146FF]" />
+<HeartHandshake size="20" class="text-[#9b87f5]" />
 
 <script>
 import { HeartHandshake } from '@lucide/svelte';

@@ -21,7 +21,7 @@ export class TwitchUIService {
 
             const elements = [
                 this.chatContainerEl,
-                this.chatInputEl,
+                // this.chatInputEl,
                 this.chatScrollableAreaEl,
                 this.userDropdownToggleEl,
                 this.streamInfoEl,

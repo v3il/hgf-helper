@@ -155,6 +155,6 @@ export class StreamStatusService extends BasicView {
     }
 
     get isVideoBroken() {
-        return this.isStreamOk || this.twitchUIService.isAdsPhase;
+        return !this.isStreamOk || this.twitchUIService.isAdsPhase;
     }
 }
