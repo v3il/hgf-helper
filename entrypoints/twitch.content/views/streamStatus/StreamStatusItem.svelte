@@ -15,6 +15,6 @@ interface Props {
 
 const { Icon, isOk, name }: Props = $props();
 
-const indicatorClass = $derived(isOk ? 'text-green-500' : 'text-red-500 animate-pulse');
+const indicatorClass = $derived(isOk ? 'text-green-500 animate-pulse' : 'text-red-500 animate-pulse');
 const tooltip = $derived(`${name} is ${isOk ? 'ok' : 'not ok'}`);
 </script>

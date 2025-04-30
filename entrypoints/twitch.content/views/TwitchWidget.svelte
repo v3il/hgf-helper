@@ -11,7 +11,7 @@
 
             <button
                 onclick={togglePanel}
-                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-[40px] w-[40px] uppercase text-[#a1a1aa] hover:bg-[#27272a]/50 hover:text-[#d4d4d8]"
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-[40px] w-[40px] uppercase text-[#a1a1aa] bg-[#27272a]/20 hover:bg-[#27272a]/50 hover:text-[#d4d4d8]"
             >
                 {#if isExpanded}
                     <ChevronUp size="20" class="text-[#9b87f5]" />
