@@ -58,7 +58,7 @@ export class TwitchPlayerService {
         const checkedRadio = qualityRadios.find((radioEl) => radioEl.checked);
 
         if (!checkedRadio) {
-            return 144;
+            return 360;
         }
 
         this.closeSettingsPopup();
@@ -73,7 +73,8 @@ export class TwitchPlayerService {
     private getRadioButtonQualityValue(radioEl: HTMLInputElement) {
         const labelEl = radioEl.nextSibling! as HTMLElement;
         const divEl = labelEl.querySelector('div')!;
+        const match = divEl.textContent!.match(/^\d+/);
 
-        return Number.parseInt(divEl.textContent!.replace('p', ''), 10);
+        return match ? parseInt(match[0], 10) : 360;
     }
 }
