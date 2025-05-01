@@ -1,5 +1,5 @@
 import { Timing } from '@shared/consts';
-import { getRandomNumber, log, waitAsync } from '@utils';
+import { getRandomNumber, waitAsync } from '@utils';
 import { Container } from 'typedi';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
@@ -14,9 +14,10 @@ export class LootGameService {
     private readonly streamStatusService: StreamStatusService;
 
     private timeoutId!: number;
-    private unsubscribe!: UnsubscribeTrigger;
+    private readonly unsubscribe!: UnsubscribeTrigger;
 
     isGamePhase = $state(false);
+    isGameActive = $state(false);
     isRoundRunning = $state(false);
     timeUntilMessage = $state(0);
 
@@ -25,24 +26,29 @@ export class LootGameService {
         this.settingsFacade = Container.get(SettingsFacade);
         this.streamStatusService = Container.get(StreamStatusService);
 
+        this.isGameActive = this.settingsFacade.settings.lootGame;
         this.isGamePhase = this.streamStatusService.isLootGame;
 
         this.unsubscribe = this.streamStatusService.events.on('loot', (isGamePhase?: boolean) => {
             this.isGamePhase = !!isGamePhase;
 
-            if (this.settingsFacade.settings.lootGame) {
-                this.isGamePhase ? this.start() : this.stop();
+            if (this.isGameActive) {
+                this.isGamePhase ? this.scheduleNextRound() : this.stop();
             }
         });
     }
 
     start() {
-        this.scheduleNextRound();
+        this.isGameActive = true;
+        this.saveState();
     }
 
     stop() {
-        clearTimeout(this.timeoutId);
         this.isRoundRunning = false;
+        this.isGameActive = false;
+
+        this.saveState();
+        clearTimeout(this.timeoutId);
     }
 
     destroy() {
@@ -52,6 +58,12 @@ export class LootGameService {
 
     participate() {
         this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
+    }
+
+    private async saveState() {
+        await this.settingsFacade.updateSettings({
+            lootGame: this.isGameActive
+        });
     }
 
     private async sendCommand(): Promise<void> {

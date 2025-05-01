@@ -1,4 +1,4 @@
-<MiniGamesPanel isRunning={settingsFacade.settings.lootGame} {onCheckboxChange} {participate} Icon={Package} name="Loot" {...props}>
+<MiniGamesPanel isRunning={gameService.isGameActive} {toggle} {participate} {Icon} {name} {...props}>
     {#snippet gameIndicators()}
         {#if gameService.isRoundRunning}
             <MiniGamesText>
@@ -10,29 +10,8 @@
 
 <script lang="ts">
 import { MiniGamesTimer, MiniGamesPanel, MiniGamesText } from './basicComponents';
-import { Container } from 'typedi';
-import { SettingsFacade } from '@shared/modules';
-import { LootGameService } from '@twitch/modules/miniGames';
-import { getContext, onDestroy } from 'svelte';
-import { Package } from '@lucide/svelte';
+import { useLootMiniGame } from './composables';
 
 const props = $props();
-
-const settingsFacade = Container.get(SettingsFacade);
-
-const gameService = getContext<LootGameService>('loot');
-
-function participate() {
-    gameService.participate();
-}
-
-async function onCheckboxChange(isEnabled: boolean) {
-    await settingsFacade.updateSettings({
-        lootGame: isEnabled
-    });
-
-    if (!isEnabled) {
-        gameService.stop();
-    }
-}
+const { toggle, participate, gameService, Icon, name } = useLootMiniGame();
 </script>

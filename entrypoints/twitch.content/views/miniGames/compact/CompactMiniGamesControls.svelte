@@ -1,15 +1,6 @@
 <div class="flex items-center gap-[16px]">
     <CompactMiniGamesControlsHitsquad />
-
-    <CompactMiniGamesControlsItem
-        isGameActive={settingsFacade.settings.lootGame}
-        isTimerVisible={lootGameService.isRoundRunning}
-        timeout={lootGameService.timeUntilMessage}
-        Icon={Package}
-        name="Loot"
-        toggle={() => lootGameService.participate()}
-        participate={() => lootGameService.participate()}
-    />
+    <CompactMiniGamesControlsLoot />
 
     <CompactMiniGamesControlsItem
         isGameActive={settingsFacade.settings.chestGame}
@@ -30,6 +21,7 @@ import { Package, Gift, PackageOpen } from '@lucide/svelte';
 import { Container } from 'typedi';
 import { SettingsFacade } from '@shared/modules';
 import CompactMiniGamesControlsHitsquad from './CompactMiniGamesControlsHitsquad.svelte';
+import CompactMiniGamesControlsLoot from './CompactMiniGamesControlsLoot.svelte';
 
 const settingsFacade = Container.get(SettingsFacade);
 
