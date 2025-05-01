@@ -1,10 +1,10 @@
 <div class="flex flex-col w-full rounded-xl border border-[#27272a]">
     <div class={headerClasses}>
-        {#if isExpanded}
-            <h2 class="font-semibold text-[#d4d4d8] text-[16px] leading-[1.45]">HGF-Helper</h2>
-        {:else}
+        <!--{#if isExpanded}-->
+        <!--    <h2 class="font-semibold text-[#d4d4d8] text-[16px] leading-[1.45]">HGF-Helper</h2>-->
+        <!--{:else}-->
             <CompactMiniGamesControls />
-        {/if}
+        <!--{/if}-->
 
         <div class="flex items-center gap-[24px] ml-[16px]">
             <StreamStatus />

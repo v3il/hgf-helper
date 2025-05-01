@@ -1,18 +1,14 @@
 <div class="flex items-center gap-[16px]">
-    <CompactMiniGamesControlsItem
-        isGameActive={hitsquadGameService.isRunning}
-        isTimerVisible={hitsquadGameService.isRunning}
-        timeout={hitsquadGameService.timeUntilMessage}
-        Icon={Gift}
-        onToggle={() => hitsquadGameService.participate()}
-    />
+    <CompactMiniGamesControlsHitsquad />
 
     <CompactMiniGamesControlsItem
         isGameActive={settingsFacade.settings.lootGame}
         isTimerVisible={lootGameService.isRoundRunning}
         timeout={lootGameService.timeUntilMessage}
         Icon={Package}
-        onToggle={() => lootGameService.participate()}
+        name="Loot"
+        toggle={() => lootGameService.participate()}
+        participate={() => lootGameService.participate()}
     />
 
     <CompactMiniGamesControlsItem
@@ -20,21 +16,23 @@
         isTimerVisible={chestGameService.isRoundRunning}
         timeout={chestGameService.timeUntilMessage}
         Icon={PackageOpen}
-        onToggle={() => chestGameService.participate()}
+        name="Chest"
+        toggle={() => chestGameService.participate()}
+        participate={() => chestGameService.participate()}
     />
 </div>
 
 <script lang="ts">
 import CompactMiniGamesControlsItem from './CompactMiniGamesControlsItem.svelte';
 import { getContext } from 'svelte';
-import { HitsquadGameService, LootGameService, ChestGameService } from '@twitch/modules/miniGames';
+import { LootGameService, ChestGameService } from '@twitch/modules/miniGames';
 import { Package, Gift, PackageOpen } from '@lucide/svelte';
 import { Container } from 'typedi';
 import { SettingsFacade } from '@shared/modules';
+import CompactMiniGamesControlsHitsquad from './CompactMiniGamesControlsHitsquad.svelte';
 
 const settingsFacade = Container.get(SettingsFacade);
 
-const hitsquadGameService = getContext<HitsquadGameService>('hitsquad');
 const lootGameService = getContext<LootGameService>('loot');
 const chestGameService = getContext<ChestGameService>('chest');
 </script>

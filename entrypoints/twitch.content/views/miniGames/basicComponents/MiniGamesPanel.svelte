@@ -7,7 +7,7 @@
     </div>
 
     <div class="flex items-center gap-[16px]">
-        <Switch isChecked={isRunning} onChange={onCheckboxChange} />
+        <Switch isChecked={isRunning} onChange={toggle} />
 
         <div class="shrink-0 w-[1px] h-[32px] ml-[8px] bg-[#27272a]"></div>
 
@@ -30,14 +30,14 @@ import { Send } from '@lucide/svelte';
 interface Props {
     isRunning: boolean;
     name: string;
-    onCheckboxChange: (isChecked: boolean) => void;
+    toggle: (isChecked: boolean) => void;
     participate: () => void;
     gameIndicators: Snippet;
     Icon: Component;
     class?: string;
 }
 
-let { gameIndicators, Icon, onCheckboxChange, participate, isRunning, name, ...rest }: Props = $props();
+let { gameIndicators, Icon, toggle, participate, isRunning, name, ...rest }: Props = $props();
 
 const classes = $derived(
     clsx([
