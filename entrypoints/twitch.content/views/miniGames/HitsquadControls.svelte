@@ -1,4 +1,4 @@
-<MiniGamesPanel isRunning={gameService.isRunning} {toggle} {participate} {Icon} {name} {...props}>
+<MiniGamesPanel isRunning={gameService.isRunning} isSendEnabled {toggle} {participate} {Icon} {name} {...props}>
     {#snippet gameIndicators()}
         {#if gameService.isRunning}
             <MiniGamesText>

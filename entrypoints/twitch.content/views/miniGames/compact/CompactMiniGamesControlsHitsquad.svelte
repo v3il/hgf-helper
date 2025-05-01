@@ -1,6 +1,7 @@
 <CompactMiniGamesControlsItem
     isGameActive={gameService.isRunning}
     isTimerVisible={gameService.isRunning}
+    isSendEnabled
     timeout={gameService.timeUntilMessage}
     {Icon}
     {name}

@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import CompactMiniGamesControlsItem from './CompactMiniGamesControlsItem.svelte';
-import { useLootMiniGame } from '../composables';
+import { useChestMiniGame } from '../composables';
 
 const {
     Icon,
@@ -19,5 +19,5 @@ const {
     toggle,
     participate,
     gameService
-} = useLootMiniGame();
+} = useChestMiniGame();
 </script>

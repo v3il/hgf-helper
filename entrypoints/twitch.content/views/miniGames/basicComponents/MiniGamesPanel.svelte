@@ -13,6 +13,7 @@
 
         <button
             onclick={participate}
+            disabled={!isSendEnabled}
             class="inline-flex items-center justify-center gap-[8px] whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-[40px] px-[16px] py-[8px] uppercase text-[#a1a1aa] hover:bg-[#27272a]/50 hover:text-[#d4d4d8] text-[14px]"
         >
             <Send size="16" class="text-green-500" />
@@ -29,6 +30,7 @@ import { Send } from '@lucide/svelte';
 
 interface Props {
     isRunning: boolean;
+    isSendEnabled: boolean;
     name: string;
     toggle: (isChecked: boolean) => void;
     participate: () => void;
@@ -37,7 +39,7 @@ interface Props {
     class?: string;
 }
 
-let { gameIndicators, Icon, toggle, participate, isRunning, name, ...rest }: Props = $props();
+let { gameIndicators, Icon, toggle, participate, isRunning, isSendEnabled, name, ...rest }: Props = $props();
 
 const classes = $derived(
     clsx([

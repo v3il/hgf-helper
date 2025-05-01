@@ -13,6 +13,7 @@
             title="Send once"
             tabindex="-1"
             onclick={() => participate()}
+            disabled={!isSendEnabled}
         >
             <Send size="14" class="text-green-500" />
         </button>
@@ -32,6 +33,7 @@ import { Send } from '@lucide/svelte';
 
 interface Props {
     Icon: Component;
+    isSendEnabled: boolean;
     isGameActive: boolean;
     isTimerVisible: boolean;
     timeout: number;
@@ -40,7 +42,7 @@ interface Props {
     participate: () => void;
 }
 
-let { Icon, isTimerVisible, isGameActive, timeout, name, toggle, participate }: Props = $props();
+let { Icon, isTimerVisible, isGameActive, isSendEnabled, timeout, name, toggle, participate }: Props = $props();
 
 const toggleIconClasses = $derived(isGameActive ? 'text-[#9b87f5] group-hover:text-[#a89af8]' : 'text-[#71717a] group-hover:text-[#a1a1aa]')
 </script>

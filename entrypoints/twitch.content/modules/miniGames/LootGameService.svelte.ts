@@ -32,8 +32,8 @@ export class LootGameService {
         this.unsubscribe = this.streamStatusService.events.on('loot', (isGamePhase?: boolean) => {
             this.isGamePhase = !!isGamePhase;
 
-            if (this.isGameActive) {
-                this.isGamePhase ? this.scheduleNextRound() : this.stop();
+            if (this.isGameActive && this.isGamePhase) {
+                this.scheduleNextRound();
             }
         });
     }

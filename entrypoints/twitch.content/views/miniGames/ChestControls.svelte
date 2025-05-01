@@ -1,4 +1,4 @@
-<MiniGamesPanel isRunning={settingsFacade.settings.chestGame} {onCheckboxChange} {participate} Icon={PackageOpen} name="Chest" {...props}>
+<MiniGamesPanel isRunning={gameService.isGameActive} isSendEnabled={gameService.isGamePhase} {toggle} {participate} {Icon} {name} {...props}>
     {#snippet gameIndicators()}
         {#if gameService.isRoundRunning}
             <MiniGamesText>
@@ -10,29 +10,8 @@
 
 <script lang="ts">
 import { MiniGamesTimer, MiniGamesPanel, MiniGamesText } from './basicComponents';
-import { Container } from 'typedi';
-import { SettingsFacade } from '@shared/modules';
-import { ChestGameService } from '@twitch/modules/miniGames';
-import { getContext } from 'svelte';
-import { PackageOpen } from '@lucide/svelte';
+import { useChestMiniGame } from './composables';
 
 const props = $props();
-
-const settingsFacade = Container.get(SettingsFacade);
-
-const gameService = getContext<ChestGameService>('chest');
-
-function participate() {
-    gameService.participate();
-}
-
-async function onCheckboxChange(isEnabled: boolean) {
-    await settingsFacade.updateSettings({
-        chestGame: isEnabled
-    });
-
-    if (!isEnabled) {
-        gameService.stop();
-    }
-}
+const { toggle, participate, gameService, Icon, name } = useChestMiniGame();
 </script>

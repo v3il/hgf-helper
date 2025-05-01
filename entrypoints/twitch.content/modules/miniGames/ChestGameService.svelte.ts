@@ -14,9 +14,10 @@ export class ChestGameService {
     private readonly streamStatusService: StreamStatusService;
 
     private timeoutId!: number;
-    private unsubscribe!: UnsubscribeTrigger;
+    private readonly unsubscribe!: UnsubscribeTrigger;
 
     isGamePhase = $state(false);
+    isGameActive = $state(false);
     isRoundRunning = $state(false);
     timeUntilMessage = $state(0);
 
@@ -25,24 +26,29 @@ export class ChestGameService {
         this.settingsFacade = Container.get(SettingsFacade);
         this.streamStatusService = Container.get(StreamStatusService);
 
+        this.isGameActive = this.settingsFacade.settings.chestGame;
         this.isGamePhase = this.streamStatusService.isChestGame;
 
         this.unsubscribe = this.streamStatusService.events.on('chest', (isGamePhase?: boolean) => {
             this.isGamePhase = !!isGamePhase;
 
-            if (this.settingsFacade.settings.chestGame) {
-                this.isGamePhase ? this.start() : this.stop();
+            if (this.isGameActive && this.isGamePhase) {
+                 this.scheduleNextRound();
             }
         });
     }
 
     start() {
-        this.scheduleNextRound();
+        this.isGameActive = true;
+        this.saveState();
     }
 
     stop() {
-        clearTimeout(this.timeoutId);
         this.isRoundRunning = false;
+        this.isGameActive = false;
+
+        this.saveState();
+        clearTimeout(this.timeoutId);
     }
 
     destroy() {
@@ -52,6 +58,12 @@ export class ChestGameService {
 
     participate() {
         this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
+    }
+
+    private async saveState() {
+        await this.settingsFacade.updateSettings({
+            chestGame: this.isGameActive
+        });
     }
 
     private async sendCommand(): Promise<void> {
