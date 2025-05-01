@@ -1,19 +1,16 @@
-import './style.css';
 import { Container, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { ColorService } from '@shared/services';
 import { logDev } from '@utils';
-import { BasicView } from '@shared/views';
 import { EventEmitter, UnsubscribeTrigger } from '@shared/EventEmitter';
 import { Timing } from '@shared/consts';
 import { antiCheatChecks, chestGameChecks, ICheck, lootGameChecks } from './checks';
-import template from './template.html?raw';
 import { ChatObserver } from '@twitch/modules/twitchChat';
+import { OffscreenStreamRenderer } from '../OffscreenStreamRenderer';
 
 @Service()
-export class StreamStatusService extends BasicView {
-    readonly canvasEl;
-
+export class StreamStatusService {
+    private readonly offscreenStreamRenderer!: OffscreenStreamRenderer;
     private readonly twitchUIService!: TwitchUIService;
     private readonly colorService!: ColorService;
     private readonly chatObserver: ChatObserver;
@@ -36,24 +33,17 @@ export class StreamStatusService extends BasicView {
     }>();
 
     constructor() {
-        super(template);
-
+        this.offscreenStreamRenderer = Container.get(OffscreenStreamRenderer);
         this.twitchUIService = Container.get(TwitchUIService);
         this.colorService = Container.get(ColorService);
         this.chatObserver = Container.get(ChatObserver);
-        this.canvasEl = this.el.querySelector<HTMLCanvasElement>('[data-canvas]')!;
 
-        this.render();
         this.listenEvents();
         this.checkStreamStatus(true);
 
         this.timeoutId = window.setInterval(() => {
             this.checkStreamStatus(false);
         }, 5 * Timing.SECOND);
-    }
-
-    render() {
-        document.body.appendChild(this.el);
     }
 
     checkStreamStatus(silent: boolean) {
@@ -72,8 +62,6 @@ export class StreamStatusService extends BasicView {
 
         clearTimeout(this.streamReloadTimeoutId);
 
-        this.renderVideoFrame(activeVideoEl);
-
         this.checkLootGame(silent);
         this.checkChestGame(silent);
         this.checkAntiCheat(silent);
@@ -88,15 +76,6 @@ export class StreamStatusService extends BasicView {
                 this.lastRewardTimestamp = Date.now();
             }
         });
-    }
-
-    private renderVideoFrame(videoEl: HTMLVideoElement) {
-        this.canvasEl.width = videoEl.clientWidth;
-        this.canvasEl.height = videoEl.clientHeight;
-
-        const ctx = this.canvasEl.getContext('2d', { willReadFrequently: true })!;
-
-        ctx.drawImage(videoEl, 0, 0, this.canvasEl.width, this.canvasEl.height);
     }
 
     private checkAntiCheat(silent: boolean = false) {
@@ -133,15 +112,8 @@ export class StreamStatusService extends BasicView {
     }
 
     private checkPoints(points: ICheck[]): number {
-        const { width, height } = this.canvasEl;
-
         const checksResults = points.map(({ xPercent, yPercent, color }) => {
-            const x = Math.floor((xPercent * width) / 100);
-            const y = Math.floor((yPercent * height) / 100);
-
-            const context = this.canvasEl.getContext('2d', { willReadFrequently: true })!;
-            const [r, g, b] = context.getImageData(x, y, 1, 1).data;
-            const pixelHexColor = this.colorService.rgbToHex(r, g, b);
+            const pixelHexColor = this.offscreenStreamRenderer.getColorAtPointPercent(xPercent, yPercent);
 
             return {
                 expected: color,

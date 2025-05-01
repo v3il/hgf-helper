@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { TwitchExtension } from '@twitch/views';
+import { ExtensionRoot } from '@twitch/views';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { AuthFacade } from '@shared/modules';
@@ -24,7 +24,7 @@ export const main = async () => {
 
         twitchUIService.streamInfoEl!.insertAdjacentElement('afterbegin', extensionTargetEl);
 
-        mount(TwitchExtension, {
+        mount(ExtensionRoot, {
             target: extensionTargetEl
         });
     });

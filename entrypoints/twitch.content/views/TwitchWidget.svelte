@@ -41,8 +41,9 @@ import { ChestGameService, HitsquadGameService, LootGameService } from '@twitch/
 import { onDestroy } from 'svelte';
 import { Container } from 'typedi';
 import { SettingsFacade } from '@shared/modules';
-import { AntiCheatProcessor } from '@twitch/modules/stream';
+import { AntiCheatProcessor, OffscreenStreamRenderer } from '@twitch/modules/stream';
 
+const offscreenStreamRenderer = Container.get(OffscreenStreamRenderer);
 const settingsFacade = Container.get(SettingsFacade);
 const antiCheatProcessor = Container.get(AntiCheatProcessor);
 
@@ -81,6 +82,7 @@ function togglePanel() {
 }
 
 onDestroy(() => {
+    offscreenStreamRenderer.destroy();
     antiCheatProcessor.destroy();
     hitsquadGameService.destroy();
     lootGameService.destroy();

@@ -1,4 +1,3 @@
-import './streamStatus/style.css';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container, ContainerInstance, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
@@ -7,6 +6,7 @@ import { getRandomNumber, logDev } from '@utils';
 import { Timing } from '@shared/consts';
 import { StreamStatusService } from './streamStatus';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
+import { OffscreenStreamRenderer } from './OffscreenStreamRenderer';
 
 const antiCheatNameBounds = {
     x: 20.539546290619253,
@@ -17,6 +17,7 @@ const antiCheatNameBounds = {
 
 @Service()
 export class AntiCheatProcessor {
+    private readonly offscreenStreamRenderer!: OffscreenStreamRenderer;
     private readonly twitchUIService!: TwitchUIService;
     private readonly messageSender!: MessageSender;
     private readonly textDecoderService!: OnScreenTextRecognizer;
@@ -26,6 +27,7 @@ export class AntiCheatProcessor {
     private unsubscribe!: UnsubscribeTrigger;
 
     constructor(container: ContainerInstance) {
+        this.offscreenStreamRenderer = Container.get(OffscreenStreamRenderer);
         this.twitchUIService = Container.get(TwitchUIService);
         this.messageSender = Container.get(MessageSender);
         this.textDecoderService = container.get(OnScreenTextRecognizer);
@@ -74,15 +76,13 @@ export class AntiCheatProcessor {
     }
 
     private async checkUserName() {
-        const canvasEl = this.streamStatusService.canvasEl;
-
-        const x = Math.floor((antiCheatNameBounds.x * canvasEl.width) / 100);
-        const y = Math.floor((antiCheatNameBounds.y * canvasEl.height) / 100);
-        const width = Math.floor((antiCheatNameBounds.width * canvasEl.width) / 100);
-        const height = Math.floor((antiCheatNameBounds.height * canvasEl.height) / 100);
-
-        const ctx = canvasEl.getContext('2d', { willReadFrequently: true })!;
-        const imageData = ctx.getImageData(x, y, width, height);
+        const { x, y, width, height } = antiCheatNameBounds;
+        const imageData = this.offscreenStreamRenderer.getImageDataPercent(
+            x,
+            y,
+            width,
+            height
+        );
 
         return this.textDecoderService.checkOnScreen(imageData, this.twitchUIService.twitchUserName);
     }
