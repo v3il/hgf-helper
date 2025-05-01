@@ -10,6 +10,7 @@ export interface ISettings {
     highlightMentions: boolean;
     collectDaCoinz: boolean;
     decreaseStreamDelay: boolean;
+    twitchWidgetExpanded: boolean;
 
     // Store
     offersMaxPrice: number;

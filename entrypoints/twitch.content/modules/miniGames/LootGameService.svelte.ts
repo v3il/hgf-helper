@@ -75,7 +75,7 @@ export class LootGameService {
             return this.sendCommand();
         }
 
-        this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
+        this.participate();
         this.isRoundRunning = false;
     }
 

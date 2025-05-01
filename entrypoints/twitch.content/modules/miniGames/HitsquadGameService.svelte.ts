@@ -86,7 +86,7 @@ export class HitsquadGameService {
             return this.sendCommand();
         }
 
-        this.messageSender.sendMessage(COMMAND);
+        this.participate();
         this.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
         this.saveState();
     }
