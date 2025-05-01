@@ -1,6 +1,6 @@
 import { Container } from 'typedi';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
-import { getRandomNumber, log, waitAsync } from '@utils';
+import { getRandomNumber, log, wait } from '@utils';
 import { Timing } from '@shared/consts';
 import { ChatObserver, MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
@@ -82,7 +82,7 @@ export class HitsquadGameService {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
-            await waitAsync(delay);
+            await wait(delay);
             return this.sendCommand();
         }
 

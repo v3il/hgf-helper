@@ -1,5 +1,4 @@
 import { EventEmitter } from '@shared/EventEmitter';
-import { MessageTemplates } from '@twitch/consts';
 import { Timing } from '@shared/consts';
 import { Container, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
@@ -12,6 +11,14 @@ export interface IChatMessage {
     isReward: boolean;
     isAkiraDrawReward: boolean;
     hasMyMention: boolean;
+}
+
+function isRewardMessage(message: string) {
+    return /has been sent \d+ clams!/.test(message);
+}
+
+function isAkiraDrawRewardMessage(message: string) {
+    return /\w Just Won \d+ Clams From Akiras Drawing/i.test(message);
 }
 
 @Service()
@@ -70,8 +77,8 @@ export class ChatObserver {
         const userName = userNameEl.textContent!.toLowerCase();
         const message = messageEl!.textContent!.toLowerCase().trim();
         const isSystemMessage = userName === 'hitsquadgodfather' || userName === 'hitsquadplays';
-        const isReward = isSystemMessage && MessageTemplates.isReward(message);
-        const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
+        const isReward = isSystemMessage && isRewardMessage(message);
+        const isAkiraDrawReward = isSystemMessage && isAkiraDrawRewardMessage(message);
         const hasMyMention = mentionEl?.textContent?.toLowerCase().trim() === this.twitchUIService.twitchUserName;
 
         this.events.emit('message', {

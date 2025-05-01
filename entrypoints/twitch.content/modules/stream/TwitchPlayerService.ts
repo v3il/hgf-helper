@@ -1,4 +1,4 @@
-import { waitAsync } from '@utils';
+import { wait } from '@utils';
 import { Service } from 'typedi';
 
 @Service()
@@ -34,7 +34,7 @@ export class TwitchPlayerService {
 
     private async gotoQualitySettings() {
         this.settingsButton.click();
-        await waitAsync(50);
+        await wait(50);
 
         const selector = '[data-a-target="player-settings-menu-item-quality"]';
         const qualitySettingsButton = document.querySelector<HTMLButtonElement>(selector);

@@ -1,4 +1,4 @@
-import { waitAsync } from '@utils';
+import { wait } from '@utils';
 import { Container, Service } from 'typedi';
 import { Timing } from '@shared/consts';
 import { SettingsFacade } from '@shared/modules';
@@ -54,7 +54,7 @@ export class StreamElementsUIService {
         const { sortOffersBy } = this.settingsFacade.settings;
 
         this.sortOffersDropdownEl!.click();
-        await waitAsync(300);
+        await wait(300);
 
         const backdropEl = document.querySelector<HTMLElement>('.md-select-backdrop');
         const optionsContainerId = this.sortOffersDropdownEl!.getAttribute('aria-owns');

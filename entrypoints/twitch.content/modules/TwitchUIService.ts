@@ -1,4 +1,4 @@
-import { waitAsync } from '@utils';
+import { wait } from '@utils';
 import { Timing } from '@shared/consts';
 import { Service } from 'typedi';
 
@@ -9,7 +9,7 @@ export class TwitchUIService {
     // <div data-a-target="tw-core-button-label-text" class="Layout-sc-1xcs6mc-0 bFxzAY">Click Here to Reload Player</div>
 
     whenStreamReady(callback: () => void) {
-        const reloadTimeout = setTimeout(() => window.location.reload(), Timing.SECOND * 30);
+        const reloadTimeout = setTimeout(() => window.location.reload(), Timing.MINUTE);
 
         const interval = setInterval(async () => {
             const videoEl = this.activeVideoEl;
@@ -21,7 +21,7 @@ export class TwitchUIService {
 
             const elements = [
                 this.chatContainerEl,
-                // this.chatInputEl,
+                this.chatInputEl,
                 this.chatScrollableAreaEl,
                 this.userDropdownToggleEl,
                 this.streamInfoEl,
@@ -65,24 +65,24 @@ export class TwitchUIService {
         return !!document.querySelector('[data-a-target="video-ad-countdown"]');
     }
 
-    get chatContainerEl(): HTMLElement | null {
-        return document.querySelector('.channel-root__right-column');
+    get chatContainerEl() {
+        return document.querySelector<HTMLElement>('.channel-root__right-column');
     }
 
     get chatInputEl() {
-        return document.querySelector('[data-a-target="chat-input"]');
+        return document.querySelector<HTMLElement>('[data-a-target="chat-input"]');
     }
 
     get userDropdownToggleEl() {
-        return document.querySelector('[data-a-target="user-menu-toggle"]');
+        return document.querySelector<HTMLElement>('[data-a-target="user-menu-toggle"]');
     }
 
     get chatScrollableAreaEl() {
-        return document.querySelector('.chat-scrollable-area__message-container');
+        return document.querySelector<HTMLElement>('.chat-scrollable-area__message-container');
     }
 
     get chatButtonsContainerEl() {
-        return this.chatContainerEl!.querySelector('.chat-input__buttons-container');
+        return this.chatContainerEl!.querySelector<HTMLElement>('.chat-input__buttons-container');
     }
 
     get currentGame() {
@@ -90,7 +90,7 @@ export class TwitchUIService {
     }
 
     get streamInfoEl() {
-        return document.querySelector('.channel-info-content');
+        return document.querySelector<HTMLElement>('.channel-info-content');
     }
 
     #isVideoPlaying(videoEl: HTMLVideoElement) {
@@ -102,9 +102,9 @@ export class TwitchUIService {
 
         userDropdownToggleEl.click();
 
-        await waitAsync(100);
+        await wait(100);
 
-        const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
+        const userNameEl = document.querySelector<HTMLElement>('[data-a-target="user-display-name"]');
         const userName = userNameEl?.textContent!.toLowerCase() ?? '';
 
         userDropdownToggleEl.click();

@@ -1,12 +1,12 @@
-<div class="hgf-debug-view" class:visible={isVisible}>
+<div class="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-[99999999] hidden [&.visible]:flex [&.visible]:items-center [&.visible]:justify-center" class:visible={isVisible}>
     <canvas bind:this={canvasRef} onclick={clickHandler}></canvas>
 </div>
 
 <script lang="ts">
 import { Container } from 'typedi';
-import { TwitchUIService } from '@twitch/modules';
 import { ColorService } from '@shared/services';
 import { log } from '@utils';
+import { OffscreenStreamRenderer } from '@twitch/modules/stream';
 
 interface IDebugModeCheck {
     color: string;
@@ -14,7 +14,7 @@ interface IDebugModeCheck {
     yPercent: number;
 }
 
-const twitchUIService = Container.get(TwitchUIService);
+const offscreenStreamRenderer = Container.get(OffscreenStreamRenderer);
 const colorService = Container.get(ColorService);
 
 let canvasRef: HTMLCanvasElement;
@@ -22,18 +22,12 @@ let isVisible = $state(false);
 let checks = $state<IDebugModeCheck[]>([]);
 
 function renderVideoFrame() {
-    const videoEl = twitchUIService.activeVideoEl;
+    const { width, height } = offscreenStreamRenderer.getSize();
+    const imageData = offscreenStreamRenderer.getFullScreenImageData();
 
-    if (!videoEl) {
-        return;
-    }
-
-    canvasRef.width = videoEl.clientWidth;
-    canvasRef.height = videoEl.clientHeight;
-
-    const ctx = canvasRef.getContext('2d')!;
-
-    ctx.drawImage(videoEl, 0, 0, canvasRef.width, canvasRef.height);
+    canvasRef.width = width;
+    canvasRef.height = height;
+    canvasRef.getContext('2d')!.putImageData(imageData, 0, 0);
 }
 
 function clickHandler({ pageX, pageY }: MouseEvent) {
@@ -70,28 +64,3 @@ onDestroy(() => {
     document.removeEventListener('keydown', keydownHandler);
 });
 </script>
-
-<style>
-.hgf-debug-view * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-.hgf-debug-view {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: none;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 99999999;
-}
-
-.hgf-debug-view.visible {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-</style>

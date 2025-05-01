@@ -1,5 +1,5 @@
 import { Timing } from '@shared/consts';
-import { getRandomNumber, log, waitAsync } from '@utils';
+import { getRandomNumber, log, wait } from '@utils';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container } from 'typedi';
 import { StreamStatusService } from '@twitch/modules/stream';
@@ -71,7 +71,7 @@ export class ChestGameService {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
-            await waitAsync(delay);
+            await wait(delay);
             return this.sendCommand();
         }
 

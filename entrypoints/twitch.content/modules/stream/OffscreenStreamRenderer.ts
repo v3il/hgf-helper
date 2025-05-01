@@ -29,6 +29,13 @@ export class OffscreenStreamRenderer {
         this.canvasEl.remove();
     }
 
+    getSize() {
+        return {
+            width: this.canvasEl.width,
+            height: this.canvasEl.height,
+        };
+    }
+
     getColorAtPoint(x: number, y: number) {
         const context = this.canvasEl.getContext('2d', { willReadFrequently: true })!;
         const [r, g, b] = context.getImageData(x, y, 1, 1).data;
@@ -60,6 +67,10 @@ export class OffscreenStreamRenderer {
         const height = Math.floor((heightPercent * fullHeight) / 100);
 
         return this.getImageData(x, y, width, height);
+    }
+
+    getFullScreenImageData() {
+        return this.getImageData(0, 0, this.canvasEl.width, this.canvasEl.height);
     }
 
     private createCanvas() {
