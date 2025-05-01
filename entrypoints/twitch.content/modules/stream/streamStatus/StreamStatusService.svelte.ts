@@ -12,7 +12,7 @@ import { ChatObserver } from '@twitch/modules/twitchChat';
 
 @Service()
 export class StreamStatusService extends BasicView {
-    private readonly canvasEl;
+    readonly canvasEl;
 
     private readonly twitchUIService!: TwitchUIService;
     private readonly colorService!: ColorService;

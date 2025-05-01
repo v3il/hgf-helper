@@ -1,7 +1,6 @@
-<div class="hgf-twitch-extension">
+<div class="p-[16px]">
     {#if authFacade.isAuthenticated}
         <TwitchWidget />
-        <DebugMode />
     {:else}
         <AuthView />
     {/if}
@@ -12,18 +11,13 @@
 import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import AuthView from './AuthView.svelte';
-import DebugMode from './DebugMode.svelte';
 import TwitchWidget from './TwitchWidget.svelte';
+import { mount } from 'svelte';
+import DebugMode from './DebugMode.svelte';
 
 const authFacade = Container.get(AuthFacade);
-</script>
 
-<style>
-.hgf-twitch-extension {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    color: white;
-}
-</style>
+mount(DebugMode, {
+    target: document.body
+});
+</script>

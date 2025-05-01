@@ -21,7 +21,7 @@ export const useDelayRemover = () => {
     function init() {
         intervalId = window.setInterval(() => {
             playerService.decreaseVideoDelay();
-        }, 5 * Timing.MINUTE);
+        }, 2.5 * Timing.MINUTE);
     }
 
     function destroy() {
