@@ -10,7 +10,7 @@ export class OffscreenStreamRenderer {
     private readonly twitchUIService!: TwitchUIService;
     private readonly colorService!: ColorService;
 
-    private timeoutId!: number;
+    private readonly timeoutId!: number;
 
     constructor() {
         this.twitchUIService = Container.get(TwitchUIService);

@@ -1,5 +1,6 @@
 export class AuthWindow {
     private window: Window | null = null;
+    private intervalId!: number;
 
     async open(url: string): Promise<string> {
         return new Promise((resolve, reject) => {
@@ -10,10 +11,18 @@ export class AuthWindow {
                 return;
             }
 
+            this.intervalId = window.setInterval(() => {
+                if (this.window?.closed) {
+                    clearInterval(this.intervalId);
+                    reject(new Error('Auth window closed before receiving token'));
+                }
+            }, 100);
+
             window.addEventListener('message', (event) => {
                 const { type, token } = event.data;
 
                 if (type === 'hgf-auth') {
+                    clearInterval(this.intervalId);
                     resolve(token);
                 }
             });
