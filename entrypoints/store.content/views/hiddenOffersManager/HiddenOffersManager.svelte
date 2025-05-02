@@ -1,5 +1,8 @@
-<div class="hgf-mb-16">
-    <button class="uk-button uk-button-primary uk-width-1-1 uk-button-large" onclick={() => { isDialogOpened = true; }}>
+<div class="mb-[16px]">
+    <button
+        class="p-[16px] w-full font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md bg-[#9146FF] hover:bg-[#7c31ff] text-white text-[14px]"
+        onclick={() => { isDialogOpened = true; }}
+    >
         Manage hidden offers
     </button>
 
