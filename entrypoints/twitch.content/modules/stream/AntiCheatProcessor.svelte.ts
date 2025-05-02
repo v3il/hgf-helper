@@ -2,11 +2,12 @@ import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container, ContainerInstance, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { OnScreenTextRecognizer } from '@shared/services';
-import { getRandomNumber, logDev } from '@utils';
+import { logDev } from '@utils';
 import { Timing } from '@shared/consts';
 import { StreamStatusService } from './streamStatus';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
 import { OffscreenStreamRenderer } from './OffscreenStreamRenderer';
+import { random } from 'lodash';
 
 const antiCheatNameBounds = {
     x: 20.539546290619253,
@@ -63,7 +64,7 @@ export class AntiCheatProcessor {
         logDev(`Anticheat result: ${result}`);
 
         if (result > 0.7) {
-            const delay = getRandomNumber(2 * Timing.SECOND, 5 * Timing.SECOND);
+            const delay = random(2 * Timing.SECOND, 5 * Timing.SECOND);
 
             logDev(`Send anticheat in ${delay}!`);
 

@@ -43,7 +43,7 @@
                     />
                 </SettingEditor>
 
-                <SettingEditor title="Enhance store footer" classes="mb-4">
+                <SettingEditor title="Hide store footer" classes="mb-4">
                     <Switch
                         isChecked={settingsFacade.settings.hideStoreFooter}
                         onChange={(isChecked) => updateSetting('hideStoreFooter', isChecked)}
@@ -63,8 +63,8 @@
                         onChange={(value) => updateSetting('sortOffersBy', value)}
                         options={[
                             { value: '\'order\'', label: 'Default' },
-                            { value: '\'-cost\'', label: 'Price ↓' },
-                            { value: '\'-createdAt\'', label: 'Newest first' }
+                            { value: '\'-cost\'', label: 'Cost ↓' },
+                            { value: '\'-createdAt\'', label: 'Date ↓' }
                         ]}
                     />
                 </SettingEditor>

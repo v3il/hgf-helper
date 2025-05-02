@@ -1,10 +1,11 @@
 import { Timing } from '@shared/consts';
-import { getRandomNumber, wait } from '@utils';
+import { wait } from '@utils';
 import { Container } from 'typedi';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
 import { SettingsFacade } from '@shared/modules';
+import { random } from 'lodash';
 
 const COMMAND = '!loot';
 
@@ -57,7 +58,7 @@ export class LootGameService {
     }
 
     participate() {
-        this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
+        this.messageSender.sendMessage(`${COMMAND}${random(1, 8)}`);
     }
 
     private async saveState() {
@@ -80,7 +81,7 @@ export class LootGameService {
     }
 
     private getDelay() {
-        return getRandomNumber(Timing.MINUTE, 15 * Timing.MINUTE);
+        return random(Timing.MINUTE, 15 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {

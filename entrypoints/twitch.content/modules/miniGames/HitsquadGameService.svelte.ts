@@ -1,10 +1,11 @@
 import { Container } from 'typedi';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
-import { getRandomNumber, log, wait } from '@utils';
+import { log, wait } from '@utils';
 import { Timing } from '@shared/consts';
-import { ChatObserver, MessageSender } from '@twitch/modules/twitchChat';
+import { MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
 import { SettingsFacade } from '@shared/modules';
+import { random } from 'lodash';
 
 const HITSQUAD_GAMES_ON_SCREEN = 12;
 const COMMAND = '!hitsquad';
@@ -22,7 +23,6 @@ export class HitsquadGameService {
     timeUntilMessage = $state(0);
 
     private timeout!: number;
-    private lastHitsquadRewardTimestamp!: number;
     private unsubscribe!: UnsubscribeTrigger;
 
     constructor() {
@@ -92,7 +92,7 @@ export class HitsquadGameService {
     }
 
     private getNextRoundDelay() {
-        return getRandomNumber(30 * Timing.SECOND, 5 * Timing.MINUTE) + 8 * Timing.MINUTE;
+        return random(30 * Timing.SECOND, 5 * Timing.MINUTE) + 8 * Timing.MINUTE;
     }
 
     private scheduleNextRound() {

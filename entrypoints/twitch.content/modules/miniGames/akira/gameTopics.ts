@@ -1,4 +1,4 @@
-import { getRandomArrayItem } from '@utils';
+import { sample } from 'lodash';
 
 const gameTopics = [
     'storyline',
@@ -33,4 +33,4 @@ const gameTopics = [
     'easter eggs and references'
 ];
 
-export const getRandomTopic = () => getRandomArrayItem(gameTopics);
+export const getRandomTopic = () => sample(gameTopics);

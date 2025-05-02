@@ -3,10 +3,11 @@ import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { AiGeneratorService } from '@shared/services';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
-import { getRandomNumber, log } from '@utils';
+import { log } from '@utils';
 import { SettingsFacade } from '@shared/modules';
 import { getRandomTopic } from './gameTopics';
 import { ChatObserver, MessageSender } from '../../twitchChat';
+import { random } from 'lodash';
 
 interface IParams {
     aiGeneratorService: AiGeneratorService
@@ -98,7 +99,7 @@ export class AkiraDrawingService {
     }
 
     private getDelay() {
-        return getRandomNumber(Timing.MINUTE, 30 * Timing.MINUTE);
+        return random(Timing.MINUTE, 30 * Timing.MINUTE);
     }
 
     private formatQuestion(question: string) {

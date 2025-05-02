@@ -1,8 +1,8 @@
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { debounce } from '@utils';
 import { SettingsFacade } from '@shared/modules';
 import { onDestroy } from 'svelte';
+import { debounce } from 'lodash';
 
 export const useDaCoinzCollector = () => {
     let observer: MutationObserver | null = null;

@@ -1,10 +1,11 @@
 import { Timing } from '@shared/consts';
-import { getRandomNumber, log, wait } from '@utils';
+import { wait } from '@utils';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container } from 'typedi';
 import { StreamStatusService } from '@twitch/modules/stream';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
 import { SettingsFacade } from '@shared/modules';
+import { random } from 'lodash';
 
 const COMMAND = '!chest';
 
@@ -57,7 +58,7 @@ export class ChestGameService {
     }
 
     participate() {
-        this.messageSender.sendMessage(`${COMMAND}${getRandomNumber(1, 8)}`);
+        this.messageSender.sendMessage(`${COMMAND}${random(1, 8)}`);
     }
 
     private async saveState() {
@@ -80,7 +81,7 @@ export class ChestGameService {
     }
 
     private getDelay() {
-        return getRandomNumber(30 * Timing.SECOND, 5 * Timing.MINUTE);
+        return random(30 * Timing.SECOND, 5 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {
