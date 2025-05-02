@@ -1,4 +1,4 @@
-<p class="hgf-hidden-offers-manager__empty">
+<p class="p-[16px] text-center text-[rgba(255,255,255,.87)]">
     {message}
 </p>
 
@@ -9,11 +9,3 @@ interface Props {
 
 const { message }: Props = $props();
 </script>
-
-<style>
-.hgf-hidden-offers-manager__empty {
-    padding: 16px;
-    text-align: center;
-    color: rgba(255, 255, 255, .87);
-}
-</style>
