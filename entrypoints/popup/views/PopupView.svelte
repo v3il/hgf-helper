@@ -15,7 +15,9 @@
 </header>
 
 <main class="w-full">
-    {#if authFacade.isAuthenticated}
+    {#if isLoading }
+        <PopupLoading />
+    {:else if authFacade.isAuthenticated}
         <SettingsEditorView />
     {:else}
         <AuthView />
@@ -27,7 +29,16 @@ import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import AuthView from './AuthView.svelte';
 import SettingsEditorView from './SettingsEditorView.svelte';
+import PopupLoading from './PopupLoading.svelte';
 import { Logo } from '@shared/components';
 
+let isLoading = $state(true);
+
 const authFacade = Container.get(AuthFacade);
+
+authFacade.auth()
+    .catch((error) => console.error('Error during authentication:', error))
+    .finally(() => {
+        isLoading = false;
+    });
 </script>

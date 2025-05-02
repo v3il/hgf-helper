@@ -5,21 +5,21 @@
                 <SettingEditor title="Highlighting messages mentioning me" classes="mb-4">
                     <Switch
                         isChecked={settingsFacade.settings.highlightMentions}
-                        onChange={(isChecked) => updateSetting2('highlightMentions', isChecked)}
+                        onChange={(isChecked) => updateSetting('highlightMentions', isChecked)}
                     />
                 </SettingEditor>
 
                 <SettingEditor title="Automatically collect Da Coinz" classes="mb-4">
                     <Switch
                         isChecked={settingsFacade.settings.collectDaCoinz}
-                        onChange={(isChecked) => updateSetting2('collectDaCoinz', isChecked)}
+                        onChange={(isChecked) => updateSetting('collectDaCoinz', isChecked)}
                     />
                 </SettingEditor>
 
                 <SettingEditor title="Automatically decrease stream delay">
                     <Switch
                         isChecked={settingsFacade.settings.decreaseStreamDelay}
-                        onChange={(isChecked) => updateSetting2('decreaseStreamDelay', isChecked)}
+                        onChange={(isChecked) => updateSetting('decreaseStreamDelay', isChecked)}
                     />
                 </SettingEditor>
             {/if}
@@ -28,7 +28,7 @@
                 <SettingEditor title="Enhance store header" description="Hide store banner" classes="mb-4">
                     <Switch
                         isChecked={settingsFacade.settings.enhanceStoreHeader}
-                        onChange={(isChecked) => updateSetting2('enhanceStoreHeader', isChecked)}
+                        onChange={(isChecked) => updateSetting('enhanceStoreHeader', isChecked)}
                     />
                 </SettingEditor>
 
@@ -39,14 +39,14 @@
                 >
                     <Switch
                         isChecked={settingsFacade.settings.enhanceStoreSidebar}
-                        onChange={(isChecked) => updateSetting2('enhanceStoreSidebar', isChecked)}
+                        onChange={(isChecked) => updateSetting('enhanceStoreSidebar', isChecked)}
                     />
                 </SettingEditor>
 
                 <SettingEditor title="Enhance store footer" classes="mb-4">
                     <Switch
                         isChecked={settingsFacade.settings.hideStoreFooter}
-                        onChange={(isChecked) => updateSetting2('hideStoreFooter', isChecked)}
+                        onChange={(isChecked) => updateSetting('hideStoreFooter', isChecked)}
                     />
                 </SettingEditor>
 
@@ -60,7 +60,7 @@
                     <Select
                         classes="w-[120px]"
                         value={settingsFacade.settings.sortOffersBy}
-                        onChange={(value) => updateSetting2('sortOffersBy', value)}
+                        onChange={(value) => updateSetting('sortOffersBy', value)}
                         options={[
                             { value: '\'order\'', label: 'Default' },
                             { value: '\'-cost\'', label: 'Price ↓' },
@@ -81,7 +81,8 @@
                             min={0}
                             max={999_999}
                             value={settingsFacade.settings.offersMaxPrice}
-                            onChange={(value) => updateSetting2('offersMaxPrice', value)}
+                            onChange={(value) => updateSetting('offersMaxPrice', value)}
+                            classes="mt-3"
                         />
                     {/snippet}
                 </SettingEditor>
@@ -89,7 +90,7 @@
                 <SettingEditor title="Hide sold out offers" classes="mb-4">
                     <Switch
                         isChecked={settingsFacade.settings.hideSoldOutOffers}
-                        onChange={(isChecked) => updateSetting2('hideSoldOutOffers', isChecked)}
+                        onChange={(isChecked) => updateSetting('hideSoldOutOffers', isChecked)}
                     />
                 </SettingEditor>
 
@@ -99,7 +100,7 @@
                 >
                     <Switch
                         isChecked={settingsFacade.settings.highlightLowVolumeOffers}
-                        onChange={(isChecked) => updateSetting2('highlightLowVolumeOffers', isChecked)}
+                        onChange={(isChecked) => updateSetting('highlightLowVolumeOffers', isChecked)}
                     />
                 </SettingEditor>
             {/if}
@@ -126,38 +127,9 @@ const TABS = [
     }
 ];
 
-function parseInputValue(control: HTMLInputElement | HTMLSelectElement) {
-    if (control.type === 'checkbox') {
-        return control.checked;
-    }
-
-    if (control.type === 'range') {
-        return Number(control.value);
-    }
-
-    return control.value;
-}
-
-function updateSetting(event: Event) {
-    const target = event.target as HTMLInputElement | HTMLSelectElement;
-    const setting = target.dataset.setting as GlobalSettingsKeys;
-
-    settingsFacade.updateSettings({
-        [setting]: parseInputValue(target)
-    });
-}
-
-function updateSetting2(settingName: GlobalSettingsKeys, value: string | number | boolean) {
+function updateSetting(settingName: GlobalSettingsKeys, value: string | number | boolean) {
     settingsFacade.updateSettings({
         [settingName]: value
     });
 }
 </script>
-
-<style>
-    .hgf-popup-description {
-        margin-top: 0;
-        color: rgb(108, 108, 108);
-        font-size: 12px;
-    }
-</style>
