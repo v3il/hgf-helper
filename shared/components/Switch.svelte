@@ -5,10 +5,10 @@
     aria-label="switch"
     data-state={state}
     value={value}
-    class="peer inline-flex h-[24] w-[44] shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=unchecked]:bg-[#403E43] data-[state=checked]:bg-[#9b87f5]"
+    class="peer inline-flex h-[24px] w-[44px] shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=unchecked]:bg-[#403E43] data-[state=checked]:bg-purple-500"
     onclick={() => onChange(!isChecked)}
 >
-    <span data-state={state} class="pointer-events-none block h-[20] w-[20] rounded-full bg-white shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-[20px] data-[state=unchecked]:translate-x-0"></span>
+    <span data-state={state} class="pointer-events-none block h-[20px] w-[20px] rounded-full bg-white shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-[20px] data-[state=unchecked]:translate-x-0"></span>
 </button>
 
 <script lang="ts">

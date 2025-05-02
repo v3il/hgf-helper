@@ -1,14 +1,20 @@
-<header class='uk-flex uk-flex-middle uk-flex-between hgf-mb-16 hgf-ph-16 hgf-pt-16'>
-    <h1 class="hgf-popup-title">HGF-Helper</h1>
+<header class="flex items-center justify-between w-full mb-6">
+    <h2 class="flex items-center gap-2">
+        <Logo />
+        <span class="font-semibold text-2xl">HGF-Helper</span>
+    </h2>
 
     {#if authFacade.isAuthenticated}
-        <button class="uk-button uk-button-small uk-button-link hgf-color-red" onclick={() => authFacade.logout()}>
+        <button
+            class="cursor-pointer text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 underline-offset-4 text-red-400 hover:text-red-500 uppercase"
+            onclick={() => authFacade.logout()}
+        >
             Logout
         </button>
     {/if}
 </header>
 
-<main>
+<main class="w-full">
     {#if authFacade.isAuthenticated}
         <SettingsEditorView />
     {:else}
@@ -21,14 +27,7 @@ import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import AuthView from './AuthView.svelte';
 import SettingsEditorView from './SettingsEditorView.svelte';
+import { Logo } from '@shared/components';
 
 const authFacade = Container.get(AuthFacade);
 </script>
-
-<style>
-.hgf-popup-title {
-    font-size: 18px;
-    margin-bottom: 0;
-    font-weight: bold;
-}
-</style>

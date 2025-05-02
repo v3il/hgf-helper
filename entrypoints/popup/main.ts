@@ -3,11 +3,11 @@ import './style.css';
 import { AuthFacade } from '@shared/modules';
 import { Container } from 'typedi';
 import '@shared/styles/index.css';
-import 'uikit';
+// import 'uikit';
 import PopupView from './views/PopupView.svelte';
 import { mount } from 'svelte';
 
-const authFacade = Container.get(AuthFacade);
+const authFacade = Container.get(AuthFacade);1
 
 await authFacade.auth()
     .catch((error) => console.error('Error during authentication:', error))
@@ -16,3 +16,4 @@ await authFacade.auth()
             target: document.body,
         })
     });
+1

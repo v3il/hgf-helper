@@ -10,7 +10,7 @@
         </p>
     </div>
 
-    <AuthButton />
+    <AuthButton classes="px-6 py-6" />
 </div>
 
 <script lang="ts">

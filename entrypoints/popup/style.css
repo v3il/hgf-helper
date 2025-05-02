@@ -1,7 +1,11 @@
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border: 0;
+  font-size: 100%;
+  font-family: inherit;
+  font-weight: inherit;
+  vertical-align: baseline;
 }
 
 html {
@@ -11,5 +15,10 @@ html {
 body {
   width: 450px;
   font-size: 14px;
+  border: none;
   color: rgba(0, 0, 0, 0.87);
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
