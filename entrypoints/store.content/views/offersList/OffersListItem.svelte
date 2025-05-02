@@ -1,6 +1,17 @@
-<div class={classes}>
-    <a href={offer.steamAppLink} class="hgf-container__steam" target="_blank" rel="noreferrer">Steam</a>
-    <button class="hgf-container__hide" onclick={hideOfferHandler}>Hide</button>
+<div
+    class="absolute left-0 right-0 top-0 p-[8px] bg-[#121212] flex items-center justify-between border-[3px] border-[#555] [&.low]:border-[indianred]"
+    class:low={isLowVolumeHighlighted}
+>
+    <a href={offer.steamAppLink} class="text-[12px] block text-[#ccc] font-bold hover:underline" target="_blank" rel="noreferrer">
+        Steam
+    </a>
+
+    <button
+        onclick={hideOfferHandler}
+        class="text-[12px] font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border bg-background h-[24px] rounded-md px-[8px] text-[#a1a1aa] border-[#27272a] hover:bg-[#27272a]/20 hover:text-[#d4d4d8]"
+    >
+        Hide
+    </button>
 </div>
 
 <script lang="ts">
@@ -8,7 +19,6 @@ import { Offer } from '@store/modules/offers/models';
 import { Container } from 'typedi';
 import { OffersFacade } from '@store/modules';
 import { SettingsFacade } from '@shared/modules';
-import clsx from 'clsx';
 
 interface Props {
     offer: Offer;
@@ -32,15 +42,8 @@ const isOfferHidden = $derived.by(() => {
 
 const isLowVolumeHighlighted = $derived.by(() => offer.isLowVolume && settingsFacade.settings.highlightLowVolumeOffers);
 
-const classes = $derived(
-    clsx({
-        'hgf-container': true,
-        'hgf-container--low-volume': isLowVolumeHighlighted,
-    })
-)
-
 $effect(() => {
-    offerEl.classList.toggle('hgf-hidden', isOfferHidden);
+    offerEl.classList.toggle('hidden', isOfferHidden);
 });
 
 async function hideOfferHandler() {
@@ -55,39 +58,4 @@ async function hideOfferHandler() {
         console.error(error);
     }
 }
-</script>;
-
-<style>
-.hgf-container {
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: 0;
-    padding: 8px;
-    background-color: #121212;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 3px solid #555;
-}
-
-.hgf-container--low-volume {
-    border-color: indianred;
-}
-
-.hgf-container__hide {
-    font-size: 12px;
-    display: block;
-}
-
-.hgf-container__steam {
-    font-size: 12px;
-    display: block;
-    color: #ccc;
-    font-weight: bold;
-}
-
-.hgf-container__steam:hover {
-    text-decoration: underline;
-}
-</style>
+</script>

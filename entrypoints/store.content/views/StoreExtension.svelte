@@ -6,7 +6,6 @@ import Auth from './Auth.svelte'
 import { HiddenOffersManager } from './hiddenOffersManager'
 import { OffersList } from './offersList'
 import { mount, unmount } from 'svelte';
-import UIkit from 'uikit/dist/js/uikit';
 
 const authFacade = Container.get(AuthFacade);
 const streamElementsUIService = Container.get(StreamElementsUIService);
@@ -26,25 +25,11 @@ if (authFacade.isAuthenticated) {
 }
 
 authFacade.onAuthenticated(() => {
-    UIkit.notification({
-        message: 'Successfully authenticated',
-        status: 'success',
-        pos: 'bottom-right',
-        timeout: 5000
-    });
-
     renderOfferViews();
     unmount(authView);
 });
 
 authFacade.onLogout(() => {
-    UIkit.notification({
-        message: 'Successfully logged out',
-        status: 'success',
-        pos: 'bottom-right',
-        timeout: 5000
-    });
-
     renderAuthView();
     unmount(hiddenOffersManager);
     unmount(offersList);
@@ -73,6 +58,8 @@ function renderOfferViews() {
         offersList = mount(OffersList, {
             target: streamElementsUIService.offersListEl
         });
+
+        await streamElementsUIService.sortOffers();
     });
 }
 </script>

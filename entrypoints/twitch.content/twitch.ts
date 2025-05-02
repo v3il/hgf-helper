@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import './twitch.css';
 import { ExtensionRoot } from '@twitch/views';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
@@ -6,7 +7,6 @@ import { AuthFacade } from '@shared/modules';
 import { isDev } from '@shared/consts';
 import { log } from '@utils';
 import { mount } from 'svelte';
-import '@shared/styles/index.css';
 
 export const main = async () => {
     const twitchUIService = Container.get(TwitchUIService);

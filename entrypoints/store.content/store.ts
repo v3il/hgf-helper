@@ -3,7 +3,6 @@ import { mount } from 'svelte';
 import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import './store.css';
-import '@shared/styles/index.css';
 import { StoreExtension } from './views';
 
 export const start = async () => {
