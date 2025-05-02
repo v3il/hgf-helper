@@ -19,7 +19,6 @@
   "devDependencies": {
     "@types/chrome": "^0.0.309",
     "@types/lodash": "^4.17.16",
-    "@types/uikit": "^3.14.5",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "eslint": "^8.35.0",
@@ -40,7 +39,6 @@
     "reflect-metadata": "^0.2.2",
     "tailwindcss": "^4.1.4",
     "tesseract.js": "^6.0.0",
-    "typedi": "^0.10.0",
-    "uikit": "^3.23.4"
+    "typedi": "^0.10.0"
   }
 }
