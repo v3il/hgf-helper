@@ -1,5 +1,5 @@
 import { getContext } from 'svelte';
-import { PackageOpen } from '@lucide/svelte';
+import { Boxes } from '@lucide/svelte';
 import { ChestGameService } from '@twitch/modules/miniGames';
 
 export const useChestMiniGame = () => {
@@ -15,7 +15,7 @@ export const useChestMiniGame = () => {
 
     return {
         name: 'Chest',
-        Icon: PackageOpen,
+        Icon: Boxes,
         gameService,
         participate,
         toggle

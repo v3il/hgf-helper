@@ -1,6 +1,6 @@
-<div class="relative flex items-center gap-[8px] justify-center bg-[#27272a]/20 rounded-lg p-[4px]">
+<div class="relative flex items-center justify-center bg-[#27272a]/20 rounded-lg">
     <button
-        class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground bg-[#27272a]/20 hover:bg-[#27272a]/40 border border-[#3f3f46]/30 rounded-lg p-[8px] h-auto w-auto transition-all duration-200 group"
+        class="inline-flex items-center justify-center h-[40px] w-[40px] bg-[#27272a]/20 hover:bg-[#27272a]/40 border border-[#3f3f46]/30 rounded-l-lg p-[8px] transition-all duration-200 group ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground"
         title={name}
         onclick={() => toggle(!isGameActive)}
     >
@@ -8,7 +8,7 @@
     </button>
 
     <button
-        class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=on]:text-accent-foreground hover:text-accent-foreground bg-[#27272a]/20 hover:bg-[#27272a]/40 border border-[#3f3f46]/30 rounded-r-lg p-1.5 h-auto w-auto transition-all duration-200 group data-[state=on]:bg-[#27272a]/50"
+        class="inline-flex items-center justify-center h-[40px] w-[40px] bg-[#27272a]/20 hover:bg-[#27272a]/40 border border-[#3f3f46]/30 border-l-0 rounded-r-lg p-[8px] transition-all duration-200 group ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground"
         title="Send once"
         tabindex="-1"
         onclick={() => participate()}
@@ -18,7 +18,7 @@
     </button>
 
     {#if isTimerVisible}
-        <div class="rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 absolute -top-[4px] -left-[8px] text-[11px] h-[12px] p-[4px] flex items-center justify-center bg-[#221F26] text-[#9b87f5] border-none font-mono">
+        <div class="rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 absolute -top-[4px] -left-[8px] text-[9px] py-[2px] px-[4px] flex items-center justify-center bg-[#221F26] text-[#9b87f5] border-none font-mono">
             <MiniGamesTimer {timeout} />
         </div>
     {/if}

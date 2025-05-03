@@ -1,5 +1,5 @@
 type HandlerPayload = object | void | string | number | boolean;
-export type EventHandler<T = HandlerPayload> = (payload?: T) => void;
+export type EventHandler<T = HandlerPayload> = ((payload?: T) => void) | (() => void);
 export type UnsubscribeTrigger = () => void;
 
 export class EventEmitter<T extends Record<string, HandlerPayload>> {

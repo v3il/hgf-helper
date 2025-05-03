@@ -1,5 +1,5 @@
 import { getContext } from 'svelte';
-import { Package } from '@lucide/svelte';
+import { Gem } from '@lucide/svelte';
 import { LootGameService } from '@twitch/modules/miniGames';
 
 export const useLootMiniGame = () => {
@@ -15,7 +15,7 @@ export const useLootMiniGame = () => {
 
     return {
         name: 'Loot',
-        Icon: Package,
+        Icon: Gem,
         gameService,
         participate,
         toggle

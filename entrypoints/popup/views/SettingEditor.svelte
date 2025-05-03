@@ -1,12 +1,12 @@
 <div class={[classes]}>
     <div class="flex items-center justify-between gap-4">
         <div>
-            <h3 class="text-sm font-medium text-gray-800">
+            <h3 class="font-medium text-gray-800">
                 {title}
             </h3>
 
             {#if description}
-                <p class="text-xs text-gray-500 mt-[2px]">
+                <p class="text-sm text-gray-500 mt-[2px]">
                     {description}
                 </p>
             {/if}
