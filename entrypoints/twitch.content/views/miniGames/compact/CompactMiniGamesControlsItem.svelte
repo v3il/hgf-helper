@@ -18,7 +18,7 @@
     </button>
 
     {#if isTimerVisible}
-        <div class="rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 absolute -top-[4px] -left-[8px] text-[9px] py-[2px] px-[4px] flex items-center justify-center bg-[#221F26] text-[#9b87f5] border-none font-mono">
+        <div class="px-[2px] text-[10px] leading-[1] rounded-[2px] border border-[#3f3f46]/30 font-semibold whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 absolute top-[-6px] left-[50%] -translate-x-1/2 flex items-center justify-center bg-[#221F26] text-[#9b87f5] font-mono">
             <MiniGamesTimer {timeout} />
         </div>
     {/if}
