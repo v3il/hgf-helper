@@ -52,6 +52,8 @@ export class StreamStatusService {
         if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
             this.isStreamOk = false;
 
+            clearTimeout(this.streamReloadTimeoutId);
+
             this.streamReloadTimeoutId = window.setTimeout(() => {
                 location.reload();
             }, Timing.MINUTE);

@@ -1,6 +1,7 @@
 import {
     doc, Firestore, getDoc, setDoc
 } from 'firebase/firestore';
+import { getDefaultSettings } from './getDefaultSettings';
 
 export class UsersService {
     private readonly db: Firestore;
@@ -21,7 +22,7 @@ export class UsersService {
         if (!user) {
             await setDoc(doc(this.db, 'users', userId), {
                 userName,
-                settings: {},
+                settings: getDefaultSettings(),
                 hiddenOffers: []
             });
         }
