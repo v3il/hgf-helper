@@ -1,50 +1,18 @@
-<div class="flex flex-col w-full rounded-xl border border-gray-200 dark:border-[#27272a] bg-white/90 dark:bg-[#18181b]/80">
-    <div class={headerClasses}>
-        {#if isExpanded}
-            <h2 class="font-semibold text-gray-800 dark:text-[#d4d4d8] text-[16px] leading-[1.45]">HGF-Helper</h2>
-        {:else}
-            <CompactMiniGamesControls />
-        {/if}
-
-        <div class="flex items-center gap-[24px] ml-[16px]">
-            <StreamStatus />
-
-            <button
-                onclick={togglePanel}
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-[40px] w-[40px] hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-[#27272a]/50 dark:hover:text-[#d4d4d8]"
-            >
-                {#if isExpanded}
-                    <ChevronUp size="20" class="text-[#8456FF] dark:text-[#9b87f5]" />
-                {:else}
-                    <ChevronDown size="20" class="text-[#8456FF] dark:text-[#9b87f5]" />
-                {/if}
-            </button>
-        </div>
-    </div>
-
-    {#if isExpanded}
-        <div class="bg-white/90 dark:bg-[#18181b]/80 backdrop-blur-sm rounded-b-[inherit]">
-            <HitsquadControls class="border-b border-gray-200 dark:border-[#27272a]" />
-            <LootControls class="border-b border-gray-200 dark:border-[#27272a]" />
-            <ChestControls class="rounded-b-[inherit]" />
-        </div>
-    {/if}
+<div class="flex justify-between p-[12px] w-full rounded-xl border border-gray-200 dark:border-[#27272a] bg-white/90 dark:bg-[#18181b]/80">
+    <CompactMiniGamesControls />
+    <StreamStatus />
 </div>
 
 <script lang="ts">
 import { StreamStatus } from './streamStatus';
 import { useDaCoinzCollector, useMentionsHighlighter, useDelayRemover } from './composables';
-import { HitsquadControls, ChestControls, LootControls, CompactMiniGamesControls } from './miniGames';
-import { ChevronDown, ChevronUp } from '@lucide/svelte';
-import clsx from 'clsx';
+import { CompactMiniGamesControls } from './miniGames';
 import { ChestGameService, HitsquadGameService, LootGameService } from '@twitch/modules/miniGames';
 import { onDestroy } from 'svelte';
 import { Container } from 'typedi';
-import { SettingsFacade } from '@shared/modules';
 import { AntiCheatProcessor, OffscreenStreamRenderer } from '@twitch/modules/stream';
 
 const offscreenStreamRenderer = Container.get(OffscreenStreamRenderer);
-const settingsFacade = Container.get(SettingsFacade);
 const antiCheatProcessor = Container.get(AntiCheatProcessor);
 
 const hitsquadGameService = new HitsquadGameService();
@@ -57,29 +25,9 @@ setContext('hitsquad', hitsquadGameService);
 setContext('loot', lootGameService);
 setContext('chest', chestGameService);
 
-let isExpanded = $state(settingsFacade.settings.twitchWidgetExpanded);
-
-const headerClasses = $derived(
-    clsx([
-        'bg-white/90 dark:bg-[#18181b]/80 backdrop-blur-sm shadow-sm dark:shadow-lg px-[16px] py-[8px] space-x-4 flex items-center justify-between rounded-t-[inherit]',
-        {
-            'border-b border-gray-200 dark:border-[#27272a]': isExpanded,
-            'rounded-b-[inherit]': !isExpanded
-        }
-    ])
-);
-
 useDelayRemover();
 useDaCoinzCollector();
 useMentionsHighlighter();
-
-function togglePanel() {
-    isExpanded = !isExpanded;
-
-    settingsFacade.updateSettings({
-        twitchWidgetExpanded: isExpanded
-    });
-}
 
 onDestroy(() => {
     offscreenStreamRenderer.destroy();

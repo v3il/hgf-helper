@@ -19,13 +19,9 @@ export const main = async () => {
     console.clear();
     log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 
-    twitchUIService.whenStreamReady(async () => {
-        const extensionTargetEl = document.createElement('div');
-
-        twitchUIService.streamInfoEl!.insertAdjacentElement('afterbegin', extensionTargetEl);
-
+    twitchUIService.whenStreamReady(() => {
         mount(ExtensionRoot, {
-            target: extensionTargetEl
+            target: document.body
         });
     });
 };

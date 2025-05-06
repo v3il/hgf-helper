@@ -11,7 +11,6 @@ export function getDefaultSettings() {
         highlightMentions: true,
         collectDaCoinz: true,
         decreaseStreamDelay: true,
-        twitchWidgetExpanded: true,
 
         // Store
         offersMaxPrice: 999_999,

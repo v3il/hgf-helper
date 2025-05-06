@@ -1,17 +1,25 @@
 <CompactMiniGamesControlsItem
     isGameActive={gameService.isGameActive}
-    isTimerVisible={gameService.isRoundRunning}
     isSendEnabled={gameService.isGamePhase}
-    timeout={gameService.timeUntilMessage}
     {Icon}
     {name}
     {toggle}
     {participate}
-/>
+>
+    {#snippet indicators()}
+        {#if gameService.isRoundRunning}
+            <CompactMiniGamesControlsIndicators>
+                <MiniGamesTimer timeout={gameService.timeUntilMessage} />
+            </CompactMiniGamesControlsIndicators>
+        {/if}
+    {/snippet}
+</CompactMiniGamesControlsItem>
 
 <script lang="ts">
 import CompactMiniGamesControlsItem from './CompactMiniGamesControlsItem.svelte';
 import { useLootMiniGame } from '../composables';
+import CompactMiniGamesControlsIndicators from './CompactMiniGamesControlsIndicators.svelte';
+import { MiniGamesTimer } from '../basicComponents';
 
 const {
     Icon,

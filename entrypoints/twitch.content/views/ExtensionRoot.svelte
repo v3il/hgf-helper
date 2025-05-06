@@ -1,4 +1,4 @@
-<div class="p-[16px]" class:dark={isDarkTheme}>
+<div class="p-[8px] max-w-[800px] rounded-xl ml-auto mr-auto backdrop-blur-md shadow-lg fixed bottom-4 left-[70px] right-[calc(34rem-15px)] z-50000" class:dark={isDarkTheme}>
     {#if authFacade.isAuthenticated}
         <TwitchWidget />
     {:else}
