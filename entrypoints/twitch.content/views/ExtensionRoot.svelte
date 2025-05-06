@@ -6,12 +6,15 @@
     {/if}
 </div>
 
+{#if authFacade.isAuthenticated}
+    <DebugMode />
+{/if}
+
 <script lang="ts">
 import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import AuthView from './AuthView.svelte';
 import TwitchWidget from './TwitchWidget.svelte';
-import { mount } from 'svelte';
 import DebugMode from './DebugMode.svelte';
 import { watchClassOnElement } from '@utils';
 
@@ -21,10 +24,6 @@ let isDarkTheme = $state(false);
 
 watchClassOnElement(document.documentElement, 'tw-root--theme-dark', (isDark) => {
     isDarkTheme = isDark;
-});
-
-mount(DebugMode, {
-    target: document.body
 });
 </script>
 
