@@ -1,5 +1,4 @@
 import { Container } from 'typedi';
-import { UnsubscribeTrigger } from '@shared/EventEmitter';
 import { log, wait } from '@utils';
 import { Timing } from '@shared/consts';
 import { MessageSender } from '@twitch/modules/twitchChat';
@@ -23,7 +22,6 @@ export class HitsquadGameService {
     timeUntilMessage = $state(0);
 
     private timeout!: number;
-    private unsubscribe!: UnsubscribeTrigger;
 
     constructor() {
         this.settingsFacade = Container.get(SettingsFacade);
@@ -57,7 +55,6 @@ export class HitsquadGameService {
         this.remainingRounds = 0;
 
         this.saveState();
-        this.unsubscribe?.();
 
         clearTimeout(this.timeout);
     }
@@ -67,7 +64,10 @@ export class HitsquadGameService {
     }
 
     destroy() {
-        this.stop();
+        this.isRunning = false;
+        this.remainingRounds = 0;
+
+        clearTimeout(this.timeout);
     }
 
     private saveState() {

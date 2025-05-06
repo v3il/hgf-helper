@@ -1,4 +1,4 @@
-<div class="p-[8px] max-w-[800px] rounded-xl ml-auto mr-auto backdrop-blur-md shadow-lg fixed bottom-4 left-[70px] right-[calc(34rem-15px)] z-50000" class:dark={isDarkTheme}>
+<div class="p-[8px] max-w-[800px] rounded-xl ml-auto mr-auto backdrop-blur-md shadow-lg fixed z-9999999 hgf-extension-root" class:dark={isDarkTheme}>
     {#if authFacade.isAuthenticated}
         <TwitchWidget />
     {:else}
@@ -27,3 +27,17 @@ mount(DebugMode, {
     target: document.body
 });
 </script>
+
+<style>
+.hgf-extension-root {
+    right: calc(34rem + 20px);
+    left: 70px;
+    bottom: 16px;
+}
+
+@media (max-width: 920px) {
+    .hgf-extension-root {
+        right: 20px !important;
+    }
+}
+</style>

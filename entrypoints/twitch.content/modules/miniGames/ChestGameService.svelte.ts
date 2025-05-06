@@ -53,7 +53,10 @@ export class ChestGameService {
     }
 
     destroy() {
-        this.stop();
+        this.isRoundRunning = false;
+        this.isGameActive = false;
+
+        clearTimeout(this.timeoutId);
         this.unsubscribe();
     }
 

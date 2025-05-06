@@ -60,6 +60,14 @@ export class AuthService {
 
     async logout() {
         this._user = null;
+
+        await this.settingsFacade.updateSettings({
+            chestGame: false,
+            lootGame: false,
+            hitsquad: false,
+            hitsquadRounds: 0
+        })
+
         await this.storage.remove([this.storageKey]);
     }
 
