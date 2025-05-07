@@ -1,4 +1,4 @@
-<div class="flex justify-between p-[12px] w-full rounded-xl border border-gray-200 dark:border-[#27272a] bg-white/90 dark:bg-[#18181b]/80">
+<div class="flex justify-between p-[12px] w-full rounded-xl">
     <CompactMiniGamesControls />
     <StreamStatus />
 </div>

@@ -1,6 +1,6 @@
 <div class="relative flex items-center justify-center rounded-lg">
     <button
-        class="inline-flex items-center justify-center h-[40px] w-[40px] dark:hover:bg-[#27272a]/40 border border-gray-200 dark:border-[#3f3f46]/30 rounded-l-lg p-[8px] transition-all duration-200 group ring-offset-background disabled:pointer-events-none disabled:opacity-50 dark:hover:text-accent-foreground"
+        class="inline-flex items-center justify-center h-[40px] w-[40px] dark:hover:bg-[#27272a]/40 border border-[#c8ccd1] dark:border-[#3f3f46]/30 rounded-l-lg p-[8px] transition-all duration-200 group ring-offset-background disabled:pointer-events-none disabled:opacity-50 dark:hover:text-accent-foreground"
         title={name}
         onclick={() => toggle(!isGameActive)}
     >
@@ -8,7 +8,7 @@
     </button>
 
     <button
-        class="inline-flex items-center justify-center h-[40px] w-[40px] dark:hover:bg-[#27272a]/40 border border-gray-200 border-l-0 dark:border-[#3f3f46]/30 rounded-r-lg p-[8px] transition-all duration-200 group ring-offset-background disabled:pointer-events-none disabled:opa1city-50 dark:hover:text-accent-foreground"
+        class="inline-flex items-center justify-center h-[40px] w-[40px] dark:hover:bg-[#27272a]/40 border border-[#c8ccd1] border-l-0 dark:border-[#3f3f46]/30 rounded-r-lg p-[8px] transition-all duration-200 group ring-offset-background disabled:pointer-events-none disabled:opa1city-50 dark:hover:text-accent-foreground"
         title="Send once"
         tabindex="-1"
         onclick={() => participate()}

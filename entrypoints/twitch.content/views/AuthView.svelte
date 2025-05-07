@@ -1,4 +1,4 @@
-<div class="flex flex-row items-center justify-between gap-8 w-full bg-white/90 dark:bg-[#18181b]/80 backdrop-blur-sm shadow-sm dark:shadow-lg border border-gray-200 dark:border-[#27272a] rounded-xl p-[12px]">
+<div class="flex flex-row items-center justify-between gap-8 w-full rounded-xl p-[12px]">
     <div class="flex-1">
         <div class="mb-4 flex gap-[8px] items-baseline">
             <Logo />
