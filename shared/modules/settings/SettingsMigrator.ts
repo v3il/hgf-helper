@@ -40,28 +40,13 @@ export class SettingsMigrator {
     }
 
     async migrateOldSettings() {
-        // await this.storage.set({
-        //     'hgf-helper.settings': {
-        //         "collectDaCoinz": true,
-        //         "decreaseStreamDelay": true,
-        //         "enhanceStoreHeader": false,
-        //         "enhanceStoreSidebar": true,
-        //         "hideSoldOutOffers": true,
-        //         "hideStoreFooter": true,
-        //         "highlightLowVolumeOffers": true,
-        //         "highlightMentions": true,
-        //         "hitsquadRunner": true,
-        //         "jsonBinAccessKey": "$2b$10$APzMjSvSyDnwPKUlsAZiuOojTvri7gECivu23.WgW4cuvuiNNau6a",
-        //         "jsonBinMasterKey": "$2a$10$KY0ybmEF7lAqnwtgcJytouZZGpAi6XEbpoasFQwofYq5lhaE0IW7S",
-        //         "jsonBinUrl": "https://api.jsonbin.io/v3/b/641a25fcebd26539d092d042",
-        //         "offersMaxPrice": 117877,
-        //         "openAiApiToken": "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",
-        //         "quizRunner": false,
-        //         "sortOffersBy": "'-cost'"
-        //     }
-        // });
-
         const settings: IOldSettings = (await this.storage.get([this.storageKey]))[this.storageKey];
+
+        if (!settings || Object.keys(settings).length === 0) {
+            logDev('No settings to migrate');
+            await this.apiService.markSettingsMigrated();
+            return;
+        }
 
         await this.migrateSettings(settings);
         await this.migrateHiddenOffers(settings);
