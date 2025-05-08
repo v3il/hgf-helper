@@ -74,13 +74,14 @@
                     description="0-999999"
                     classes="mb-4"
                 >
-                    {settingsFacade.settings.offersMaxPrice}
+                    {offersMaxPrice}
 
                     {#snippet after()}
                         <Range
                             min={0}
                             max={999_999}
-                            value={settingsFacade.settings.offersMaxPrice}
+                            value={offersMaxPrice}
+                            onInput={(value) => offersMaxPrice = value}
                             onChange={(value) => updateSetting('offersMaxPrice', value)}
                             classes="mt-3"
                         />
@@ -115,6 +116,8 @@ import { Range, Select, Switch, Tabs } from '@shared/components';
 import SettingEditor from './SettingEditor.svelte';
 
 const settingsFacade = Container.get(SettingsFacade);
+
+let offersMaxPrice = $state(settingsFacade.settings.offersMaxPrice); // todo: find a better solution
 
 const TABS = [
     {

@@ -1,4 +1,4 @@
-<div class="flex justify-between p-[12px] w-full rounded-xl">
+<div class="flex justify-between py-[12px] px-[16px] w-full rounded-xl">
     <CompactMiniGamesControls />
     <StreamStatus />
 </div>

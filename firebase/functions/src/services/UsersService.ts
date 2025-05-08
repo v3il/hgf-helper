@@ -23,7 +23,8 @@ export class UsersService {
             await setDoc(doc(this.db, 'users', userId), {
                 userName,
                 settings: getDefaultSettings(),
-                hiddenOffers: []
+                hiddenOffers: [],
+                settingsMigrated: false
             });
         }
     }

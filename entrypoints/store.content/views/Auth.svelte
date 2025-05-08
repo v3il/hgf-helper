@@ -23,7 +23,6 @@ import { watchClassOnElement } from '@utils';
 let isDarkTheme = $state(false);
 
 watchClassOnElement(document.body, 'dark-theme', (isDark) => {
-    console.error('body', isDark);
     isDarkTheme = isDark;
 });
 </script>

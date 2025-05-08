@@ -53,6 +53,10 @@ export class AuthService {
         await this.settingsFacade.setSettings(this._user!.settings);
         this.hiddenOffersService.setHiddenOffers(this._user!.hiddenOffers);
 
+        if (!this._user.settingsMigrated) {
+            await this.settingsFacade.migrateOldSettings();
+        }
+
         await this.storage.set({ [this.storageKey]: { token } });
 
         console.error('User', this._user);

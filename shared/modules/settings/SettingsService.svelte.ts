@@ -2,11 +2,12 @@ import { ContainerInstance } from 'typedi';
 import { EventEmitter } from '@shared/EventEmitter';
 import { GlobalSettingsKeys, ISettings, ISettingsEvents } from '../types';
 import { FirebaseApiService } from '../FirebaseApiService';
+import { getDefaultSettings } from './getDefaultSettings';
 
 export class SettingsService {
     private readonly apiService: FirebaseApiService;
 
-    private _settings: ISettings = $state(this.getDefaultSettings());
+    private _settings: ISettings = $state(getDefaultSettings());
 
     readonly events = EventEmitter.create<ISettingsEvents>();
 
@@ -24,7 +25,7 @@ export class SettingsService {
     }
 
     async setSettings(settings: Partial<ISettings>) {
-        this._settings = { ...this.getDefaultSettings(), ...settings };
+        this._settings = { ...getDefaultSettings(), ...settings };
         await this.storage.set({ [this.settingsKey]: this.settings });
     }
 
@@ -49,33 +50,5 @@ export class SettingsService {
                 }
             }
         });
-    }
-
-    private getDefaultSettings(): ISettings {
-        return {
-            // Mini-games
-            hitsquad: false,
-            hitsquadRounds: 0,
-            akiraDrawing: false,
-            chestGame: false,
-            lootGame: false,
-
-            // Twitch
-            highlightMentions: true,
-            collectDaCoinz: true,
-            decreaseStreamDelay: true,
-
-            // Store
-            offersMaxPrice: 999_999,
-            hideSoldOutOffers: true,
-            highlightLowVolumeOffers: true,
-            sortOffersBy: '\'order\'',
-            enhanceStoreHeader: true,
-            enhanceStoreSidebar: true,
-            hideStoreFooter: true,
-
-            // Misc
-            openAiApiToken: ''
-        };
     }
 }

@@ -35,6 +35,10 @@ export class HiddenOffersFacade {
         return this.hiddenOffersService.hideOffer(offer);
     }
 
+    hideOffers(offers: string[]) {
+        return this.hiddenOffersService.hideOffers(offers);
+    }
+
     unhideOffer(offer: string) {
         return this.hiddenOffersService.unhideOffer(offer);
     }

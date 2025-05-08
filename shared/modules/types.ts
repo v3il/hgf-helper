@@ -28,6 +28,7 @@ export interface IUser {
     userName: string;
     settings: ISettings;
     hiddenOffers: string[];
+    settingsMigrated: boolean;
 }
 
 export type GlobalSettingsKeys = keyof ISettings;

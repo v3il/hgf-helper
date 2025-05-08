@@ -2,16 +2,16 @@ import { Service } from 'typedi';
 import { FUNCTION_URL } from '../consts';
 import { ISettings, IUser } from './types';
 import { UnauthenticatedError } from './UnauthenticatedError';
-import { debounce, DebouncedFunc } from 'lodash';
 
 @Service()
 export class FirebaseApiService {
     private token!: string;
-    private readonly debouncedSendUpdateRequest: DebouncedFunc<(payload: object) => Promise<Response>>;
+    // private readonly debouncedSendUpdateRequest: DebouncedFunc<() => Promise<Response>>;
+    // private changes!: Record<string, object | boolean>;
 
-    constructor() {
-        this.debouncedSendUpdateRequest = debounce(this.sendUpdateRequest.bind(this), 200);
-    }
+    // constructor() {
+        // this.debouncedSendUpdateRequest = debounce(this.sendUpdateRequest.bind(this), 200);
+    // }
 
     setToken(token: string) {
         this.token = token;
@@ -34,11 +34,15 @@ export class FirebaseApiService {
     }
 
     async updateSettings(settings: ISettings) {
-        await this.debouncedSendUpdateRequest({ settings });
+        await this.sendUpdateRequest({ settings });
     }
 
     async updateHiddenOffers(hiddenOffers: string[]) {
-        await this.debouncedSendUpdateRequest({ hiddenOffers });
+        await this.sendUpdateRequest({ hiddenOffers });
+    }
+
+    async markSettingsMigrated() {
+        await this.sendUpdateRequest({ settingsMigrated: true });
     }
 
     private async sendUpdateRequest(payload: object) {

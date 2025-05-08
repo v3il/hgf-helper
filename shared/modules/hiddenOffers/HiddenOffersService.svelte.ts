@@ -28,6 +28,11 @@ export class HiddenOffersService {
         return this.apiService.updateHiddenOffers(this.hiddenOffers);
     }
 
+    hideOffers(offers: string[]) {
+        this._hiddenOffers.push(...offers);
+        return this.apiService.updateHiddenOffers(this.hiddenOffers);
+    }
+
     setHiddenOffers(hiddenOffers: string[]) {
         this._hiddenOffers = hiddenOffers;
     }
