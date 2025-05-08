@@ -12,7 +12,6 @@ interface IOldSettings {
 
     jsonBinUrl: string;
     jsonBinMasterKey: string;
-    jsonBinAccessKey: string;
     offersMaxPrice: number;
     hideSoldOutOffers: boolean;
     highlightLowVolumeOffers: boolean;
@@ -20,8 +19,6 @@ interface IOldSettings {
     enhanceStoreHeader: boolean;
     enhanceStoreSidebar: boolean;
     hideStoreFooter: boolean;
-
-    openAiApiToken: string;
 }
 
 @Service()
@@ -67,8 +64,7 @@ export class SettingsMigrator {
                 sortOffersBy: settings.sortOffersBy ?? defaultSettings.sortOffersBy,
                 enhanceStoreHeader: settings.enhanceStoreHeader ?? defaultSettings.enhanceStoreHeader,
                 enhanceStoreSidebar: settings.enhanceStoreSidebar ?? defaultSettings.enhanceStoreSidebar,
-                hideStoreFooter: settings.hideStoreFooter ?? defaultSettings.hideStoreFooter,
-                openAiApiToken: settings.openAiApiToken ?? defaultSettings.openAiApiToken
+                hideStoreFooter: settings.hideStoreFooter ?? defaultSettings.hideStoreFooter
             });
 
             log('Settings migrated');
@@ -79,9 +75,9 @@ export class SettingsMigrator {
 
     private async migrateHiddenOffers(settings: IOldSettings) {
         try {
-            const { jsonBinUrl, jsonBinMasterKey, jsonBinAccessKey } = settings;
+            const { jsonBinUrl, jsonBinMasterKey } = settings;
 
-            if (!jsonBinUrl || !jsonBinMasterKey || !jsonBinAccessKey) {
+            if (!jsonBinUrl || !jsonBinMasterKey) {
                 logDev('Missing JSONBin credentials, skip');
                 return;
             }
@@ -90,7 +86,6 @@ export class SettingsMigrator {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Master-Key': jsonBinMasterKey,
-                    'X-ACCESS_KEY': jsonBinAccessKey
                 }
             });
 
