@@ -1,10 +1,14 @@
-import { wait } from '@utils';
 import { Timing } from '@shared/consts';
 import { Service } from 'typedi';
+import cookies from 'js-cookie';
 
 @Service()
 export class TwitchUIService {
     twitchUserName!: string;
+
+    constructor() {
+        this.twitchUserName = this.getUserName();
+    }
 
     // <div data-a-target="tw-core-button-label-text" class="Layout-sc-1xcs6mc-0 bFxzAY">Click Here to Reload Player</div>
 
@@ -23,7 +27,6 @@ export class TwitchUIService {
                 this.chatContainerEl,
                 this.chatInputEl,
                 this.chatScrollableAreaEl,
-                this.userDropdownToggleEl,
                 this.streamInfoEl,
                 videoEl
             ];
@@ -32,12 +35,9 @@ export class TwitchUIService {
                 return;
             }
 
-            const userName = await this.getUserName();
-
-            if (this.#isVideoPlaying(videoEl!) && this.currentGame && userName) {
+            if (this.isVideoPlaying(videoEl!) && this.currentGame && this.twitchUserName) {
                 clearInterval(interval);
                 clearTimeout(reloadTimeout);
-                this.twitchUserName = userName;
                 callback();
             }
         }, Timing.SECOND);
@@ -73,10 +73,6 @@ export class TwitchUIService {
         return document.querySelector<HTMLElement>('[data-a-target="chat-input"]');
     }
 
-    get userDropdownToggleEl() {
-        return document.querySelector<HTMLElement>('[data-a-target="user-menu-toggle"]');
-    }
-
     get chatScrollableAreaEl() {
         return document.querySelector<HTMLElement>('.chat-scrollable-area__message-container');
     }
@@ -93,22 +89,22 @@ export class TwitchUIService {
         return document.querySelector<HTMLElement>('.channel-info-content');
     }
 
-    #isVideoPlaying(videoEl: HTMLVideoElement) {
+    private isVideoPlaying(videoEl: HTMLVideoElement) {
         return videoEl.currentTime > 0 && !videoEl.paused && !videoEl.ended && videoEl.readyState > 2;
     }
 
-    async getUserName(): Promise<string> {
-        const userDropdownToggleEl = this.userDropdownToggleEl! as HTMLButtonElement;
+    private getUserName(): string {
+        const userCookie = cookies.get('twilight-user');
 
-        userDropdownToggleEl.click();
+        if (userCookie) {
+            try {
+                const { displayName } = JSON.parse(userCookie);
+                return displayName;
+            } catch (error) {
+                console.error('Failed to parse user cookie:', error);
+            }
+        }
 
-        await wait(100);
-
-        const userNameEl = document.querySelector<HTMLElement>('[data-a-target="user-display-name"]');
-        const userName = userNameEl?.textContent!.toLowerCase() ?? '';
-
-        userDropdownToggleEl.click();
-
-        return userName;
+        return '';
     }
 }
