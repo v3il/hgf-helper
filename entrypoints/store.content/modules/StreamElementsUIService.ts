@@ -14,7 +14,7 @@ export class StreamElementsUIService {
 
     onLayoutRendered(callback: () => void) {
         const interval = setInterval(() => {
-            if (this.pageContentEl) {
+            if (this.pageContentEl && this.sidebarEl) {
                 clearInterval(interval);
                 callback();
             }
@@ -25,7 +25,7 @@ export class StreamElementsUIService {
         const interval = setInterval(async () => {
             const offerEls = document.querySelectorAll('.stream-store-list-item');
 
-            if (this.sortOffersDropdownEl && this.userStatsEl && offerEls.length > 0) {
+            if (this.sortOffersDropdownEl && offerEls.length > 0) {
                 clearInterval(interval);
                 callback();
             }
@@ -36,8 +36,8 @@ export class StreamElementsUIService {
         return document.querySelector<HTMLElement>('.public-store-items')!;
     }
 
-    get userStatsEl() {
-        return document.querySelector<HTMLElement>('.usr-stats')!;
+    get sidebarEl() {
+        return document.querySelector<HTMLElement>('.side-bar')!;
     }
 
     get pageContentEl() {
@@ -48,6 +48,12 @@ export class StreamElementsUIService {
         this.enhanceStoreHeader();
         this.enhanceStoreSidebar();
         this.toggleStoreFooter();
+    }
+
+    removeStorePageEnhancements() {
+        document.documentElement.classList.remove('hgf-enhanced-header');
+        document.documentElement.classList.remove('hgf-enhanced-sidebar');
+        document.documentElement.classList.remove('hgf-hide-footer');
     }
 
     async sortOffers() {

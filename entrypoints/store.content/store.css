@@ -4,6 +4,7 @@
 
 :root {
     --hgf-header-height: 64px;
+    --hgf-sidebar-offset-top: 24px;
 }
 
 button, select, html, textarea, input {
@@ -15,7 +16,12 @@ button, select, html, textarea, input {
 }
 
 .side-bar {
-    margin-top: 0 !important;
+    margin-top: var(--hgf-sidebar-offset-top) !important;
+}
+
+.username-title .md-subheader-inner {
+    padding-left: 0 !important;
+    padding-top: 0 !important;
 }
 
 /* Header */
@@ -30,21 +36,16 @@ button, select, html, textarea, input {
 
 /* Sidebar */
 
-.hgf-enhanced-sidebar .user-text-info,
-.hgf-enhanced-sidebar .twitch-actions,
-.hgf-enhanced-sidebar .spacer-xs {
+.hgf-enhanced-sidebar .side-bar .user-text-info,
+.hgf-enhanced-sidebar .side-bar .twitch-actions,
+.hgf-enhanced-sidebar .side-bar .spacer-xs {
     display: none;
-}
-
-.hgf-enhanced-sidebar .side-bar {
-    margin-top: 0;
-    padding-top: 24px;
 }
 
 @media (min-width: 1280px) {
     .hgf-enhanced-sidebar .side-bar {
         position: sticky;
-        top: var(--hgf-header-height);
+        top: calc(var(--hgf-header-height) + var(--hgf-sidebar-offset-top));
     }
 }
 

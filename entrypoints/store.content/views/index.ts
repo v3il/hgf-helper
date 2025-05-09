@@ -1,1 +1,1 @@
-export { default as StoreExtension } from './StoreExtension.svelte';
+export { default as ExtensionRoot } from './ExtensionRoot.svelte';

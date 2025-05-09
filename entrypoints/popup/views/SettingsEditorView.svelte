@@ -34,7 +34,7 @@
 
                 <SettingEditor
                     title="Enhance store sidebar"
-                    description="Hide channel logo and Twitch actions. Make block with stats sticky"
+                    description="Hide channel logo and Twitch actions. Make sidebar sticky"
                     classes="mb-4"
                 >
                     <Switch

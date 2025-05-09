@@ -6,10 +6,11 @@
 
     {#if authFacade.isAuthenticated}
         <button
-            class="cursor-pointer text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 underline-offset-4 text-red-400 hover:text-red-500 uppercase"
+            class="cursor-pointer transition-colors text-red-500 hover:text-red-400"
             onclick={() => authFacade.logout()}
+            title="Logout"
         >
-            Logout
+            <LogOut size="16" />
         </button>
     {/if}
 </header>
@@ -31,6 +32,7 @@ import AuthView from './AuthView.svelte';
 import SettingsEditorView from './SettingsEditorView.svelte';
 import PopupLoading from './PopupLoading.svelte';
 import { Logo } from '@shared/components';
+import { LogOut } from '@lucide/svelte';
 
 let isLoading = $state(true);
 

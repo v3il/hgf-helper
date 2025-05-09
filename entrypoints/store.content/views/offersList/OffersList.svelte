@@ -3,36 +3,44 @@ import { Container } from 'typedi';
 import { OffersFacade, StreamElementsUIService } from '@store/modules';
 import OffersListItem from './OffersListItem.svelte';
 import { mount, onDestroy, unmount } from 'svelte';
+import { HiddenOffersManager } from '@store/views/hiddenOffersManager';
+import { OffersList } from '@store/views/offersList/index';
 
 const offersFacade = Container.get(OffersFacade);
 const streamElementsUIService = Container.get(StreamElementsUIService);
 
 const offerViews = Array.from(streamElementsUIService.offersListEl.querySelectorAll<HTMLElement>('.stream-store-list-item'));
 
-const children = offerViews.map((offerEl) => {
-    const gameNameEl = offerEl.querySelector<HTMLHeadingElement>('.item-title')!;
-    const countEl = offerEl.querySelector<HTMLSpanElement>('.item-quantity-left span')!;
-    const itemCostEl = offerEl.querySelector<HTMLParagraphElement>('.item-cost')!;
-    const descriptionEl = offerEl.querySelector<HTMLParagraphElement>('.clamp-description-text')!;
+let children: OffersListItem[] = [];
 
-    const name = gameNameEl.getAttribute('title')!.toLowerCase().trim();
-    const count = countEl.textContent!.toLowerCase().trim();
-    const price = itemCostEl.lastChild!.textContent!.trim();
-    const description = descriptionEl.textContent!.toLowerCase().trim();
+streamElementsUIService.whenOffersLoaded(async () => {
+    await streamElementsUIService.sortOffers();
 
-    const offer = offersFacade.createOffer({
-        name,
-        count,
-        price,
-        description
-    });
+    children = offerViews.map((offerEl) => {
+        const gameNameEl = offerEl.querySelector<HTMLHeadingElement>('.item-title')!;
+        const countEl = offerEl.querySelector<HTMLSpanElement>('.item-quantity-left span')!;
+        const itemCostEl = offerEl.querySelector<HTMLParagraphElement>('.item-cost')!;
+        const descriptionEl = offerEl.querySelector<HTMLParagraphElement>('.clamp-description-text')!;
 
-    return mount(OffersListItem, {
-        target: offerEl,
-        props: {
-            offer,
-            offerEl
-        }
+        const name = gameNameEl.getAttribute('title')!.toLowerCase().trim();
+        const count = countEl.textContent!.toLowerCase().trim();
+        const price = itemCostEl.lastChild!.textContent!.trim();
+        const description = descriptionEl.textContent!.toLowerCase().trim();
+
+        const offer = offersFacade.createOffer({
+            name,
+            count,
+            price,
+            description
+        });
+
+        return mount(OffersListItem, {
+            target: offerEl,
+            props: {
+                offer,
+                offerEl
+            }
+        });
     });
 });
 
