@@ -6,7 +6,7 @@
         </div>
 
         <p class="text-gray-600 dark:text-[#71717a]">
-            Sign in to unlock all the HGF-Helper functions
+            Sign in to unlock all the functions
         </p>
     </div>
 
