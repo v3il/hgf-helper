@@ -35,7 +35,7 @@ export class ChatObserver {
             message: IChatMessage;
         }>();
 
-        this.observer = this.#createObserver();
+        this.observer = this.createObserver();
 
         // Skip initial messages
         // todo: find a better way
@@ -48,17 +48,17 @@ export class ChatObserver {
         return this.events.on('message', (message) => callback(message!));
     }
 
-    #createObserver() {
+    private createObserver() {
         return new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 mutation.addedNodes.forEach((addedElement) => {
-                    this.#processAddedElement(addedElement as HTMLElement);
+                    this.processAddedElement(addedElement as HTMLElement);
                 });
             });
         });
     }
 
-    #processAddedElement(addedElement: HTMLElement) {
+    private processAddedElement(addedElement: HTMLElement) {
         const messageWrapperEl = addedElement.querySelector?.<HTMLElement>('.chat-line__message');
 
         if (!messageWrapperEl) {

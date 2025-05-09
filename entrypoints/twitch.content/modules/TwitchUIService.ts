@@ -99,7 +99,7 @@ export class TwitchUIService {
         if (userCookie) {
             try {
                 const { displayName } = JSON.parse(userCookie);
-                return displayName;
+                return displayName.toLowerCase();
             } catch (error) {
                 console.error('Failed to parse user cookie:', error);
             }
