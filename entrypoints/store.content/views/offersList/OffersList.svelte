@@ -41,4 +41,4 @@ onDestroy(() => {
         unmount(child);
     })
 })
-</script>;
+</script>

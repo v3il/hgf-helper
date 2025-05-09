@@ -4,21 +4,21 @@
             {#if activeTab === 'twitch'}
                 <SettingEditor title="Highlighting messages mentioning me" classes="mb-4">
                     <Switch
-                        isChecked={settingsFacade.settings.highlightMentions}
+                        isChecked={settings.highlightMentions}
                         onChange={(isChecked) => updateSetting('highlightMentions', isChecked)}
                     />
                 </SettingEditor>
 
                 <SettingEditor title="Automatically collect Da Coinz" classes="mb-4">
                     <Switch
-                        isChecked={settingsFacade.settings.collectDaCoinz}
+                        isChecked={settings.collectDaCoinz}
                         onChange={(isChecked) => updateSetting('collectDaCoinz', isChecked)}
                     />
                 </SettingEditor>
 
                 <SettingEditor title="Automatically decrease stream delay">
                     <Switch
-                        isChecked={settingsFacade.settings.decreaseStreamDelay}
+                        isChecked={settings.decreaseStreamDelay}
                         onChange={(isChecked) => updateSetting('decreaseStreamDelay', isChecked)}
                     />
                 </SettingEditor>
@@ -27,7 +27,7 @@
             {#if activeTab === 'stream-elements'}
                 <SettingEditor title="Enhance store header" description="Hide store banner" classes="mb-4">
                     <Switch
-                        isChecked={settingsFacade.settings.enhanceStoreHeader}
+                        isChecked={settings.enhanceStoreHeader}
                         onChange={(isChecked) => updateSetting('enhanceStoreHeader', isChecked)}
                     />
                 </SettingEditor>
@@ -38,14 +38,14 @@
                     classes="mb-4"
                 >
                     <Switch
-                        isChecked={settingsFacade.settings.enhanceStoreSidebar}
+                        isChecked={settings.enhanceStoreSidebar}
                         onChange={(isChecked) => updateSetting('enhanceStoreSidebar', isChecked)}
                     />
                 </SettingEditor>
 
                 <SettingEditor title="Hide store footer" classes="mb-4">
                     <Switch
-                        isChecked={settingsFacade.settings.hideStoreFooter}
+                        isChecked={settings.hideStoreFooter}
                         onChange={(isChecked) => updateSetting('hideStoreFooter', isChecked)}
                     />
                 </SettingEditor>
@@ -59,7 +59,7 @@
                 >
                     <Select
                         classes="w-[120px]"
-                        value={settingsFacade.settings.sortOffersBy}
+                        value={settings.sortOffersBy}
                         onChange={(value) => updateSetting('sortOffersBy', value)}
                         options={[
                             { value: '\'order\'', label: 'Default' },
@@ -74,15 +74,14 @@
                     description="0-999999"
                     classes="mb-4"
                 >
-                    {offersMaxPrice}
+                    {settings.offersMaxPrice}
 
                     {#snippet after()}
                         <Range
                             min={0}
                             max={999_999}
-                            value={offersMaxPrice}
-                            onInput={(value) => offersMaxPrice = value}
-                            onChange={(value) => updateSetting('offersMaxPrice', value)}
+                            value={settings.offersMaxPrice}
+                            onInput={(value) => updateSetting('offersMaxPrice', value)}
                             classes="mt-3"
                         />
                     {/snippet}
@@ -90,7 +89,7 @@
 
                 <SettingEditor title="Hide sold out offers" classes="mb-4">
                     <Switch
-                        isChecked={settingsFacade.settings.hideSoldOutOffers}
+                        isChecked={settings.hideSoldOutOffers}
                         onChange={(isChecked) => updateSetting('hideSoldOutOffers', isChecked)}
                     />
                 </SettingEditor>
@@ -100,7 +99,7 @@
                     description="Highlight offers with low volume (less than 10)"
                 >
                     <Switch
-                        isChecked={settingsFacade.settings.highlightLowVolumeOffers}
+                        isChecked={settings.highlightLowVolumeOffers}
                         onChange={(isChecked) => updateSetting('highlightLowVolumeOffers', isChecked)}
                     />
                 </SettingEditor>
@@ -111,13 +110,14 @@
 
 <script lang="ts">
 import { Container } from 'typedi';
-import { type GlobalSettingsKeys, SettingsFacade } from '@shared/modules';
+import { type GlobalSettingsKeys, SettingsFacade, type ISettings } from '@shared/modules';
 import { Range, Select, Switch, Tabs } from '@shared/components';
 import SettingEditor from './SettingEditor.svelte';
+import { debounce } from 'lodash';
 
 const settingsFacade = Container.get(SettingsFacade);
 
-let offersMaxPrice = $state(settingsFacade.settings.offersMaxPrice); // todo: find a better solution
+const settings: ISettings = $state({ ...settingsFacade.settings });
 
 const TABS = [
     {
@@ -130,9 +130,12 @@ const TABS = [
     }
 ];
 
-function updateSetting(settingName: GlobalSettingsKeys, value: string | number | boolean) {
-    settingsFacade.updateSettings({
-        [settingName]: value
-    });
+const debouncedUpdateSetting = debounce(() => {
+    settingsFacade.updateSettings(settings);
+}, 250);
+
+function updateSetting<K extends GlobalSettingsKeys>(settingName: K, value: ISettings[K]) {
+    settings[settingName] = value;
+    debouncedUpdateSetting();
 }
 </script>
