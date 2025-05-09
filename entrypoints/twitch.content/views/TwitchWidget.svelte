@@ -1,4 +1,5 @@
-<div class="flex justify-between py-[12px] px-[16px] w-full rounded-xl">
+<div class="flex justify-between items-center py-[12px] px-[16px] w-full rounded-xl">
+    <Logo />
     <CompactMiniGamesControls />
     <StreamStatus />
 </div>
@@ -11,6 +12,7 @@ import { ChestGameService, HitsquadGameService, LootGameService } from '@twitch/
 import { onDestroy } from 'svelte';
 import { Container } from 'typedi';
 import { AntiCheatProcessor, OffscreenStreamRenderer } from '@twitch/modules/stream';
+import { Logo } from '@shared/components';
 
 const offscreenStreamRenderer = Container.get(OffscreenStreamRenderer);
 const antiCheatProcessor = Container.get(AntiCheatProcessor);

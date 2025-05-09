@@ -1,5 +1,5 @@
 <div class="mb-[24px] border border-gray-400 dark:border-[#27272a] rounded-sm p-[16px] shadow-sm" class:dark={isDarkTheme}>
-    <div class="mb-[16px] flex gap-[8px] items-baseline justify-center">
+    <div class="mb-[16px] flex gap-[12px] items-center">
         <Logo />
         <h2 class="font-semibold text-gray-800 dark:text-[#d4d4d8] text-xl">HGF-Helper</h2>
     </div>

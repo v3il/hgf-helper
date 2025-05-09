@@ -26,7 +26,11 @@ export const buildConfig = ({ description, ...rest }: IParams): UserConfig => ({
             {
                 resources: ['twitchMainWorldInjected.js'],
                 matches: ['https://www.twitch.tv/*']
-            }
+            },
+            {
+                resources: ['logo.png'],
+                matches: ['https://www.twitch.tv/*', 'https://streamelements.com/*']
+            },
         ]
     },
 

@@ -1,6 +1,6 @@
 <header class="flex items-center justify-between w-full mb-6">
     <h2 class="flex items-center gap-2">
-        <Logo />
+        <img src="/logo.png" alt="logo" width="32" class="rounded-[2px]">
         <span class="font-semibold text-2xl">HGF-Helper</span>
     </h2>
 
@@ -31,7 +31,6 @@ import { AuthFacade } from '@shared/modules';
 import AuthView from './AuthView.svelte';
 import SettingsEditorView from './SettingsEditorView.svelte';
 import PopupLoading from './PopupLoading.svelte';
-import { Logo } from '@shared/components';
 import { LogOut } from '@lucide/svelte';
 
 let isLoading = $state(true);
