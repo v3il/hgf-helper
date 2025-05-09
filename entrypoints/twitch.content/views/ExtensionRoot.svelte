@@ -1,4 +1,4 @@
-<div class="max-w-[800px] rounded-xl ml-auto mr-auto fixed z-9999999 bg-[#f7f7f8] dark:bg-[#18181b] border hgf-extension-root" class:dark={isDarkTheme}>
+<div class="max-w-[600px] rounded-xl ml-auto mr-auto fixed z-9999999 bg-[#f7f7f8] dark:bg-[#18181b] border hgf-extension-root" class:dark={isDarkTheme}>
     {#if authFacade.isAuthenticated}
         <TwitchWidget />
     {:else}

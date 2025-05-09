@@ -7,12 +7,6 @@ export class OnScreenTextRecognizer {
     private containerEl!: HTMLElement;
     private worker!: Worker;
 
-    constructor() {
-        if (isDev) {
-            this.createPreviewContainer();
-        }
-    }
-
     private async createWorker() {
         const worker = await createWorker('eng', OEM.LSTM_ONLY);
 
@@ -25,28 +19,29 @@ export class OnScreenTextRecognizer {
     }
 
     private createPreviewContainer() {
-        this.containerEl = document.createElement('div');
+        const containerEl = document.createElement('div');
 
-        this.containerEl.style.position = 'fixed';
-        this.containerEl.style.bottom = '30px';
-        this.containerEl.style.left = '160px';
-        this.containerEl.style.zIndex = '99999';
-        this.containerEl.style.border = '1px solid red';
-        this.containerEl.style.display = 'flex';
-        this.containerEl.style.alignItems = 'center';
-        this.containerEl.style.gap = '8px';
-        this.containerEl.style.background = 'black';
-        this.containerEl.style.padding = '8px';
-        this.containerEl.id = 'text-decoder-container';
+        containerEl.classList.add(
+            'fixed',
+            'bottom-[100px]',
+            'left-[160px]',
+            'z-[99999]',
+            'border',
+            'border-red-500',
+            'items-center',
+            'gap-2',
+            'bg-black',
+            'p-2',
+            isDev ? 'flex' : 'hidden'
+        );
 
-        document.body.appendChild(this.containerEl);
+        document.body.appendChild(containerEl);
+
+        return containerEl;
     }
 
     private attachPreview(canvas: HTMLCanvasElement) {
-        if (!isDev) {
-            return;
-        }
-
+        this.containerEl ??= this.createPreviewContainer();
         this.containerEl.innerHTML = '';
         this.containerEl.appendChild(canvas);
     }
@@ -102,14 +97,19 @@ export class OnScreenTextRecognizer {
 
         const maxSimilarity = Math.max(...result.map(({ similarity }) => similarity));
 
-        this.containerEl?.insertAdjacentHTML('beforeend', `<div>${maxSimilarity}</div>`);
+        this.containerEl.insertAdjacentHTML('beforeend', `<span>${maxSimilarity}</span>`);
 
         return maxSimilarity;
     }
 
     private generateVariants(text: string) {
-        const withoutLineEnding = text.replace('\n', ' ').trim();
-        const normalizedText = withoutLineEnding.replaceAll('I', 'l').toLowerCase();
+        let withoutLineEnding = text.replace('\n', ' ').trim();
+
+        if (withoutLineEnding.startsWith('I')) {
+            withoutLineEnding = 'l' + withoutLineEnding.slice(1);
+        }
+
+        const normalizedText = withoutLineEnding.toLowerCase();
 
         const words = normalizedText.split(' ');
         const longestWord = words.reduce((longest, word) => (word.length > longest.length ? word : longest), '');
