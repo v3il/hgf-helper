@@ -1,6 +1,6 @@
 <div class="flex flex-row items-center justify-between gap-[16px] w-full rounded-xl p-[12px]">
     <div class="flex-1">
-        <div class="mb-[4px] flex items-center gap-[12px]">
+        <div class="mb-[8px] flex items-center gap-[12px]">
             <Logo />
             <h2 class="font-semibold text-gray-800 dark:text-[#a1a1aa] text-3xl">HGF-Helper</h2>
         </div>

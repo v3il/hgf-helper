@@ -1,4 +1,5 @@
-@import "tailwindcss" important;
+@import "tailwindcss/utilities" important;
+@import "tailwindcss/theme" important;
 
 @custom-variant dark (&:where(.dark, .dark *));
 
