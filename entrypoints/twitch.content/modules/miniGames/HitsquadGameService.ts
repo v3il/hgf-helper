@@ -4,7 +4,7 @@ import { LocalSettingsService } from '@components/settings';
 import { EventEmitter, UnsubscribeTrigger } from '@components/EventEmitter';
 import { getRandomNumber, log, waitAsync } from '@components/utils';
 import { Timing } from '@components/consts';
-import { ChatObserver, MessageSender } from '@twitch/modules/twitchChat';
+import { MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
 
 interface IHitsquadRunnerState {
@@ -24,7 +24,6 @@ export class HitsquadGameService {
     readonly events;
 
     private readonly messageSender: MessageSender;
-    private readonly chatObserver: ChatObserver;
     private readonly settingsService: LocalSettingsService;
     private readonly twitchUIService: TwitchUIService;
     private readonly streamStatusService: StreamStatusService;
@@ -33,13 +32,11 @@ export class HitsquadGameService {
     private totalRounds!: number;
     private state!: IHitsquadRunnerState;
     private timeout!: number;
-    private lastHitsquadRewardTimestamp!: number;
     private unsubscribe!: UnsubscribeTrigger;
 
     constructor() {
         this.settingsService = Container.get(LocalSettingsService);
         this.messageSender = Container.get(MessageSender);
-        this.chatObserver = Container.get(ChatObserver);
         this.twitchUIService = Container.get(TwitchUIService);
         this.streamStatusService = Container.get(StreamStatusService);
 
@@ -76,7 +73,6 @@ export class HitsquadGameService {
 
         this.totalRounds = this.state.remainingRounds;
 
-        this.listenEvents();
         this.scheduleNextRound();
     }
 
@@ -103,18 +99,6 @@ export class HitsquadGameService {
             hitsquad: this.state.isRunning,
             hitsquadRounds: this.state.remainingRounds
         });
-    }
-
-    private listenEvents() {
-        this.unsubscribe = this.chatObserver.observeChat(({ isHitsquadReward }) => {
-            if (isHitsquadReward) {
-                this.lastHitsquadRewardTimestamp = Date.now();
-            }
-        });
-    }
-
-    private get isBotWorking() {
-        return Date.now() - this.lastHitsquadRewardTimestamp < 20 * Timing.MINUTE;
     }
 
     private async sendCommand(): Promise<void> {
@@ -145,11 +129,6 @@ export class HitsquadGameService {
         this.timeUntilMessage = Date.now() + delay;
 
         this.timeout = window.setTimeout(async () => {
-            if (!this.isBotWorking) {
-                log('Bot is not working, scheduling next round');
-                return this.scheduleNextRound();
-            }
-
             await this.sendCommand();
 
             if (this.state.remainingRounds > 0) {
