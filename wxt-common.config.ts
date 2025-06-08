@@ -21,6 +21,7 @@ export const buildConfig = ({ description, ...rest }: IParams): UserConfig => ({
         description,
         name: 'HGF Helper',
         permissions: ['storage'],
+        host_permissions: ['https://www.twitch.tv/*', 'https://streamelements.com/*', 'http://localhost:5001/*'],
 
         web_accessible_resources: [
             {

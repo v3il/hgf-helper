@@ -10,12 +10,12 @@ export const updateUser = async (request: Request, response: Response) => {
         console.error('User', user);
 
         if (!user) {
-            response.sendStatus(404);
+            response.status(404).send({ error: 'User not found' });
             return;
         }
 
         await usersService.update(request.user!.userId, body);
-        response.sendStatus(200);
+        response.send({});
     } catch (error) {
         console.error('Update user error', error);
         response.status(401).send({ error: 'Bad request' });

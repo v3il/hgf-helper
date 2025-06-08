@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import admin from 'firebase-admin';
@@ -12,6 +13,11 @@ if (!admin.apps.length) {
 }
 
 const app = express();
+
+app.use(cors({
+    methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.get('/auth', auth);
 app.get('/auth/callback', authCallback);

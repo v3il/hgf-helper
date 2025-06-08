@@ -3,34 +3,32 @@ import { FUNCTION_URL } from '../consts';
 import { ISettings, IUser } from './types';
 import { UnauthenticatedError } from './UnauthenticatedError';
 
+interface ISendRequestError {
+    status: number;
+    error: string;
+}
+
+interface ISendRequestResponse<D> {
+    data?: D;
+    error?: ISendRequestError;
+}
+
 @Service()
 export class FirebaseApiService {
     private token!: string;
-    // private readonly debouncedSendUpdateRequest: DebouncedFunc<() => Promise<Response>>;
-    // private changes!: Record<string, object | boolean>;
-
-    // constructor() {
-        // this.debouncedSendUpdateRequest = debounce(this.sendUpdateRequest.bind(this), 200);
-    // }
 
     setToken(token: string) {
         this.token = token;
     }
 
     async getUser() {
-        const response = await fetch(`${FUNCTION_URL}/user`, {
-            headers: {
-                Authorization: `Bearer ${this.token}`
-            }
-        });
+        const response = await this.sendRequest<{ user: IUser }>(`${FUNCTION_URL}/user`);
 
-        if (!response.ok) {
+        if (response.error) {
             throw new UnauthenticatedError();
         }
 
-        const json = await response.json();
-
-        return json.user as IUser;
+        return response.data!.user;
     }
 
     async updateSettings(settings: ISettings) {
@@ -46,21 +44,31 @@ export class FirebaseApiService {
     }
 
     private async sendUpdateRequest(payload: object) {
-        const response = await fetch(`${FUNCTION_URL}/user`, {
+        const response = await this.sendRequest(`${FUNCTION_URL}/user`, {
             method: 'PATCH',
-            headers: {
-                Authorization: `Bearer ${this.token}`,
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify(payload)
         });
 
-        if (response.ok) {
-            return response;
-        }
-
-        if (response.status === 401) {
+        if (response.error?.status === 401 || response.error?.status === 404) {
             throw new UnauthenticatedError();
         }
+    }
+
+    private sendRequest<R extends object = object>(url: string, requestInit: Partial<RequestInit> = {}): Promise<ISendRequestResponse<R>> {
+        return new Promise((resolve) => {
+            chrome.runtime.sendMessage({
+                type: 'sendRequest',
+                url,
+                requestInit: {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${this.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    ...requestInit
+                }
+            }, resolve);
+        });
+
     }
 }
