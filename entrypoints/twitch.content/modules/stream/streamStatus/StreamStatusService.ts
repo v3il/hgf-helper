@@ -56,12 +56,14 @@ export class StreamStatusService extends BasicView {
         this.checkChestGame();
 
         if (this.isAntiCheatProcessing) {
+            this.statuses.push(StreamStatus.ANTI_CHEAT);
             return;
         }
 
         this.isAntiCheat = this.checkAntiCheat();
 
         if (this.isAntiCheat) {
+            this.statuses.push(StreamStatus.ANTI_CHEAT);
             this.isAntiCheatProcessing = true;
 
             setTimeout(() => {
@@ -82,7 +84,7 @@ export class StreamStatusService extends BasicView {
     private checkAntiCheat() {
         const failedChecks = this.checkPoints(antiCheatChecks);
 
-        return (failedChecks / antiCheatChecks.length) >= 0.7;
+        return (failedChecks / antiCheatChecks.length) >= 0.5;
     }
 
     private checkLootGame() {
@@ -135,10 +137,6 @@ export class StreamStatusService extends BasicView {
 
     get isVideoBroken() {
         return this.statuses.includes(StreamStatus.BROKEN);
-    }
-
-    get isStreamOk() {
-        return this.statuses.includes(StreamStatus.OK);
     }
 
     get isMiniGamesAllowed() {

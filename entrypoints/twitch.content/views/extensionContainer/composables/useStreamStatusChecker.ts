@@ -22,8 +22,17 @@ export const useStreamStatusChecker = ({ el }: IParams) => {
     }
 
     function renderStatus() {
-        el.classList.toggle('broken', streamService.isVideoBroken);
-        el.classList.toggle('safe', streamService.isStreamOk);
+        el.classList.remove('broken', 'safe', 'danger');
+
+        if (streamService.isVideoBroken) {
+            return el.classList.add('broken');
+        }
+
+        if (!streamService.isMiniGamesAllowed) {
+            return el.classList.add('danger');
+        }
+
+        el.classList.add('safe');
     }
 
     handleStreamStatusCheck();
