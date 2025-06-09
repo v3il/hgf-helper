@@ -53,7 +53,7 @@ export class ChestGameService {
     }
 
     private getDelay() {
-        return getRandomNumber(30 * Timing.SECOND, 5 * Timing.MINUTE);
+        return getRandomNumber(30 * Timing.SECOND, 4 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {

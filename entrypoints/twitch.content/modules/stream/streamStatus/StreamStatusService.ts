@@ -56,14 +56,12 @@ export class StreamStatusService extends BasicView {
         this.checkChestGame();
 
         if (this.isAntiCheatProcessing) {
-            this.statuses.push(StreamStatus.ANTI_CHEAT);
             return;
         }
 
         this.isAntiCheat = this.checkAntiCheat();
 
         if (this.isAntiCheat) {
-            this.statuses.push(StreamStatus.ANTI_CHEAT);
             this.isAntiCheatProcessing = true;
 
             setTimeout(() => {
@@ -144,6 +142,6 @@ export class StreamStatusService extends BasicView {
     }
 
     get isMiniGamesAllowed() {
-        return !this.isVideoBroken && !this.isAntiCheat;
+        return !(this.isVideoBroken || this.isAntiCheat);
     }
 }
