@@ -16,8 +16,9 @@ A widget is placed on the stream page that allows you to play mini-games in semi
 1. all features keep working while showing an ads;
 
 #### Anti-cheat versions:
-- Prohibits sending commands during the anti-cheat screen - was handled automatically **[removed on 27 Feb 2025]**
-- Requires sending the `!anticheat' command during the anti-cheat screen - handled automatically **[current]**
+- Prohibits sending commands during the anti-cheat screen **[removed on 27 Feb 2025]**
+- Requires sending the `!anticheat' command during the anti-cheat screen **[removed on 08 Jun 2025]**
+- Prohibits sending commands during the anti-cheat screen - handled automatically **[active]**
 
 The appearance of the widget is shown in the image below:
 

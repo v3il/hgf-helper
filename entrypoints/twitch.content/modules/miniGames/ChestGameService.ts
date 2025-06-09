@@ -2,7 +2,6 @@ import { Timing } from '@components/consts';
 import { getRandomNumber, log, waitAsync } from '@components/utils';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { Container } from 'typedi';
-import { TwitchUIService } from '@twitch/modules';
 import { StreamStatusService } from '@twitch/modules/stream';
 import { EventEmitter } from '@components/EventEmitter';
 
@@ -10,7 +9,6 @@ const COMMAND = '!chest';
 
 export class ChestGameService {
     private readonly messageSender: MessageSender;
-    private readonly twitchUIService: TwitchUIService;
     private readonly streamStatusService: StreamStatusService;
 
     private timeoutId!: number;
@@ -23,7 +21,6 @@ export class ChestGameService {
 
     constructor() {
         this.messageSender = Container.get(MessageSender);
-        this.twitchUIService = Container.get(TwitchUIService);
         this.streamStatusService = Container.get(StreamStatusService);
     }
 
@@ -42,7 +39,7 @@ export class ChestGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.twitchUIService.isAdsPhase || this.streamStatusService.isVideoBroken) {
+        if (!this.streamStatusService.isMiniGamesAllowed) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
@@ -56,7 +53,7 @@ export class ChestGameService {
     }
 
     private getDelay() {
-        return getRandomNumber(30 * Timing.SECOND, 5 * Timing.MINUTE);
+        return getRandomNumber(30 * Timing.SECOND, 4 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {
