@@ -21,7 +21,7 @@ export class StreamStatusService {
     private unsubscribe!: UnsubscribeTrigger;
 
     isLootGame = false;
-    isAntiCheat = false;
+    isAntiCheat = $state(false);
     isChestGame = false;
     isBotWorking = $state(true);
     isStreamOk = $state(true);
@@ -46,17 +46,21 @@ export class StreamStatusService {
         }, 5 * Timing.SECOND);
     }
 
+    get isMiniGamesAllowed() {
+        return this.isBotWorking && !this.isAntiCheat  && !this.isVideoBroken;
+    }
+
     checkStreamStatus(silent: boolean) {
         const { activeVideoEl } = this.twitchUIService;
 
         if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
             this.isStreamOk = false;
 
-            clearTimeout(this.streamReloadTimeoutId);
-
-            this.streamReloadTimeoutId = window.setTimeout(() => {
-                location.reload();
-            }, Timing.MINUTE);
+            if (!this.streamReloadTimeoutId) {
+                this.streamReloadTimeoutId = window.setTimeout(() => {
+                    location.reload();
+                }, Timing.MINUTE);
+            }
 
             logDev('Video is broken');
             return;

@@ -78,7 +78,7 @@ export class HitsquadGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.streamStatusService.isVideoBroken) {
+        if (!this.streamStatusService.isMiniGamesAllowed) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;

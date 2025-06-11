@@ -1,5 +1,4 @@
 <div class="flex justify-between items-center py-[12px] px-[16px] w-full rounded-xl">
-    <Logo />
     <CompactMiniGamesControls />
     <StreamStatus />
 </div>
@@ -11,17 +10,13 @@ import { CompactMiniGamesControls } from './miniGames';
 import { ChestGameService, HitsquadGameService, LootGameService } from '@twitch/modules/miniGames';
 import { onDestroy } from 'svelte';
 import { Container } from 'typedi';
-import { AntiCheatProcessor, OffscreenStreamRenderer } from '@twitch/modules/stream';
-import { Logo } from '@shared/components';
+import { OffscreenStreamRenderer } from '@twitch/modules/stream';
 
 const offscreenStreamRenderer = Container.get(OffscreenStreamRenderer);
-const antiCheatProcessor = Container.get(AntiCheatProcessor);
 
 const hitsquadGameService = new HitsquadGameService();
 const lootGameService = new LootGameService();
 const chestGameService = new ChestGameService();
-
-antiCheatProcessor.start();
 
 setContext('hitsquad', hitsquadGameService);
 setContext('loot', lootGameService);
@@ -33,7 +28,6 @@ useMentionsHighlighter();
 
 onDestroy(() => {
     offscreenStreamRenderer.destroy();
-    antiCheatProcessor.destroy();
     hitsquadGameService.destroy();
     lootGameService.destroy();
     chestGameService.destroy();

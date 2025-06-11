@@ -71,7 +71,7 @@ export class ChestGameService {
     }
 
     private async sendCommand(): Promise<void> {
-        if (this.streamStatusService.isVideoBroken) {
+        if (!this.streamStatusService.isMiniGamesAllowed) {
             const delay = 20 * Timing.SECOND;
 
             this.timeUntilMessage = Date.now() + delay;
@@ -84,7 +84,7 @@ export class ChestGameService {
     }
 
     private getDelay() {
-        return random(30 * Timing.SECOND, 5 * Timing.MINUTE);
+        return random(30 * Timing.SECOND, 4 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {
