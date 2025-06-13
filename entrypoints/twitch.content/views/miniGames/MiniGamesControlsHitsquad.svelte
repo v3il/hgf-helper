@@ -9,7 +9,7 @@
     {#snippet indicators()}
         {#if gameService.isRunning}
             <MiniGamesControlsIndicators>
-                <MiniGamesTimer timeout={gameService.timeUntilMessage} />
+                <MiniGamesControlsTimer timeout={gameService.timeUntilMessage} />
                 |
                 {gameService.remainingRounds}/{gameService.totalRounds}
             </MiniGamesControlsIndicators>
@@ -20,7 +20,7 @@
 <script lang="ts">
 import MiniGamesControlsItem from './MiniGamesControlsItem.svelte';
 import MiniGamesControlsIndicators from './MiniGamesControlsIndicators.svelte';
-import MiniGamesTimer from './MiniGamesTimer.svelte';
+import MiniGamesControlsTimer from './MiniGamesControlsTimer.svelte';
 import { Container } from 'typedi';
 import { StreamStatusService } from '@twitch/modules/stream';
 import { getContext } from 'svelte';
