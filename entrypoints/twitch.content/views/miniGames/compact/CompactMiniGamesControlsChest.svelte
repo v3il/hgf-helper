@@ -1,6 +1,6 @@
 <CompactMiniGamesControlsItem
     isGameActive={gameService.isGameActive}
-    isSendEnabled={gameService.isGamePhase}
+    {isSendEnabled}
     {Icon}
     {name}
     {toggle}
@@ -20,12 +20,18 @@ import CompactMiniGamesControlsItem from './CompactMiniGamesControlsItem.svelte'
 import { useChestMiniGame } from '../composables';
 import CompactMiniGamesControlsIndicators from './CompactMiniGamesControlsIndicators.svelte';
 import { MiniGamesTimer } from '../basicComponents';
+import { Container } from 'typedi';
+import { StreamStatusService } from '@twitch/modules/stream';
+
+const streamStatusService = Container.get(StreamStatusService);
 
 const {
     Icon,
     name,
     toggle,
     participate,
-    gameService
+    gameService,
 } = useChestMiniGame();
+
+const isSendEnabled = $derived(streamStatusService.isMiniGamesAllowed && gameService.isGamePhase);
 </script>

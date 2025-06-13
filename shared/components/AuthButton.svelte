@@ -3,7 +3,7 @@
     disabled={isProcessing}
     class={buttonClasses}
 >
-    <Twitch size="16" class="mr-[8px]" />
+    <Twitch size="16" class="mr-[4px]" />
     Sign in with Twitch
 </button>
 

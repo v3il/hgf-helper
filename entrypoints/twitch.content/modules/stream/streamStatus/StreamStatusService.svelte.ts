@@ -67,6 +67,7 @@ export class StreamStatusService {
         }
 
         clearTimeout(this.streamReloadTimeoutId);
+        this.streamReloadTimeoutId = 0;
 
         this.checkLootGame(silent);
         this.checkChestGame(silent);

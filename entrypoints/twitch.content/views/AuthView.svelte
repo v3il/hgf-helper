@@ -1,19 +1,16 @@
 <div class="flex flex-row items-center justify-between gap-[16px] w-full rounded-xl p-[12px]">
     <div class="flex-1">
-        <div class="mb-[8px] flex items-center gap-[12px]">
-            <Logo />
-            <h2 class="font-semibold text-gray-800 dark:text-[#a1a1aa] text-3xl">HGF-Helper</h2>
-        </div>
+        <h2 class="font-semibold text-gray-800 dark:text-[#efeff1] text-2xl mb-[4px]">HGF-Helper</h2>
 
-        <p class="text-gray-600 dark:text-[#71717a]">
+        <p class="text-gray-600 dark:text-[#adadb8]">
             Sign in to unlock all the functions
         </p>
     </div>
 
-    <AuthButton classes="px-6 py-6" />
+    <AuthButton classes="px-6 py-4" />
 </div>
 
 <script lang="ts">
-import { AuthButton, Logo } from '@shared/components';
+import { AuthButton } from '@shared/components';
 </script>
 
