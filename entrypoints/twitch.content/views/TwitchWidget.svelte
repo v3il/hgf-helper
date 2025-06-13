@@ -1,12 +1,12 @@
 <div class="flex justify-between items-center py-[12px] px-[16px] w-full rounded-xl">
-    <CompactMiniGamesControls />
+    <MiniGamesControls />
     <StreamStatus />
 </div>
 
 <script lang="ts">
 import { StreamStatus } from './streamStatus';
 import { useDaCoinzCollector, useMentionsHighlighter, useDelayRemover } from './composables';
-import { CompactMiniGamesControls } from './miniGames';
+import { MiniGamesControls } from './miniGames';
 import { ChestGameService, HitsquadGameService, LootGameService } from '@twitch/modules/miniGames';
 import { onDestroy } from 'svelte';
 import { Container } from 'typedi';
