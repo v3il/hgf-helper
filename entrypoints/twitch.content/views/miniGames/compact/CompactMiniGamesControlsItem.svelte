@@ -37,5 +37,5 @@ interface Props {
 let { Icon, isGameActive, isSendEnabled, name, toggle, participate, indicators }: Props = $props();
 
 const toggleIconClasses = $derived(isGameActive ? 'text-[#8456FF] dark:text-[#9b87f5] group-hover:text-[#9b87f5]' : 'text-gray-400')
-const sendIconClasses = $derived(isSendEnabled ? 'text-green-600 group-hover:text-green-500' : 'text-gray-400')
+const sendIconClasses = $derived(isSendEnabled ? 'text-green-600 dark:text-green-500 group-hover:text-green-600' : 'text-gray-400')
 </script>

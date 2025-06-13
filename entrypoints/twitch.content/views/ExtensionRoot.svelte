@@ -32,8 +32,8 @@ watchClassOnElement(document.documentElement, 'tw-root--theme-dark', (isDark) =>
     right: calc(34rem + 20px);
     left: 70px;
     bottom: 16px;
-    border-color: lightgreen;
-    box-shadow: 0 0 6px lightgreen, 0 0 12px #757e8a66;
+    border-color: #bf94ff;
+    box-shadow: 0 0 6px #bf94ff, 0 0 12px #757e8a66;
 }
 
 @media (max-width: 920px) {
