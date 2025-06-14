@@ -69,12 +69,17 @@ export class StreamStatusService {
         clearTimeout(this.streamReloadTimeoutId);
         this.streamReloadTimeoutId = 0;
 
-        this.checkLootGame(silent);
-        this.checkChestGame(silent);
-        this.checkAntiCheat(silent);
-
         this.isStreamOk = true;
         this.isBotWorking = (Date.now() - this.lastRewardTimestamp) < 10 * Timing.MINUTE;
+
+        this.checkAntiCheat(silent);
+
+        if (this.isAntiCheat) {
+            return;
+        }
+
+        this.checkLootGame(silent);
+        this.checkChestGame(silent);
     }
 
     private listenEvents() {

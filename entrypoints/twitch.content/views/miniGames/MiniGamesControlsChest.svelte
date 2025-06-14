@@ -30,11 +30,6 @@ const gameService = getContext<ChestGameService>('chest');
 
 const isSendEnabled = $derived(streamStatusService.isMiniGamesAllowed && gameService.isGamePhase);
 
-function participate() {
-    gameService.participate();
-}
-
-function toggle(isEnabled: boolean) {
-    isEnabled ? gameService.start() : gameService.stop();
-}
+const participate = () => gameService.participate();
+const toggle = (isEnabled: boolean) => isEnabled ? gameService.start() : gameService.stop();
 </script>

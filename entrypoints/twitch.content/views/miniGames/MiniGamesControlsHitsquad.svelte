@@ -30,9 +30,7 @@ import { Gift } from '@lucide/svelte';
 const streamStatusService = Container.get(StreamStatusService);
 const gameService = getContext<HitsquadGameService>('hitsquad');
 
-function participate() {
-    gameService.participate();
-}
+const participate = () => gameService.participate();
 
 function toggle(isEnabled: boolean) {
     if (!isEnabled) {

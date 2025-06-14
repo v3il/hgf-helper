@@ -59,7 +59,7 @@ export class AuthService {
 
         await this.storage.set({ [this.storageKey]: { token } });
 
-        console.error('User', this._user);
+        $inspect('User', this._user);
     }
 
     async logout() {
