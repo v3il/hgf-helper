@@ -3,6 +3,7 @@ import { AuthService } from './AuthService.svelte';
 import { SettingsFacade } from '../settings';
 import { HiddenOffersFacade } from '../hiddenOffers';
 import { FirebaseApiService } from '../FirebaseApiService';
+import { StorageService } from '../StorageService';
 
 @Service()
 export class AuthFacade {
@@ -18,10 +19,6 @@ export class AuthFacade {
         return this.authService.isAuthenticated;
     }
 
-    get userName() {
-        return this.authService.userName;
-    }
-
     auth(token?: string) {
         return this.authService.auth(token);
     }
@@ -30,15 +27,8 @@ export class AuthFacade {
         return this.authService.logout();
     }
 
-    onAuthenticated(callback: () => void) {
-        this.authService.events.on('authenticated', callback);
-    }
-
-    onLogout(callback: () => void) {
-        this.authService.events.on('logout', callback);
-    }
-
     private initProviders() {
+        this.container.set({ id: StorageService, value: Container.get(StorageService) });
         this.container.set({ id: FirebaseApiService, value: Container.get(FirebaseApiService) });
         this.container.set({ id: AuthService, type: AuthService });
         this.container.set({ id: SettingsFacade, value: Container.get(SettingsFacade) });

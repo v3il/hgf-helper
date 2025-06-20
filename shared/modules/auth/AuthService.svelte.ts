@@ -1,26 +1,21 @@
 import { ContainerInstance } from 'typedi';
-import { EventEmitter } from '@shared/EventEmitter';
 import { IUser } from '../types';
 import { SettingsFacade } from '../settings';
 import { FirebaseApiService } from '../FirebaseApiService';
 import { HiddenOffersFacade } from '../hiddenOffers';
+import { StorageService } from '../StorageService';
 
 export class AuthService {
     private readonly apiService: FirebaseApiService;
     private readonly settingsFacade: SettingsFacade;
     private readonly hiddenOffersService: HiddenOffersFacade;
+    private readonly storageService: StorageService;
 
     private _user: IUser | null = $state(null);
     private _isAuthenticated = $state(false);
-    readonly events = new EventEmitter<{
-        authenticated: void;
-        logout: void;
-    }>();
-
-    private readonly storageKey = 'hgf-helper.settings_v2u';
-    private readonly storage = chrome.storage.local;
 
     constructor(container: ContainerInstance) {
+        this.storageService = container.get(StorageService);
         this.apiService = container.get(FirebaseApiService);
         this.settingsFacade = container.get(SettingsFacade);
         this.hiddenOffersService = container.get(HiddenOffersFacade);
@@ -28,18 +23,12 @@ export class AuthService {
         this.initObserver();
     }
 
-    get userName() {
-        return this._user?.userName ?? '';
-    }
-
     get isAuthenticated() {
         return this._isAuthenticated;
     }
 
     async auth(token?: string) {
-        const storageRecord = await this.storage.get([this.storageKey]);
-
-        token ??= storageRecord[this.storageKey]?.token;
+        token ??= await this.storageService.getAuthToken();
 
         if (!token) {
             return;
@@ -57,9 +46,9 @@ export class AuthService {
             await this.settingsFacade.migrateOldSettings();
         }
 
-        await this.storage.set({ [this.storageKey]: { token } });
+        await this.storageService.updateData({ token });
 
-        $inspect('User', this._user);
+        console.log('User', this._user);
     }
 
     async logout() {
@@ -72,21 +61,17 @@ export class AuthService {
             hitsquadRounds: 0
         })
 
-        await this.storage.remove([this.storageKey]);
+        await this.storageService.updateData({ token: '' });
     }
 
     private initObserver() {
-        this.storage.onChanged.addListener((changes) => {
-            if (!changes[this.storageKey]) return;
+        this.storageService.onDataChanged(async () => {
+            const token = await this.storageService.getAuthToken();
 
-            const { newValue } = changes[this.storageKey];
+            this._isAuthenticated = !!token;
 
-            this._isAuthenticated = !!newValue;
-
-            if (newValue) {
-                this.events.emit('authenticated');
-            } else {
-                this.events.emit('logout');
+            if (token) {
+                this.apiService.setToken(token);
             }
         });
     }

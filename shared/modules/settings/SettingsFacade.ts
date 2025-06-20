@@ -4,6 +4,7 @@ import { GlobalSettingsKeys, ISettings, ISettingsEvents } from '../types';
 import { FirebaseApiService } from '../FirebaseApiService';
 import { SettingsService } from './SettingsService.svelte';
 import { SettingsMigrator } from './SettingsMigrator';
+import { StorageService } from '../StorageService';
 
 @Service()
 export class SettingsFacade {
@@ -39,6 +40,7 @@ export class SettingsFacade {
     }
 
     private initProviders() {
+        this.container.set({ id: StorageService, value: Container.get(StorageService) });
         this.container.set({ id: SettingsService, type: SettingsService });
         this.container.set({ id: SettingsMigrator, type: SettingsMigrator });
         this.container.set({ id: FirebaseApiService, value: Container.get(FirebaseApiService) });
