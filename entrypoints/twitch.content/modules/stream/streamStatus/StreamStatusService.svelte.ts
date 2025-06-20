@@ -43,7 +43,7 @@ export class StreamStatusService {
 
         this.timeoutId = window.setInterval(() => {
             this.checkStreamStatus(false);
-        }, 5 * Timing.SECOND);
+        }, 3 * Timing.SECOND);
     }
 
     get isMiniGamesAllowed() {
