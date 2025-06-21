@@ -1,15 +1,15 @@
 <div class="relative flex items-center justify-center rounded-lg">
     <button
-        class="inline-flex items-center justify-center h-[40px] w-[40px] dark:hover:bg-[#27272a]/40 border border-[#3232399e]/70 dark:border-[#3f3f46]/30 rounded-l-lg p-[8px] transition-all duration-200 group ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed dark:hover:text-accent-foreground"
+        class="inline-flex items-center justify-center h-[36px] w-[36px] dark:hover:bg-[#27272a]/40 border border-[#3232399e]/70 dark:border-[#3f3f46]/30 rounded-l-lg p-[8px] transition-all duration-200 group ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed dark:hover:text-accent-foreground"
         title={name}
         onclick={() => toggle(!isGameActive)}
     >
-        <Icon size="16" class={toggleIconClasses} />
+        <Icon size="14" class={toggleIconClasses} />
     </button>
 
     <div title={sendButtonTooltip}>
         <button
-            class="inline-flex items-center justify-center h-[40px] w-[40px] dark:hover:bg-[#27272a]/40 border border-[#3232399e]/70 border-l-0 dark:border-[#3f3f46]/30 rounded-r-lg p-[8px] transition-all duration-200 group ring-offset-background disabled:cursor-not-allowed dark:hover:text-accent-foreground"
+            class="inline-flex items-center justify-center h-[36px] w-[36px] dark:hover:bg-[#27272a]/40 border border-[#3232399e]/70 border-l-0 dark:border-[#3f3f46]/30 rounded-r-lg p-[8px] transition-all duration-200 group ring-offset-background disabled:cursor-not-allowed dark:hover:text-accent-foreground"
             tabindex="-1"
             onclick={() => participate()}
             disabled={!isSendEnabled}

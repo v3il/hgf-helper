@@ -1,4 +1,4 @@
-<div class="flex justify-between items-center py-[12px] px-[16px] w-full rounded-xl">
+<div class="flex justify-between items-center py-[10px] px-[16px] w-full rounded-xl">
     <MiniGamesControls />
     <StreamStatus />
 </div>
