@@ -19,6 +19,7 @@ import { Offer } from '@store/modules/offers/models';
 import { Container } from 'typedi';
 import { OffersFacade } from '@store/modules';
 import { SettingsFacade } from '@shared/modules';
+import { onDestroy } from 'svelte';
 
 interface Props {
     offer: Offer;
@@ -58,4 +59,8 @@ async function hideOfferHandler() {
         console.error(error);
     }
 }
+
+onDestroy(() => {
+    offerEl.classList.remove('hidden');
+});
 </script>
