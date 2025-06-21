@@ -3,7 +3,7 @@ import { Service } from 'typedi';
 
 @Service()
 export class TwitchPlayerService {
-    private readonly desiredQualities = [480, 720] as const;
+    private readonly desiredQualities = [360, 480] as const;
     private readonly settingsButton: HTMLButtonElement;
 
     private currentQuality!: number;
