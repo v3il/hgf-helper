@@ -4,7 +4,7 @@
         title={name}
         onclick={() => toggle(!isGameActive)}
     >
-        <Icon size="14" class={toggleIconClasses} />
+        <Icon size="16" class={toggleIconClasses} />
     </button>
 
     <div title={sendButtonTooltip}>
