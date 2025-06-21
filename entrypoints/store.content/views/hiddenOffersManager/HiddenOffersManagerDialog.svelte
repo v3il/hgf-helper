@@ -31,6 +31,7 @@ import HiddenOffersManagerTable from './HiddenOffersManagerTable.svelte';
 import HiddenOffersManagerEmpty from './HiddenOffersManagerEmpty.svelte';
 import { OffersFacade } from '@store/modules';
 import { Container } from 'typedi';
+import { capitalize } from '@utils';
 
 interface Props {
     isOpened: boolean;
@@ -64,7 +65,7 @@ function handleDialogClose() {
 }
 
 async function onOfferRemove(offer: string) {
-    if (!window.confirm(`Are you sure you want to unhide the "${offer}" offer?`)) {
+    if (!window.confirm(`Are you sure you want to unhide the "${capitalize(offer)}" offer?`)) {
         return;
     }
 
