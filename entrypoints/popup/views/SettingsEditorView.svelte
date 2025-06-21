@@ -25,7 +25,7 @@
             {/if}
 
             {#if activeTab === 'stream-elements'}
-                <SettingEditor title="Enhance store header" description="Hide store banner" classes="mb-4">
+                <SettingEditor title="Hide store banner" classes="mb-4">
                     <Switch
                         isChecked={settings.enhanceStoreHeader}
                         onChange={(isChecked) => updateSetting('enhanceStoreHeader', isChecked)}
