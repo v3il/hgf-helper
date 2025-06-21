@@ -54,7 +54,7 @@ export class FirebaseApiService {
         }
     }
 
-    private sendRequest<R extends object = object>(url: string, requestInit: Partial<RequestInit> = {}): Promise<ISendRequestResponse<R>> {
+    sendRequest<R extends object = object>(url: string, requestInit: Partial<RequestInit> = {}): Promise<ISendRequestResponse<R>> {
         return new Promise((resolve) => {
             chrome.runtime.sendMessage({
                 type: 'sendRequest',

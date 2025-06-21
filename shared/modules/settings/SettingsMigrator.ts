@@ -4,6 +4,7 @@ import { SettingsService } from './SettingsService.svelte';
 import { getDefaultSettings } from './getDefaultSettings';
 import { logDev, log } from '@utils';
 import { FirebaseApiService } from '../FirebaseApiService';
+import { FUNCTION_URL } from '@shared/consts';
 
 interface IOldSettings {
     highlightMentions: boolean;
@@ -82,16 +83,22 @@ export class SettingsMigrator {
                 return;
             }
 
-            const response = await fetch(jsonBinUrl, {
+            const response = await this.apiService.sendRequest<{ record: { offers: string[] } }>(jsonBinUrl, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Master-Key': jsonBinMasterKey,
+                    'X-Master-Key': jsonBinMasterKey
                 }
             });
 
-            const { record } = await response.json();
+            if (response.error) {
+                console.error('Error fetching hidden offers:', response.error);
+                return;
+            }
 
-            await this.hiddenOffersFacade.hideOffers(record.offers);
+            const offers = response.data!.record.offers;
+
+            await this.hiddenOffersFacade.hideOffers(offers);
 
             log('Hidden offers migrated');
         } catch (error) {
