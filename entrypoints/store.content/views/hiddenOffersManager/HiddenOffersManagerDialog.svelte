@@ -52,8 +52,7 @@ $effect(() => {
     }
 
     isOpened ? dialogRef?.showModal() : dialogRef?.close();
-
-})
+});
 
 const displayedOffers = $derived.by(() => {
     return offersFacade.hiddenOffers.toReversed().filter((offer) => offer.includes(query));

@@ -9,12 +9,12 @@ import { OffersList } from '@store/views/offersList/index';
 const offersFacade = Container.get(OffersFacade);
 const streamElementsUIService = Container.get(StreamElementsUIService);
 
-const offerViews = Array.from(streamElementsUIService.offersListEl.querySelectorAll<HTMLElement>('.stream-store-list-item'));
-
 let children: OffersListItem[] = [];
 
 streamElementsUIService.whenOffersLoaded(async () => {
     await streamElementsUIService.sortOffers();
+
+    const offerViews = Array.from(streamElementsUIService.offersListEl.querySelectorAll<HTMLElement>('.stream-store-list-item'));
 
     children = offerViews.map((offerEl) => {
         const gameNameEl = offerEl.querySelector<HTMLHeadingElement>('.item-title')!;
