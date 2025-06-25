@@ -10,7 +10,7 @@ const streamStatusService = Container.get(StreamStatusService);
 
 const tooltip = $derived(
     streamStatusService.isStreamOk
-        ? 'Stream is running smoothly'
+        ? 'Stream is running'
         : 'Stream is broken. Mini-game commands are on hold'
 );
 </script>

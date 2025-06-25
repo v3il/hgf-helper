@@ -14,7 +14,7 @@ export interface IChatMessage {
 }
 
 function isRewardMessage(message: string) {
-    return /has been sent \d+ clams!/.test(message);
+    return /has been sent \d+ clams!/i.test(message);
 }
 
 function isAkiraDrawRewardMessage(message: string) {

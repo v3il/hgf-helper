@@ -16,6 +16,7 @@ export class StreamStatusService {
     private readonly chatObserver: ChatObserver;
 
     private timeoutId!: number;
+    private botDowntime!: number;
     private streamReloadTimeoutId!: number;
     private lastRewardTimestamp: number = Date.now();
     private unsubscribe!: UnsubscribeTrigger;
@@ -41,13 +42,15 @@ export class StreamStatusService {
         this.listenEvents();
         this.checkStreamStatus(true);
 
+        this.botDowntime = this.twitchUIService.isHitsquadChannel ? 10 * Timing.MINUTE : 35 * Timing.MINUTE;
+
         this.timeoutId = window.setInterval(() => {
             this.checkStreamStatus(false);
         }, 3 * Timing.SECOND);
     }
 
     get isMiniGamesAllowed() {
-        return this.isBotWorking && !this.isAntiCheat  && !this.isVideoBroken;
+        return this.isBotWorking && !this.isAntiCheat && !this.isVideoBroken;
     }
 
     checkStreamStatus(silent: boolean) {
@@ -70,7 +73,7 @@ export class StreamStatusService {
         this.streamReloadTimeoutId = 0;
 
         this.isStreamOk = true;
-        this.isBotWorking = (Date.now() - this.lastRewardTimestamp) < 10 * Timing.MINUTE;
+        this.isBotWorking = (Date.now() - this.lastRewardTimestamp) < this.botDowntime;
 
         this.checkAntiCheat(silent);
 

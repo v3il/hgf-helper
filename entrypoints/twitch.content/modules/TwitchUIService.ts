@@ -4,11 +4,8 @@ import cookies from 'js-cookie';
 
 @Service()
 export class TwitchUIService {
-    twitchUserName!: string;
-
-    constructor() {
-        this.twitchUserName = this.getUserName();
-    }
+    readonly twitchUserName = this.getUserName();
+    private readonly twitchChannelName = this.getTwitchChannelName();
 
     // <div data-a-target="tw-core-button-label-text" class="Layout-sc-1xcs6mc-0 bFxzAY">Click Here to Reload Player</div>
 
@@ -87,6 +84,18 @@ export class TwitchUIService {
 
     get streamInfoEl() {
         return document.querySelector<HTMLElement>('.channel-info-content');
+    }
+
+    get isHitsquadChannel() {
+        return this.twitchChannelName === 'hitsquadgodfather';
+    }
+
+    get isHitsquadPlaysChannel() {
+        return this.twitchChannelName === 'hitsquadplays';
+    }
+
+    private getTwitchChannelName() {
+        return location.pathname.slice(1);
     }
 
     private isVideoPlaying(videoEl: HTMLVideoElement) {
