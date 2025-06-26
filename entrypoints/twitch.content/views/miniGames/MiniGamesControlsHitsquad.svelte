@@ -2,6 +2,7 @@
     isGameActive={gameService.isRunning}
     isSendEnabled={streamStatusService.isMiniGamesAllowed}
     Icon={Gift}
+    command={gameService.command}
     name="Giveaways"
     {toggle}
     {participate}

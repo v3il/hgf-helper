@@ -7,11 +7,10 @@ import { SettingsFacade } from '@shared/modules';
 import { random } from 'lodash';
 import { config } from '@twitch/config';
 
-const HITSQUAD_GAMES_ON_SCREEN = 12;
-const COMMAND = '!hitsquad';
-
 export class HitsquadGameService {
+    readonly command = '!hitsquad';
     static readonly HITSQUAD_GAMES_PER_DAY = 600;
+    static readonly HITSQUAD_GAMES_ON_SCREEN = 12;
 
     private readonly messageSender: MessageSender;
     private readonly streamStatusService: StreamStatusService;
@@ -61,7 +60,7 @@ export class HitsquadGameService {
     }
 
     participate() {
-        this.messageSender.sendMessage(COMMAND);
+        this.messageSender.sendMessage(this.command);
     }
 
     destroy() {
@@ -88,7 +87,7 @@ export class HitsquadGameService {
         }
 
         this.participate();
-        this.remainingRounds -= HITSQUAD_GAMES_ON_SCREEN;
+        this.remainingRounds -= HitsquadGameService.HITSQUAD_GAMES_ON_SCREEN;
         this.saveState();
     }
 

@@ -32,6 +32,7 @@ interface Props {
     isSendEnabled: boolean;
     isGameActive: boolean;
     name: string;
+    command: string;
     toggle: (isChecked: boolean) => void;
     participate: () => void;
     indicators?: Snippet
@@ -39,7 +40,7 @@ interface Props {
 
 const streamStatusService = Container.get(StreamStatusService);
 
-let { Icon, isGameActive, isSendEnabled, name, toggle, participate, indicators }: Props = $props();
+let { Icon, isGameActive, isSendEnabled, name, command, toggle, participate, indicators }: Props = $props();
 
 const toggleIconClasses = $derived(isGameActive ? 'text-[#8456FF] dark:text-[#9b87f5] group-hover:text-[#9b87f5]' : 'text-[#53535f] dark:text-gray-400');
 const sendIconClasses = $derived(isSendEnabled ? 'text-green-700 dark:text-green-500 group-hover:text-green-600' : 'text-[#53535f]');
@@ -58,7 +59,7 @@ const sendButtonTooltip = $derived.by(() => {
     }
 
     if (isSendEnabled) {
-        return 'Send';
+        return `Send ${command}`;
     }
 
     return 'Mini-game is not active';

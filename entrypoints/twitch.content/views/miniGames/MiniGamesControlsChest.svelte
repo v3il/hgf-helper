@@ -1,6 +1,7 @@
 <MiniGamesControlsItem
     isGameActive={gameService.isGameActive}
     Icon={Boxes}
+    command={gameService.command}
     name="Chest"
     {isSendEnabled}
     {toggle}

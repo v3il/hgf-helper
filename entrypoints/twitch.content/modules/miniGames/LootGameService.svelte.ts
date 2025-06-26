@@ -7,9 +7,9 @@ import { UnsubscribeTrigger } from '@shared/EventEmitter';
 import { SettingsFacade } from '@shared/modules';
 import { random } from 'lodash';
 
-const COMMAND = '!loot';
-
 export class LootGameService {
+    readonly command = '!loot';
+
     private readonly messageSender: MessageSender;
     private readonly settingsFacade: SettingsFacade;
     private readonly streamStatusService: StreamStatusService;
@@ -61,7 +61,7 @@ export class LootGameService {
     }
 
     participate() {
-        this.messageSender.sendMessage(`${COMMAND}${random(1, 8)}`);
+        this.messageSender.sendMessage(`${this.command}${random(1, 8)}`);
     }
 
     private async saveState() {
