@@ -2,6 +2,7 @@ import { EventEmitter } from '@shared/EventEmitter';
 import { Timing } from '@shared/consts';
 import { Container, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
+import { config } from '@twitch/config';
 
 export interface IChatMessage {
     messageWrapperEl: HTMLElement;
@@ -76,7 +77,7 @@ export class ChatObserver {
 
         const userName = userNameEl.textContent!.toLowerCase();
         const message = messageEl!.textContent!.toLowerCase().trim();
-        const isSystemMessage = userName === 'hitsquadgodfather' || userName === 'hitsquadplays';
+        const isSystemMessage = userName === config.twitchAdminName;
         const isReward = isSystemMessage && isRewardMessage(message);
         const isAkiraDrawReward = isSystemMessage && isAkiraDrawRewardMessage(message);
         const hasMyMention = mentionEl?.textContent?.toLowerCase().trim() === this.twitchUIService.twitchUserName;

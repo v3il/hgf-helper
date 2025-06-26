@@ -7,6 +7,7 @@ import { Timing } from '@shared/consts';
 import { antiCheatChecks, chestGameChecks, ICheck, lootGameChecks } from './checks';
 import { ChatObserver } from '@twitch/modules/twitchChat';
 import { OffscreenStreamRenderer } from '../OffscreenStreamRenderer';
+import { config } from '@twitch/config';
 
 @Service()
 export class StreamStatusService {
@@ -16,7 +17,6 @@ export class StreamStatusService {
     private readonly chatObserver: ChatObserver;
 
     private timeoutId!: number;
-    private botDowntime!: number;
     private streamReloadTimeoutId!: number;
     private lastRewardTimestamp: number = Date.now();
     private unsubscribe!: UnsubscribeTrigger;
@@ -41,8 +41,6 @@ export class StreamStatusService {
 
         this.listenEvents();
         this.checkStreamStatus(true);
-
-        this.botDowntime = this.twitchUIService.isHitsquadChannel ? 10 * Timing.MINUTE : 35 * Timing.MINUTE;
 
         this.timeoutId = window.setInterval(() => {
             this.checkStreamStatus(false);
@@ -73,7 +71,7 @@ export class StreamStatusService {
         this.streamReloadTimeoutId = 0;
 
         this.isStreamOk = true;
-        this.isBotWorking = (Date.now() - this.lastRewardTimestamp) < this.botDowntime;
+        this.isBotWorking = (Date.now() - this.lastRewardTimestamp) < config.miniGamesBotDowntime;
 
         this.checkAntiCheat(silent);
 

@@ -5,7 +5,7 @@ import { MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
 import { SettingsFacade } from '@shared/modules';
 import { random } from 'lodash';
-import { TwitchUIService } from '@twitch/modules';
+import { config } from '@twitch/config';
 
 const HITSQUAD_GAMES_ON_SCREEN = 12;
 const COMMAND = '!hitsquad';
@@ -16,7 +16,6 @@ export class HitsquadGameService {
     private readonly messageSender: MessageSender;
     private readonly streamStatusService: StreamStatusService;
     private readonly settingsFacade: SettingsFacade;
-    private readonly twitchUIService: TwitchUIService;
 
     isRunning = $state(false);
     remainingRounds = $state(0);
@@ -29,7 +28,6 @@ export class HitsquadGameService {
         this.settingsFacade = Container.get(SettingsFacade);
         this.messageSender = Container.get(MessageSender);
         this.streamStatusService = Container.get(StreamStatusService);
-        this.twitchUIService = Container.get(TwitchUIService);
 
         this.isRunning = this.settingsFacade.settings.hitsquad;
         this.remainingRounds = this.settingsFacade.settings.hitsquadRounds;
@@ -95,9 +93,7 @@ export class HitsquadGameService {
     }
 
     private getNextRoundDelay() {
-        return this.twitchUIService.isHitsquadChannel
-            ? random(30 * Timing.SECOND, 5 * Timing.MINUTE) + 8 * Timing.MINUTE
-            : random(30 * Timing.SECOND, 10 * Timing.MINUTE) + 28 * Timing.MINUTE;
+        return random(30 * Timing.SECOND, 5 * Timing.MINUTE) + config.hitsquadGameBaseTimeout;
     }
 
     private scheduleNextRound() {

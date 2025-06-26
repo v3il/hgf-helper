@@ -1,8 +1,8 @@
-import { Timing } from '@shared/consts';
 import { TwitchPlayerService } from '@twitch/modules/stream';
 import { Container } from 'typedi';
 import { SettingsFacade } from '@shared/modules';
 import { onDestroy } from 'svelte';
+import { config } from '@twitch/config';
 
 export const useDelayRemover = () => {
     let intervalId: number;
@@ -21,7 +21,7 @@ export const useDelayRemover = () => {
     function init() {
         intervalId = window.setInterval(() => {
             playerService.decreaseVideoDelay();
-        }, 2.5 * Timing.MINUTE);
+        }, config.delayRemoverInterval);
     }
 
     function destroy() {
