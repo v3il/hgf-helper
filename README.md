@@ -6,7 +6,7 @@ To upgrade to the latest version, see the [Update instructions](#-update).
 
 
 ## 📘 Overview
-A Chrome extension that adds automation and smart enhancements for the `.tv/hitsquadgodfather` and `.tv/hitsquadplays` channels, as well as their StreamElements game store.
+A Chrome extension that adds automation and smart enhancements for the `.tv/hitsquadgodfather` and `.tv/hitsquadplays` channels, as well as the StreamElements game store.
 
 
 ## 🆕 What's New in Version 2
