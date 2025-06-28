@@ -3,9 +3,14 @@ import { log, wait } from '@utils';
 import { Timing } from '@shared/consts';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
-import { SettingsFacade } from '@shared/modules';
 import { random } from 'lodash';
 import { config } from '@twitch/config';
+import { LocalSettingsService } from '@shared/services';
+import { ITwitchLocalSettings } from '@twitch/modules';
+
+interface IHitsquadGameServiceParams {
+    localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
+}
 
 export class HitsquadGameService {
     readonly command = '!hitsquad';
@@ -14,7 +19,7 @@ export class HitsquadGameService {
 
     private readonly messageSender: MessageSender;
     private readonly streamStatusService: StreamStatusService;
-    private readonly settingsFacade: SettingsFacade;
+    private readonly localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
 
     isRunning = $state(false);
     remainingRounds = $state(0);
@@ -23,13 +28,13 @@ export class HitsquadGameService {
 
     private timeout!: number;
 
-    constructor() {
-        this.settingsFacade = Container.get(SettingsFacade);
+    constructor({ localSettingsService }: IHitsquadGameServiceParams) {
+        this.localSettingsService = localSettingsService;
         this.messageSender = Container.get(MessageSender);
         this.streamStatusService = Container.get(StreamStatusService);
 
-        this.isRunning = this.settingsFacade.settings.hitsquad;
-        this.remainingRounds = this.settingsFacade.settings.hitsquadRounds;
+        this.isRunning = localSettingsService.settings.hitsquad;
+        this.remainingRounds = localSettingsService.settings.hitsquadRounds;
 
         if (this.isRunning) {
             this.start();
@@ -71,7 +76,7 @@ export class HitsquadGameService {
     }
 
     private saveState() {
-        this.settingsFacade.updateSettings({
+        this.localSettingsService.updateSettings({
             hitsquad: this.isRunning,
             hitsquadRounds: this.remainingRounds
         });
@@ -92,6 +97,8 @@ export class HitsquadGameService {
     }
 
     private getNextRoundDelay() {
+        return 5000;
+
         return random(30 * Timing.SECOND, 5 * Timing.MINUTE) + config.hitsquadGameBaseTimeout;
     }
 

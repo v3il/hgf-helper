@@ -2,13 +2,6 @@ import { ISettings } from '../types';
 
 export function getDefaultSettings(): ISettings {
     return {
-        // Mini-games
-        hitsquad: false,
-        hitsquadRounds: 0,
-        akiraDrawing: false,
-        chestGame: false,
-        lootGame: false,
-
         // Twitch
         highlightMentions: true,
         collectDaCoinz: true,

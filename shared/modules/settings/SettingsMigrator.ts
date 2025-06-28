@@ -4,7 +4,6 @@ import { SettingsService } from './SettingsService.svelte';
 import { getDefaultSettings } from './getDefaultSettings';
 import { logDev, log } from '@utils';
 import { FirebaseApiService } from '../FirebaseApiService';
-import { FUNCTION_URL } from '@shared/consts';
 
 interface IOldSettings {
     highlightMentions: boolean;

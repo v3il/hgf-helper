@@ -1,11 +1,4 @@
 export interface ISettings {
-    // Mini-games
-    hitsquad: boolean;
-    hitsquadRounds: number;
-    akiraDrawing: boolean;
-    chestGame: boolean;
-    lootGame: boolean;
-
     // Twitch
     highlightMentions: boolean;
     collectDaCoinz: boolean;

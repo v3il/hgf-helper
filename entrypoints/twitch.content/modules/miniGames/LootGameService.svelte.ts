@@ -4,15 +4,20 @@ import { Container } from 'typedi';
 import { MessageSender } from '@twitch/modules/twitchChat';
 import { StreamStatusService } from '@twitch/modules/stream';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
-import { SettingsFacade } from '@shared/modules';
 import { random } from 'lodash';
+import { LocalSettingsService } from '@shared/services';
+import { ITwitchLocalSettings } from '@twitch/modules';
+
+interface ILootGameServiceParams {
+    localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
+}
 
 export class LootGameService {
     readonly command = '!loot';
 
     private readonly messageSender: MessageSender;
-    private readonly settingsFacade: SettingsFacade;
     private readonly streamStatusService: StreamStatusService;
+    private readonly localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
 
     private timeoutId!: number;
     private readonly unsubscribe!: UnsubscribeTrigger;
@@ -22,12 +27,12 @@ export class LootGameService {
     isRoundRunning = $state(false);
     timeUntilMessage = $state(0);
 
-    constructor() {
+    constructor({ localSettingsService }: ILootGameServiceParams) {
+        this.localSettingsService = localSettingsService;
         this.messageSender = Container.get(MessageSender);
-        this.settingsFacade = Container.get(SettingsFacade);
         this.streamStatusService = Container.get(StreamStatusService);
 
-        this.isGameActive = this.settingsFacade.settings.lootGame;
+        this.isGameActive = localSettingsService.settings.lootGame;
         this.isGamePhase = this.streamStatusService.isLootGame;
 
         this.unsubscribe = this.streamStatusService.events.on('loot', (isGamePhase?: boolean) => {
@@ -64,8 +69,8 @@ export class LootGameService {
         this.messageSender.sendMessage(`${this.command}${random(1, 8)}`);
     }
 
-    private async saveState() {
-        await this.settingsFacade.updateSettings({
+    private saveState() {
+        this.localSettingsService.updateSettings({
             lootGame: this.isGameActive
         });
     }

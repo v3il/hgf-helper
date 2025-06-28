@@ -6,6 +6,7 @@ const isHitsquadChannel = twitchChannelName === 'hitsquadgodfather';
 const isHitsquadPlaysChannel = twitchChannelName === 'hitsquadplays';
 
 export const config = Object.freeze({
+    twitchChannelName,
     isHitsquadChannel,
     isHitsquadPlaysChannel,
     miniGamesBotDowntime: isHitsquadChannel ? 10 * Timing.MINUTE : 35 * Timing.MINUTE,

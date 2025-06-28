@@ -11,12 +11,13 @@ import { ChestGameService, HitsquadGameService, LootGameService } from '@twitch/
 import { onDestroy } from 'svelte';
 import { Container } from 'typedi';
 import { OffscreenStreamRenderer } from '@twitch/modules/stream';
+import { localSettingsService } from '@twitch/modules';
 
 const offscreenStreamRenderer = Container.get(OffscreenStreamRenderer);
 
-const hitsquadGameService = new HitsquadGameService();
-const lootGameService = new LootGameService();
-const chestGameService = new ChestGameService();
+const hitsquadGameService = new HitsquadGameService({ localSettingsService });
+const lootGameService = new LootGameService({ localSettingsService });
+const chestGameService = new ChestGameService({ localSettingsService });
 
 setContext('hitsquad', hitsquadGameService);
 setContext('loot', lootGameService);
