@@ -1,70 +1,131 @@
-# HGF helper
+# HGF-Helper
 
-## Overview
-This is a small extension for the Chrome-like browsers that allows you to play mini-games on the `.tv/hitsquadgodfather` channel in semi-afk mode.
+❗ This README describes **version 2** of the extension.  
+If you're looking for the README of version 1, you can find it [here](./readme_v1/v1/README.md).  
+To upgrade to the latest version, see the [Update instructions](#-update).
 
-### Twitch helper
 
-A widget is placed on the stream page that allows you to play mini-games in semi-automatic mode. The main functions of the widget are:
-1. automatically sends the `!hitsquad`, `!loot1-8`, `!chest1-8` commands to the chat if corresponding checkboxes are enabled;
-1. provides buttons to easily send the `!hitsquad`, `!loot1-8`, `!chest1-8` commands in manual mode;
-1. automatically generates a question for Akira's drawing if the corresponding checkbox is checked [*currently removed*];
-1. automatically handles the anti-cheat screen;
-1. automatically removes the delay on the stream every 5 minutes;
-1. automatically collects channel points;
-1. automatically refresh the stream page if there are problems with the video;
-1. all features keep working while showing an ads;
+## 📘 Overview
+A Chrome extension that adds automation and smart enhancements for the `.tv/hitsquadgodfather` and `.tv/hitsquadplays` channels, as well as their StreamElements game store.
 
-#### Anti-cheat versions:
-- Prohibits sending commands during the anti-cheat screen **[removed on 27 Feb 2025]**
-- Requires sending the `!anticheat' command during the anti-cheat screen **[removed on 08 Jun 2025]**
-- Prohibits sending commands during the anti-cheat screen - handled automatically **[active]**
+
+## 🆕 What's New in Version 2
+
+Here’s what’s changed compared to version 1:
+
+1. 🔐 **Twitch-based authentication**  
+   Extension features now use Twitch login for access.  
+   This allows you to instantly access your personal settings from any browser — with just one click.  
+   Authentication is fast, secure, and **no personal data is collected**.
+
+2. 🗃️ **No more JSONBin setup**  
+   A JSONBin account is no longer required to store hidden offers.  
+   The extension now handles data storage for you automatically.
+
+3. 🔄 **Automatic settings migration**  
+   If you used version 1, your existing settings will be imported into version 2 automatically — no setup needed.
+
+4. 🎨 **Complete UI redesign**  
+   The entire extension has been visually refreshed.  
+   The new interface is compatible with both light and dark themes on Twitch and StreamElements, and it automatically adapts to the current site theme.
+
+5. 🧩 **Updated extension icon**  
+   The browser action icon has been modernized to better fit the new look.
+
+6. 🛠️ **Major codebase refactor**  
+   Many internal modules have been restructured and cleaned up for better maintainability and performance.
+
+   
+### 🎮 Twitch Helper
+
+This extension adds a widget to the stream page that allows you to play mini-games in a semi-automated mode.  
+Its main features include:
+
+1. ✅ **Auto-command sending**  
+   Automatically sends `!hitsquad`, `!loot1-8`, and `!chest1-8` commands to the chat when the corresponding checkboxes are enabled.
+2. 🎯 **Quick manual buttons**  
+   Provides clickable buttons for manually sending the `!hitsquad`, `!loot1-8`, and `!chest1-8` commands.
+3. 🛡️ **Anti-cheat screen handler**  
+   Detects and handles the anti-cheat screen automatically.
+4. ⏩ **Stream delay remover**  
+   Removes the stream delay every 2.5 minutes to ensure real-time interaction.
+5. 🎁 **Channel point collector**  
+   Automatically collects available channel points during the stream.
+6. 🔁 **Stream recovery**  
+   Automatically refreshes the stream page if video issues are detected.
+7. 📺 **Ad-resilient**  
+   All features continue to work even while ads are playing.
+
+
+####  🛡️ Anti-Cheat Versions
+The extension has supported several anti-cheat mechanics over time:
+- 🚫 Prohibited sending commands during the anti-cheat screen — **removed on 27 Feb 2025**
+- 🧾 Required sending the `!anticheat` command during the anti-cheat screen — **removed on 08 Jun 2025**
+- 🤖 Prohibits sending commands during the anti-cheat screen (handled automatically) — **active**
+
 
 The appearance of the widget is shown in the image below:
 
-![readme_1.png](./readme_1.png)
+![readme_0.png](readme_v1/v2/readme_twitch_1.png)
+![readme_1.png](readme_v1/v2/readme_twitch_2.png)
 
-### StreamElements helper
-The widget mounts on the store page and adds several useful features:
-1. adds a button to the offers that allows you to hide the offer (requires JSONBin account);
-2. adds the ability to manage hidden offers directly from the store page;
-1. automatically sorts offers when you enter the page (can be configured in the settings popup);
-1. adds a link to the game's Steam page;
-1. adds the ability to hide offers above a certain price (can be configured in the settings popup);
-1. highlight offers with low volume (can be configured in the settings popup);
-2. removes redundant elements from the header, sidebar and footer (can be configured in the settings popup);
+### 🛍️ StreamElements Helper
 
-The appearance of the widget is shown in the image below:
+The widget mounts on the game store page and adds several useful enhancements:
+1. 👁️‍🗨️ **Hide unwanted offers**  
+   Adds a button to each offer card that allows you to hide the offer.
+2. 🛠️ **Manage hidden offers**  
+   Lets you view and restore hidden offers directly from the store page.
+3. 🧹 **Automatic sorting**  
+   Automatically sorts offers when the page loads *(customizable via the settings popup)*.
+4. 🔗 **Steam link integration**  
+   Adds a link to each game's Steam page for quick access.
+5. 💰 **Price filter**  
+   Adds an option to hide offers above a specified price *(customizable via the settings popup)*.
+6. 📉 **Low-volume highlights**  
+   Highlights offers with low purchase volume *(customizable via the settings popup)*.
+7. ✂️ **UI cleanup**  
+   Removes redundant elements from the header, sidebar, and footer *(customizable via the settings popup)*.
 
-![readme_2.png](./readme_2.png)
-![readme_3.png](./readme_3.png)
+The appearance of the widget is shown in the images below:
 
-**Important information**: To have the ability to hide offers, you need to create a [JSONBin](https://jsonbin.io/) account, create a new bin and fill in the appropriate settings in the settings popup (your credentials will not be shared).
+![readme_1.png](readme_v1/v2/readme_store_1.png)
+![readme_2.png](readme_v1/v2/readme_store_2.png)
+![readme_3.png](readme_v1/v2/readme_store_3.png)
 
-### Settings Popup
-Allows user to change global settings for the extension.
+### ⚙️ Settings Popup
 
-Twitch helper settings: \
-![readme_4.png](./readme_4.png)
+Provides access to global extension settings, allowing users to customize behavior across all supported pages.
 
-StreamElements helper settings: \
-![readme_5.png](./readme_5.png)
+The appearance of the popup is shown in the images below:
 
-## Installation
-1. Download the latest release (hgf-helper<area>@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
-2. Unzip the archive to any directory;
-3. Go to the extensions page in the Chrome browser [chrome://extensions/](chrome://extensions/);
-4. Turn on developer mode;
-5. Click the "**Download unpacked extension**" button, specifying the path to the unpacked extension.
-6. **[optional]** Adjust the extension settings in the settings popup.
+![readme_popup_1.png](readme_v1/v2/readme_popup_1.png)
+![readme_popup_2.png](readme_v1/v2/readme_popup_2.png)
+![readme_popup_3.png](readme_v1/v2/readme_popup_3.png)
 
-## Update
-1. Download the latest release (hgf-helper<area>@v1.x.y.zip) from the [releases page](https://github.com/v3il/hgf-helper/releases);
-2. Extract the archive to any directory;
-3. Copy all the files of the new version of the extension into the directory of the old version, confirming the replacement of the files;
-4. On the extensions page [chrome://extensions/](chrome://extensions/), click the "Update extensions" button.
 
-## Disclaimer
-**The software was made to automate participation in mini-games on the channel and not to abuse. 
-It might stop working properly at any time with a new overlay update, use it at your own risk. \
-The author of the extension doesn't support account farms in any form and isn't responsible for any timeouts received.**
+## 🧩 Installation
+
+1. Download the latest release (`hgf-helper<area>@vX.Y.Z.zip`) from the [releases page](https://github.com/v3il/hgf-helper/releases).
+2. Unzip the archive to any directory.
+3. Open the Chrome extensions page: [chrome://extensions/](chrome://extensions/).
+4. Enable **Developer mode** (toggle in the top right corner).
+5. Click **"Load unpacked"**, then select the directory where you extracted the extension.
+6. *(Optional)* Open the **Settings Popup** to adjust extension preferences.
+
+
+## 🔄 Update
+
+1. Download the latest release (`hgf-helper<area>@vX.Y.Z.zip`) from the [releases page](https://github.com/v3il/hgf-helper/releases).
+2. Unzip the archive to any directory.
+3. Copy **all files** from the new version into the directory of the currently installed extension, confirming file replacement.
+4. Open [chrome://extensions/](chrome://extensions/) and click the **"Update"** button to reload the extension.
+
+
+## ⚠️ Disclaimer
+
+**This software was created to automate participation in mini-games on the channel — not to exploit or abuse the system.**
+
+It may stop functioning correctly at any time due to changes in the overlay — use it at your own risk.  
+The author of the extension does **not** support account farming in any form and is **not responsible** for any timeouts or restrictions incurred as a result of using it.
+
