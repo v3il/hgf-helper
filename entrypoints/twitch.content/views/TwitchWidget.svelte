@@ -28,6 +28,13 @@ useDaCoinzCollector();
 useMentionsHighlighter();
 
 onDestroy(() => {
+    localSettingsService.updateSettings({
+        hitsquad: false,
+        hitsquadRounds: 0,
+        lootGame: false,
+        chestGame: false
+    });
+
     offscreenStreamRenderer.destroy();
     hitsquadGameService.destroy();
     lootGameService.destroy();
