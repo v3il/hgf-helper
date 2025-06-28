@@ -43,16 +43,22 @@ Its main features include:
 
 1. ✅ **Auto-command sending**  
    Automatically sends `!hitsquad`, `!loot1-8`, and `!chest1-8` commands to the chat when the corresponding checkboxes are enabled.
+
 2. 🎯 **Quick manual buttons**  
    Provides clickable buttons for manually sending the `!hitsquad`, `!loot1-8`, and `!chest1-8` commands.
+
 3. 🛡️ **Anti-cheat screen handler**  
    Detects and handles the anti-cheat screen automatically.
+
 4. ⏩ **Stream delay remover**  
    Removes the stream delay every 2.5 minutes to ensure real-time interaction.
+
 5. 🎁 **Channel point collector**  
    Automatically collects available channel points during the stream.
+
 6. 🔁 **Stream recovery**  
    Automatically refreshes the stream page if video issues are detected.
+
 7. 📺 **Ad-resilient**  
    All features continue to work even while ads are playing.
 
@@ -74,16 +80,22 @@ The appearance of the widget is shown in the image below:
 The widget mounts on the game store page and adds several useful enhancements:
 1. 👁️‍🗨️ **Hide unwanted offers**  
    Adds a button to each offer card that allows you to hide the offer.
+
 2. 🛠️ **Manage hidden offers**  
    Lets you view and restore hidden offers directly from the store page.
+
 3. 🧹 **Automatic sorting**  
    Automatically sorts offers when the page loads *(customizable via the settings popup)*.
+
 4. 🔗 **Steam link integration**  
    Adds a link to each game's Steam page for quick access.
+
 5. 💰 **Price filter**  
    Adds an option to hide offers above a specified price *(customizable via the settings popup)*.
+
 6. 📉 **Low-volume highlights**  
    Highlights offers with low purchase volume *(customizable via the settings popup)*.
+
 7. ✂️ **UI cleanup**  
    Removes redundant elements from the header, sidebar, and footer *(customizable via the settings popup)*.
 
