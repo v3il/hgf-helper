@@ -6,7 +6,7 @@ To upgrade to the latest version, see the [Update instructions](#-update).
 
 
 ## 📘 Overview
-A Chrome extension that adds automation and smart enhancements for the `.tv/hitsquadgodfather` and `.tv/hitsquadplays` channels, as well as the StreamElements game store.
+A Chrome extension that adds automation and smart enhancements for the `.tv/hitsquadgodfather` and `.tv/hitsquadplays` channels, as well as the Stream Elements game store.
 
 
 ## 🆕 What's New in Version 2
@@ -35,6 +35,9 @@ Here’s what’s changed compared to version 1:
 6. 🛠️ **Major codebase refactor**  
    Many internal modules have been restructured and cleaned up for better maintainability and performance.
 
+7. 🧠 **Bot failure detection**  
+   The extension now monitors the status of the mini-games bot and automatically pauses participation if the bot is not responding.
+
    
 ### 🎮 Twitch Helper
 
@@ -47,8 +50,8 @@ Its main features include:
 2. 🎯 **Quick manual buttons**  
    Provides clickable buttons for manually sending the `!hitsquad`, `!loot1-8`, and `!chest1-8` commands.
 
-3. 🛡️ **Anti-cheat screen handler**  
-   Detects and handles the anti-cheat screen automatically.
+3. 🛡️ **Anti-cheat detection**  
+   Detects when the anti-cheat screen appears and reacts accordingly based on the current anti-cheat version.
 
 4. ⏩ **Stream delay remover**  
    Removes the stream delay every 2.5 minutes to ensure real-time interaction.
@@ -62,6 +65,9 @@ Its main features include:
 7. 📺 **Ad-resilient**  
    All features continue to work even while ads are playing.
 
+8. 🧠 Bot status monitor
+   Automatically detects if the mini-games bot is down and temporarily pauses participation.
+
 
 ####  🛡️ Anti-Cheat Versions
 The extension has supported several anti-cheat mechanics over time:
@@ -72,8 +78,8 @@ The extension has supported several anti-cheat mechanics over time:
 
 The appearance of the widget is shown in the images below:
 
-![readme_0.png](readme/v2/readme_twitch_1.png)
-![readme_1.png](readme/v2/readme_twitch_2.png)
+![readme_twitch_1.png](readme/v2/readme_twitch_1.png)
+![readme_twitch_2.png](readme/v2/readme_twitch_2.png)
 
 ### 🛍️ StreamElements Helper
 
@@ -101,9 +107,9 @@ The widget mounts on the game store page and adds several useful enhancements:
 
 The appearance of the widget is shown in the images below:
 
-![readme_1.png](readme/v2/readme_store_1.png)
-![readme_2.png](readme/v2/readme_store_2.png)
-![readme_3.png](readme/v2/readme_store_3.png)
+![readme_store_1.png](readme/v2/readme_store_1.png)
+![readme_store_2.png](readme/v2/readme_store_2.png)
+![readme_store_3.png](readme/v2/readme_store_3.png)
 
 ### ⚙️ Settings Popup
 
@@ -118,7 +124,7 @@ The appearance of the popup is shown in the images below:
 
 ## 🧩 Installation
 
-1. Download the latest release (`hgf-helper<area>@vX.Y.Z.zip`) from the [releases page](https://github.com/v3il/hgf-helper/releases).
+1. Download the latest release (`hgf-helper@vX.Y.Z.zip`) from the [releases page](https://github.com/v3il/hgf-helper/releases).
 2. Unzip the archive to any directory.
 3. Open the Chrome extensions page: [chrome://extensions/](chrome://extensions/).
 4. Enable **Developer mode** (toggle in the top right corner).
@@ -128,7 +134,7 @@ The appearance of the popup is shown in the images below:
 
 ## 🔄 Update
 
-1. Download the latest release (`hgf-helper<area>@vX.Y.Z.zip`) from the [releases page](https://github.com/v3il/hgf-helper/releases).
+1. Download the latest release (`hgf-helper@vX.Y.Z.zip`) from the [releases page](https://github.com/v3il/hgf-helper/releases).
 2. Unzip the archive to any directory.
 3. Copy **all files** from the new version into the directory of the currently installed extension, confirming file replacement.
 4. Open [chrome://extensions/](chrome://extensions/) and click the **"Update"** button to reload the extension.
@@ -139,5 +145,5 @@ The appearance of the popup is shown in the images below:
 **This software was created to automate participation in mini-games on the channel — not to exploit or abuse the system.**
 
 It may stop functioning correctly at any time due to changes in the overlay — use it at your own risk.  
-The author of the extension does **not** support account farming in any form and is **not responsible** for any timeouts or restrictions incurred as a result of using it.
+The author of the extension does **not** support account farms in any form and is **not responsible** for any timeouts or restrictions incurred as a result of using it.
 
