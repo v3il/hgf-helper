@@ -12,8 +12,10 @@ import { onDestroy } from 'svelte';
 import { Container } from 'typedi';
 import { OffscreenStreamRenderer } from '@twitch/modules/stream';
 import { localSettingsService } from '@twitch/modules';
+import { AuthFacade } from '@shared/modules';
 
 const offscreenStreamRenderer = Container.get(OffscreenStreamRenderer);
+const authFacade = Container.get(AuthFacade);
 
 const hitsquadGameService = new HitsquadGameService({ localSettingsService });
 const lootGameService = new LootGameService({ localSettingsService });
@@ -28,6 +30,10 @@ useDaCoinzCollector();
 useMentionsHighlighter();
 
 onDestroy(() => {
+    if (authFacade.isAuthenticated) {
+        return;
+    }
+
     localSettingsService.updateSettings({
         hitsquad: false,
         hitsquadRounds: 0,

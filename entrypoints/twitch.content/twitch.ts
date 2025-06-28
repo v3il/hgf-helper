@@ -6,9 +6,11 @@ import { TwitchUIService } from '@twitch/modules';
 import { AuthFacade } from '@shared/modules';
 import { isDev } from '@shared/consts';
 import { log } from '@utils';
-import { mount } from 'svelte';
+import { mount, unmount } from 'svelte';
 
 export const main = async () => {
+    let currentView: Record<string, any> | null;
+
     const twitchUIService = Container.get(TwitchUIService);
     const authFacade = Container.get(AuthFacade);
 
@@ -20,8 +22,21 @@ export const main = async () => {
     log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 
     twitchUIService.whenStreamReady(() => {
-        mount(ExtensionRoot, {
+        currentView = mount(ExtensionRoot, {
             target: document.body
         });
+    });
+
+    window.addEventListener('hgf-helper:urlChanged', () => {
+        const isHitsquadChannel = ['hitsquadgodfather', 'hitsquadplays'].includes(window.location.pathname.slice(1));
+
+        if (currentView) {
+            unmount(currentView);
+            currentView = null;
+        }
+
+        if (isHitsquadChannel) {
+            location.reload();
+        }
     });
 };

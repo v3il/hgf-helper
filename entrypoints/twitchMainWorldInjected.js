@@ -81,6 +81,35 @@ class TwitchChatService {
 }
 
 export default defineUnlistedScript(() => {
+    function handleUrlChange() {
+        const dispatchEvent = (prevUrl) => {
+            if (prevUrl !== window.location.href.toString()) {
+                window.dispatchEvent(new CustomEvent('hgf-helper:urlChanged'));
+            }
+        }
+
+        const _pushState = history.pushState;
+
+        history.pushState = function(...args) {
+            const prevUrl = window.location.href.toString();
+            _pushState.apply(this, args);
+            dispatchEvent(prevUrl);
+        };
+
+        const _replaceState = history.replaceState;
+
+        history.replaceState = function(...args) {
+            const prevUrl = window.location.href.toString();
+            _replaceState.apply(this, args);
+            dispatchEvent(prevUrl);
+        };
+
+        window.addEventListener('popstate', () => {
+            const prevUrl = window.location.href.toString();
+            dispatchEvent(prevUrl);
+        });
+    }
+
     (function init() {
         const chatInputEl = document.querySelector('[data-a-target="chat-input"]');
         const sendMessageEl = document.querySelector('[data-a-target="chat-send-button"]');
@@ -94,5 +123,7 @@ export default defineUnlistedScript(() => {
         window.addEventListener('hgf-helper:sendMessage', ({ detail }) => {
             twitchChatService.sendMessage(detail);
         });
+
+        handleUrlChange();
     }());
 });
