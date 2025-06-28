@@ -1,7 +1,7 @@
 # HGF-Helper
 
 ❗ This README describes **version 2** of the extension.  
-If you're looking for the README of version 1, you can find it [here](./readme_v1/v1/README.md).  
+If you're looking for the README of version 1, you can find it [here](./readme/v1/README.md).  
 To upgrade to the latest version, see the [Update instructions](#-update).
 
 
@@ -72,8 +72,8 @@ The extension has supported several anti-cheat mechanics over time:
 
 The appearance of the widget is shown in the images below:
 
-![readme_0.png](readme_v1/v2/readme_twitch_1.png)
-![readme_1.png](readme_v1/v2/readme_twitch_2.png)
+![readme_0.png](readme/v2/readme_twitch_1.png)
+![readme_1.png](readme/v2/readme_twitch_2.png)
 
 ### 🛍️ StreamElements Helper
 
@@ -101,9 +101,9 @@ The widget mounts on the game store page and adds several useful enhancements:
 
 The appearance of the widget is shown in the images below:
 
-![readme_1.png](readme_v1/v2/readme_store_1.png)
-![readme_2.png](readme_v1/v2/readme_store_2.png)
-![readme_3.png](readme_v1/v2/readme_store_3.png)
+![readme_1.png](readme/v2/readme_store_1.png)
+![readme_2.png](readme/v2/readme_store_2.png)
+![readme_3.png](readme/v2/readme_store_3.png)
 
 ### ⚙️ Settings Popup
 
@@ -111,9 +111,9 @@ Provides access to global extension settings, allowing users to customize behavi
 
 The appearance of the popup is shown in the images below:
 
-![readme_popup_1.png](readme_v1/v2/readme_popup_1.png)
-![readme_popup_2.png](readme_v1/v2/readme_popup_2.png)
-![readme_popup_3.png](readme_v1/v2/readme_popup_3.png)
+![readme_popup_1.png](readme/v2/readme_popup_1.png)
+![readme_popup_2.png](readme/v2/readme_popup_2.png)
+![readme_popup_3.png](readme/v2/readme_popup_3.png)
 
 
 ## 🧩 Installation
