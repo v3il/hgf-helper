@@ -42,7 +42,7 @@ This extension adds a widget to the stream page that allows you to play mini-gam
 Its main features include:
 
 1. ✅ **Auto-command sending**  
-   Automatically sends `!hitsquad`, `!loot1-8`, and `!chest1-8` commands to the chat when the corresponding checkboxes are enabled.
+   Automatically sends `!hitsquad`, `!loot1-8`, and `!chest1-8` commands to the chat when the relevant toggles are turned on.
 
 2. 🎯 **Quick manual buttons**  
    Provides clickable buttons for manually sending the `!hitsquad`, `!loot1-8`, and `!chest1-8` commands.
@@ -65,12 +65,12 @@ Its main features include:
 
 ####  🛡️ Anti-Cheat Versions
 The extension has supported several anti-cheat mechanics over time:
-- 🚫 Prohibited sending commands during the anti-cheat screen — **removed on 27 Feb 2025**
-- 🧾 Required sending the `!anticheat` command during the anti-cheat screen — **removed on 08 Jun 2025**
-- 🤖 Prohibits sending commands during the anti-cheat screen (handled automatically) — **active**
+- Prohibited sending commands during the anti-cheat screen — **removed on 27 Feb 2025**
+- Required sending the `!anticheat` command during the anti-cheat screen — **removed on 08 Jun 2025**
+- Prohibits sending commands during the anti-cheat screen (handled automatically) — **active**
 
 
-The appearance of the widget is shown in the image below:
+The appearance of the widget is shown in the images below:
 
 ![readme_0.png](readme_v1/v2/readme_twitch_1.png)
 ![readme_1.png](readme_v1/v2/readme_twitch_2.png)
