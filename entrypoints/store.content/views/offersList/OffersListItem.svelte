@@ -1,14 +1,14 @@
 <div
-    class="absolute left-0 right-0 top-0 p-[8px] bg-[#121212] flex items-center justify-between border-[3px] border-[#555] [&.low]:border-[indianred]"
+    class="absolute left-0 right-0 top-0 p-[8px] bg-white dark:bg-[#121212] flex items-center justify-between border-[3px] border-[#555] [&.low]:border-[indianred]"
     class:low={isLowVolumeHighlighted}
 >
-    <a href={offer.steamAppLink} class="text-[12px] block text-[#ccc] font-bold hover:underline" target="_blank" rel="noreferrer">
+    <a href={offer.steamAppLink} class="text-[12px] text-gray-800 dark:text-[#d4d4d8] font-bold hover:underline" target="_blank" rel="noreferrer">
         Steam
     </a>
 
     <button
         onclick={hideOfferHandler}
-        class="text-[12px] font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border bg-background h-[24px] rounded-md px-[8px] text-[#a1a1aa] border-[#27272a] hover:bg-[#27272a]/20 hover:text-[#d4d4d8]"
+        class="text-[12px] font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border bg-background h-[24px] rounded-md px-[8px] text-gray-800 dark:text-[#d4d4d8] border-[#27272a] hover:opacity-80"
     >
         Hide
     </button>
