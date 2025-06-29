@@ -13,6 +13,11 @@ import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import Auth from './Auth.svelte';
 import StoreWidget from './StoreWidget.svelte';
+import { watchClassOnElement } from '@utils';
 
 const authFacade = Container.get(AuthFacade);
+
+watchClassOnElement(document.body, 'dark-theme', (isDark) => {
+    document.body.classList.toggle('dark', isDark);
+});
 </script>

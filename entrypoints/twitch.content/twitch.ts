@@ -8,6 +8,8 @@ import { isDev } from '@shared/consts';
 import { log } from '@utils';
 import { mount, unmount } from 'svelte';
 
+const isHitsquadChannel = () => ['hitsquadgodfather', 'hitsquadplays'].includes(window.location.pathname.slice(1));
+
 export const main = async () => {
     let currentView: Record<string, any> | null;
 
@@ -21,21 +23,21 @@ export const main = async () => {
     console.clear();
     log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 
-    twitchUIService.whenStreamReady(() => {
-        currentView = mount(ExtensionRoot, {
-            target: document.body
+    if (isHitsquadChannel()) {
+        twitchUIService.whenStreamReady(() => {
+            currentView = mount(ExtensionRoot, {
+                target: document.body
+            });
         });
-    });
+    }
 
     window.addEventListener('hgf-helper:urlChanged', () => {
-        const isHitsquadChannel = ['hitsquadgodfather', 'hitsquadplays'].includes(window.location.pathname.slice(1));
-
         if (currentView) {
             unmount(currentView);
             currentView = null;
         }
 
-        if (isHitsquadChannel) {
+        if (isHitsquadChannel()) {
             location.reload();
         }
     });

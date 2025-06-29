@@ -6,7 +6,7 @@ import './store.css';
 import { ExtensionRoot } from './views';
 import { StreamElementsUIService } from '@store/modules';
 
-export const start = async () => {
+export const main = async () => {
     const authFacade = Container.get(AuthFacade);
     const streamElementsUIService = Container.get(StreamElementsUIService);
 

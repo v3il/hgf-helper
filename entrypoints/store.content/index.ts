@@ -1,7 +1,6 @@
-import { start } from './store';
+import { main } from './store';
 
-// eslint-disable-next-line no-undef
 export default defineContentScript({
     matches: ['https://streamelements.com/hitsquadgodfather/store'],
-    main() { start(); }
+    main
 });
