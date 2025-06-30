@@ -17,30 +17,30 @@
     "lint:fix": "eslint . --ext .ts,.js --fix"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.309",
+    "@types/chrome": "^0.0.328",
     "@types/js-cookie": "^3.0.6",
-    "@types/lodash": "^4.17.16",
-    "@typescript-eslint/eslint-plugin": "^8.26.1",
-    "@typescript-eslint/parser": "^8.26.1",
+    "@types/lodash": "^4.17.19",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
     "eslint": "^8.35.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-svelte": "^3.5.1",
-    "release-it": "^18.1.2",
-    "typescript": "^5.8.2",
+    "eslint-plugin-svelte": "^3.10.1",
+    "release-it": "^19.0.3",
+    "typescript": "^5.8.3",
     "vite-plugin-eslint": "^1.8.1",
-    "wxt": "^0.19.29"
+    "wxt": "^0.20.7"
   },
   "dependencies": {
-    "@lucide/svelte": "^0.503.0",
-    "@tailwindcss/vite": "^4.1.4",
+    "@lucide/svelte": "^0.525.0",
+    "@tailwindcss/vite": "^4.1.11",
     "@wxt-dev/module-svelte": "^2.0.3",
     "clsx": "^2.1.1",
-    "firebase": "^11.5.0",
+    "firebase": "^11.9.1",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.2.2",
-    "tailwindcss": "^4.1.4",
-    "tesseract.js": "^6.0.0",
+    "tailwindcss": "^4.1.11",
+    "tesseract.js": "^6.0.1",
     "typedi": "^0.10.0"
   }
 }
