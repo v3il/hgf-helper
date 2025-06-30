@@ -4,6 +4,7 @@ import { SettingsFacade } from '../settings';
 import { FirebaseApiService } from '../FirebaseApiService';
 import { HiddenOffersFacade } from '../hiddenOffers';
 import { StorageService } from '../StorageService';
+import { EventEmitter, EventHandler } from '@shared/EventEmitter';
 
 export class AuthService {
     private readonly apiService: FirebaseApiService;
@@ -13,6 +14,11 @@ export class AuthService {
 
     private _user: IUser | null = $state(null);
     private _isAuthenticated = $state(false);
+
+    private events = EventEmitter.create<{
+        login: [];
+        logout: [];
+    }>();
 
     constructor(container: ContainerInstance) {
         this.storageService = container.get(StorageService);
@@ -48,12 +54,23 @@ export class AuthService {
 
         await this.storageService.updateData({ token });
 
+        this.events.emit('login');
+
         console.log('User', this._user);
     }
 
     async logout() {
         this._user = null;
         await this.storageService.updateData({ token: '' });
+        this.events.emit('logout');
+    }
+
+    onLogin(handler: EventHandler) {
+        return this.events.on('login', handler);
+    }
+
+    onLogout(handler: EventHandler) {
+        return this.events.on('logout', handler);
     }
 
     private initObserver() {
@@ -61,6 +78,7 @@ export class AuthService {
             const token = await this.storageService.getAuthToken();
 
             this._isAuthenticated = !!token;
+            this.events.emit(this._isAuthenticated ? 'login' : 'logout');
 
             if (token) {
                 this.apiService.setToken(token);

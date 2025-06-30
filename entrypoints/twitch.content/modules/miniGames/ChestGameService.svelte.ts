@@ -20,7 +20,7 @@ export class ChestGameService {
     private readonly localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
 
     private timeoutId!: number;
-    private readonly unsubscribe!: UnsubscribeTrigger;
+    private unsubscribe!: UnsubscribeTrigger;
 
     isGamePhase = $state(false);
     isGameActive = $state(false);
@@ -31,15 +31,17 @@ export class ChestGameService {
         this.localSettingsService = localSettingsService;
         this.messageSender = Container.get(MessageSender);
         this.streamStatusService = Container.get(StreamStatusService);
+    }
 
-        this.isGameActive = localSettingsService.settings.chestGame;
+    init() {
+        this.isGameActive = this.localSettingsService.settings.chestGame;
         this.isGamePhase = this.streamStatusService.isChestGame;
 
         this.unsubscribe = this.streamStatusService.events.on('chest', (isGamePhase?: boolean) => {
             this.isGamePhase = !!isGamePhase;
 
             if (this.isGameActive && this.isGamePhase) {
-                 this.scheduleNextRound();
+                this.scheduleNextRound();
             }
         });
     }
@@ -58,11 +60,8 @@ export class ChestGameService {
     }
 
     destroy() {
-        this.isRoundRunning = false;
-        this.isGameActive = false;
-
-        clearTimeout(this.timeoutId);
-        this.unsubscribe();
+        this.stop();
+        this.unsubscribe?.();
     }
 
     participate() {

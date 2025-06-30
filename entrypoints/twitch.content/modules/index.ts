@@ -1,9 +1,6 @@
 import { LocalSettingsService } from '@shared/services';
-import { config } from '@twitch/config';
 
 export * from './TwitchUIService';
-
-const STORAGE_KEY = 'hgf-helper.twitch-settings-' + config.twitchChannelName;
 
 export interface ITwitchLocalSettings {
     hitsquad: boolean;
@@ -12,9 +9,9 @@ export interface ITwitchLocalSettings {
     lootGame: boolean;
 }
 
-export const localSettingsService = new LocalSettingsService<ITwitchLocalSettings>(STORAGE_KEY, {
+export const localSettingsService = new LocalSettingsService<ITwitchLocalSettings>({
     hitsquad: false,
     hitsquadRounds: 0,
-    chestGame: false,
-    lootGame: false
+    lootGame: false,
+    chestGame: false
 });

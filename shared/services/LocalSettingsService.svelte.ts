@@ -1,13 +1,18 @@
 export class LocalSettingsService<T extends object> {
-    private _settings = $state({} as T);
+    private key!: string;
     private storage = window.localStorage;
 
-    constructor(private readonly key: string, defaultSettings: T) {
-        this._settings = this.loadSettings() ?? defaultSettings;
-    }
+    private _settings = $state({} as T);
+
+    constructor(private readonly defaultSettings: T) {}
 
     get settings(): T {
         return this._settings;
+    }
+
+    loadSettings(key: string): void {
+        this.key = key;
+        this._settings = this.loadFromStorage() ?? this.defaultSettings;
     }
 
     updateSettings(newSettings: Partial<T>): void {
@@ -15,7 +20,7 @@ export class LocalSettingsService<T extends object> {
         this.saveSettings();
     }
 
-    private loadSettings(): T | null {
+    private loadFromStorage(): T | null {
         const json = this.storage.getItem(this.key);
 
         if (!json) {

@@ -20,7 +20,7 @@ export class LootGameService {
     private readonly localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
 
     private timeoutId!: number;
-    private readonly unsubscribe!: UnsubscribeTrigger;
+    private unsubscribe!: UnsubscribeTrigger;
 
     isGamePhase = $state(false);
     isGameActive = $state(false);
@@ -31,8 +31,10 @@ export class LootGameService {
         this.localSettingsService = localSettingsService;
         this.messageSender = Container.get(MessageSender);
         this.streamStatusService = Container.get(StreamStatusService);
+    }
 
-        this.isGameActive = localSettingsService.settings.lootGame;
+    init() {
+        this.isGameActive = this.localSettingsService.settings.lootGame;
         this.isGamePhase = this.streamStatusService.isLootGame;
 
         this.unsubscribe = this.streamStatusService.events.on('loot', (isGamePhase?: boolean) => {
@@ -58,11 +60,8 @@ export class LootGameService {
     }
 
     destroy() {
-        this.isRoundRunning = false;
-        this.isGameActive = false;
-
-        clearTimeout(this.timeoutId);
-        this.unsubscribe();
+        this.stop();
+        this.unsubscribe?.();
     }
 
     participate() {

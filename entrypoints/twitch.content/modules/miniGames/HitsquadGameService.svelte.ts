@@ -32,9 +32,11 @@ export class HitsquadGameService {
         this.localSettingsService = localSettingsService;
         this.messageSender = Container.get(MessageSender);
         this.streamStatusService = Container.get(StreamStatusService);
+    }
 
-        this.isRunning = localSettingsService.settings.hitsquad;
-        this.remainingRounds = localSettingsService.settings.hitsquadRounds;
+    init() {
+        this.isRunning = this.localSettingsService.settings.hitsquad;
+        this.remainingRounds = this.localSettingsService.settings.hitsquadRounds;
 
         if (this.isRunning) {
             this.start();
@@ -69,10 +71,7 @@ export class HitsquadGameService {
     }
 
     destroy() {
-        this.isRunning = false;
-        this.remainingRounds = 0;
-
-        clearTimeout(this.timeout);
+        this.stop();
     }
 
     private saveState() {
@@ -107,7 +106,6 @@ export class HitsquadGameService {
 
         this.timeout = window.setTimeout(async () => {
             if (!this.streamStatusService.isBotWorking) {
-                log('Bot is not working, scheduling next round');
                 return this.scheduleNextRound();
             }
 

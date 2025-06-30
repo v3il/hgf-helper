@@ -4,6 +4,7 @@ import { SettingsFacade } from '../settings';
 import { HiddenOffersFacade } from '../hiddenOffers';
 import { FirebaseApiService } from '../FirebaseApiService';
 import { StorageService } from '../StorageService';
+import { EventHandler } from '@shared/EventEmitter';
 
 @Service()
 export class AuthFacade {
@@ -25,6 +26,14 @@ export class AuthFacade {
 
     logout() {
         return this.authService.logout();
+    }
+
+    onLogin(handler: EventHandler) {
+        return this.authService.onLogin(handler);
+    }
+
+    onLogout(handler: EventHandler) {
+        return this.authService.onLogout(handler);
     }
 
     private initProviders() {

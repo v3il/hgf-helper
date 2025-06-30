@@ -17,13 +17,44 @@ import AuthView from './AuthView.svelte';
 import TwitchWidget from './TwitchWidget.svelte';
 import DebugMode from './DebugMode.svelte';
 import { watchClassOnElement } from '@utils';
+import { ChestGameService, HitsquadGameService, LootGameService } from '@twitch/modules/miniGames';
+import { config } from '../config';
+import { localSettingsService } from '@twitch/modules';
 
 const authFacade = Container.get(AuthFacade);
 
 let isDarkTheme = $state(false);
 
+localSettingsService.loadSettings(`hgf-helper.twitch-settings-${config.twitchChannelName}`);
+
+const hitsquadGameService = new HitsquadGameService({ localSettingsService });
+const lootGameService = new LootGameService({ localSettingsService });
+const chestGameService = new ChestGameService({ localSettingsService });
+
+setContext('hitsquad', hitsquadGameService);
+setContext('loot', lootGameService);
+setContext('chest', chestGameService);
+
 watchClassOnElement(document.documentElement, 'tw-root--theme-dark', (isDark) => {
     isDarkTheme = isDark;
+});
+
+const startGameServices = () => {
+    hitsquadGameService.init();
+    lootGameService.init();
+    chestGameService.init();
+};
+
+startGameServices();
+
+authFacade.onLogin(() => {
+   startGameServices();
+});
+
+authFacade.onLogout(() => {
+    hitsquadGameService.destroy();
+    lootGameService.destroy();
+    chestGameService.destroy();
 });
 </script>
 

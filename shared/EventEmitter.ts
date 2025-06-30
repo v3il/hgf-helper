@@ -19,6 +19,15 @@ export class EventEmitter<T extends Record<string, HandlerPayload>> {
         return () => this.off(event, handler);
     }
 
+    once<K extends keyof T>(event: K, handler: EventHandler<T[K]>): UnsubscribeTrigger {
+        const wrappedHandler: EventHandler<T[K]> = (payload) => {
+            handler(payload);
+            this.off(event, wrappedHandler);
+        };
+
+        return this.on(event, wrappedHandler);
+    }
+
     off<K extends keyof T>(event: K, handler: EventHandler<T[K]>): void {
         if (!this.events[event]) return;
         this.events[event] = this.events[event]!.filter((h) => h !== handler);
