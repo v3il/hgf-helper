@@ -54,15 +54,12 @@ export class AuthService {
 
         await this.storageService.updateData({ token });
 
-        this.events.emit('login');
-
         console.log('User', this._user);
     }
 
     async logout() {
         this._user = null;
         await this.storageService.updateData({ token: '' });
-        this.events.emit('logout');
     }
 
     onLogin(handler: EventHandler) {

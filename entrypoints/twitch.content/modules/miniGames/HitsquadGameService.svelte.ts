@@ -32,11 +32,15 @@ export class HitsquadGameService {
         this.localSettingsService = localSettingsService;
         this.messageSender = Container.get(MessageSender);
         this.streamStatusService = Container.get(StreamStatusService);
+
+        console.error('constructor')
     }
 
     init() {
         this.isRunning = this.localSettingsService.settings.hitsquad;
         this.remainingRounds = this.localSettingsService.settings.hitsquadRounds;
+
+        console.error('init')
 
         if (this.isRunning) {
             this.start();
@@ -44,6 +48,8 @@ export class HitsquadGameService {
     }
 
     start(rounds?: number) {
+        console.error('start')
+
         if (rounds) {
             this.isRunning = true;
             this.remainingRounds = rounds;

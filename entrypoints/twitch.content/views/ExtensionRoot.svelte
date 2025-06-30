@@ -46,11 +46,13 @@ const startGameServices = () => {
 };
 
 if (authFacade.isAuthenticated) {
+    console.error('start1')
     startGameServices();
 }
 
 authFacade.onLogin(() => {
-   startGameServices();
+    console.error('start2')
+    startGameServices();
 });
 
 authFacade.onLogout(() => {
