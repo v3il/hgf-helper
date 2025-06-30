@@ -45,7 +45,9 @@ const startGameServices = () => {
     chestGameService.init();
 };
 
-startGameServices();
+if (authFacade.isAuthenticated) {
+    startGameServices();
+}
 
 authFacade.onLogin(() => {
    startGameServices();
