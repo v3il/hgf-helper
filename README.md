@@ -22,20 +22,17 @@ Here’s what’s changed compared to version 1:
    A JSONBin account is no longer required to store hidden offers.  
    The extension now handles data storage for you automatically.
 
-3. 🔄 **Automatic settings migration**  
-   If you used version 1, your existing settings will be imported into version 2 automatically — no setup needed.
-
-4. 🎨 **Complete UI redesign**  
+3. 🎨 **Complete UI redesign**  
    The entire extension has been visually refreshed.  
    The new interface is compatible with both light and dark themes on Twitch and StreamElements, and it automatically adapts to the current site theme.
 
-5. 🧩 **Updated extension icon**  
+4. 🧩 **Updated extension icon**  
    The browser action icon has been modernized to better fit the new look.
 
-6. 🛠️ **Major codebase refactor**  
+5. 🛠️ **Major codebase refactor**  
    Many internal modules have been restructured and cleaned up for better maintainability and performance.
 
-7. 🧠 **Bot failure detection**  
+6. 🧠 **Bot failure detection**  
    The extension now monitors the status of the mini-games bot and automatically pauses participation if the bot is not responding.
 
    
