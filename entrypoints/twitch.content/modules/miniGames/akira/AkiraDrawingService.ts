@@ -33,7 +33,7 @@ export class AkiraDrawingService {
         this.messageSender = Container.get(MessageSender);
         this.chatObserver = Container.get(ChatObserver);
 
-        this._isRunning = this.settingsFacade.settings.akiraDrawing;
+        this._isRunning = false; // this.settingsFacade.settings.akiraDrawing;
 
         if (this._isRunning) {
             this.start();
@@ -81,9 +81,9 @@ export class AkiraDrawingService {
     }
 
     private saveState() {
-        this.settingsFacade.updateSettings({
-            akiraDrawing: this._isRunning
-        });
+        // this.settingsFacade.updateSettings({
+        //     akiraDrawing: this._isRunning
+        // });
     }
 
     private async sendCommand() {

@@ -28,9 +28,19 @@ export class HiddenOffersService {
         return this.apiService.updateHiddenOffers(this.hiddenOffers);
     }
 
-    hideOffers(offers: string[]) {
-        this._hiddenOffers.push(...offers);
-        return this.apiService.updateHiddenOffers(this.hiddenOffers);
+    async mergeHiddenOffers(offers: string[]) {
+        let count = 0;
+
+        for (const offer of offers) {
+            if (!this.isOfferHidden(offer)) {
+                this._hiddenOffers.push(offer);
+                count++;
+            }
+        }
+
+        await this.apiService.updateHiddenOffers(this._hiddenOffers);
+
+        return count;
     }
 
     setHiddenOffers(hiddenOffers: string[]) {

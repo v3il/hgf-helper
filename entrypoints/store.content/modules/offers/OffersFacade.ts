@@ -2,21 +2,22 @@ import { Container, Service } from 'typedi';
 import { EventEmitter } from '@shared/EventEmitter';
 import { HiddenOffersFacade } from '@shared/modules';
 import { Offer, IOfferParams } from './models';
+import { IMigrateOffersParams } from '@shared/modules/hiddenOffers';
 
 @Service()
 export class OffersFacade {
-    private readonly userFacade: HiddenOffersFacade;
+    private readonly hiddenOffersFacade: HiddenOffersFacade;
 
     readonly events = new EventEmitter<{
         'offer-shown': void;
     }>();
 
     constructor() {
-        this.userFacade = Container.get(HiddenOffersFacade);
+        this.hiddenOffersFacade = Container.get(HiddenOffersFacade);
     }
 
     get hiddenOffers() {
-        return this.userFacade.hiddenOffers;
+        return this.hiddenOffersFacade.hiddenOffers;
     }
 
     createOffer(options: IOfferParams) {
@@ -24,15 +25,19 @@ export class OffersFacade {
     }
 
     isOfferHidden(offer: Offer) {
-        return this.userFacade.isOfferHidden(offer.name);
+        return this.hiddenOffersFacade.isOfferHidden(offer.name);
     }
 
     async unhideOffer(offer: string) {
-        await this.userFacade.unhideOffer(offer);
+        await this.hiddenOffersFacade.unhideOffer(offer);
         this.events.emit('offer-shown');
     }
 
     hideOffer(offer: Offer) {
-        return this.userFacade.hideOffer(offer.name);
+        return this.hiddenOffersFacade.hideOffer(offer.name);
+    }
+
+    migrateHiddenOffers(params: IMigrateOffersParams) {
+        return this.hiddenOffersFacade.migrateHiddenOffers(params);
     }
 }

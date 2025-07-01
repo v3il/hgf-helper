@@ -5,6 +5,7 @@ import { HiddenOffersFacade } from '../hiddenOffers';
 import { FirebaseApiService } from '../FirebaseApiService';
 import { StorageService } from '../StorageService';
 import { EventHandler } from '@shared/EventEmitter';
+import { RequestSender } from '../RequestSender';
 
 @Service()
 export class AuthFacade {
@@ -37,6 +38,7 @@ export class AuthFacade {
     }
 
     private initProviders() {
+        this.container.set({ id: RequestSender, value: Container.get(RequestSender) });
         this.container.set({ id: StorageService, value: Container.get(StorageService) });
         this.container.set({ id: FirebaseApiService, value: Container.get(FirebaseApiService) });
         this.container.set({ id: AuthService, type: AuthService });

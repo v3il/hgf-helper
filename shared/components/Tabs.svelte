@@ -1,5 +1,5 @@
 <div class={[classes]}>
-    <div role="tablist" class="h-10 items-center justify-center rounded-md bg-[#F1F5F9] p-1 grid grid-cols-2 mb-6">
+    <div role="tablist" class={['h-10 items-center justify-center rounded-md p-1 grid grid-cols-2 mb-6', tabClasses]}>
         {#each variants as variant}
             <button
                 type="button"
@@ -28,12 +28,14 @@ interface TabVariant {
 interface Props {
     variants: TabVariant[];
     classes?: ClassValue;
+    dark?: boolean;
     content: Snippet<[string]>
 }
 
-let { variants, classes = '', content }: Props = $props();
+let { variants, classes = '', content, dark = false }: Props = $props();
 
 let activeVariant: TabVariant = $state(variants[0]);
+const tabClasses = $derived(dark ? 'bg-[#27272a]' : 'bg-[#F1F5F9]');
 
 function isVariantActive(variant: TabVariant): boolean {
     return activeVariant.value === variant.value;
@@ -41,5 +43,5 @@ function isVariantActive(variant: TabVariant): boolean {
 
 function setActiveVariant(variant: TabVariant): void {
     activeVariant = variant;
-}1
+}
 </script>
