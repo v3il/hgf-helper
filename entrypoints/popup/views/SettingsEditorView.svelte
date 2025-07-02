@@ -34,7 +34,7 @@
 
                 <SettingEditor
                     title="Enhance store sidebar"
-                    description="Hide channel logo and Twitch actions. Make sidebar sticky"
+                    description="Hide the channel logo and Twitch action buttons. Make the sidebar sticky"
                     classes="mb-4"
                 >
                     <Switch
@@ -54,23 +54,19 @@
 
                 <SettingEditor
                     title="Sort offers"
-                    description="Sort offers automatically on store open"
+                    description="Sort offers automatically when opening the store"
                     classes="mb-4"
                 >
                     <Select
-                        classes="w-[120px]"
+                        classes="w-[135px]"
                         value={settings.sortOffersBy}
                         onChange={(value) => updateSetting('sortOffersBy', value)}
-                        options={[
-                            { value: '\'order\'', label: 'Default' },
-                            { value: '\'-cost\'', label: 'Cost ↓' },
-                            { value: '\'-createdAt\'', label: 'Date ↓' }
-                        ]}
+                        options={SORT_OFFERS_BY_OPTIONS}
                     />
                 </SettingEditor>
 
                 <SettingEditor
-                    title="Hide offers with price over"
+                    title="Hide offers priced over"
                     description="0-999999"
                     classes="mb-4"
                 >
@@ -96,7 +92,7 @@
 
                 <SettingEditor
                     title="Highlight offers with low volume"
-                    description="Highlight offers with low volume (less than 10)"
+                    description="Highlight offers with low volume (under 10)"
                 >
                     <Switch
                         isChecked={settings.highlightLowVolumeOffers}
@@ -114,12 +110,13 @@ import { type GlobalSettingsKeys, SettingsFacade, type ISettings } from '@shared
 import { Range, Select, Switch, Tabs } from '@shared/components';
 import SettingEditor from './SettingEditor.svelte';
 import { debounce } from 'lodash';
+import { StreamElementsSortOffersBy } from '@shared/consts';
 
 const settingsFacade = Container.get(SettingsFacade);
 
 const settings: ISettings = $state({ ...settingsFacade.settings });
 
-const TABS = [
+const TABS: { label: string, value: string }[] = [
     {
         label: 'Twitch Widget',
         value: 'twitch'
@@ -128,6 +125,13 @@ const TABS = [
         label: 'StreamElements Widget',
         value: 'stream-elements'
     }
+];
+
+const SORT_OFFERS_BY_OPTIONS: { value: StreamElementsSortOffersBy, label: string }[] = [
+    { value: StreamElementsSortOffersBy.DEFAULT, label: 'Default' },
+    { value: StreamElementsSortOffersBy.CREATED_AT, label: 'Newest first' },
+    { value: StreamElementsSortOffersBy.SUBSCRIBERS_ONLY, label: 'Subscribers only' },
+    { value: StreamElementsSortOffersBy.COST, label: 'Cost' }
 ];
 
 const debouncedUpdateSetting = debounce(() => {

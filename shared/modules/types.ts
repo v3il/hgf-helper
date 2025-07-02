@@ -1,3 +1,5 @@
+import { StreamElementsSortOffersBy } from '../consts';
+
 export interface ISettings {
     // Twitch
     highlightMentions: boolean;
@@ -8,7 +10,7 @@ export interface ISettings {
     offersMaxPrice: number;
     hideSoldOutOffers: boolean;
     highlightLowVolumeOffers: boolean;
-    sortOffersBy: string;
+    sortOffersBy: StreamElementsSortOffersBy;
     enhanceStoreHeader: boolean;
     enhanceStoreSidebar: boolean;
     hideStoreFooter: boolean;

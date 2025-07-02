@@ -1,4 +1,5 @@
 import { ISettings } from '../types';
+import { StreamElementsSortOffersBy } from '../../consts';
 
 export function getDefaultSettings(): ISettings {
     return {
@@ -11,7 +12,7 @@ export function getDefaultSettings(): ISettings {
         offersMaxPrice: 999_999,
         hideSoldOutOffers: true,
         highlightLowVolumeOffers: true,
-        sortOffersBy: '\'order\'',
+        sortOffersBy: StreamElementsSortOffersBy.DEFAULT,
         enhanceStoreHeader: true,
         enhanceStoreSidebar: true,
         hideStoreFooter: true,

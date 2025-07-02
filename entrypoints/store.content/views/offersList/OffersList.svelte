@@ -3,8 +3,6 @@ import { Container } from 'typedi';
 import { OffersFacade, StreamElementsUIService } from '@store/modules';
 import OffersListItem from './OffersListItem.svelte';
 import { mount, onDestroy, unmount } from 'svelte';
-import { HiddenOffersManager } from '@store/views/hiddenOffersManager';
-import { OffersList } from '@store/views/offersList/index';
 
 const offersFacade = Container.get(OffersFacade);
 const streamElementsUIService = Container.get(StreamElementsUIService);
@@ -14,18 +12,30 @@ let children: OffersListItem[] = [];
 streamElementsUIService.whenOffersLoaded(async () => {
     await streamElementsUIService.sortOffers();
 
-    const offerViews = Array.from(streamElementsUIService.offersListEl.querySelectorAll<HTMLElement>('.stream-store-list-item'));
+    children = Array.from(streamElementsUIService.offerEls).map((offerEl) => {
+        const nameEl = offerEl.querySelector<HTMLElement>('h6');
 
-    children = offerViews.map((offerEl) => {
-        const gameNameEl = offerEl.querySelector<HTMLHeadingElement>('.item-title')!;
-        const countEl = offerEl.querySelector<HTMLSpanElement>('.item-quantity-left span')!;
-        const itemCostEl = offerEl.querySelector<HTMLParagraphElement>('.item-cost')!;
-        const descriptionEl = offerEl.querySelector<HTMLParagraphElement>('.clamp-description-text')!;
+        if (!nameEl) {
+            return null;
+        }
 
-        const name = gameNameEl.getAttribute('title')!.toLowerCase().trim();
-        const count = countEl.textContent!.toLowerCase().trim();
-        const price = itemCostEl.lastChild!.textContent!.trim();
-        const description = descriptionEl.textContent!.toLowerCase().trim();
+        const name = nameEl!.textContent!.trim().toLowerCase();
+        const description = offerEl.querySelector('p span[data-state="closed"]')!.textContent!.trim();
+
+        const infoParagraphs = Array.from(
+            offerEl.querySelectorAll<HTMLElement>('p')).filter(p => p.querySelector('span.material-icons')
+        );
+
+        let count = '';
+        let price = '';
+
+        infoParagraphs.forEach(p => {
+            const icon = p.querySelector<HTMLElement>('span.material-icons')!.textContent!.trim() ?? '';
+            const text = p.textContent!.replace(icon, '').trim().toLowerCase();
+
+            if (icon === 'shopping_basket') count = text;
+            if (icon === 'monetization_on') price = text;
+        });
 
         const offer = offersFacade.createOffer({
             name,
@@ -41,12 +51,12 @@ streamElementsUIService.whenOffersLoaded(async () => {
                 offerEl
             }
         });
-    });
+    }).filter((child) => child !== null);
 });
 
 onDestroy(() => {
     children.forEach((child) => {
         unmount(child);
-    })
-})
+    });
+});
 </script>

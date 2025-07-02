@@ -14,3 +14,10 @@ export enum Timing {
     SECOND = 1000,
     MINUTE = 60 * 1000
 }
+
+export enum StreamElementsSortOffersBy {
+    DEFAULT = 'order',
+    CREATED_AT = '-createdAt',
+    SUBSCRIBERS_ONLY = '-subscriberOnly',
+    COST = '-cost'
+}

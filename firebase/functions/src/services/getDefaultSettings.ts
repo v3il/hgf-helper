@@ -9,7 +9,7 @@ export function getDefaultSettings() {
         offersMaxPrice: 999_999,
         hideSoldOutOffers: true,
         highlightLowVolumeOffers: true,
-        sortOffersBy: '\'order\'',
+        sortOffersBy: 'order',
         enhanceStoreHeader: true,
         enhanceStoreSidebar: true,
         hideStoreFooter: true,

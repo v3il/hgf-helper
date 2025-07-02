@@ -1,6 +1,7 @@
 <div
-    class="absolute left-0 right-0 top-0 p-[8px] bg-white dark:bg-[#121212] flex items-center justify-between border-[3px] border-[#555] [&.low]:border-[indianred]"
-    class:low={isLowVolumeHighlighted}
+    class="hgf-item absolute left-0 right-0 top-0 p-[8px] bg-white dark:bg-[#121212] flex items-center justify-between border-[3px]"
+    class:border-[#555]={!isLowVolumeHighlighted}
+    class:border-[indianred]={isLowVolumeHighlighted}
 >
     <a href={offer.steamAppLink} class="text-[12px] text-gray-800 dark:text-[#d4d4d8] font-bold hover:underline" target="_blank" rel="noreferrer">
         Steam
@@ -20,6 +21,7 @@ import { Container } from 'typedi';
 import { OffersFacade } from '@store/modules';
 import { SettingsFacade } from '@shared/modules';
 import { onDestroy } from 'svelte';
+import { capitalize } from '@utils';
 
 interface Props {
     offer: Offer;
@@ -27,6 +29,8 @@ interface Props {
 }
 
 const { offer, offerEl }: Props = $props();
+
+offerEl.classList.add('relative');
 
 const offersFacade = Container.get(OffersFacade);
 const settingsFacade = Container.get(SettingsFacade);
@@ -48,7 +52,7 @@ $effect(() => {
 });
 
 async function hideOfferHandler() {
-    if (!window.confirm(`Are you sure you want to hide the "${offer.name}" offer?`)) {
+    if (!window.confirm(`Are you sure you want to hide the "${capitalize(offer.name)}" offer?`)) {
         return;
     }
 
@@ -64,3 +68,10 @@ onDestroy(() => {
     offerEl.classList.remove('hidden');
 });
 </script>
+
+<style>
+.hgf-item {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+}
+</style>

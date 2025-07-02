@@ -1,6 +1,6 @@
 import { wait } from '@utils';
 import { Container, Service } from 'typedi';
-import { Timing } from '@shared/consts';
+import { StreamElementsSortOffersBy, Timing } from '@shared/consts';
 import { SettingsFacade } from '@shared/modules';
 
 @Service()
@@ -23,17 +23,19 @@ export class StreamElementsUIService {
 
     whenOffersLoaded(callback: () => void) {
         const interval = setInterval(async () => {
-            const offerEls = document.querySelectorAll('.stream-store-list-item');
-
-            if (this.sortOffersDropdownEl && offerEls.length > 0) {
+            if (this.sortOffersDropdownEl && this.offerEls.length > 0) {
                 clearInterval(interval);
                 callback();
             }
         }, Timing.SECOND);
     }
 
-    get offersListEl() {
-        return document.querySelector<HTMLElement>('.public-store-items')!;
+    get userPublicStoreEl() {
+        return document.querySelector<HTMLElement>('user-public-store')!;
+    }
+
+    get offerEls() {
+        return this.userPublicStoreEl.querySelectorAll<HTMLElement>('div:last-child > div')!;
     }
 
     get sidebarEl() {
@@ -58,31 +60,36 @@ export class StreamElementsUIService {
 
     async sortOffers() {
         const { sortOffersBy } = this.settingsFacade.settings;
+        const order = new URL(location.href).searchParams.get('order') ?? StreamElementsSortOffersBy.DEFAULT;
 
-        this.sortOffersDropdownEl!.click();
-        await wait(300);
-
-        const backdropEl = document.querySelector<HTMLElement>('.md-select-backdrop');
-        const optionsContainerId = this.sortOffersDropdownEl!.getAttribute('aria-owns');
-        const options = document.querySelectorAll<HTMLOptionElement>(`#${optionsContainerId} md-option`);
-        const selectedOption = Array.from(options).find((option) => option.hasAttribute('selected'));
-        const currentSort = selectedOption?.getAttribute('ng-value');
-
-        if (currentSort === sortOffersBy) {
-            backdropEl?.click();
+        if (sortOffersBy === order) {
             return;
         }
 
-        for (const option of options) {
-            if (option.getAttribute('ng-value') === sortOffersBy) {
-                option.click();
-                break;
-            }
-        }
+        this.activateComboboxElement(this.sortOffersDropdownEl!)
 
-        setTimeout(() => {
-            backdropEl?.click();
-        }, 500);
+        await wait(100);
+
+        const optionEls = document.querySelectorAll<HTMLElement>('[role="listbox"][data-state="open"] [role="option"]');
+
+        const optionIndex = {
+            [StreamElementsSortOffersBy.DEFAULT]: 0,
+            [StreamElementsSortOffersBy.CREATED_AT]: 1,
+            [StreamElementsSortOffersBy.SUBSCRIBERS_ONLY]: 2,
+            [StreamElementsSortOffersBy.COST]: 3
+        }[sortOffersBy] ?? 0;
+
+        this.activateComboboxElement(optionEls[optionIndex]!);
+    }
+
+    private activateComboboxElement(element: HTMLElement) {
+        const event = new KeyboardEvent('keydown', {
+            key: 'Enter',
+            code: 'Enter',
+            bubbles: true
+        });
+
+        element.dispatchEvent(event);
     }
 
     private initSettingsObserver() {
@@ -93,7 +100,7 @@ export class StreamElementsUIService {
     }
 
     private get sortOffersDropdownEl() {
-        return document.querySelector<HTMLButtonElement>('[ng-model="vm.sortBy"]');
+        return this.userPublicStoreEl.querySelector<HTMLElement>('div:nth-child(2) button[role="combobox"]:last-child');
     }
 
     private enhanceStoreHeader() {
