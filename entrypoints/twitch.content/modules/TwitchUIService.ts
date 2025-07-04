@@ -1,15 +1,15 @@
-import { waitAsync } from '@components/utils';
-import { Timing } from '@components/consts';
+import { Timing } from '@shared/consts';
 import { Service } from 'typedi';
+import cookies from 'js-cookie';
 
 @Service()
 export class TwitchUIService {
-    twitchUserName!: string;
+    readonly twitchUserName = this.getUserName();
 
     // <div data-a-target="tw-core-button-label-text" class="Layout-sc-1xcs6mc-0 bFxzAY">Click Here to Reload Player</div>
 
     whenStreamReady(callback: () => void) {
-        const reloadTimeout = setTimeout(() => window.location.reload(), Timing.SECOND * 30);
+        const reloadTimeout = setTimeout(() => window.location.reload(), Timing.MINUTE);
 
         const interval = setInterval(async () => {
             const videoEl = this.activeVideoEl;
@@ -23,7 +23,7 @@ export class TwitchUIService {
                 this.chatContainerEl,
                 this.chatInputEl,
                 this.chatScrollableAreaEl,
-                this.userDropdownToggleEl,
+                this.streamInfoEl,
                 videoEl
             ];
 
@@ -31,12 +31,9 @@ export class TwitchUIService {
                 return;
             }
 
-            const userName = await this.getUserName();
-
-            if (this.#isVideoPlaying(videoEl!) && this.currentGame && userName) {
+            if (this.isVideoPlaying(videoEl!) && this.currentGame && this.twitchUserName) {
                 clearInterval(interval);
                 clearTimeout(reloadTimeout);
-                this.twitchUserName = userName;
                 callback();
             }
         }, Timing.SECOND);
@@ -64,46 +61,46 @@ export class TwitchUIService {
         return !!document.querySelector('[data-a-target="video-ad-countdown"]');
     }
 
-    get chatContainerEl(): HTMLElement | null {
-        return document.querySelector('.channel-root__right-column');
+    get chatContainerEl() {
+        return document.querySelector<HTMLElement>('.channel-root__right-column');
     }
 
     get chatInputEl() {
-        return document.querySelector('[data-a-target="chat-input"]');
-    }
-
-    get userDropdownToggleEl() {
-        return document.querySelector('[data-a-target="user-menu-toggle"]');
+        return document.querySelector<HTMLElement>('[data-a-target="chat-input"]');
     }
 
     get chatScrollableAreaEl() {
-        return document.querySelector('.chat-scrollable-area__message-container');
+        return document.querySelector<HTMLElement>('.chat-scrollable-area__message-container');
     }
 
     get chatButtonsContainerEl() {
-        return this.chatContainerEl!.querySelector('.chat-input__buttons-container');
+        return this.chatContainerEl!.querySelector<HTMLElement>('.chat-input__buttons-container');
     }
 
     get currentGame() {
         return document.querySelector('[data-a-target="stream-game-link"] span')?.textContent?.toLowerCase() ?? '';
     }
 
-    #isVideoPlaying(videoEl: HTMLVideoElement) {
+    get streamInfoEl() {
+        return document.querySelector<HTMLElement>('.channel-info-content');
+    }
+
+    private isVideoPlaying(videoEl: HTMLVideoElement) {
         return videoEl.currentTime > 0 && !videoEl.paused && !videoEl.ended && videoEl.readyState > 2;
     }
 
-    async getUserName(): Promise<string> {
-        const userDropdownToggleEl = this.userDropdownToggleEl! as HTMLButtonElement;
+    private getUserName(): string {
+        const userCookie = cookies.get('twilight-user');
 
-        userDropdownToggleEl.click();
+        if (userCookie) {
+            try {
+                const { displayName } = JSON.parse(userCookie);
+                return displayName.toLowerCase();
+            } catch (error) {
+                console.error('Failed to parse user cookie:', error);
+            }
+        }
 
-        await waitAsync(100);
-
-        const userNameEl = document.querySelector('[data-a-target="user-display-name"]');
-        const userName = userNameEl?.textContent!.toLowerCase() ?? '';
-
-        userDropdownToggleEl.click();
-
-        return userName;
+        return '';
     }
 }

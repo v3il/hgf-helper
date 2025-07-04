@@ -1,17 +1,25 @@
-import { EventEmitter } from '@components/EventEmitter';
-import { MessageTemplates } from '@twitch/consts';
-import { Timing } from '@components/consts';
+import { EventEmitter } from '@shared/EventEmitter';
+import { Timing } from '@shared/consts';
 import { Container, Service } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
+import { config } from '@twitch/config';
 
 export interface IChatMessage {
     messageWrapperEl: HTMLElement;
     userName: string;
     message: string;
     isSystemMessage: boolean;
-    isHitsquadReward: boolean;
+    isReward: boolean;
     isAkiraDrawReward: boolean;
     hasMyMention: boolean;
+}
+
+function isRewardMessage(message: string) {
+    return /has been sent \d+ clams!/i.test(message);
+}
+
+function isAkiraDrawRewardMessage(message: string) {
+    return /\w Just Won \d+ Clams From Akiras Drawing/i.test(message);
 }
 
 @Service()
@@ -28,7 +36,7 @@ export class ChatObserver {
             message: IChatMessage;
         }>();
 
-        this.observer = this.#createObserver();
+        this.observer = this.createObserver();
 
         // Skip initial messages
         // todo: find a better way
@@ -41,17 +49,17 @@ export class ChatObserver {
         return this.events.on('message', (message) => callback(message!));
     }
 
-    #createObserver() {
+    private createObserver() {
         return new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 mutation.addedNodes.forEach((addedElement) => {
-                    this.#processAddedElement(addedElement as HTMLElement);
+                    this.processAddedElement(addedElement as HTMLElement);
                 });
             });
         });
     }
 
-    #processAddedElement(addedElement: HTMLElement) {
+    private processAddedElement(addedElement: HTMLElement) {
         const messageWrapperEl = addedElement.querySelector?.<HTMLElement>('.chat-line__message');
 
         if (!messageWrapperEl) {
@@ -69,9 +77,9 @@ export class ChatObserver {
 
         const userName = userNameEl.textContent!.toLowerCase();
         const message = messageEl!.textContent!.toLowerCase().trim();
-        const isSystemMessage = userName === 'hitsquadgodfather' || userName === 'hitsquadplays';
-        const isHitsquadReward = isSystemMessage && MessageTemplates.isHitsquadReward(message);
-        const isAkiraDrawReward = isSystemMessage && MessageTemplates.isAkiraDrawReward(message);
+        const isSystemMessage = userName === config.twitchAdminName;
+        const isReward = isSystemMessage && isRewardMessage(message);
+        const isAkiraDrawReward = isSystemMessage && isAkiraDrawRewardMessage(message);
         const hasMyMention = mentionEl?.textContent?.toLowerCase().trim() === this.twitchUIService.twitchUserName;
 
         this.events.emit('message', {
@@ -79,7 +87,7 @@ export class ChatObserver {
             userName,
             message,
             isSystemMessage,
-            isHitsquadReward,
+            isReward,
             isAkiraDrawReward,
             hasMyMention
         });

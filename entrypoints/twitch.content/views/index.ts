@@ -1,2 +1,1 @@
-export * from './extensionContainer';
-export * from './debugMode';
+export { default as ExtensionRoot } from './ExtensionRoot.svelte';

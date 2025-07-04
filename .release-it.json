@@ -3,12 +3,20 @@
 
   "github": {
     "release": true,
-    "name": "v${version}",
-    "assets": [".output/hgf-helper@v${version}.zip"]
+    "releaseName" : "hgf-helper@v${version}",
+    "assets": [".output/hgf-helper@v${version}.zip"],
+    "releaseNotes": ""
   },
 
   "hooks": {
-    "after:bump": "npm run zip",
-    "before:release": "echo Releasing version ${version}"
+    "before:release": "npm run zip && echo Releasing version ${version}"
+  },
+
+  "npm": {
+    "skipVersion": true
+  },
+
+  "git": {
+    "requireCleanWorkingDir": false
   }
 }

@@ -9,10 +9,11 @@ module.exports = {
         webextensions: true
     },
 
-    ignorePatterns: [".output"],
+    ignorePatterns: ['.output'],
 
     plugins: [
-        '@typescript-eslint'
+        '@typescript-eslint',
+        'plugin:svelte/recommended'
     ],
 
     parser: '@typescript-eslint/parser',
@@ -38,12 +39,12 @@ module.exports = {
         'no-param-reassign': 'off',
         'object-curly-newline': 'off',
         indent: ['error', 4],
-        'semi': [2, 'always'],
+        semi: [2, 'always'],
         'no-unused-vars': 'off',
         'no-new': 'off',
         quotes: ['error', 'single'],
-        'comma-dangle': ["error", "never"],
-        'max-len': ["error", 120],
+        'comma-dangle': ['error', 'never'],
+        'max-len': ['error', 120],
         'class-methods-use-this': 'off',
         'import/no-unresolved': 'off',
         'lines-between-class-members': 'off',
@@ -54,7 +55,7 @@ module.exports = {
         'no-unused-expressions': 'off',
         'no-restricted-syntax': 'off',
         'import/extensions': 'off',
-        'import/prefer-default-export': ["off", "any"],
-        "import/no-extraneous-dependencies": ["off"]
+        'import/prefer-default-export': ['off', 'any'],
+        'import/no-extraneous-dependencies': ['off']
     }
 };

@@ -1,47 +1,43 @@
 import { Container, Service } from 'typedi';
-import { EventEmitter } from '@components/EventEmitter';
-import { JsonBinApiService, OffersService } from './services';
+import { EventEmitter } from '@shared/EventEmitter';
+import { HiddenOffersFacade } from '@shared/modules';
 import { Offer, IOfferParams } from './models';
+import { IMigrateOffersParams } from '@shared/modules/hiddenOffers';
 
 @Service()
 export class OffersFacade {
-    private readonly offersService: OffersService;
-
-    private container = Container.of('offers');
+    private readonly hiddenOffersFacade: HiddenOffersFacade;
 
     readonly events = new EventEmitter<{
         'offer-shown': void;
     }>();
 
     constructor() {
-        this.container.set({ id: OffersService, type: OffersService });
-        this.container.set({ id: JsonBinApiService, type: JsonBinApiService });
-
-        this.offersService = this.container.get(OffersService);
+        this.hiddenOffersFacade = Container.get(HiddenOffersFacade);
     }
 
     get hiddenOffers() {
-        return this.offersService.hiddenOffers;
+        return this.hiddenOffersFacade.hiddenOffers;
     }
 
     createOffer(options: IOfferParams) {
         return new Offer(options);
     }
 
-    fetchHiddenOffers() {
-        return this.offersService.fetchHiddenOffers();
-    }
-
     isOfferHidden(offer: Offer) {
-        return this.offersService.isOfferHidden(offer);
+        return this.hiddenOffersFacade.isOfferHidden(offer.name);
     }
 
     async unhideOffer(offer: string) {
-        await this.offersService.unhideOffer(offer);
+        await this.hiddenOffersFacade.unhideOffer(offer);
         this.events.emit('offer-shown');
     }
 
     hideOffer(offer: Offer) {
-        return this.offersService.hideOffer(offer);
+        return this.hiddenOffersFacade.hideOffer(offer.name);
+    }
+
+    migrateHiddenOffers(params: IMigrateOffersParams) {
+        return this.hiddenOffersFacade.migrateHiddenOffers(params);
     }
 }

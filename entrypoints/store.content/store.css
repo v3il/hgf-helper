@@ -1,5 +1,14 @@
+@import "tailwindcss" important;
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
     --hgf-header-height: 64px;
+    --hgf-sidebar-offset-top: 24px;
+}
+
+button, select, html, textarea, input {
+    letter-spacing: 0 !important;
 }
 
 .navigation.element-fixed {
@@ -7,7 +16,12 @@
 }
 
 .side-bar {
-    margin-top: 0 !important;
+    margin-top: var(--hgf-sidebar-offset-top) !important;
+}
+
+.username-title .md-subheader-inner {
+    padding-left: 0 !important;
+    padding-top: 0 !important;
 }
 
 /* Header */
@@ -22,16 +36,17 @@
 
 /* Sidebar */
 
-.hgf-enhanced-sidebar .user-text-info,
-.hgf-enhanced-sidebar .twitch-actions {
+.hgf-enhanced-sidebar .side-bar .user-text-info,
+.hgf-enhanced-sidebar .side-bar .twitch-actions,
+.hgf-enhanced-sidebar .side-bar .spacer-xs {
     display: none;
 }
 
-.hgf-enhanced-sidebar .side-bar {
-    position: sticky;
-    margin-top: 0;
-    top: var(--hgf-header-height);
-    padding-top: 24px;
+@media (min-width: 1280px) {
+    .hgf-enhanced-sidebar .side-bar {
+        position: sticky;
+        top: calc(var(--hgf-header-height) + var(--hgf-sidebar-offset-top));
+    }
 }
 
 /* Footer */

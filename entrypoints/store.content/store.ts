@@ -1,29 +1,25 @@
 import 'reflect-metadata';
-import { GlobalSettingsService } from '@components/settings';
+import { mount } from 'svelte';
 import { Container } from 'typedi';
-import { StreamElementsUIService, OffersFacade } from '@store/modules';
-import { ExtensionContainer } from './views';
+import { AuthFacade } from '@shared/modules';
 import './store.css';
+import { ExtensionRoot } from './views';
+import { StreamElementsUIService } from '@store/modules';
 
-export const start = async () => {
-    const globalSettings = Container.get(GlobalSettingsService);
+export const main = async () => {
+    const authFacade = Container.get(AuthFacade);
     const streamElementsUIService = Container.get(StreamElementsUIService);
-    const offersFacade = Container.get(OffersFacade);
 
-    await globalSettings.loadSettings();
-    streamElementsUIService.enhanceStorePage();
+    await authFacade.auth()
+        .catch((error) => console.error('Error during authentication:', error));
 
-    streamElementsUIService.whenOffersLoaded(async () => {
-        console.clear();
+    streamElementsUIService.onLayoutRendered(() => {
+        const rootEl = document.createElement('div');
 
-        await streamElementsUIService.sortOffers();
+        streamElementsUIService.sidebarEl.appendChild(rootEl);
 
-        await offersFacade.fetchHiddenOffers()
-            .catch((error) => {
-                console.error(error);
-                alert('Failed to fetch hidden offers. Please check your JSONBin credentials in the settings popup.');
-            });
-
-        new ExtensionContainer();
+        mount(ExtensionRoot, {
+            target: rootEl
+        });
     });
 };

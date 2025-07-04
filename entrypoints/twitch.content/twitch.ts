@@ -1,23 +1,44 @@
 import 'reflect-metadata';
-import { isDev } from '@components/consts';
-import { ExtensionContainer } from '@twitch/views';
+import './twitch.css';
+import { ExtensionRoot } from '@twitch/views';
 import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
-import { GlobalSettingsService, LocalSettingsService } from '@components/settings';
-import { log } from '@components/utils';
+import { AuthFacade } from '@shared/modules';
+import { isDev } from '@shared/consts';
+import { log } from '@utils';
+import { mount, unmount } from 'svelte';
 
-export const main = () => {
+const isHitsquadChannel = () => ['hitsquadgodfather', 'hitsquadplays'].includes(window.location.pathname.slice(1));
+
+export const main = async () => {
+    let currentView: Record<string, any> | null;
+
     const twitchUIService = Container.get(TwitchUIService);
-    const globalSettings = Container.get(GlobalSettingsService);
-    const localSettings = Container.get(LocalSettingsService);
+    const authFacade = Container.get(AuthFacade);
 
-    twitchUIService.whenStreamReady(async () => {
-        console.clear();
-        log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
+    await authFacade
+        .auth()
+        .catch((error) => console.error('Error during authentication:', error));
 
-        localSettings.loadSettings();
-        await globalSettings.loadSettings();
+    console.clear();
+    log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 
-        new ExtensionContainer().mount(document.body);
+    if (isHitsquadChannel()) {
+        twitchUIService.whenStreamReady(() => {
+            currentView = mount(ExtensionRoot, {
+                target: document.body
+            });
+        });
+    }
+
+    window.addEventListener('hgf-helper:urlChanged', () => {
+        if (currentView) {
+            unmount(currentView);
+            currentView = null;
+        }
+
+        if (isHitsquadChannel()) {
+            location.reload();
+        }
     });
 };

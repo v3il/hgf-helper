@@ -1,34 +1,49 @@
-import { waitAsync } from '@components/utils';
+import { wait } from '@utils';
 import { Container, Service } from 'typedi';
-import { Timing } from '@components/consts';
-import { GlobalSettingsService } from '@components/settings';
+import { StreamElementsSortOffersBy, Timing } from '@shared/consts';
+import { SettingsFacade } from '@shared/modules';
 
 @Service()
 export class StreamElementsUIService {
-    private readonly globalSettingsService: GlobalSettingsService;
+    private readonly settingsFacade: SettingsFacade;
 
     constructor() {
-        this.globalSettingsService = Container.get(GlobalSettingsService);
+        this.settingsFacade = Container.get(SettingsFacade);
         this.initSettingsObserver();
+    }
+
+    onLayoutRendered(callback: () => void) {
+        const interval = setInterval(() => {
+            if (this.pageContentEl && this.sidebarEl) {
+                clearInterval(interval);
+                callback();
+            }
+        }, 0.5 * Timing.SECOND);
     }
 
     whenOffersLoaded(callback: () => void) {
         const interval = setInterval(async () => {
-            const offerEls = document.querySelectorAll('.stream-store-list-item');
-
-            if (this.sortOffersDropdownEl && offerEls.length > 0) {
+            if (this.sortOffersDropdownEl && this.offerEls.length > 0) {
                 clearInterval(interval);
                 callback();
             }
         }, Timing.SECOND);
     }
 
-    get offersListEl() {
-        return document.querySelector<HTMLElement>('.public-store-items')!;
+    get userPublicStoreEl() {
+        return document.querySelector<HTMLElement>('user-public-store')!;
     }
 
-    get userStatsEl() {
-        return document.querySelector<HTMLElement>('.usr-stats')!;
+    get offerEls() {
+        return this.userPublicStoreEl.querySelectorAll<HTMLElement>('div:last-child > div')!;
+    }
+
+    get sidebarEl() {
+        return document.querySelector<HTMLElement>('.side-bar')!;
+    }
+
+    get pageContentEl() {
+        return document.querySelector<HTMLElement>('.page-contents');
     }
 
     enhanceStorePage() {
@@ -37,53 +52,69 @@ export class StreamElementsUIService {
         this.toggleStoreFooter();
     }
 
-    async sortOffers() {
-        const field = this.globalSettingsService.settings.sortOffersBy;
+    removeStorePageEnhancements() {
+        document.documentElement.classList.remove('hgf-enhanced-header');
+        document.documentElement.classList.remove('hgf-enhanced-sidebar');
+        document.documentElement.classList.remove('hgf-hide-footer');
+    }
 
-        if (field === '\'order\'') {
+    async sortOffers() {
+        const { sortOffersBy } = this.settingsFacade.settings;
+        const order = new URL(location.href).searchParams.get('order') ?? StreamElementsSortOffersBy.DEFAULT;
+
+        if (sortOffersBy === order) {
             return;
         }
 
-        this.sortOffersDropdownEl!.click();
-        await waitAsync(300);
+        this.activateComboboxElement(this.sortOffersDropdownEl!)
 
-        const optionsContainerId = this.sortOffersDropdownEl!.getAttribute('aria-owns');
-        const options = document.querySelectorAll<HTMLButtonElement>(`#${optionsContainerId} md-option`);
+        await wait(100);
 
-        for (const option of options) {
-            if (option.getAttribute('ng-value') === field) {
-                option.click();
-                break;
-            }
-        }
+        const optionEls = document.querySelectorAll<HTMLElement>('[role="listbox"][data-state="open"] [role="option"]');
 
-        setTimeout(() => {
-            document.querySelector<HTMLDivElement>('.md-select-backdrop')?.click();
-        }, 500);
+        const optionIndex = {
+            [StreamElementsSortOffersBy.DEFAULT]: 0,
+            [StreamElementsSortOffersBy.CREATED_AT]: 1,
+            [StreamElementsSortOffersBy.SUBSCRIBERS_ONLY]: 2,
+            [StreamElementsSortOffersBy.COST]: 3
+        }[sortOffersBy] ?? 0;
+
+        this.activateComboboxElement(optionEls[optionIndex]!);
+    }
+
+    private activateComboboxElement(element: HTMLElement) {
+        const event = new KeyboardEvent('keydown', {
+            key: 'Enter',
+            code: 'Enter',
+            bubbles: true
+        });
+
+        element.dispatchEvent(event);
     }
 
     private initSettingsObserver() {
-        this.globalSettingsService.events.on('setting-changed:enhanceStoreHeader', () => this.enhanceStoreHeader());
-        this.globalSettingsService.events.on('setting-changed:enhanceStoreSidebar', () => this.enhanceStoreSidebar());
-        this.globalSettingsService.events.on('setting-changed:hideStoreFooter', () => this.toggleStoreFooter());
+        this.settingsFacade.onSettingChanged('enhanceStoreHeader', () => this.enhanceStoreHeader());
+        this.settingsFacade.onSettingChanged('enhanceStoreSidebar', () => this.enhanceStoreSidebar());
+        this.settingsFacade.onSettingChanged('hideStoreFooter', () => this.toggleStoreFooter());
+        this.settingsFacade.onSettingChanged('sortOffersBy', () => this.sortOffers());
     }
 
     private get sortOffersDropdownEl() {
-        return document.querySelector<HTMLButtonElement>('[ng-model="vm.sortBy"]');
+        return this.userPublicStoreEl.querySelector<HTMLElement>('div:nth-child(2) button[role="combobox"]:last-child');
     }
 
     private enhanceStoreHeader() {
         document.documentElement.classList
-            .toggle('hgf-enhanced-header', this.globalSettingsService.settings.enhanceStoreHeader);
+            .toggle('hgf-enhanced-header', this.settingsFacade.settings.enhanceStoreHeader);
     }
 
     private enhanceStoreSidebar() {
         document.documentElement.classList
-            .toggle('hgf-enhanced-sidebar', this.globalSettingsService.settings.enhanceStoreSidebar);
+            .toggle('hgf-enhanced-sidebar', this.settingsFacade.settings.enhanceStoreSidebar);
     }
 
     private toggleStoreFooter() {
         document.documentElement.classList
-            .toggle('hgf-hide-footer', this.globalSettingsService.settings.hideStoreFooter);
+            .toggle('hgf-hide-footer', this.settingsFacade.settings.hideStoreFooter);
     }
 }

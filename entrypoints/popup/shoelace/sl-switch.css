@@ -1,7 +1,0 @@
-.sl-switch {
-    display: block;
-}
-
-.sl-switch::part(form-control-help-text) {
-    margin-top: var(--sl-spacing-small);
-}
