@@ -50,7 +50,7 @@ const sendButtonTooltip = $derived.by(() => {
         return 'Anti-cheat is active. Mini-game commands are disabled';
     }
 
-    if (streamStatusService.isVideoBroken) {
+    if (!streamStatusService.isStreamOk) {
         return 'Stream is broken. Mini-game commands are disabled';
     }
 

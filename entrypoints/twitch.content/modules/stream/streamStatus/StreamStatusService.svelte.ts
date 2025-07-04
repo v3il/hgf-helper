@@ -48,7 +48,7 @@ export class StreamStatusService {
     }
 
     get isMiniGamesAllowed() {
-        return this.isBotWorking && !this.isAntiCheat && !this.isVideoBroken;
+        return this.isBotWorking && !this.isAntiCheat && this.isStreamOk;
     }
 
     checkStreamStatus(silent: boolean) {
@@ -137,9 +137,5 @@ export class StreamStatusService {
         const matchedChecks = checksResults.filter(({ similarity }) => similarity >= 0.85);
 
         return matchedChecks.length;
-    }
-
-    get isVideoBroken() {
-        return !this.isStreamOk || this.twitchUIService.isAdsPhase;
     }
 }
