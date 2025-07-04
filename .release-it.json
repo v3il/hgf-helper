@@ -4,7 +4,8 @@
   "github": {
     "release": true,
     "releaseName" : "hgf-helper@v${version}",
-    "assets": [".output/hgf-helper@v${version}.zip"]
+    "assets": [".output/hgf-helper@v${version}.zip"],
+    "releaseNotes": ""
   },
 
   "hooks": {
