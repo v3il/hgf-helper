@@ -7,21 +7,25 @@
     The offers stored in JSONBin will be <b>merged</b> with your existing hidden offers — no data will be lost.
 </p>
 
-<label class="text-[#d4d4d8] text-[14px] mb-[16px]">
-    JSONBin URL
+<label class="block text-[#d4d4d8] text-[14px] mb-[16px]">
+    <a href="https://jsonbin.io/app/bins" target="_blank" class="flex items-center gap-[8px] mb-[8px]">
+        JSONBin URL <SquareArrowOutUpRight size="14" />
+    </a>
 
     <input
-        class="w-full rounded-md border px-[16px] py-[8px] mb-[16px] mt-[4px] outline-0 text-base ring-offset-background bg-[#27272a] border-[#3f3f46] text-[#d4d4d8] placeholder:text-[#71717a]"
+        class="w-full rounded-md border px-[16px] py-[8px] outline-0 text-base ring-offset-background bg-[#27272a] border-[#3f3f46] text-[#d4d4d8] placeholder:text-[#71717a]"
         placeholder="https://api.jsonbin.io/v3/b/"
         bind:value={jsonBinUrl}
     >
 </label>
 
-<label class="text-[#d4d4d8] text-[14px] mb-[16px]">
-    JSONBin X-Access-Key
+<label class="block text-[#d4d4d8] text-[14px] mb-[16px]">
+    <a href="https://jsonbin.io/app/app/api-keys" target="_blank" class="flex items-center gap-[8px] mb-[8px]">
+        JSONBin X-Access-Key <SquareArrowOutUpRight size="14" />
+    </a>
 
     <input
-        class="w-full rounded-md border px-[16px] py-[8px] mb-[16px] mt-[4px] outline-0 text-base ring-offset-background bg-[#27272a] border-[#3f3f46] text-[#d4d4d8] placeholder:text-[#71717a]"
+        class="w-full rounded-md border px-[16px] py-[8px] outline-0 text-base ring-offset-background bg-[#27272a] border-[#3f3f46] text-[#d4d4d8] placeholder:text-[#71717a]"
         placeholder="JSONBin X-Access-Key"
         bind:value={jsonBinAccessKey}
     >
@@ -38,6 +42,7 @@
 <script lang="ts">
 import { Container } from 'typedi';
 import { OffersFacade } from '@store/modules';
+import { SquareArrowOutUpRight } from '@lucide/svelte';
 
 let jsonBinUrl = $state('');
 let jsonBinAccessKey = $state('');
