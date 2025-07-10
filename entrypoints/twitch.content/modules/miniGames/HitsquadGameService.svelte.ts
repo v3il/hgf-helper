@@ -96,7 +96,7 @@ export class HitsquadGameService {
     }
 
     private getNextRoundDelay() {
-        return random(30 * Timing.SECOND, 5 * Timing.MINUTE) + config.hitsquadGameBaseTimeout;
+        return random(Timing.MINUTE, 3 * Timing.MINUTE) + config.hitsquadGameBaseTimeout / 2;
     }
 
     private scheduleNextRound() {
