@@ -2,15 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
-import admin from 'firebase-admin';
+import { initializeApp } from 'firebase-admin/app';
 import {
     auth, authCallback, authSuccess, getUser, updateUser
 } from './routes';
 import { authorized } from './middlewares';
+import { usersService } from './services';
+import { initFirestore } from './db';
 
-if (!admin.apps.length) {
-    admin.initializeApp();
-}
+initializeApp();
+
+const firestore = initFirestore();
+usersService.setFirestore(firestore);
 
 const app = express();
 

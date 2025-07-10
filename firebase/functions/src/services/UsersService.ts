@@ -1,26 +1,31 @@
-import {
-    doc, Firestore, getDoc, setDoc
-} from 'firebase/firestore';
-import { getDefaultSettings } from './getDefaultSettings';
+import { Firestore } from 'firebase-admin/firestore';
+import { getDefaultSettings, ISettings } from './getDefaultSettings';
+
+interface IUpdateUserPayload {
+    hiddenOffers?: string[];
+    settings?: ISettings;
+}
 
 export class UsersService {
-    private readonly db: Firestore;
+    private db!: Firestore;
 
-    constructor(db: Firestore) {
+    setFirestore(db: Firestore) {
         this.db = db;
     }
 
     async get(userId: string) {
-        const userSnap = await getDoc(doc(this.db, 'users', userId));
+        const docRef = this.db.collection('users').doc(userId);
+        const userSnap = await docRef.get();
 
-        return userSnap.exists() ? userSnap.data() : null;
+        return userSnap.exists ? userSnap.data() : null;
     }
 
     async createIfNotExists(userId: string, userName: string) {
-        const user = await this.get(userId);
+        const docRef = this.db.collection('users').doc(userId);
+        const userSnap = await docRef.get();
 
-        if (!user) {
-            await setDoc(doc(this.db, 'users', userId), {
+        if (!userSnap.exists) {
+            await docRef.set({
                 userName,
                 settings: getDefaultSettings(),
                 hiddenOffers: []
@@ -28,11 +33,26 @@ export class UsersService {
         }
     }
 
-    async update(userId: string, payload: object) {
-        return setDoc(doc(this.db, 'users', userId), this.normalizeUpdatePayload(payload), { merge: true });
+    async update(userId: string, payload: IUpdateUserPayload) {
+        const docRef = this.db.collection('users').doc(userId);
+        const normalizedPayload = this.normalizeUpdatePayload(payload);
+
+        if (Object.keys(normalizedPayload).length) {
+            await docRef.set(this.normalizeUpdatePayload(payload), { merge: true });
+        }
     }
 
-    private normalizeUpdatePayload(body: object) {
-        return body; // todo
+    private normalizeUpdatePayload(body: IUpdateUserPayload): Partial<IUpdateUserPayload> {
+        const result: Partial<IUpdateUserPayload> = {};
+
+        if (Array.isArray(body.hiddenOffers)) {
+            result.hiddenOffers = body.hiddenOffers;
+        }
+
+        if (typeof body.settings === 'object' && body.settings !== null && !Array.isArray(body.settings)) {
+            result.settings = body.settings;
+        }
+
+        return result;
     }
 }

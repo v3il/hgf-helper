@@ -1,4 +1,23 @@
-export function getDefaultSettings() {
+export interface ISettings {
+    // Twitch
+    highlightMentions: boolean;
+    collectDaCoinz: boolean;
+    decreaseStreamDelay: boolean;
+
+    // Store
+    offersMaxPrice: number;
+    hideSoldOutOffers: boolean;
+    highlightLowVolumeOffers: boolean;
+    sortOffersBy: string;
+    enhanceStoreHeader: boolean;
+    enhanceStoreSidebar: boolean;
+    hideStoreFooter: boolean;
+
+    // Misc
+    openAiApiToken: string;
+}
+
+export function getDefaultSettings(): ISettings {
     return {
         // Twitch
         highlightMentions: true,
