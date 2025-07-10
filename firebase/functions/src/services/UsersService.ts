@@ -38,7 +38,7 @@ export class UsersService {
         const normalizedPayload = this.normalizeUpdatePayload(payload);
 
         if (Object.keys(normalizedPayload).length) {
-            await docRef.set(this.normalizeUpdatePayload(payload), { merge: true });
+            await docRef.set(normalizedPayload, { merge: true });
         }
     }
 
