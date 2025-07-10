@@ -7,15 +7,14 @@ export const updateUser = async (request: Request, response: Response) => {
     try {
         const user = await usersService.get(request.user!.userId);
 
-        console.error('User', user);
-
         if (!user) {
             response.status(404).send({ error: 'User not found' });
             return;
         }
 
         await usersService.update(request.user!.userId, body);
-        response.send({});
+
+        response.sendStatus(200);
     } catch (error) {
         console.error('Update user error', error);
         response.status(401).send({ error: 'Bad request' });
