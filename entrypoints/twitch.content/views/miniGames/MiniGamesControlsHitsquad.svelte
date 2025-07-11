@@ -5,7 +5,7 @@
     command={gameService.command}
     name="Giveaways"
     {toggle}
-    {participate}
+    {sendCommand}
 >
     {#snippet indicators()}
         {#if gameService.isRunning}
@@ -31,7 +31,7 @@ import { Gift } from '@lucide/svelte';
 const streamStatusService = Container.get(StreamStatusService);
 const gameService = getContext<HitsquadGameService>('hitsquad');
 
-const participate = () => gameService.participate();
+const sendCommand = () => gameService.sendCommand();
 
 function toggle(isEnabled: boolean) {
     if (!isEnabled) {
