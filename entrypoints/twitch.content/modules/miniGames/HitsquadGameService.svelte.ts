@@ -71,8 +71,12 @@ export class HitsquadGameService {
         });
     }
 
+    private getDelay() {
+        return random(30 * Timing.SECOND, 2 * Timing.MINUTE) + config.hitsquadGameBaseTimeout;
+    }
+
     private scheduleNextRound() {
-        const delay = random(30 * Timing.SECOND, 2 * Timing.MINUTE) + config.hitsquadGameBaseTimeout;
+        const delay = this.getDelay();
 
         this.timeUntilMessage = Date.now() + delay;
 

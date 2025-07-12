@@ -1,5 +1,5 @@
 <MiniGamesControlsItem
-    isGameActive={gameService.isGameActive}
+    isGameActive={gameService.isGameEnabled}
     Icon={Gem}
     command={gameService.command}
     name="Loot"

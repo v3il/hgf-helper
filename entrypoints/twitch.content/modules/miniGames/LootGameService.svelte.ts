@@ -23,7 +23,7 @@ export class LootGameService {
     private unsubscribe!: UnsubscribeTrigger;
 
     isGamePhase = $state(false);
-    isGameActive = $state(false);
+    isGameEnabled = $state(false);
     isRoundRunning = $state(false);
     timeUntilMessage = $state(0);
 
@@ -34,26 +34,26 @@ export class LootGameService {
     }
 
     init() {
-        this.isGameActive = this.localSettingsService.settings.lootGame;
+        this.isGameEnabled = this.localSettingsService.settings.lootGame;
         this.isGamePhase = this.streamStatusService.isLootGame;
 
         this.unsubscribe = this.streamStatusService.events.on('loot', (isGamePhase?: boolean) => {
             this.isGamePhase = !!isGamePhase;
 
-            if (this.isGameActive && this.isGamePhase) {
+            if (this.isGameEnabled && this.isGamePhase) {
                 this.scheduleNextRound();
             }
         });
     }
 
     start() {
-        this.isGameActive = true;
+        this.isGameEnabled = true;
         this.saveState();
     }
 
     stop() {
         this.isRoundRunning = false;
-        this.isGameActive = false;
+        this.isGameEnabled = false;
 
         this.saveState();
         clearTimeout(this.timeoutId);
@@ -64,27 +64,14 @@ export class LootGameService {
         this.unsubscribe?.();
     }
 
-    participate() {
+    sendCommand() {
         this.messageSender.sendMessage(`${this.command}${random(1, 8)}`);
     }
 
     private saveState() {
         this.localSettingsService.updateSettings({
-            lootGame: this.isGameActive
+            lootGame: this.isGameEnabled
         });
-    }
-
-    private async sendCommand(): Promise<void> {
-        if (!this.streamStatusService.isMiniGamesAllowed) {
-            const delay = 20 * Timing.SECOND;
-
-            this.timeUntilMessage = Date.now() + delay;
-            await wait(delay);
-            return this.sendCommand();
-        }
-
-        this.participate();
-        this.isRoundRunning = false;
     }
 
     private getDelay() {
@@ -97,13 +84,29 @@ export class LootGameService {
         this.isRoundRunning = true;
         this.timeUntilMessage = Date.now() + delay;
 
-        this.timeoutId = window.setTimeout(() => {
+        this.timeoutId = window.setTimeout(async () => {
             if (!this.streamStatusService.isBotWorking) {
                 this.isRoundRunning = false;
                 return;
             }
 
+            while (!this.streamStatusService.isMiniGamesAllowed) {
+                const delay = random(10 * Timing.SECOND, 30 * Timing.SECOND);
+
+                this.timeUntilMessage = Date.now() + delay;
+                await wait(delay);
+
+                if (!(this.isGameEnabled && this.isGamePhase)) {
+                    return;
+                }
+            }
+
+            if (!(this.isGameEnabled && this.isGamePhase)) {
+                return;
+            }
+
             this.sendCommand();
+            this.isRoundRunning = false;
         }, delay);
     }
 }
