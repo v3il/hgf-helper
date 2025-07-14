@@ -1,23 +1,10 @@
 import { Timing } from '@shared/consts';
-import { wait } from '@utils';
-import { Container } from 'typedi';
-import { MessageSender } from '@twitch/modules/twitchChat';
-import { StreamStatusService } from '@twitch/modules/stream';
 import { UnsubscribeTrigger } from '@shared/EventEmitter';
 import { random } from 'lodash';
-import { LocalSettingsService } from '@shared/services';
-import { ITwitchLocalSettings } from '@twitch/modules';
+import { MiniGameBaseServiceSvelte } from './MiniGameBaseService.svelte';
 
-interface ILootGameServiceParams {
-    localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
-}
-
-export class LootGameService {
+export class LootGameService extends MiniGameBaseServiceSvelte {
     readonly command = '!loot';
-
-    private readonly messageSender: MessageSender;
-    private readonly streamStatusService: StreamStatusService;
-    private readonly localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
 
     private timeoutId!: number;
     private unsubscribe!: UnsubscribeTrigger;
@@ -25,13 +12,6 @@ export class LootGameService {
     isGamePhase = $state(false);
     isGameEnabled = $state(false);
     isRoundRunning = $state(false);
-    timeUntilMessage = $state(0);
-
-    constructor({ localSettingsService }: ILootGameServiceParams) {
-        this.localSettingsService = localSettingsService;
-        this.messageSender = Container.get(MessageSender);
-        this.streamStatusService = Container.get(StreamStatusService);
-    }
 
     init() {
         this.isGameEnabled = this.localSettingsService.settings.lootGame;
@@ -40,8 +20,8 @@ export class LootGameService {
         this.unsubscribe = this.streamStatusService.events.on('loot', (isGamePhase?: boolean) => {
             this.isGamePhase = !!isGamePhase;
 
-            if (this.isGameEnabled && this.isGamePhase) {
-                this.scheduleNextRound();
+            if (this.shouldHandleGame) {
+                this.scheduleRound();
             }
         });
     }
@@ -64,48 +44,36 @@ export class LootGameService {
         this.unsubscribe?.();
     }
 
-    sendCommand() {
-        this.messageSender.sendMessage(`${this.command}${random(1, 8)}`);
+    protected buildCommand() {
+        return `${this.command}${random(1, 8)}`;
     }
 
-    private saveState() {
+    protected get shouldHandleGame() {
+        return this.isGameEnabled && this.isGamePhase;
+    }
+
+    protected saveState() {
         this.localSettingsService.updateSettings({
             lootGame: this.isGameEnabled
         });
     }
 
-    private getDelay() {
+    protected getDelay() {
         return random(Timing.MINUTE, 15 * Timing.MINUTE);
     }
 
-    private scheduleNextRound() {
+    protected completeRound() {
+        this.sendCommand();
+    }
+
+    protected scheduleRound() {
         const delay = this.getDelay();
 
-        this.isRoundRunning = true;
         this.timeUntilMessage = Date.now() + delay;
+        this.isRoundRunning = true;
 
         this.timeoutId = window.setTimeout(async () => {
-            if (!this.streamStatusService.isBotWorking) {
-                this.isRoundRunning = false;
-                return;
-            }
-
-            while (!this.streamStatusService.isMiniGamesAllowed) {
-                const delay = random(10 * Timing.SECOND, 30 * Timing.SECOND);
-
-                this.timeUntilMessage = Date.now() + delay;
-                await wait(delay);
-
-                if (!(this.isGameEnabled && this.isGamePhase)) {
-                    return;
-                }
-            }
-
-            if (!(this.isGameEnabled && this.isGamePhase)) {
-                return;
-            }
-
-            this.sendCommand();
+            await this.processRound();
             this.isRoundRunning = false;
         }, delay);
     }

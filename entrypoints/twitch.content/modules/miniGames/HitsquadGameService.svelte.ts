@@ -1,43 +1,23 @@
-import { Container } from 'typedi';
-import { wait } from '@utils';
 import { Timing } from '@shared/consts';
-import { MessageSender } from '@twitch/modules/twitchChat';
-import { StreamStatusService } from '@twitch/modules/stream';
 import { random } from 'lodash';
 import { config } from '@twitch/config';
-import { LocalSettingsService } from '@shared/services';
-import { ITwitchLocalSettings } from '@twitch/modules';
+import { MiniGameBaseServiceSvelte } from './MiniGameBaseService.svelte';
 
-interface IHitsquadGameServiceParams {
-    localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
-}
-
-export class HitsquadGameService {
+export class HitsquadGameService extends MiniGameBaseServiceSvelte {
     readonly command = '!hitsquad';
     static readonly HITSQUAD_GAMES_PER_DAY = 600;
     static readonly HITSQUAD_GAMES_ON_SCREEN = 12;
 
-    private readonly messageSender: MessageSender;
-    private readonly streamStatusService: StreamStatusService;
-    private readonly localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
-
     remainingRounds = $state(0);
     totalRounds = $state(0);
-    timeUntilMessage = $state(0);
     isGameRunning = $derived(this.remainingRounds > 0);
 
-    private timeout!: number;
-
-    constructor({ localSettingsService }: IHitsquadGameServiceParams) {
-        this.localSettingsService = localSettingsService;
-        this.messageSender = Container.get(MessageSender);
-        this.streamStatusService = Container.get(StreamStatusService);
-    }
+    private timeoutId!: number;
 
     init() {
         this.remainingRounds = this.localSettingsService.settings.hitsquadRounds;
 
-        if (this.isGameRunning) {
+        if (this.shouldHandleGame) {
             this.start(this.remainingRounds);
         }
     }
@@ -54,37 +34,40 @@ export class HitsquadGameService {
         this.remainingRounds = 0;
         this.saveState();
 
-        clearTimeout(this.timeout);
+        clearTimeout(this.timeoutId);
     }
 
-    sendCommand() {
-        this.messageSender.sendMessage(this.command);
+    buildCommand() {
+        return this.command;
     }
 
     destroy() {
         this.stop();
     }
 
-    private saveState() {
+    protected saveState() {
         this.localSettingsService.updateSettings({
             hitsquadRounds: this.remainingRounds
         });
     }
 
-    private getDelay() {
-        // return random(11 * Timing.SECOND, 20 * Timing.SECOND) // + config.hitsquadGameBaseTimeout;
+    protected get shouldHandleGame(): boolean {
+        return this.isGameRunning && this.remainingRounds > 0;
+    }
+
+    protected getDelay() {
         return random(30 * Timing.SECOND, 2 * Timing.MINUTE) + config.hitsquadGameBaseTimeout;
     }
 
-    private scheduleRound() {
+    protected scheduleRound() {
         const delay = this.getDelay();
 
         this.timeUntilMessage = Date.now() + delay;
 
-        this.timeout = window.setTimeout(async () => {
+        this.timeoutId = window.setTimeout(async () => {
             await this.processRound();
 
-            if (this.isGameRunning && this.remainingRounds > 0) {
+            if (this.shouldHandleGame) {
                 this.scheduleRound();
             } else {
                 this.stop();
@@ -92,27 +75,7 @@ export class HitsquadGameService {
         }, delay);
     }
 
-    private async processRound() {
-        if (!this.streamStatusService.isBotWorking) {
-            return;
-        }
-
-        while (!this.streamStatusService.isMiniGamesAllowed) {
-            const delay = random(10 * Timing.SECOND, 30 * Timing.SECOND);
-
-            this.timeUntilMessage = Date.now() + delay;
-
-            while (Date.now() < this.timeUntilMessage) {
-                if (!this.isGameRunning) {
-                    return;
-                }
-
-                await wait(Timing.SECOND * 0.1);
-            }
-        }
-
-        if (!this.isGameRunning) return;
-
+    protected completeRound() {
         this.sendCommand();
         this.remainingRounds -= HitsquadGameService.HITSQUAD_GAMES_ON_SCREEN;
         this.saveState();

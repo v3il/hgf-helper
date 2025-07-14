@@ -31,6 +31,6 @@ const gameService = getContext<LootGameService>('loot');
 
 const isSendEnabled = $derived(streamStatusService.isMiniGamesAllowed && gameService.isGamePhase);
 
-const sendCommand = () => gameService.participate();
+const sendCommand = () => gameService.sendCommand();
 const toggle = (isEnabled: boolean) => isEnabled ? gameService.start() : gameService.stop();
 </script>
