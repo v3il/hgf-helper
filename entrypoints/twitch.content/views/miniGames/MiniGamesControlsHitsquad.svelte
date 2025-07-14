@@ -1,5 +1,5 @@
 <MiniGamesControlsItem
-    isGameActive={gameService.isRunning}
+    isGameActive={gameService.isGameRunning}
     isSendEnabled={streamStatusService.isMiniGamesAllowed}
     Icon={Gift}
     command={gameService.command}
@@ -8,7 +8,7 @@
     {sendCommand}
 >
     {#snippet indicators()}
-        {#if gameService.isRunning}
+        {#if gameService.isGameRunning}
             <MiniGamesControlsIndicators>
                 <MiniGamesControlsTimer timeout={gameService.timeUntilMessage} />
                 |

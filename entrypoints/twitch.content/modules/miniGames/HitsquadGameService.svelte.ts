@@ -24,7 +24,7 @@ export class HitsquadGameService {
     remainingRounds = $state(0);
     totalRounds = $state(0);
     timeUntilMessage = $state(0);
-    isRunning = $derived(this.remainingRounds > 0);
+    isGameRunning = $derived(this.remainingRounds > 0);
 
     private timeout!: number;
 
@@ -37,7 +37,7 @@ export class HitsquadGameService {
     init() {
         this.remainingRounds = this.localSettingsService.settings.hitsquadRounds;
 
-        if (this.isRunning) {
+        if (this.isGameRunning) {
             this.start(this.remainingRounds);
         }
     }
@@ -47,7 +47,7 @@ export class HitsquadGameService {
         this.totalRounds = rounds;
 
         this.saveState();
-        this.scheduleNextRound();
+        this.scheduleRound();
     }
 
     stop() {
@@ -72,43 +72,49 @@ export class HitsquadGameService {
     }
 
     private getDelay() {
+        // return random(11 * Timing.SECOND, 20 * Timing.SECOND) // + config.hitsquadGameBaseTimeout;
         return random(30 * Timing.SECOND, 2 * Timing.MINUTE) + config.hitsquadGameBaseTimeout;
     }
 
-    private scheduleNextRound() {
+    private scheduleRound() {
         const delay = this.getDelay();
 
         this.timeUntilMessage = Date.now() + delay;
 
         this.timeout = window.setTimeout(async () => {
-            if (!this.streamStatusService.isBotWorking) {
-                return this.scheduleNextRound();
+            await this.processRound();
+
+            if (this.isGameRunning && this.remainingRounds > 0) {
+                this.scheduleRound();
+            } else {
+                this.stop();
             }
+        }, delay);
+    }
 
-            while (!this.streamStatusService.isMiniGamesAllowed) {
-                const delay = random(10 * Timing.SECOND, 30 * Timing.SECOND);
+    private async processRound() {
+        if (!this.streamStatusService.isBotWorking) {
+            return;
+        }
 
-                this.timeUntilMessage = Date.now() + delay;
-                await wait(delay);
+        while (!this.streamStatusService.isMiniGamesAllowed) {
+            const delay = random(10 * Timing.SECOND, 30 * Timing.SECOND);
 
-                if (!this.isRunning) {
+            this.timeUntilMessage = Date.now() + delay;
+
+            while (Date.now() < this.timeUntilMessage) {
+                if (!this.isGameRunning) {
                     return;
                 }
+
+                await wait(Timing.SECOND * 0.1);
             }
+        }
 
-            if (!this.isRunning) {
-                return;
-            }
+        if (!this.isGameRunning) return;
 
-            this.sendCommand();
-            this.remainingRounds -= HitsquadGameService.HITSQUAD_GAMES_ON_SCREEN;
-            this.saveState();
-
-            if (this.remainingRounds <= 0) {
-                return this.stop();
-            }
-
-            this.scheduleNextRound();
-        }, delay);
+        this.sendCommand();
+        this.remainingRounds -= HitsquadGameService.HITSQUAD_GAMES_ON_SCREEN;
+        this.saveState();
     }
 }

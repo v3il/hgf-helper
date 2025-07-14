@@ -75,7 +75,7 @@ export class ChestGameService {
     }
 
     private getDelay() {
-        return random(30 * Timing.SECOND, 4 * Timing.MINUTE);
+        return random(30 * Timing.SECOND, 1 * Timing.MINUTE);
     }
 
     private scheduleNextRound() {
@@ -85,20 +85,22 @@ export class ChestGameService {
         this.timeUntilMessage = Date.now() + delay;
 
         this.timeoutId = window.setTimeout(async () => {
-            if (!(this.isGameEnabled && this.isGamePhase)) {
-                return;
-            }
-
             if (!this.streamStatusService.isBotWorking) {
                 this.isRoundRunning = false;
                 return;
             }
 
             while (!this.streamStatusService.isMiniGamesAllowed) {
-                const delay = random(10 * Timing.SECOND, 30 * Timing.SECOND);
+                const delay = random(10 * Timing.SECOND, 11 * Timing.SECOND);
+
+                console.error('while loop in ChestGameService', delay);
 
                 this.timeUntilMessage = Date.now() + delay;
                 await wait(delay);
+
+                if (!(this.isGameEnabled && this.isGamePhase)) {
+                    return;
+                }
             }
 
             if (!(this.isGameEnabled && this.isGamePhase)) {
