@@ -52,6 +52,8 @@ export class Offer {
             return this.description.match(regex)![0];
         }
 
-        return `https://store.steampowered.com/search/?term=${this.name}`;
+        const term = this.name.replace('hitsquad special', '').trim();
+
+        return `https://store.steampowered.com/search/?term=${term}`;
     }
 }
