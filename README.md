@@ -141,7 +141,8 @@ The appearance of the popup is shown in the images below:
 
 This extension was built to make participating in mini-games more convenient for individual users.  
 It’s not designed for abuse, large-scale automation, or use with alt accounts.  
-The channel owner does not allow automation tools, so please use with care.
+
+> The channel owner has stated that scripts are not allowed. Use at your own risk!
 
 > The extension does **not interfere with ad revenue** — the user remains physically present on the stream, and all ads are shown as usual.
 
