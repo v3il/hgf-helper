@@ -16,13 +16,13 @@ export const updateUser = async (request: Request, response: Response) => {
         const result = await usersService.update(request.user!.userId, body);
 
         if (!result) {
-            response.status(401).send({ error: 'Bad request' });
+            response.status(400).send({ error: 'Bad request' });
             return;
         }
 
         response.sendStatus(200);
     } catch (error) {
         logger.error('Update user error', error);
-        response.status(401).send({ error: 'Bad request' });
+        response.status(400).send({ error: 'Bad request' });
     }
 };
