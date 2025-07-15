@@ -1,7 +1,7 @@
 # HGF-Helper
 
-❗ This README describes **version 2** of the extension.  
-If you're looking for the README of version 1, you can find it [here](./readme/v1/README.md).  
+❗ This README describes **version 2** of the extension. If you're looking for the README of version 1, you can find it [here](./readme/v1/README.md).  
+
 To upgrade to the latest version, see the [Update instructions](#-update).
 
 
@@ -16,24 +16,24 @@ Here’s what’s changed compared to version 1:
 1. 🔐 **Twitch-based authentication**  
    Extension features now use Twitch login for access.  
    This allows you to instantly access your personal settings from any browser — with just one click.  
-   Authentication is fast, secure, and **no personal data is collected**.
+   See [Privacy details](./readme/PRIVACY.md) for more information.
 
 2. 🗃️ **No more JSONBin setup**  
    A JSONBin account is no longer required to store hidden offers.  
    The extension now handles data storage for you automatically.
 
-3. 🎨 **Complete UI redesign**  
+3. 🧠 **Bot failure detection**  
+    The extension now monitors the status of the mini-games bot and automatically pauses participation if the bot is not responding.
+
+4. 🎨 **Complete UI redesign**  
    The entire extension has been visually refreshed.  
    The new interface is compatible with both light and dark themes on Twitch and StreamElements, and it automatically adapts to the current site theme.
 
-4. 🧩 **Updated extension icon**  
+5. 🧩 **Updated extension icon**  
    The browser action icon has been modernized to better fit the new look.
 
-5. 🛠️ **Major codebase refactor**  
+6. 🛠️ **Major codebase refactor**  
    Many internal modules have been restructured and cleaned up for better maintainability and performance.
-
-6. 🧠 **Bot failure detection**  
-   The extension now monitors the status of the mini-games bot and automatically pauses participation if the bot is not responding.
 
    
 ### 🎮 Twitch Helper
@@ -50,20 +50,20 @@ Its main features include:
 3. 🛡️ **Anti-cheat detection**  
    Detects when the anti-cheat screen appears and reacts accordingly based on the current anti-cheat version.
 
-4. ⏩ **Stream delay remover**  
-   Removes the stream delay every 2.5 minutes to ensure real-time interaction.
+4. 🧠 Bot status monitor
+   Automatically detects if the mini-games bot is down and temporarily pauses participation.
 
-5. 🎁 **Channel point collector**  
-   Automatically collects available channel points during the stream.
+5. ⏩ **Stream delay remover**  
+   Removes the stream delay to ensure real-time interaction *(customizable via the settings popup)*.
 
-6. 🔁 **Stream recovery**  
+6. 🎁 **Channel point collector**  
+   Automatically collects available channel points during the stream *(customizable via the settings popup)*.
+
+7. 🔁 **Stream recovery**  
    Automatically refreshes the stream page if video issues are detected.
 
-7. 📺 **Ad-resilient**  
+8. 📺 **Ad-resilient**  
    All features continue to work even while ads are playing.
-
-8. 🧠 Bot status monitor
-   Automatically detects if the mini-games bot is down and temporarily pauses participation.
 
 
 ####  🛡️ Anti-Cheat Versions
@@ -87,11 +87,11 @@ The widget mounts on the game store page and adds several useful enhancements:
 2. 🛠️ **Manage hidden offers**  
    Lets you view and restore hidden offers directly from the store page.
 
-3. 🧹 **Automatic sorting**  
-   Automatically sorts offers when the page loads *(customizable via the settings popup)*.
-
-4. 🔗 **Steam link integration**  
+3. 🔗 **Steam link integration**  
    Adds a link to each game's Steam page for quick access.
+
+4. 🧹 **Automatic sorting**  
+   Automatically sorts offers when the page loads *(customizable via the settings popup)*.
 
 5. 💰 **Price filter**  
    Adds an option to hide offers above a specified price *(customizable via the settings popup)*.
@@ -139,8 +139,12 @@ The appearance of the popup is shown in the images below:
 
 ## ⚠️ Disclaimer
 
-**This software was created to automate participation in mini-games on the channel — not to exploit or abuse the system.**
+This extension was built to make participating in mini-games more convenient for individual users.  
+It’s not designed for abuse, large-scale automation, or use with alt accounts.  
+The channel owner does not allow automation tools, so please use with care.
 
-It may stop functioning correctly at any time due to changes in the overlay — use it at your own risk.  
-The author of the extension does **not** support account farms in any form and is **not responsible** for any timeouts or restrictions incurred as a result of using it.
+> The extension does **not interfere with ad revenue** — the user remains physically present on the stream, and all ads are shown as usual.
+
+The author of the extension takes no responsibility for any bans, timeouts, or issues caused by using this tool.
+
 

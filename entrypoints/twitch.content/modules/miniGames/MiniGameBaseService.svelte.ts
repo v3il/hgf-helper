@@ -59,7 +59,7 @@ export abstract class MiniGameBaseServiceSvelte {
                     return;
                 }
 
-                await wait(Timing.SECOND * 0.1);
+                await wait(Timing.SECOND);
             }
         }
 
