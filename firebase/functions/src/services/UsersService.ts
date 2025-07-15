@@ -1,4 +1,5 @@
-import { Firestore } from 'firebase-admin/firestore';
+import { Firestore, Timestamp } from 'firebase-admin/firestore';
+import { firestore } from 'firebase-admin';
 import { getDefaultSettings, ISettings } from './getDefaultSettings';
 
 interface IUpdateUserPayload {
@@ -17,7 +18,27 @@ export class UsersService {
         const docRef = this.db.collection('users').doc(userId);
         const userSnap = await docRef.get();
 
-        return userSnap.exists ? userSnap.data() : null;
+        if (!userSnap.exists) {
+            return null;
+        }
+
+        const data = userSnap.data();
+
+        if (!data) {
+            return null;
+        }
+
+        await docRef.update({
+            lastActiveAt: Timestamp.now()
+        });
+
+        return this.formatUserData(data);
+    }
+
+    private formatUserData(userSnap: firestore.DocumentData): firestore.DocumentData {
+        const { userName, lastActiveAt, ...rest } = userSnap;
+
+        return rest;
     }
 
     async createIfNotExists(userId: string, userName: string) {
@@ -28,17 +49,27 @@ export class UsersService {
             await docRef.set({
                 userName,
                 settings: getDefaultSettings(),
-                hiddenOffers: []
+                hiddenOffers: [],
+                lastActiveAt: Timestamp.now()
             });
         }
     }
 
     async update(userId: string, payload: IUpdateUserPayload) {
         const docRef = this.db.collection('users').doc(userId);
+        const userSnap = await docRef.get();
+
+        if (!userSnap.exists) {
+            return;
+        }
+
         const normalizedPayload = this.normalizeUpdatePayload(payload);
 
         if (Object.keys(normalizedPayload).length) {
-            await docRef.set(normalizedPayload, { merge: true });
+            await docRef.update({
+                ...normalizedPayload,
+                lastActiveAt: Timestamp.now()
+            });
         }
     }
 
