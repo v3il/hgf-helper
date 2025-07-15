@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { logger } from 'firebase-functions';
 import { usersService } from '../services';
 
 export const updateUser = async (request: Request, response: Response) => {
@@ -12,11 +13,16 @@ export const updateUser = async (request: Request, response: Response) => {
             return;
         }
 
-        await usersService.update(request.user!.userId, body);
+        const result = await usersService.update(request.user!.userId, body);
+
+        if (!result) {
+            response.status(401).send({ error: 'Bad request' });
+            return;
+        }
 
         response.sendStatus(200);
     } catch (error) {
-        console.error('Update user error', error);
+        logger.error('Update user error', error);
         response.status(401).send({ error: 'Bad request' });
     }
 };

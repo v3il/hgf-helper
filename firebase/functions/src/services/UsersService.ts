@@ -14,8 +14,12 @@ export class UsersService {
         this.db = db;
     }
 
+    private getUserDoc(userId: string) {
+        return this.db.collection('users').doc(userId);
+    }
+
     async get(userId: string) {
-        const docRef = this.db.collection('users').doc(userId);
+        const docRef = this.getUserDoc(userId);
         const userSnap = await docRef.get();
 
         if (!userSnap.exists) {
@@ -42,7 +46,7 @@ export class UsersService {
     }
 
     async createIfNotExists(userId: string, userName: string) {
-        const docRef = this.db.collection('users').doc(userId);
+        const docRef = this.getUserDoc(userId);
         const userSnap = await docRef.get();
 
         if (!userSnap.exists) {
@@ -56,11 +60,11 @@ export class UsersService {
     }
 
     async update(userId: string, payload: IUpdateUserPayload) {
-        const docRef = this.db.collection('users').doc(userId);
+        const docRef = this.getUserDoc(userId);
         const userSnap = await docRef.get();
 
         if (!userSnap.exists) {
-            return;
+            return false;
         }
 
         const normalizedPayload = this.normalizeUpdatePayload(payload);
@@ -70,7 +74,11 @@ export class UsersService {
                 ...normalizedPayload,
                 lastActiveAt: Timestamp.now()
             });
+
+            return true;
         }
+
+        return false;
     }
 
     private normalizeUpdatePayload(body: IUpdateUserPayload): Partial<IUpdateUserPayload> {
