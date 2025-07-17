@@ -5,6 +5,7 @@ import { getDefaultSettings, ISettings } from './getDefaultSettings';
 interface IUpdateUserPayload {
     hiddenOffers?: string[];
     settings?: ISettings;
+    extensionVersion: string;
 }
 
 export class UsersService {
@@ -40,9 +41,9 @@ export class UsersService {
     }
 
     private formatUserData(userSnap: firestore.DocumentData): firestore.DocumentData {
-        const { userName, lastActiveAt, ...rest } = userSnap;
+        const { settings, hiddenOffers } = userSnap;
 
-        return rest;
+        return { settings, hiddenOffers };
     }
 
     async createIfNotExists(userId: string, userName: string) {
@@ -83,6 +84,10 @@ export class UsersService {
 
     private normalizeUpdatePayload(body: IUpdateUserPayload): Partial<IUpdateUserPayload> {
         const result: Partial<IUpdateUserPayload> = {};
+
+        if (body.extensionVersion) {
+            result.extensionVersion = body.extensionVersion;
+        }
 
         if (Array.isArray(body.hiddenOffers)) {
             result.hiddenOffers = body.hiddenOffers;

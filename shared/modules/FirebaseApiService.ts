@@ -7,11 +7,13 @@ import { RequestSender } from '@shared/modules/RequestSender';
 @Service()
 export class FirebaseApiService {
     private token!: string;
+    private readonly extensionVersion!: string;
 
     private readonly requestSender: RequestSender;
 
     constructor(container: ContainerInstance) {
         this.requestSender = container.get(RequestSender);
+        this.extensionVersion = chrome.runtime.getManifest().version;
     }
 
     setToken(token: string) {
@@ -23,7 +25,8 @@ export class FirebaseApiService {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${this.token}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'HGF-Client-Version': this.extensionVersion
             }
         });
 
@@ -48,7 +51,8 @@ export class FirebaseApiService {
             body: JSON.stringify(payload),
             headers: {
                 Authorization: `Bearer ${this.token}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'HGF-Client-Version': this.extensionVersion
             }
         });
 
