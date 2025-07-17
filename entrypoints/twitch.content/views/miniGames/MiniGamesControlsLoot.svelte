@@ -1,11 +1,11 @@
 <MiniGamesControlsItem
-    isGameActive={gameService.isGameActive}
+    isGameActive={gameService.isGameEnabled}
     Icon={Gem}
     command={gameService.command}
     name="Loot"
     {isSendEnabled}
     {toggle}
-    {participate}
+    {sendCommand}
 >
     {#snippet indicators()}
         {#if gameService.isRoundRunning}
@@ -31,6 +31,6 @@ const gameService = getContext<LootGameService>('loot');
 
 const isSendEnabled = $derived(streamStatusService.isMiniGamesAllowed && gameService.isGamePhase);
 
-const participate = () => gameService.participate();
+const sendCommand = () => gameService.sendCommand();
 const toggle = (isEnabled: boolean) => isEnabled ? gameService.start() : gameService.stop();
 </script>

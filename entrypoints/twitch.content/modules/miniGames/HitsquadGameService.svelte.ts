@@ -1,121 +1,83 @@
-import { Container } from 'typedi';
-import { log, wait } from '@utils';
 import { Timing } from '@shared/consts';
-import { MessageSender } from '@twitch/modules/twitchChat';
-import { StreamStatusService } from '@twitch/modules/stream';
 import { random } from 'lodash';
 import { config } from '@twitch/config';
-import { LocalSettingsService } from '@shared/services';
-import { ITwitchLocalSettings } from '@twitch/modules';
+import { MiniGameBaseServiceSvelte } from './MiniGameBaseService.svelte';
 
-interface IHitsquadGameServiceParams {
-    localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
-}
-
-export class HitsquadGameService {
+export class HitsquadGameService extends MiniGameBaseServiceSvelte {
     readonly command = '!hitsquad';
     static readonly HITSQUAD_GAMES_PER_DAY = 600;
     static readonly HITSQUAD_GAMES_ON_SCREEN = 12;
 
-    private readonly messageSender: MessageSender;
-    private readonly streamStatusService: StreamStatusService;
-    private readonly localSettingsService: LocalSettingsService<ITwitchLocalSettings>;
-
-    isRunning = $state(false);
     remainingRounds = $state(0);
     totalRounds = $state(0);
-    timeUntilMessage = $state(0);
+    isGameRunning = $derived(this.remainingRounds > 0);
 
-    private timeout!: number;
-
-    constructor({ localSettingsService }: IHitsquadGameServiceParams) {
-        this.localSettingsService = localSettingsService;
-        this.messageSender = Container.get(MessageSender);
-        this.streamStatusService = Container.get(StreamStatusService);
-    }
+    private timeoutId!: number;
 
     init() {
-        this.isRunning = this.localSettingsService.settings.hitsquad;
         this.remainingRounds = this.localSettingsService.settings.hitsquadRounds;
 
-        if (this.isRunning) {
-            this.start();
+        if (this.shouldHandleGame) {
+            this.start(this.remainingRounds);
         }
     }
 
-    start(rounds?: number) {
-        if (rounds) {
-            this.isRunning = true;
-            this.remainingRounds = rounds;
-            this.saveState();
-        }
+    start(rounds: number) {
+        this.remainingRounds = rounds;
+        this.totalRounds = rounds;
 
-        log(`Start Hitsquad service with ${this.remainingRounds} rounds`);
-
-        this.totalRounds = this.remainingRounds;
-
-        this.scheduleNextRound();
+        this.saveState();
+        this.scheduleRound();
     }
 
     stop() {
-        this.isRunning = false;
         this.remainingRounds = 0;
-
         this.saveState();
 
-        clearTimeout(this.timeout);
+        clearTimeout(this.timeoutId);
     }
 
-    participate() {
-        this.messageSender.sendMessage(this.command);
+    buildCommand() {
+        return this.command;
     }
 
     destroy() {
         this.stop();
     }
 
-    private saveState() {
+    protected saveState() {
         this.localSettingsService.updateSettings({
-            hitsquad: this.isRunning,
             hitsquadRounds: this.remainingRounds
         });
     }
 
-    private async sendCommand(): Promise<void> {
-        if (!this.streamStatusService.isMiniGamesAllowed) {
-            const delay = 20 * Timing.SECOND;
-
-            this.timeUntilMessage = Date.now() + delay;
-            await wait(delay);
-            return this.sendCommand();
-        }
-
-        this.participate();
-        this.remainingRounds -= HitsquadGameService.HITSQUAD_GAMES_ON_SCREEN;
-        this.saveState();
+    protected get shouldHandleGame(): boolean {
+        return this.isGameRunning && this.remainingRounds > 0;
     }
 
-    private getNextRoundDelay() {
+    protected getDelay() {
         return random(30 * Timing.SECOND, 2 * Timing.MINUTE) + config.hitsquadGameBaseTimeout;
     }
 
-    private scheduleNextRound() {
-        const delay = this.getNextRoundDelay();
+    protected scheduleRound() {
+        const delay = this.getDelay();
 
         this.timeUntilMessage = Date.now() + delay;
 
-        this.timeout = window.setTimeout(async () => {
-            if (!this.streamStatusService.isBotWorking) {
-                return this.scheduleNextRound();
+        this.timeoutId = window.setTimeout(async () => {
+            await this.processRound();
+
+            if (this.shouldHandleGame) {
+                this.scheduleRound();
+            } else {
+                this.stop();
             }
-
-            await this.sendCommand();
-
-            if (this.remainingRounds > 0) {
-                return this.scheduleNextRound();
-            }
-
-            this.stop();
         }, delay);
+    }
+
+    protected completeRound() {
+        this.sendCommand();
+        this.remainingRounds -= HitsquadGameService.HITSQUAD_GAMES_ON_SCREEN;
+        this.saveState();
     }
 }

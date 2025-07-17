@@ -20,7 +20,6 @@ export const main = async () => {
         .auth()
         .catch((error) => console.error('Error during authentication:', error));
 
-    console.clear();
     log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 
     if (isHitsquadChannel()) {

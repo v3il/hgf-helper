@@ -1,14 +1,14 @@
 <MiniGamesControlsItem
-    isGameActive={gameService.isRunning}
+    isGameActive={gameService.isGameRunning}
     isSendEnabled={streamStatusService.isMiniGamesAllowed}
     Icon={Gift}
     command={gameService.command}
     name="Giveaways"
     {toggle}
-    {participate}
+    {sendCommand}
 >
     {#snippet indicators()}
-        {#if gameService.isRunning}
+        {#if gameService.isGameRunning}
             <MiniGamesControlsIndicators>
                 <MiniGamesControlsTimer timeout={gameService.timeUntilMessage} />
                 |
@@ -31,7 +31,7 @@ import { Gift } from '@lucide/svelte';
 const streamStatusService = Container.get(StreamStatusService);
 const gameService = getContext<HitsquadGameService>('hitsquad');
 
-const participate = () => gameService.participate();
+const sendCommand = () => gameService.sendCommand();
 
 function toggle(isEnabled: boolean) {
     if (!isEnabled) {

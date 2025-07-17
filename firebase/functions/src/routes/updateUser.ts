@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
+import { logger } from 'firebase-functions';
 import { usersService } from '../services';
 
 export const updateUser = async (request: Request, response: Response) => {
     const { body } = request;
+    const extensionVersion = request.headers['hgf-client-version'] as string || '2.0.0';
 
     try {
         const user = await usersService.get(request.user!.userId);
@@ -12,11 +14,19 @@ export const updateUser = async (request: Request, response: Response) => {
             return;
         }
 
-        await usersService.update(request.user!.userId, body);
+        const result = await usersService.update(request.user!.userId, {
+            ...body,
+            extensionVersion
+        });
+
+        if (!result) {
+            response.status(400).send({ error: 'Bad request' });
+            return;
+        }
 
         response.sendStatus(200);
     } catch (error) {
-        console.error('Update user error', error);
-        response.status(401).send({ error: 'Bad request' });
+        logger.error('Update user error', error);
+        response.status(400).send({ error: 'Bad request' });
     }
 };
