@@ -4,7 +4,7 @@ import { usersService } from '../services';
 
 export const updateUser = async (request: Request, response: Response) => {
     const { body } = request;
-    const extensionVersion = request.headers['hgf-client-version'] as string;
+    const extensionVersion = request.headers['hgf-client-version'] as string || '2.0.0';
 
     try {
         const user = await usersService.get(request.user!.userId);

@@ -19,7 +19,7 @@ const app = express();
 
 app.use(cors({
     methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'HGF-Client-Version']
 }));
 
 app.get('/auth', auth);
