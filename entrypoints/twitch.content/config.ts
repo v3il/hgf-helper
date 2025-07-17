@@ -9,6 +9,7 @@ interface IConfig {
 }
 
 const twitchChannelName = location.pathname.slice(1);
+const isHitsquadGodFatherChannel = twitchChannelName === 'hitsquadgodfather';
 
 export const isHitsquadChannel = () => [
     'hitsquadgodfather',
@@ -20,7 +21,7 @@ export const isHitsquadChannel = () => [
 export const config: IConfig = {
     twitchChannelName,
     twitchAdminName: twitchChannelName,
-    miniGamesBotDowntime: 10 * Timing.MINUTE,
-    hitsquadGameBaseTimeout: 5 * Timing.MINUTE,
+    miniGamesBotDowntime: isHitsquadGodFatherChannel ? 10 * Timing.MINUTE : 15 * Timing.MINUTE,
+    hitsquadGameBaseTimeout: isHitsquadGodFatherChannel ? 5 * Timing.MINUTE : 10 * Timing.MINUTE,
     delayRemoverInterval: 2.5 * Timing.MINUTE
 } as const;
