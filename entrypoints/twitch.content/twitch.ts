@@ -7,8 +7,7 @@ import { AuthFacade } from '@shared/modules';
 import { isDev } from '@shared/consts';
 import { log } from '@utils';
 import { mount, unmount } from 'svelte';
-
-const isHitsquadChannel = () => ['hitsquadgodfather', 'hitsquadplays'].includes(window.location.pathname.slice(1));
+import { isHitsquadChannel } from './config';
 
 export const main = async () => {
     let currentView: Record<string, any> | null;
