@@ -13,7 +13,7 @@ export class FirebaseApiService {
 
     constructor(container: ContainerInstance) {
         this.requestSender = container.get(RequestSender);
-        this.extensionVersion = chrome.runtime.getManifest().version;
+        this.extensionVersion = this.getManifestVersion();
     }
 
     setToken(token: string) {
@@ -58,6 +58,16 @@ export class FirebaseApiService {
 
         if (response.error?.status === 401 || response.error?.status === 404) {
             throw new UnauthenticatedError();
+        }
+    }
+
+    private getManifestVersion(): string {
+        const defaultVersion = '2.0.0';
+
+        try {
+            return chrome.runtime.getManifest().version || defaultVersion;
+        } catch (error) {
+            return defaultVersion;
         }
     }
 }
