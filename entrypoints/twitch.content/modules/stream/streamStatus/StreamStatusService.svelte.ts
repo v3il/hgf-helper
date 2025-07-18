@@ -4,10 +4,10 @@ import { ColorService } from '@shared/services';
 import { logDev } from '@utils';
 import { EventEmitter, UnsubscribeTrigger } from '@shared/EventEmitter';
 import { Timing } from '@shared/consts';
-import { antiCheatChecks, chestGameChecks, ICheck, lootGameChecks } from './checks';
 import { ChatObserver } from '@twitch/modules/twitchChat';
-import { OffscreenStreamRenderer } from '../OffscreenStreamRenderer';
 import { config } from '@twitch/config';
+import { antiCheatChecks, chestGameChecks, ICheck, lootGameChecks, blackScreenChecks } from './checks';
+import { OffscreenStreamRenderer } from '../OffscreenStreamRenderer';
 
 @Service()
 export class StreamStatusService {
@@ -54,12 +54,12 @@ export class StreamStatusService {
     checkStreamStatus(silent: boolean) {
         const { activeVideoEl } = this.twitchUIService;
 
-        if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
+        if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended || this.isBlackScreen()) {
             this.isStreamOk = false;
 
             if (!this.streamReloadTimeoutId) {
                 this.streamReloadTimeoutId = window.setTimeout(() => {
-                    location.reload();
+                    window.location.reload();
                 }, Timing.MINUTE);
             }
 
@@ -128,14 +128,17 @@ export class StreamStatusService {
         const checksResults = points.map(({ xPercent, yPercent, color }) => {
             const pixelHexColor = this.offscreenStreamRenderer.getColorAtPointPercent(xPercent, yPercent);
 
-            return {
-                expected: color,
-                similarity: this.colorService.getColorsSimilarity(color, pixelHexColor)
-            };
+            return this.colorService.getColorsSimilarity(color, pixelHexColor);
         });
 
-        const matchedChecks = checksResults.filter(({ similarity }) => similarity >= 0.85);
+        const matchedChecks = checksResults.filter((similarity) => similarity >= 0.85);
 
         return matchedChecks.length;
+    }
+
+    private isBlackScreen() {
+        const matchedChecks = this.checkPoints(blackScreenChecks);
+
+        return (matchedChecks / blackScreenChecks.length) >= 0.5;
     }
 }
