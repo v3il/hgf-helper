@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { antiCheatChecks, chestGameChecks, lootGameChecks, type ICheckPoint } from '@twitch/modules/stream';
-import { DebugModeCheckPreset, DebugModeCheckPoint } from './types';
+import { DebugModeCheckPreset, type DebugModeCheckPoint } from './types';
 import DebugModeMenu from './DebugModeMenu.svelte';
 import DebugModeFrame from './DebugModeFrame.svelte';
 

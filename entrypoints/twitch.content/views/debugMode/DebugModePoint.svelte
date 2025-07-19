@@ -10,7 +10,7 @@
 ></button>
 
 <script lang="ts">
-import { DebugModeCheckPoint } from './types';
+import type { DebugModeCheckPoint } from './types';
 
 interface IProps {
     isActive: boolean;

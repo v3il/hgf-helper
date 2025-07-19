@@ -21,6 +21,7 @@ import { OffersFacade } from '@store/modules';
 import HiddenOffersManagerTable from './HiddenOffersManagerTable.svelte';
 import HiddenOffersManagerEmpty from './HiddenOffersManagerEmpty.svelte';
 import { onMount } from 'svelte';
+import { logError } from '@utils';
 
 const offersFacade = Container.get(OffersFacade);
 
@@ -45,7 +46,7 @@ async function onOfferRemove(offer: string) {
         await offersFacade.unhideOffer(offer);
     } catch (error) {
         alert('Failed to hide offer');
-        console.error(error);
+        logError(error);
     }
 }
 </script>

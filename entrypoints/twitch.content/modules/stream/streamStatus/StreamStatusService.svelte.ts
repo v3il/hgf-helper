@@ -110,8 +110,6 @@ export class StreamStatusService {
             return (matchedChecks / checks.length) >= 0.7;
         });
 
-        // console.error('Loot', this.isLootGame);
-
         if (previousStatus !== this.isLootGame && !silent) {
             this.events.emit('loot', this.isLootGame);
         }
@@ -122,8 +120,6 @@ export class StreamStatusService {
         const matchedChecks = this.checkPoints(chestGameChecks);
 
         this.isChestGame = (matchedChecks / chestGameChecks.length) >= 0.7;
-
-        // console.error('Chest', this.isLootGame);
 
         if (previousStatus !== this.isChestGame && !silent) {
             this.events.emit('chest', this.isChestGame);

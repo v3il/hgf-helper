@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { logger } from 'firebase-functions';
 import { usersService } from '../services';
 
 export const getUser = async (request: Request, response: Response) => {
@@ -17,7 +18,7 @@ export const getUser = async (request: Request, response: Response) => {
 
         response.send({ user });
     } catch (error) {
-        console.error('Get user error', error);
+        logger.error('Get user error', error);
         response.status(500).send({ error: 'Internal server error' });
     }
 };

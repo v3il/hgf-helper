@@ -17,8 +17,8 @@
 </div>
 
 <script lang="ts">
-import { log } from '@utils';
-import { DebugModeCheckPoint, DebugModeCheckPreset } from './types';
+import { clearLog, log } from '@utils';
+import { type DebugModeCheckPoint, DebugModeCheckPreset } from './types';
 
 interface IProps {
     activePoint: DebugModeCheckPoint | null;
@@ -50,7 +50,7 @@ const presets: { label: string, value: DebugModeCheckPreset }[] = [
 
 function printPoints() {
     const formattedPoints = points.map(({ id, ...rest }) => rest);
-    console.clear();
+    clearLog();
     log($state.snapshot(formattedPoints));
 }
 </script>

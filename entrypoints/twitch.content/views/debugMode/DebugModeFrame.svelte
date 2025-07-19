@@ -9,7 +9,7 @@
 <script lang="ts">
 import { Container } from 'typedi';
 import { OffscreenStreamRenderer } from '@twitch/modules/stream';
-import { DebugModeCheckPoint } from './types';
+import type { DebugModeCheckPoint } from './types';
 import DebugModePoint from './DebugModePoint.svelte';
 
 interface IProps {
