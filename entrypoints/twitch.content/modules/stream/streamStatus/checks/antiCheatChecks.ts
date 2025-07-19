@@ -1,6 +1,6 @@
-import { ICheck } from './ICheck';
+import { ICheckPoint } from './ICheckPoint';
 
-export const antiCheatChecks: ICheck[] = [
+export const antiCheatChecks: ICheckPoint[] = [
     {
         color: '#1b0000',
         xPercent: 64.67486818980667,
@@ -97,19 +97,9 @@ export const antiCheatChecks: ICheck[] = [
         yPercent: 36.875
     },
     {
-        color: '#ec0000',
-        xPercent: 66.78383128295255,
-        yPercent: 44.84375
-    },
-    {
         color: '#f20000',
         xPercent: 72.49560632688929,
         yPercent: 42.34375
-    },
-    {
-        color: '#9aa38b',
-        xPercent: 74.78031634446397,
-        yPercent: 48.75
     },
     {
         color: '#25dd76',
@@ -142,28 +132,33 @@ export const antiCheatChecks: ICheck[] = [
         yPercent: 41.40625
     },
     {
-        color: '#414141',
-        xPercent: 86.37961335676626,
-        yPercent: 55.78125000000001
+        color: '#e30000',
+        xPercent: 68.57876712328768,
+        yPercent: 36.87928082191781
     },
     {
-        color: '#2c2c2c',
-        xPercent: 93.32161687170475,
-        yPercent: 48.4375
+        color: '#e60000',
+        xPercent: 83.73287671232876,
+        yPercent: 30.94320776255708
     },
     {
-        color: '#9ba48f',
-        xPercent: 73.90158172231986,
-        yPercent: 53.59374999999999
+        color: '#e50000',
+        xPercent: 85.44520547945206,
+        yPercent: 25.00713470319635
     },
     {
-        color: '#cf0000',
-        xPercent: 64.0597539543058,
-        yPercent: 56.875
+        color: '#d50001',
+        xPercent: 76.54109589041096,
+        yPercent: 37.18369482496195
     },
     {
-        color: '#550000',
-        xPercent: 61.6871704745167,
-        yPercent: 57.03125
+        color: '#c50000',
+        xPercent: 66.43835616438356,
+        yPercent: 41.29328386605784
+    },
+    {
+        color: '#540001',
+        xPercent: 91.18150684931507,
+        yPercent: 12.069539573820395
     }
 ];

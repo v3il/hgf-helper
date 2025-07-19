@@ -50,7 +50,7 @@ export class AuthService {
 
         await this.storageService.updateData({ token });
 
-        console.log('User', this._user);
+        console.log('User', $state.snapshot(this._user));
     }
 
     async logout() {

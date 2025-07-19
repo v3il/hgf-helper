@@ -6,7 +6,7 @@ import { EventEmitter, UnsubscribeTrigger } from '@shared/EventEmitter';
 import { Timing } from '@shared/consts';
 import { ChatObserver } from '@twitch/modules/twitchChat';
 import { config } from '@twitch/config';
-import { antiCheatChecks, chestGameChecks, ICheck, lootGameChecks, blackScreenChecks } from './checks';
+import { antiCheatChecks, chestGameChecks, ICheckPoint, lootGameChecks, blackScreenChecks } from './checks';
 import { OffscreenStreamRenderer } from '../OffscreenStreamRenderer';
 
 @Service()
@@ -104,9 +104,13 @@ export class StreamStatusService {
 
     private checkLootGame(silent: boolean) {
         const previousStatus = this.isLootGame;
-        const matchedChecks = this.checkPoints(lootGameChecks);
 
-        this.isLootGame = (matchedChecks / lootGameChecks.length) >= 0.7;
+        this.isLootGame = lootGameChecks.some((checks) => {
+            const matchedChecks = this.checkPoints(checks);
+            return (matchedChecks / checks.length) >= 0.7;
+        });
+
+        // console.error('Loot', this.isLootGame);
 
         if (previousStatus !== this.isLootGame && !silent) {
             this.events.emit('loot', this.isLootGame);
@@ -119,12 +123,14 @@ export class StreamStatusService {
 
         this.isChestGame = (matchedChecks / chestGameChecks.length) >= 0.7;
 
+        // console.error('Chest', this.isLootGame);
+
         if (previousStatus !== this.isChestGame && !silent) {
             this.events.emit('chest', this.isChestGame);
         }
     }
 
-    private checkPoints(points: ICheck[]): number {
+    private checkPoints(points: ICheckPoint[]): number {
         const checksResults = points.map(({ xPercent, yPercent, color }) => {
             const pixelHexColor = this.offscreenStreamRenderer.getColorAtPointPercent(xPercent, yPercent);
 
