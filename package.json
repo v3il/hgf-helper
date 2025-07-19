@@ -1,8 +1,8 @@
 {
   "name": "hgf-helper",
-  "description": "A Chrome extension that adds automation and smart enhancements for the .tv/hitsquadgodfather and .tv/hitsquadplays channels, as well as their StreamElements game store",
+  "description": "A Chrome extension that adds automation and smart enhancements for the .tv/hitsquadgodfather, .tv/hitsquadbruno, .tv/hitsquadvito and .tv/hitsquadcarlo channels, as well as their StreamElements game store",
   "private": true,
-  "version": "2.0.1",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "dev": "wxt -c ./wxt-dev.config.ts",
@@ -38,6 +38,7 @@
     "firebase": "^11.9.1",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
+    "nanoid": "^5.1.5",
     "reflect-metadata": "^0.2.2",
     "tailwindcss": "^4.1.11",
     "tesseract.js": "^6.0.1",

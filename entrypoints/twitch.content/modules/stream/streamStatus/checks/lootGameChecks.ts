@@ -1,6 +1,6 @@
-import { ICheck } from './ICheck';
+import { ICheckPoint } from './ICheckPoint';
 
-export const lootGameChecks: ICheck[] = [
+const leftScreenLootChecks: ICheckPoint[] = [
     {
         color: '#ea3440',
         xPercent: 7.563025210084033,
@@ -132,3 +132,7 @@ export const lootGameChecks: ICheck[] = [
         yPercent: 55.84239130434783
     }
 ];
+
+const rightScreenLootChecks: ICheckPoint[] = [];
+
+export const lootGameChecks: ICheckPoint[][] = [leftScreenLootChecks, rightScreenLootChecks];

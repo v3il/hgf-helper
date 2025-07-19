@@ -1,3 +1,5 @@
+import { logError } from '@utils';
+
 interface ITwitchChatServiceParams {
     chatInputEl: HTMLInputElement;
     sendMessageEl: HTMLButtonElement;
@@ -17,7 +19,7 @@ class TwitchChatService {
             this.typeMessage(message);
             setTimeout(() => { this.triggerSendMessage(); }, 0);
         } catch (e) {
-            console.error(e);
+            logError(e);
             return false;
         }
 
@@ -41,7 +43,7 @@ class TwitchChatService {
                 return node;
             }
         } catch (e) {
-            console.error(e);
+            logError(e);
         }
 
         if (!node || depth > maxDepth) {
@@ -66,7 +68,7 @@ class TwitchChatService {
                 (n) => n.memoizedProps && n.memoizedProps.componentType != null && n.memoizedProps.value != null
             );
         } catch (_) {
-            console.error(_);
+            logError(_);
             return null;
         }
     }

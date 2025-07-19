@@ -1,6 +1,7 @@
 import { ContainerInstance, Service } from 'typedi';
 import { HiddenOffersService } from './HiddenOffersService.svelte';
 import { RequestSender } from '@shared/modules/RequestSender';
+import { logError } from '@utils';
 
 export interface IMigrateOffersParams {
     jsonBinUrl: string;
@@ -29,7 +30,7 @@ export class HiddenOffersMigrator {
         });
 
         if (response.error) {
-            console.error('Error fetching hidden offers:', response.error);
+            logError('Error fetching hidden offers:', response.error);
             return 0;
         }
 

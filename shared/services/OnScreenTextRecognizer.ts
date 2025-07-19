@@ -1,6 +1,7 @@
 import { OEM, PSM, createWorker, Worker } from 'tesseract.js';
 import { isDev } from '@shared/consts';
 import { Service } from 'typedi';
+import { logTable } from '@utils';
 
 @Service()
 export class OnScreenTextRecognizer {
@@ -93,7 +94,7 @@ export class OnScreenTextRecognizer {
             });
         }
 
-        console.table(result);
+        logTable(result);
 
         const maxSimilarity = Math.max(...result.map(({ similarity }) => similarity));
 

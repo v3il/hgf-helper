@@ -1,6 +1,6 @@
-import { ICheck } from './ICheck';
+import { ICheckPoint } from './ICheckPoint';
 
-export const giveawayFrenzyChecks: ICheck[] = [
+export const giveawayFrenzyChecks: ICheckPoint[] = [
     {
         color: '#531d71',
         xPercent: 69.39151813153043,

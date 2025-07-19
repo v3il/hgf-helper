@@ -32,13 +32,14 @@ import AuthView from './AuthView.svelte';
 import SettingsEditorView from './SettingsEditorView.svelte';
 import PopupLoading from './PopupLoading.svelte';
 import { LogOut } from '@lucide/svelte';
+import { logError } from '@utils';
 
 let isLoading = $state(true);
 
 const authFacade = Container.get(AuthFacade);
 
 authFacade.auth()
-    .catch((error) => console.error('Error during authentication:', error))
+    .catch((error) => logError('Error during authentication:', error))
     .finally(() => {
         isLoading = false;
     });

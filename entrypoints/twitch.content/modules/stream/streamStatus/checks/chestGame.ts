@@ -1,6 +1,6 @@
-import { ICheck } from './ICheck';
+import { ICheckPoint } from './ICheckPoint';
 
-export const chestGameChecks: ICheck[] = [
+export const chestGameChecks: ICheckPoint[] = [
     {
         color: '#ec3742',
         xPercent: 63.177998472116116,

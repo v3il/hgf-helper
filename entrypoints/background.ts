@@ -1,3 +1,5 @@
+import { log, logError } from '@utils';
+
 interface IRequestParams {
     url: string;
     requestInit: RequestInit
@@ -21,10 +23,10 @@ export default defineBackground(() => {
             (async () => {
                 try {
                     const data = await sendRequest(message);
-                    console.error('Fetched data:', data);
+                    log('Fetched data:', data);
                     sendResponse({ data });
                 } catch (error) {
-                    console.error('Error fetching data:', error);
+                    logError('Error fetching data:', error);
                     sendResponse({ error });
                 }
             })();

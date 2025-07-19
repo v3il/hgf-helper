@@ -21,7 +21,7 @@ import { Container } from 'typedi';
 import { OffersFacade } from '@store/modules';
 import { SettingsFacade } from '@shared/modules';
 import { onDestroy } from 'svelte';
-import { capitalize } from '@utils';
+import { capitalize, logError } from '@utils';
 
 interface Props {
     offer: Offer;
@@ -60,7 +60,7 @@ async function hideOfferHandler() {
         await offersFacade.hideOffer(offer);
     } catch (error) {
         alert('Failed to hide offer');
-        console.error(error);
+        logError(error);
     }
 }
 
