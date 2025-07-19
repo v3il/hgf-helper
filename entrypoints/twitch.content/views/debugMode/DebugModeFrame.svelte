@@ -11,6 +11,7 @@ import { Container } from 'typedi';
 import { OffscreenStreamRenderer } from '@twitch/modules/stream';
 import type { DebugModeCheckPoint } from './types';
 import DebugModePoint from './DebugModePoint.svelte';
+import { nanoid } from 'nanoid';
 
 interface IProps {
     activePoint: DebugModeCheckPoint | null;
@@ -46,7 +47,7 @@ function clickHandler({ pageX, pageY }: MouseEvent) {
 
     const newPoint: DebugModeCheckPoint = {
         color,
-        id: Math.random(),
+        id: nanoid(),
         xPercent: (x / canvasRef.width) * 100,
         yPercent: (y / canvasRef.height) * 100
     };

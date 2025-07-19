@@ -1,6 +1,6 @@
 import { ICheckPoint } from '@twitch/modules/stream';
 
-export type DebugModeCheckPoint = ICheckPoint & { id: number };
+export type DebugModeCheckPoint = ICheckPoint & { id: string };
 
 export enum DebugModeCheckPreset {
     ANTI_CHEAT = 'anti-cheat',

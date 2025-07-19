@@ -23,6 +23,7 @@ import { antiCheatChecks, chestGameChecks, lootGameChecks, type ICheckPoint } fr
 import { DebugModeCheckPreset, type DebugModeCheckPoint } from './types';
 import DebugModeMenu from './DebugModeMenu.svelte';
 import DebugModeFrame from './DebugModeFrame.svelte';
+import { nanoid } from 'nanoid';
 
 let debugModeFrameRef: DebugModeFrame;
 let isVisible = $state(false);
@@ -41,7 +42,7 @@ function changePreset(preset: DebugModeCheckPreset) {
 
     points = draftPoints.map((point) => ({
         ...point,
-        id: Math.random()
+        id: nanoid()
     }));
 
     activePoint = points[0] ?? null;
@@ -56,11 +57,15 @@ function onPointToggle(point: DebugModeCheckPoint) {
 }
 
 function deleteActivePoint() {
+    if (!activePoint) {
+        return;
+    }
+
     if (!confirm('Are you sure you want to delete this point?')) {
         return;
     }
 
-    points = points.filter(point => point.id !== activePoint!.id);
+    points = points.filter(point => point.id !== activePoint.id);
     activePoint = points[0] ?? null;
 }
 

@@ -8,7 +8,7 @@ export class ColorService {
         // eslint-disable-next-line no-bitwise
         const hexColor = ((r << 16) | (g << 8) | b).toString(16);
 
-        return `#${hexColor.padEnd(6, '0').toLowerCase()}`;
+        return `#${hexColor.padStart(6, '0').toLowerCase()}`;
     }
 
     getColorsSimilarity(color1: string, color2: string) {

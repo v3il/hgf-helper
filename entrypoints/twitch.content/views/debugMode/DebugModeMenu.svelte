@@ -1,7 +1,7 @@
 <div class="absolute top-4 right-4 z-50 p-4 bg-black">
     Points: {points.length}
 
-    <select class="bg-white text-black p-2 rounded ml-4" bind:value={preset} onchange={() => onPresetChange(preset)}>
+    <select class="bg-white text-black p-2 rounded ml-4" value={preset} onchange={changePreset}>
         {#each presets as preset}
             <option value={preset.value}>{preset.label}</option>
         {/each}
@@ -47,6 +47,12 @@ const presets: { label: string, value: DebugModeCheckPreset }[] = [
     { label: 'Chest Game', value: DebugModeCheckPreset.CHEST_GAME },
     { label: 'New', value: DebugModeCheckPreset.BLANK }
 ];
+
+function changePreset(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const selectedPreset = select.value as DebugModeCheckPreset;
+    onPresetChange(selectedPreset);
+}
 
 function printPoints() {
     const formattedPoints = points.map(({ id, ...rest }) => rest);
