@@ -107,7 +107,7 @@ export class StreamStatusService {
 
         this.isLootGame = lootGameChecks.some((checks) => {
             const matchedChecks = this.checkPoints(checks);
-            return (matchedChecks / checks.length) >= 0.7;
+            return (matchedChecks / checks.length) >= 0.85;
         });
 
         if (previousStatus !== this.isLootGame && !silent) {
@@ -119,7 +119,7 @@ export class StreamStatusService {
         const previousStatus = this.isChestGame;
         const matchedChecks = this.checkPoints(chestGameChecks);
 
-        this.isChestGame = (matchedChecks / chestGameChecks.length) >= 0.7;
+        this.isChestGame = (matchedChecks / chestGameChecks.length) >= 0.85;
 
         if (previousStatus !== this.isChestGame && !silent) {
             this.events.emit('chest', this.isChestGame);

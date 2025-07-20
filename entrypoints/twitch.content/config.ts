@@ -17,10 +17,15 @@ export const isHitsquadChannel = () => [
     'hitsquadcarlo'
 ].includes(twitchChannelName);
 
+const isCarloVitoChannel = [
+    'hitsquadcarlo',
+    'hitsquadvito'
+].includes(twitchChannelName);
+
 export const config: IConfig = {
     twitchChannelName,
     twitchAdminName: twitchChannelName,
     miniGamesBotDowntime: 10 * Timing.MINUTE,
-    hitsquadGameBaseTimeout: 5 * Timing.MINUTE,
-    delayRemoverInterval: 2.5 * Timing.MINUTE
+    hitsquadGameBaseTimeout: isCarloVitoChannel ? 10 * Timing.MINUTE : 5 * Timing.MINUTE,
+    delayRemoverInterval: 3 * Timing.MINUTE
 } as const;
