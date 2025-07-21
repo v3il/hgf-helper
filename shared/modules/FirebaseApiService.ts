@@ -23,11 +23,7 @@ export class FirebaseApiService {
     async getUser() {
         const response = await this.requestSender.sendRequest<{ user: IUser }>(`${FUNCTION_URL}/user`, {
             method: 'GET',
-            headers: {
-                Authorization: `Bearer ${this.token}`,
-                'Content-Type': 'application/json',
-                'HGF-Client-Version': this.extensionVersion
-            }
+            headers: this.buildHeaders()
         });
 
         if (response.error) {
@@ -49,11 +45,7 @@ export class FirebaseApiService {
         const response = await this.requestSender.sendRequest(`${FUNCTION_URL}/user`, {
             method: 'PATCH',
             body: JSON.stringify(payload),
-            headers: {
-                Authorization: `Bearer ${this.token}`,
-                'Content-Type': 'application/json',
-                'HGF-Client-Version': this.extensionVersion
-            }
+            headers: this.buildHeaders()
         });
 
         if (response.error?.status === 401 || response.error?.status === 404) {
@@ -65,9 +57,17 @@ export class FirebaseApiService {
         const defaultVersion = '2.0.0';
 
         try {
-            return chrome.runtime.getManifest().version || defaultVersion;
+            return chrome.runtime.getManifest().version;
         } catch (error) {
             return defaultVersion;
         }
+    }
+
+    private buildHeaders() {
+        return {
+            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'application/json',
+            'HGF-Client-Version': this.extensionVersion
+        };
     }
 }
