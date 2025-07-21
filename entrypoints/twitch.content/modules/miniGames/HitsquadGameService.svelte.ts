@@ -5,7 +5,7 @@ import { MiniGameBaseServiceSvelte } from './MiniGameBaseService.svelte';
 
 export class HitsquadGameService extends MiniGameBaseServiceSvelte {
     readonly command = '!hitsquad';
-    static readonly HITSQUAD_GAMES_PER_DAY = 600;
+    static readonly HITSQUAD_GAMES_PER_DAY = 2400;
     static readonly HITSQUAD_GAMES_ON_SCREEN = 12;
 
     remainingRounds = $state(0);
