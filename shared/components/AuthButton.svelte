@@ -13,6 +13,7 @@ import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import { AuthWindow } from '@shared/views';
 import { AUTH_URL } from '@shared/consts';
+import { logError } from '@utils';
 
 interface Props {
     classes?: string;
@@ -37,7 +38,7 @@ async function auth() {
             await authFacade.auth(token);
         }
     } catch (error) {
-        console.error(error);
+        logError(error);
     } finally {
         isProcessing = false;
     }

@@ -1,6 +1,6 @@
-import { ICheck } from './ICheck';
+import { ICheckPoint } from './ICheckPoint';
 
-export const lootGameChecks: ICheck[] = [
+const leftScreenLootChecks: ICheckPoint[] = [
     {
         color: '#ea3440',
         xPercent: 7.563025210084033,
@@ -132,3 +132,138 @@ export const lootGameChecks: ICheck[] = [
         yPercent: 55.84239130434783
     }
 ];
+
+const rightScreenLootChecks: ICheckPoint[] = [
+    {
+        color: '#ef3342',
+        xPercent: 65.75342465753424,
+        yPercent: 12.221746575342465
+    },
+    {
+        color: '#e83544',
+        xPercent: 68.57876712328768,
+        yPercent: 12.069539573820395
+    },
+    {
+        color: '#ea3641',
+        xPercent: 73.97260273972603,
+        yPercent: 12.069539573820395
+    },
+    {
+        color: '#e7343e',
+        xPercent: 76.79794520547945,
+        yPercent: 11.917332572298326
+    },
+    {
+        color: '#ee3540',
+        xPercent: 83.13356164383562,
+        yPercent: 12.221746575342465
+    },
+    {
+        color: '#ec3545',
+        xPercent: 85.95890410958904,
+        yPercent: 12.221746575342465
+    },
+    {
+        color: '#e8353f',
+        xPercent: 91.69520547945206,
+        yPercent: 12.069539573820395
+    },
+    {
+        color: '#e73540',
+        xPercent: 94.60616438356165,
+        yPercent: 12.069539573820395
+    },
+    {
+        color: '#eb3541',
+        xPercent: 65.83904109589042,
+        yPercent: 29.57334474885845
+    },
+    {
+        color: '#eb3242',
+        xPercent: 68.57876712328768,
+        yPercent: 29.87775875190259
+    },
+    {
+        color: '#ed3540',
+        xPercent: 73.97260273972603,
+        yPercent: 29.421137747336378
+    },
+    {
+        color: '#e9333e',
+        xPercent: 76.62671232876713,
+        yPercent: 29.26893074581431
+    },
+    {
+        color: '#ea3540',
+        xPercent: 83.13356164383562,
+        yPercent: 29.26893074581431
+    },
+    {
+        color: '#e33543',
+        xPercent: 85.78767123287672,
+        yPercent: 29.421137747336378
+    },
+    {
+        color: '#e73540',
+        xPercent: 91.6095890410959,
+        yPercent: 29.725551750380518
+    },
+    {
+        color: '#ea3640',
+        xPercent: 94.60616438356165,
+        yPercent: 29.87775875190259
+    },
+    {
+        color: '#381619',
+        xPercent: 97.26027397260275,
+        yPercent: 24.702720700152206
+    },
+    {
+        color: '#492024',
+        xPercent: 88.09931506849315,
+        yPercent: 21.962994672754945
+    },
+    {
+        color: '#622f38',
+        xPercent: 79.53767123287672,
+        yPercent: 24.854927701674274
+    },
+    {
+        color: '#55262e',
+        xPercent: 71.57534246575342,
+        yPercent: 24.398306697108065
+    },
+    {
+        color: '#3d1d22',
+        xPercent: 63.013698630136986,
+        yPercent: 28.355688736681888
+    },
+    {
+        color: '#331417',
+        xPercent: 62.671232876712324,
+        yPercent: 37.64031582952816
+    },
+    {
+        color: '#52262b',
+        xPercent: 71.66095890410958,
+        yPercent: 36.4226598173516
+    },
+    {
+        color: '#56252e',
+        xPercent: 80.3082191780822,
+        yPercent: 36.4226598173516
+    },
+    {
+        color: '#622f36',
+        xPercent: 87.7568493150685,
+        yPercent: 35.05279680365297
+    },
+    {
+        color: '#3a181b',
+        xPercent: 97.68835616438356,
+        yPercent: 35.05279680365297
+    }
+];
+
+export const lootGameChecks: ICheckPoint[][] = [leftScreenLootChecks, rightScreenLootChecks];

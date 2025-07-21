@@ -1,6 +1,7 @@
 import { Timing } from '@shared/consts';
 import { Service } from 'typedi';
 import cookies from 'js-cookie';
+import { logError } from '@utils';
 
 @Service()
 export class TwitchUIService {
@@ -97,7 +98,7 @@ export class TwitchUIService {
                 const { displayName } = JSON.parse(userCookie);
                 return displayName.toLowerCase();
             } catch (error) {
-                console.error('Failed to parse user cookie:', error);
+                logError('Failed to parse user cookie', error);
             }
         }
 

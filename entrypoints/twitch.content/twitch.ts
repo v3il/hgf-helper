@@ -5,10 +5,9 @@ import { Container } from 'typedi';
 import { TwitchUIService } from '@twitch/modules';
 import { AuthFacade } from '@shared/modules';
 import { isDev } from '@shared/consts';
-import { log } from '@utils';
+import { log, logError } from '@utils';
 import { mount, unmount } from 'svelte';
-
-const isHitsquadChannel = () => ['hitsquadgodfather', 'hitsquadplays'].includes(window.location.pathname.slice(1));
+import { isHitsquadChannel } from './config';
 
 export const main = async () => {
     let currentView: Record<string, any> | null;
@@ -18,7 +17,7 @@ export const main = async () => {
 
     await authFacade
         .auth()
-        .catch((error) => console.error('Error during authentication:', error));
+        .catch((error) => logError('Error during authentication:', error));
 
     log(`Running in ${isDev ? 'dev' : 'prod'} mode`);
 

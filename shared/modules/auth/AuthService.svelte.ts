@@ -5,6 +5,7 @@ import { FirebaseApiService } from '../FirebaseApiService';
 import { HiddenOffersFacade } from '../hiddenOffers';
 import { StorageService } from '../StorageService';
 import { EventEmitter, EventHandler } from '@shared/EventEmitter';
+import { clearLog, log } from '@utils';
 
 export class AuthService {
     private readonly apiService: FirebaseApiService;
@@ -50,7 +51,8 @@ export class AuthService {
 
         await this.storageService.updateData({ token });
 
-        console.log('User', this._user);
+        clearLog();
+        log('User', $state.snapshot(this._user));
     }
 
     async logout() {

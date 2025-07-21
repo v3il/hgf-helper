@@ -1,12 +1,13 @@
 # HGF-Helper
 
-❗ This README describes **version 2** of the extension. If you're looking for the README of version 1, you can find it [here](./readme/v1/README.md).  
+❗ This README describes **version 2** of the extension.  
+If you're looking for the README of version 1, you can find it [here](./readme/v1/README.md).  
 
 To upgrade to the latest version, see the [Update instructions](#-update).
 
 
 ## 📘 Overview
-A Chrome extension that adds automation and smart enhancements for the `.tv/hitsquadgodfather` and `.tv/hitsquadplays` channels, as well as the Stream Elements game store.
+A Chrome extension that adds automation and smart enhancements for the `.tv/hitsquadgodfather`, `.tv/hitsquadbruno`, `.tv/hitsquadvito` and `.tv/hitsquadcarlo` channels, as well as the Stream Elements game store.
 
 
 ## 🆕 What's New in Version 2

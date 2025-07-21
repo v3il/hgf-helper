@@ -15,7 +15,7 @@ import { Container } from 'typedi';
 import { AuthFacade } from '@shared/modules';
 import AuthView from './AuthView.svelte';
 import TwitchWidget from './TwitchWidget.svelte';
-import DebugMode from './DebugMode.svelte';
+import { DebugMode } from './debugMode';
 import { watchClassOnElement } from '@utils';
 import { ChestGameService, HitsquadGameService, LootGameService } from '@twitch/modules/miniGames';
 import { config } from '../config';

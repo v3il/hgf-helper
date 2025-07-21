@@ -4,10 +4,10 @@ import { ColorService } from '@shared/services';
 import { logDev } from '@utils';
 import { EventEmitter, UnsubscribeTrigger } from '@shared/EventEmitter';
 import { Timing } from '@shared/consts';
-import { antiCheatChecks, chestGameChecks, ICheck, lootGameChecks } from './checks';
 import { ChatObserver } from '@twitch/modules/twitchChat';
-import { OffscreenStreamRenderer } from '../OffscreenStreamRenderer';
 import { config } from '@twitch/config';
+import { antiCheatChecks, chestGameChecks, ICheckPoint, lootGameChecks, blackScreenChecks } from './checks';
+import { OffscreenStreamRenderer } from '../OffscreenStreamRenderer';
 
 @Service()
 export class StreamStatusService {
@@ -54,12 +54,12 @@ export class StreamStatusService {
     checkStreamStatus(silent: boolean) {
         const { activeVideoEl } = this.twitchUIService;
 
-        if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended) {
+        if (!activeVideoEl || activeVideoEl.paused || activeVideoEl.ended || this.isBlackScreen()) {
             this.isStreamOk = false;
 
             if (!this.streamReloadTimeoutId) {
                 this.streamReloadTimeoutId = window.setTimeout(() => {
-                    location.reload();
+                    window.location.reload();
                 }, Timing.MINUTE);
             }
 
@@ -104,9 +104,11 @@ export class StreamStatusService {
 
     private checkLootGame(silent: boolean) {
         const previousStatus = this.isLootGame;
-        const matchedChecks = this.checkPoints(lootGameChecks);
 
-        this.isLootGame = (matchedChecks / lootGameChecks.length) >= 0.7;
+        this.isLootGame = lootGameChecks.some((checks) => {
+            const matchedChecks = this.checkPoints(checks);
+            return (matchedChecks / checks.length) >= 0.85;
+        });
 
         if (previousStatus !== this.isLootGame && !silent) {
             this.events.emit('loot', this.isLootGame);
@@ -117,25 +119,28 @@ export class StreamStatusService {
         const previousStatus = this.isChestGame;
         const matchedChecks = this.checkPoints(chestGameChecks);
 
-        this.isChestGame = (matchedChecks / chestGameChecks.length) >= 0.7;
+        this.isChestGame = (matchedChecks / chestGameChecks.length) >= 0.85;
 
         if (previousStatus !== this.isChestGame && !silent) {
             this.events.emit('chest', this.isChestGame);
         }
     }
 
-    private checkPoints(points: ICheck[]): number {
+    private checkPoints(points: ICheckPoint[]): number {
         const checksResults = points.map(({ xPercent, yPercent, color }) => {
             const pixelHexColor = this.offscreenStreamRenderer.getColorAtPointPercent(xPercent, yPercent);
 
-            return {
-                expected: color,
-                similarity: this.colorService.getColorsSimilarity(color, pixelHexColor)
-            };
+            return this.colorService.getColorsSimilarity(color, pixelHexColor);
         });
 
-        const matchedChecks = checksResults.filter(({ similarity }) => similarity >= 0.85);
+        const matchedChecks = checksResults.filter((similarity) => similarity >= 0.85);
 
         return matchedChecks.length;
+    }
+
+    private isBlackScreen() {
+        const matchedChecks = this.checkPoints(blackScreenChecks);
+
+        return (matchedChecks / blackScreenChecks.length) >= 0.5;
     }
 }
