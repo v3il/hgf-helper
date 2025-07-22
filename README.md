@@ -51,7 +51,7 @@ Its main features include:
 3. 🛡️ **Anti-cheat detection**  
    Detects when the anti-cheat screen appears and reacts accordingly based on the current anti-cheat version.
 
-4. 🧠 Bot status monitor
+4. 🧠 **Bot status monitor**  
    Automatically detects if the mini-games bot is down and temporarily pauses participation.
 
 5. ⏩ **Stream delay remover**  
