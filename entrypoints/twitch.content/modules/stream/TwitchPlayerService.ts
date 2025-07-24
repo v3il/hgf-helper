@@ -22,7 +22,7 @@ export class TwitchPlayerService {
             qualityRadio.click();
         }
 
-        this.closeSettingsPopup();
+        this.settingsButton.click();
     }
 
     private async gotoQualitySettings() {
@@ -33,10 +33,6 @@ export class TwitchPlayerService {
         const qualitySettingsButton = document.querySelector<HTMLButtonElement>(selector);
 
         qualitySettingsButton?.click();
-    }
-
-    private closeSettingsPopup() {
-        this.settingsButton.click();
     }
 
     private getQualitySettingsButtonEls() {
@@ -59,6 +55,6 @@ export class TwitchPlayerService {
         const divEl = labelEl.querySelector<HTMLElement>('div')!;
         const match = divEl.textContent!.match(/^\d+/);
 
-        return match ? parseInt(match[0], 10) : 360;
+        return match ? parseInt(match[0], 10) : 0;
     }
 }
