@@ -41,10 +41,12 @@ let {
 }: IProps = $props();
 
 const presets: { label: string, value: DebugModeCheckPreset }[] = [
-    { label: 'Anti-Cheat', value: DebugModeCheckPreset.ANTI_CHEAT },
+    { label: 'Anti-Cheat (right)', value: DebugModeCheckPreset.ANTI_CHEAT },
+    { label: 'Anti-Cheat (left)', value: DebugModeCheckPreset.ANTI_CHEAT2 },
     { label: 'Loot Game (left)', value: DebugModeCheckPreset.LOOT_GAME1 },
     { label: 'Loot Game (right)', value: DebugModeCheckPreset.LOOT_GAME2 },
-    { label: 'Chest Game', value: DebugModeCheckPreset.CHEST_GAME },
+    { label: 'Chest Game (right)', value: DebugModeCheckPreset.CHEST_GAME1 },
+    { label: 'Chest Game (left)', value: DebugModeCheckPreset.CHEST_GAME2 },
     { label: 'New', value: DebugModeCheckPreset.BLANK }
 ];
 

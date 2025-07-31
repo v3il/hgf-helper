@@ -19,7 +19,7 @@
 </div>
 
 <script lang="ts">
-import { antiCheatChecks, chestGameChecks, lootGameChecks, type ICheckPoint } from '@twitch/modules/stream';
+import { antiCheatChecks, vitoBrunoAntiCheatChecks, chestGameChecks, brunoChestGameChecks, lootGameChecks, type ICheckPoint } from '@twitch/modules/stream';
 import { DebugModeCheckPreset, type DebugModeCheckPoint } from './types';
 import DebugModeMenu from './DebugModeMenu.svelte';
 import DebugModeFrame from './DebugModeFrame.svelte';
@@ -34,9 +34,11 @@ let activePoint = $state<DebugModeCheckPoint | null>(null);
 function changePreset(preset: DebugModeCheckPreset) {
     const draftPoints: ICheckPoint[] = {
         [DebugModeCheckPreset.ANTI_CHEAT]: antiCheatChecks,
+        [DebugModeCheckPreset.ANTI_CHEAT2]: vitoBrunoAntiCheatChecks,
         [DebugModeCheckPreset.LOOT_GAME1]: lootGameChecks[0],
         [DebugModeCheckPreset.LOOT_GAME2]: lootGameChecks[1],
-        [DebugModeCheckPreset.CHEST_GAME]: chestGameChecks,
+        [DebugModeCheckPreset.CHEST_GAME1]: chestGameChecks,
+        [DebugModeCheckPreset.CHEST_GAME2]: brunoChestGameChecks,
         [DebugModeCheckPreset.BLANK]: []
     }[preset];
 
