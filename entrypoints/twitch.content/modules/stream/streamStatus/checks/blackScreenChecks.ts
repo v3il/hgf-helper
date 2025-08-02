@@ -1,7 +1,7 @@
 import { ICheckPoint } from './ICheckPoint';
-import { antiCheatChecks } from './antiCheatChecks';
+import { rightAntiCheatChecks } from './antiCheatChecks';
 
-export const blackScreenChecks: ICheckPoint[] = antiCheatChecks.map(({ xPercent, yPercent }) => ({
+export const blackScreenChecks: ICheckPoint[] = rightAntiCheatChecks.map(({ xPercent, yPercent }) => ({
     xPercent,
     yPercent,
     color: '#000000'

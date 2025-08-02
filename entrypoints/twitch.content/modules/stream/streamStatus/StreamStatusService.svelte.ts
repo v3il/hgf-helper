@@ -6,7 +6,7 @@ import { EventEmitter, UnsubscribeTrigger } from '@shared/EventEmitter';
 import { Timing } from '@shared/consts';
 import { ChatObserver } from '@twitch/modules/twitchChat';
 import { config } from '@twitch/config';
-import { antiCheatChecks, vitoBrunoAntiCheatChecks, chestGameChecks, brunoChestGameChecks, ICheckPoint, lootGameChecks, blackScreenChecks } from './checks';
+import { rightAntiCheatChecks, leftAntiCheatChecks, chestGameChecks, brunoChestGameChecks, ICheckPoint, lootGameChecks, blackScreenChecks } from './checks';
 import { OffscreenStreamRenderer } from '../OffscreenStreamRenderer';
 
 @Service()
@@ -94,10 +94,9 @@ export class StreamStatusService {
     private checkAntiCheat(silent: boolean = false) {
         const previousStatus = this.isAntiCheat;
 
-        const points = {
-            hitsquadbruno: vitoBrunoAntiCheatChecks,
-            hitsquadvito: vitoBrunoAntiCheatChecks
-        }[config.twitchChannelName] ?? antiCheatChecks;
+        const points = ['hitsquadbruno', 'hitsquadvito'].includes(config.twitchChannelName)
+            ? leftAntiCheatChecks
+            : rightAntiCheatChecks;
 
         const matchedChecks = this.checkPoints(points);
 
