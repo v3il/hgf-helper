@@ -3,33 +3,26 @@ import { Service } from 'typedi';
 
 @Service()
 export class TwitchPlayerService {
-    private readonly desiredQualities = [360, 480] as const;
     private readonly settingsButton: HTMLButtonElement;
-
-    private currentQuality!: number;
+    private readonly desiredQualities = [360, 480] as const;
 
     constructor() {
         this.settingsButton = document.querySelector<HTMLButtonElement>('[data-a-target="player-settings-button"]')!;
-        this.init();
-    }
-
-    private async init() {
-        this.currentQuality = await this.getCurrentQuality();
     }
 
     async decreaseVideoDelay() {
         await this.gotoQualitySettings();
 
         const qualityRadios = this.getQualitySettingsButtonEls();
-        const nextQuality = this.getNextQuality();
+        const currentQuality = this.getCurrentQuality(qualityRadios);
+        const nextQuality = this.getNextQuality(currentQuality);
         const qualityRadio = qualityRadios.find((radioEl) => this.getRadioButtonQualityValue(radioEl) === nextQuality);
 
         if (qualityRadio) {
             qualityRadio.click();
         }
 
-        this.closeSettingsPopup();
-        this.currentQuality = nextQuality;
+        this.settingsButton.click();
     }
 
     private async gotoQualitySettings() {
@@ -42,39 +35,26 @@ export class TwitchPlayerService {
         qualitySettingsButton?.click();
     }
 
-    private closeSettingsPopup() {
-        this.settingsButton.click();
-    }
-
     private getQualitySettingsButtonEls() {
         const selector = '[name="player-settings-submenu-quality-option"]';
         return Array.from(document.querySelectorAll<HTMLInputElement>(selector));
     }
 
-    private async getCurrentQuality() {
-        await this.gotoQualitySettings();
+    private getCurrentQuality(radioEls: HTMLInputElement[]) {
+        const checkedRadio = radioEls.find((radioEl) => radioEl.checked);
 
-        const qualityRadios = this.getQualitySettingsButtonEls();
-        const checkedRadio = qualityRadios.find((radioEl) => radioEl.checked);
-
-        if (!checkedRadio) {
-            return 360;
-        }
-
-        this.closeSettingsPopup();
-
-        return this.getRadioButtonQualityValue(checkedRadio);
+        return checkedRadio ? this.getRadioButtonQualityValue(checkedRadio) : 144;
     }
 
-    private getNextQuality() {
-        return this.desiredQualities.find((quality) => quality !== this.currentQuality) ?? 360;
+    private getNextQuality(currentQuality: number) {
+        return this.desiredQualities.find((quality) => quality !== currentQuality) ?? 360;
     }
 
     private getRadioButtonQualityValue(radioEl: HTMLInputElement) {
         const labelEl = radioEl.nextSibling! as HTMLElement;
-        const divEl = labelEl.querySelector('div')!;
+        const divEl = labelEl.querySelector<HTMLElement>('div')!;
         const match = divEl.textContent!.match(/^\d+/);
 
-        return match ? parseInt(match[0], 10) : 360;
+        return match ? parseInt(match[0], 10) : 0;
     }
 }

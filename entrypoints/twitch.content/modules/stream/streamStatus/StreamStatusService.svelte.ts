@@ -6,7 +6,7 @@ import { EventEmitter, UnsubscribeTrigger } from '@shared/EventEmitter';
 import { Timing } from '@shared/consts';
 import { ChatObserver } from '@twitch/modules/twitchChat';
 import { config } from '@twitch/config';
-import { antiCheatChecks, chestGameChecks, ICheckPoint, lootGameChecks, blackScreenChecks } from './checks';
+import { rightAntiCheatChecks, leftAntiCheatChecks, chestGameChecks, brunoChestGameChecks, ICheckPoint, lootGameChecks, blackScreenChecks } from './checks';
 import { OffscreenStreamRenderer } from '../OffscreenStreamRenderer';
 
 @Service()
@@ -93,9 +93,14 @@ export class StreamStatusService {
 
     private checkAntiCheat(silent: boolean = false) {
         const previousStatus = this.isAntiCheat;
-        const matchedChecks = this.checkPoints(antiCheatChecks);
 
-        this.isAntiCheat = (matchedChecks / antiCheatChecks.length) >= 0.5;
+        const points = ['hitsquadbruno', 'hitsquadvito'].includes(config.twitchChannelName)
+            ? leftAntiCheatChecks
+            : rightAntiCheatChecks;
+
+        const matchedChecks = this.checkPoints(points);
+
+        this.isAntiCheat = (matchedChecks / points.length) >= 0.5;
 
         if (previousStatus !== this.isAntiCheat && !silent) {
             this.events.emit('antiCheat', this.isAntiCheat);
@@ -117,9 +122,10 @@ export class StreamStatusService {
 
     private checkChestGame(silent: boolean) {
         const previousStatus = this.isChestGame;
-        const matchedChecks = this.checkPoints(chestGameChecks);
+        const points = config.twitchChannelName === 'hitsquadbruno' ? brunoChestGameChecks : chestGameChecks;
+        const matchedChecks = this.checkPoints(points);
 
-        this.isChestGame = (matchedChecks / chestGameChecks.length) >= 0.85;
+        this.isChestGame = (matchedChecks / points.length) >= 0.85;
 
         if (previousStatus !== this.isChestGame && !silent) {
             this.events.emit('chest', this.isChestGame);
@@ -141,6 +147,6 @@ export class StreamStatusService {
     private isBlackScreen() {
         const matchedChecks = this.checkPoints(blackScreenChecks);
 
-        return (matchedChecks / blackScreenChecks.length) >= 0.5;
+        return (matchedChecks / blackScreenChecks.length) >= 0.85;
     }
 }
