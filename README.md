@@ -1,5 +1,14 @@
 # HGF-Helper
 
+## ⏸ Project Status
+
+Development of this project is currently **paused**.  
+The main Twitch channel it was designed for has been banned, so further updates are not planned at the moment.
+
+The repository will remain available, and the project may be resumed or adapted in the future if circumstances change.
+
+------
+
 ❗ This README describes **version 2** of the extension.  
 If you're looking for the README of version 1, you can find it [here](./readme/v1/README.md).  
 
